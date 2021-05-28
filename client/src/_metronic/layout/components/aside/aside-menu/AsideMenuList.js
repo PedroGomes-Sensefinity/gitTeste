@@ -35,39 +35,129 @@ export function AsideMenuList({ layoutProps }) {
 
         {/*begin::1 Level*/}
         <li
-            className={`menu-item ${getMenuItemActive("/devices")}`}
+            className={`menu-item ${getMenuItemActive("/devices", true)}`}
             aria-haspopup="true"
         >
-            <NavLink className="menu-link" to="/devices">
-                <span className="svg-icon menu-icon">
-                    <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Router2.svg")}/>
+          <NavLink className="menu-link menu-toggle" to="/devices">
+            <span className="svg-icon menu-icon">
+              <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Router2.svg")} />
+            </span>
+            <span className="menu-text">Devices</span>
+          </NavLink>
+          <div className="menu-submenu">
+            <i className="menu-arrow" />
+            <ul className="menu-subnav">
+              <li className="menu-item menu-item-parent" aria-haspopup="true">
+                <span className="menu-link">
+                  <span className="menu-text">Devices</span>
                 </span>
-                <span className="menu-text">Devices</span>
-            </NavLink>
+              </li>
+              {/*begin::2 Level*/}
+              <li
+                className={`menu-item ${getMenuItemActive(
+                  "/devices/list"
+                )}`}
+                aria-haspopup="true"
+              >
+                <NavLink className="menu-link" to="/devices/list">
+                  <i className="menu-bullet menu-bullet-dot">
+                    <span />
+                  </i>
+                  <span className="menu-text">Device List</span>
+                </NavLink>
+              </li>
+              {/*end::2 Level*/}
+              {/*begin::2 Level*/}
+              <li
+                className={`menu-item ${getMenuItemActive(
+                  "/devices/provision"
+                )}`}
+                aria-haspopup="true"
+              >
+                <NavLink className="menu-link" to="/devices/provision">
+                  <i className="menu-bullet menu-bullet-dot">
+                    <span />
+                  </i>
+                  <span className="menu-text">Device Provision</span>
+                </NavLink>
+              </li>
+              {/*end::2 Level*/}
+              {/*begin::2 Level*/}
+              <li
+                className={`menu-item ${getMenuItemActive(
+                  "/device/upload"
+                )}`}
+                aria-haspopup="true"
+              >
+                <NavLink className="menu-link" to="/devices/upload">
+                  <i className="menu-bullet menu-bullet-dot">
+                    <span />
+                  </i>
+                  <span className="menu-text">Device Upload</span>
+                </NavLink>
+              </li>
+              {/*end::2 Level*/}
+            </ul>x
+          </div>
         </li>
         {/*end::1 Level*/}
-
-
 
         {/*begin::1 Level*/}
         <li
-          className={`menu-item ${getMenuItemActive("/user-profile", false)}`}
+          className={`menu-item ${getMenuItemActive("/groups/list", false)}`}
           aria-haspopup="true"
         >
-          {/* <NavLink className="menu-link" to="/user-profile">
+          <NavLink className="menu-link" to="/groups/list">
             <span className="svg-icon menu-icon">
-              <SVG
-                src={toAbsoluteUrl(
-                  "/media/svg/icons/Communication/Add-user.svg"
-                )}
-              />
+              <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Layers.svg")} />
             </span>
-            <span className="menu-text">User Profile</span>
-          </NavLink> */}
+            <span className="menu-text">Groups</span>
+          </NavLink>
+        </li>
+        {/*end::1 Level*/}
+
+        {/*begin::1 Level*/}
+        <li
+          className={`menu-item ${getMenuItemActive("/thresholds/list", false)}`}
+          aria-haspopup="true"
+        >
+          <NavLink className="menu-link" to="/thresholds/list">
+            <span className="svg-icon menu-icon">
+              <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Layers.svg")} />
+            </span>
+            <span className="menu-text">Thresholds</span>
+          </NavLink>
+        </li>
+        {/*end::1 Level*/}
+
+        {/*begin::1 Level*/}
+        <li
+          className={`menu-item ${getMenuItemActive("/alarms/list", false)}`}
+          aria-haspopup="true"
+        >
+          <NavLink className="menu-link" to="/alarms/list">
+            <span className="svg-icon menu-icon">
+              <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Layers.svg")} />
+            </span>
+            <span className="menu-text">Alarms</span>
+          </NavLink>
+        </li>
+        {/*end::1 Level*/}
+
+        {/*begin::1 Level*/}
+        <li
+          className={`menu-item ${getMenuItemActive("/notification-templates/list", false)}`}
+          aria-haspopup="true"
+        >
+          <NavLink className="menu-link" to="/notification-templates/list">
+            <span className="svg-icon menu-icon">
+              <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Layers.svg")} />
+            </span>
+            <span className="menu-text">Notification templates</span>
+          </NavLink>
         </li>
         {/*end::1 Level*/}
       </ul>
-
       {/* end::Menu Nav */}
     </>
   );
