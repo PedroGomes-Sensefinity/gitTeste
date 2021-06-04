@@ -1,0 +1,10 @@
+version: '3.7'
+services:
+  ui-admin-v2-web:
+    build: .
+    ports:
+      - "8000:8000"
+    restart: always
+    environment:
+      NODE_ENV: production
+      PORT: 8000

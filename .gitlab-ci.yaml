@@ -1,0 +1,51 @@
+image: docker:latest
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+  REPOSITORY_URL: sensehubaksecr.azurecr.io/$CI_PROJECT_TITLE
+  K8S_NAMESPACE: hub
+
+services:
+  - docker:19.03.5-dind
+
+stages:
+  - build
+  - deploy
+
+build:
+  before_script:
+    - apk add --no-cache curl jq python3
+    - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+    - python3 get-pip.py
+  stage: build
+  script:
+    - echo "Build on Azure"
+    - docker login sensehubaksecr.azurecr.io -u $ACR_USERNAME -p $ACR_PASSWORD
+    - docker build -f DockerfileK8S . -t $REPOSITORY_URL:$CI_PROJECT_TITLE-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+    - docker push $REPOSITORY_URL:$CI_PROJECT_TITLE-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+  only:
+    - master
+  tags:
+    - docker
+  allow_failure: false
+
+deploy:
+  stage: deploy
+  environment:
+    name: production
+  before_script:
+    - apk update  && apk add --no-cache curl
+    - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+    - chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl
+  script:
+    - echo "Deploy on Azure"
+    - kubectl config set-context --current --namespace=$K8S_NAMESPACE
+    - kubectl get pods
+    - sed -i "s/image_to_be_replaced/$CI_PROJECT_TITLE-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA/g" deployment.yaml
+    - kubectl apply -f deployment.yaml
+    - chmod +x check_pod_status.sh ; sh check_pod_status.sh
+  only:
+    - master
+  tags:
+    - docker
+  allow_failure: false
