@@ -1,47 +1,28 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import MaterialTable from 'material-table';
+import { Link } from 'react-router-dom';
 import history from '../../../history';
 import deviceService from '../../../services/deviceService';
 import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
+import { Card, CardHeader, CardContent, Button } from '@material-ui/core';
 
-import { forwardRef } from 'react';
-
-import AddBox from '@material-ui/icons/AddBox';
-import ArrowDownward from '@material-ui/icons/ArrowDownward';
-import Check from '@material-ui/icons/Check';
-import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import ChevronRight from '@material-ui/icons/ChevronRight';
-import Clear from '@material-ui/icons/Clear';
-import DeleteOutline from '@material-ui/icons/DeleteOutline';
-import Edit from '@material-ui/icons/Edit';
-import FilterList from '@material-ui/icons/FilterList';
-import FirstPage from '@material-ui/icons/FirstPage';
-import LastPage from '@material-ui/icons/LastPage';
-import Remove from '@material-ui/icons/Remove';
-import SaveAlt from '@material-ui/icons/SaveAlt';
-import Search from '@material-ui/icons/Search';
-import ViewColumn from '@material-ui/icons/ViewColumn';
+import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
 import TableGrid from '../../../components/table-grid/table-grid.component';
 
-const useStyles = makeStyles({
-    root: {
-        minWidth: 275,
+const useStyles = makeStyles((theme) => ({
+    button: {
+        margin: theme.spacing(1),
     },
-    bullet: {
-        display: 'inline-block',
-        margin: '0 2px',
-        transform: 'scale(0.8)',
+    rightIcon: {
+        marginLeft: theme.spacing(1),
     },
-    title: {
-        fontSize: 14,
+    leftIcon: {
+        marginRight: theme.spacing(1),
     },
-    pos: {
-        marginBottom: 12,
+    iconSmall: {
+        fontSize: 20,
     },
-});
+}));
 
 export function DevicesList() {
     const classes = useStyles();
@@ -80,10 +61,19 @@ export function DevicesList() {
     return (
         <Card>
             <CardContent>
+                <Link to='/devices/new'>
+                    <Button
+                        variant='contained'
+                        color='secondary'
+                        className={classes.button}>
+                        <AddIcon className={classes.leftIcon} />
+                        New device
+                    </Button>
+                </Link>
                 <TableGrid
                     actions={[
                         {
-                            icon: Edit,
+                            icon: EditIcon,
                             tooltip: 'Edit device',
                             onClick: (event, rowData) => {
                                 history.push(`/device/${rowData.id}`);
