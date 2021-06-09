@@ -8,11 +8,6 @@ const axios = require('axios');
 const multiparty = require('multiparty');
 const fs = require('fs');
 const FormData = require("form-data");
-const rootCas = require('ssl-root-cas/latest').create();
-
-require('https').globalAgent.options.ca = rootCas;
-
-const httpsAgent = new https.Agent({ca: rootCas});
 
 // Handling Constants
 const PORT = process.env.PORT || 8081;
@@ -159,7 +154,9 @@ app.all('/api/*', (req, res) => {
     url: process.env.SERVICE_APP_REST_API_URL + pathUrl,
     headers: headerOptions,
     data: req.body,
-    httpsAgent: httpsAgent
+    httpsAgent: new https.Agent({  
+      rejectUnauthorized: false
+    })
   }
 
   axios(axioData)
