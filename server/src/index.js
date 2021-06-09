@@ -6,12 +6,9 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const axios = require('axios');
 const multiparty = require('multiparty');
-const util = require('util');
 const fs = require('fs');
-const request = require('request');
-const concat = require("concat-stream");
 const FormData = require("form-data");
-const multer = require('multer');
+require('https').globalAgent.options.ca = require('ssl-root-cas').create();
 
 // Handling Constants
 const PORT = process.env.PORT || 8081;
