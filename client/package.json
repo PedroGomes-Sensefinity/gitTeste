@@ -1,8 +1,8 @@
 {
-    "name": "demo1",
+    "name": "default",
     "version": "7.2.8",
     "private": true,
-    "homepage": "/metronic/react/demo1",
+    "homepage": "",
     "scripts": {
         "start": "react-scripts start -o",
         "build": "react-scripts build",
