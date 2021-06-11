@@ -6,12 +6,8 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const axios = require('axios');
 const multiparty = require('multiparty');
-const util = require('util');
 const fs = require('fs');
-const request = require('request');
-const concat = require("concat-stream");
 const FormData = require("form-data");
-const multer = require('multer');
 
 // Handling Constants
 const PORT = process.env.PORT || 8081;
@@ -157,7 +153,7 @@ app.all('/api/*', (req, res) => {
     method: req.method,
     url: process.env.SERVICE_APP_REST_API_URL + pathUrl,
     headers: headerOptions,
-    data: req.body 
+    data: req.body
   }
 
   axios(axioData)
