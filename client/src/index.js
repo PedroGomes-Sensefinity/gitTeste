@@ -48,6 +48,7 @@ const { PUBLIC_URL } = process.env;
  */
 _redux.setupAxios(axios, store);
 _redux.authInterceptor(axios, store);
+_redux.jwtBeforeExpireInterceptor(axios, store);
 
 ReactDOM.render(
   <MetronicI18nProvider>
