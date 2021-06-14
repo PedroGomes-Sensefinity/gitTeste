@@ -4,10 +4,12 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import * as auth from '../_redux/authRedux';
-import { login } from '../_redux/authService';
+//import * as auth from '../_redux/authRedux';
+//import { login } from '../_redux/authService';
 import { toAbsoluteUrl } from '../../../../_metronic/_helpers';
 import toaster from '../../../utils/toaster';
+import { login, setToken, setUser } from '../../../services/authService';
+import history from '../../../history';
 
 /*
   INTL (i18n) docs:
@@ -73,44 +75,46 @@ function Login(props) {
             enableLoading();
             setTimeout(() => {
                 login(values.email, values.password)
-                .then((response) => response.data)
-                .then(r => {
-                    console.log(r);
-                    
-                    let token = r.data.token[0].hash;
-                    let user = {
-                        username: "admin",
-                        password: "demo",
-                        email: "admin@demo.com",
-                        authToken: token,
-                        refreshToken: token,
-                        roles: [1], // Administrator
-                        pic: toAbsoluteUrl("/media/users/300_21.jpg"),
-                        fullname: "Sean S",
-                        firstname: "Sean",
-                        lastname: "Stark"
-                    };
+                    .then((response) => response.data)
+                    .then((r) => {
+                        let tenant = r.data.token[0];
+                        let user = {
+                            username: tenant.username,
+                            password: '',
+                            email: '',
+                            authToken: tenant.hash,
+                            refreshToken: tenant.hash,
+                            roles: [1], // Administrator
+                            pic: toAbsoluteUrl('/media/users/300_21.jpg'),
+                            fullname: tenant.username,
+                            firstname: tenant.username,
+                            lastname: '',
+                        };
 
-                    props.login(token);
-                    props.setUser(user);
+                        setToken(tenant.hash);
+                        setUser(user);
+                        history.push("/");
 
-                    disableLoading();
-                })
-                .catch(() => {
-                    setStatus(
-                        intl.formatMessage({
-                            id: 'AUTH.VALIDATION.INVALID_LOGIN',
-                        })
-                    );
+                        disableLoading();
+                    })
+                    .catch(() => {
+                        setStatus(
+                            intl.formatMessage({
+                                id: 'AUTH.VALIDATION.INVALID_LOGIN',
+                            })
+                        );
 
-                    toaster.notify('error', intl.formatMessage({
-                        id: 'AUTH.VALIDATION.INVALID_LOGIN',
-                    }))
-                })
-                .finally(() => {
-                    disableLoading();
-                    setSubmitting(false);
-                });
+                        toaster.notify(
+                            'error',
+                            intl.formatMessage({
+                                id: 'AUTH.VALIDATION.INVALID_LOGIN',
+                            })
+                        );
+                    })
+                    .finally(() => {
+                        disableLoading();
+                        setSubmitting(false);
+                    });
             }, 1000);
         },
     });
@@ -211,4 +215,5 @@ function Login(props) {
     );
 }
 
-export default injectIntl(connect(null, auth.actions)(Login));
+export default injectIntl(connect(null, null)(Login));
+//export default injectIntl(connect(null, auth.actions)(Login));

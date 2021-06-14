@@ -39,7 +39,7 @@ export default function BasePage() {
 
         { /* Devices Routes*/ }
         <ContentRoute path="/devices/list" component={DevicesList} />
-        <ContentRoute path="/devices/new" component={DevicesForm} />
+        <ContentRoute path="/devices/new/:id" component={DevicesForm} />
         <ContentRoute path="/devices/edit" component={DevicesForm} />
         <ContentRoute path="/devices/provision" component={DevicesProvision} />
         <ContentRoute path="/devices/upload" component={DevicesUpload} />
