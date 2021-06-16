@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const deviceService = {
-    get: function(limit, offset){
+    get: function(limit, offset) {
         return new Promise(function(resolve, reject) {
             axios
                 .get(`${process.env.REACT_APP_REST_API_URL}device/limit/${limit}/offset/${offset}`)
@@ -26,7 +26,7 @@ const deviceService = {
                 });
         });
     },
-    getByText: function(text, limit, offset){
+    getByText: function(text, limit, offset) {
         return new Promise(function(resolve, reject) {
             axios
                 .get(`${process.env.REACT_APP_REST_API_URL}device/search/${text}/limit/${limit}/offset/${offset}`)
@@ -50,65 +50,25 @@ const deviceService = {
                     reject(Error("Something went wrong on get devices... "));
                 });
         });
-    }/*,
-    getByTextOrderby: function(text, limit, offset, sort, order){
+    },
+    provision: function(count){
         return new Promise(function(resolve, reject) {
-            fetch(restDevices.header.apiUrl + 'device/search/' + text + '/limit/' + limit + '/offset/' + offset + '/sort/' + sort + '/order/' + order, {
-                method: 'GET',
-                headers: restDevices.header.apiHeaders,
-                mode: 'cors'
-            })
-            .then(function(response){
-                if (response.status !== 200) {
-                    return [];
-                } else {
-                    return response.json();
-                }
-            })
-            .then(function(responseData){
+            axios.post(`${process.env.REACT_APP_REST_API_URL}device/provision/${count}`)
+            .then((response) => response.data )
+            .then((responseData) => {
                 var result = [];
-                if (typeof responseData.data !== 'undefined') {
-                    result = responseData.data.devices;
-                } else {
-                    localStorage.removeItem('@sense/api/token');
+
+                if (responseData.code === 200) {
+                    result = responseData.data;
                 }
                 resolve(result);
             })
             .catch(function(err) {
                 console.log(err);
-                reject(Error("Something went wrong on get devices... "));
+                reject(Error("Something went wrong on post devices provision... "));
             });
         });
     },
-    getOrderby: function(limit, offset, sort, order){
-        return new Promise(function(resolve, reject) {
-            fetch(restDevices.header.apiUrl + 'device/limit/' + limit + '/offset/' + offset + '/sort/' + sort + '/order/' + order, {
-                method: 'GET',
-                headers: restDevices.header.apiHeaders,
-                mode: 'cors'
-            })
-            .then(function(response){
-                if (response.status !== 200) {
-                    return [];
-                } else {
-                    return response.json();
-                }
-            })
-            .then(function(responseData){
-                var result = [];
-                if (typeof responseData.data !== 'undefined') {
-                    result = responseData.data.devices;
-                } else {
-                    localStorage.removeItem('@sense/api/token');
-                }
-                resolve(result);
-            })
-            .catch(function(err) {
-                console.log(err);
-                reject(Error("Something went wrong on get devices... "));
-            });
-        });
-    }*/
 }
 
 export default deviceService;
