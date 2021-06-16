@@ -13,7 +13,7 @@ const toaster = {
             progress: undefined,
         }
 
-        const types = ["info", "warning", "error"]
+        const types = ["success", "info", "warning", "error"]
         
         if ( !types.includes( type ) ) {
             toast( msg, toasterProperties );
