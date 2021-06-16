@@ -59,6 +59,7 @@
         "jwt-decode": "^3.1.2",
         "lodash": "4.17.15",
         "material-table": "^1.69.3",
+        "material-ui-dropzone": "^3.5.0",
         "material-ui-popup-state": "1.4.1",
         "moment": "^2.29.1",
         "object-path": "0.11.4",
