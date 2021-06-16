@@ -12,6 +12,7 @@ import { I18nProvider } from "../_metronic/i18n";
 import { LayoutSplashScreen, MaterialThemeProvider } from "../_metronic/layout";
 import { ToastContainer } from 'react-toastify';
 import { toaster } from './utils/toaster';
+import 'react-block-ui/style.css';
 
 export default function App({ store, persistor, basename }) {
   return (
