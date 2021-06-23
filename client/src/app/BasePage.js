@@ -15,6 +15,7 @@ import { AlarmsList } from "./pages/alarms/alarms-list/AlarmsList";
 import { AlarmsForm } from "./pages/alarms/alarms-form/AlarmsForm";
 import { ThresholdsList } from "./pages/thresholds/thresholds-list/ThresholdsList";
 import { ThresholdsForm } from "./pages/thresholds/thresholds-form/ThresholdsForm";
+import {Teste} from "./pages/devices/devices-form/teste";
 
 const UserProfilepage = lazy(() =>
   import("./modules/UserProfile/UserProfilePage")
@@ -39,30 +40,30 @@ export default function BasePage() {
 
         { /* Devices Routes*/ }
         <ContentRoute path="/devices/list" component={DevicesList} />
-        <ContentRoute path="/devices/new/:id" component={DevicesForm} />
-        <ContentRoute path="/devices/edit" component={DevicesForm} />
+        <ContentRoute path="/devices/new" component={Teste} />
+        <ContentRoute path="/devices/edit/:id" component={Teste} />
         <ContentRoute path="/devices/provision" component={DevicesProvision} />
         <ContentRoute path="/devices/upload" component={DevicesUpload} />
 
         { /* Groups Routes*/}
         <ContentRoute path="/groups/list" component={GroupsList} />
         <ContentRoute path="/groups/new" component={GroupsForm} />
-        <ContentRoute path="/groups/edit" component={GroupsForm} />
+        <ContentRoute path="/groups/edit/:id" component={GroupsForm} />
 
         { /* Thresholds Routes*/}
         <ContentRoute path="/thresholds/list" component={ThresholdsList} />
         <ContentRoute path="/thresholds/new" component={ThresholdsForm} />
-        <ContentRoute path="/thresholds/edit" component={ThresholdsForm} />
+        <ContentRoute path="/thresholds/edit/:id" component={ThresholdsForm} />
 
         { /* Alarms Routes*/}
         <ContentRoute path="/alarms/list" component={AlarmsList} />
         <ContentRoute path="/alarms/new" component={AlarmsForm} />
-        <ContentRoute path="/alarms/edit" component={AlarmsForm} />
+        <ContentRoute path="/alarms/edit/:id" component={AlarmsForm} />
 
         { /* NotificationTemplates Routes*/}
         <ContentRoute path="/notification-templates/list" component={NotificationTemplatesList} />
         <ContentRoute path="/notification-templates/new" component={NotificationTemplatesForm} />
-        <ContentRoute path="/notification-templates/edit" component={NotificationTemplatesForm} />
+        <ContentRoute path="/notification-templates/edit/:id" component={NotificationTemplatesForm} />
         
         <Redirect to="error/error-v1" />
       </Switch>
