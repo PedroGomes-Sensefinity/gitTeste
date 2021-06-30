@@ -1,12 +1,12 @@
 import React, { Suspense, lazy } from "react";
-import { Redirect, Switch, Route } from "react-router-dom";
+import { Redirect, Switch } from "react-router-dom";
 import { LayoutSplashScreen, ContentRoute } from "../_metronic/layout";
 import { MyPage } from "./pages/MyPage";
 import { DashboardPage } from "./pages/DashboardPage";
+import { Device } from "./pages/devices/device/Device";
 import { DevicesList } from "./pages/devices/devices-list/DevicesList";
 import { DevicesProvision } from "./pages/devices/devices-provision/DevicesProvision";
 import { DevicesUpload } from "./pages/devices/devices-upload/DevicesUpload";
-import { DevicesForm } from "./pages/devices/devices-form/DevicesForm";
 import { GroupsList } from "./pages/groups/groups-list/GroupsList";
 import { GroupsForm } from "./pages/groups/groups-form/GroupsForm";
 import { NotificationTemplatesForm } from "./pages/notification-templates/notifications-templates-form/NotificationTemplatesForm";
@@ -15,7 +15,6 @@ import { AlarmsList } from "./pages/alarms/alarms-list/AlarmsList";
 import { AlarmsForm } from "./pages/alarms/alarms-form/AlarmsForm";
 import { ThresholdsList } from "./pages/thresholds/thresholds-list/ThresholdsList";
 import { ThresholdsForm } from "./pages/thresholds/thresholds-form/ThresholdsForm";
-import {Teste} from "./pages/devices/devices-form/teste";
 
 const UserProfilepage = lazy(() =>
   import("./modules/UserProfile/UserProfilePage")
@@ -40,8 +39,8 @@ export default function BasePage() {
 
         { /* Devices Routes*/ }
         <ContentRoute path="/devices/list" component={DevicesList} />
-        <ContentRoute path="/devices/new" component={Teste} />
-        <ContentRoute path="/devices/edit/:id" component={Teste} />
+        <ContentRoute path="/devices/new" component={Device} />
+        <ContentRoute path="/devices/edit/:id" component={Device} />
         <ContentRoute path="/devices/provision" component={DevicesProvision} />
         <ContentRoute path="/devices/upload" component={DevicesUpload} />
 

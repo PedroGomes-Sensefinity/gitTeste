@@ -1,4 +1,3 @@
-import { makeStyles } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -6,21 +5,6 @@ import DoneIcon from '@material-ui/icons/Done';
 import BlockUi from 'react-block-ui';
 import { getInputClasses } from '../../../utils/formik';
 import deviceService from '../../../services/deviceService';
-
-const useStyles = makeStyles((theme) => ({
-    button: {
-        margin: theme.spacing(1),
-    },
-    rightIcon: {
-        marginLeft: theme.spacing(1),
-    },
-    leftIcon: {
-        marginRight: theme.spacing(1),
-    },
-    iconSmall: {
-        fontSize: 20,
-    },
-}));
 
 export function DevicesProvision() {
     const [blocking, setBlocking] = useState(false);

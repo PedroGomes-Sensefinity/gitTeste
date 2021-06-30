@@ -1,54 +1,73 @@
-import React, {useEffect, useState} from 'react';
-import {Formik, useFormik} from "formik";
-import apiService from "../../services/apiService";
-import * as Yup from "yup";
-import {ModalProgressBar} from "../../../_metronic/_partials/controls";
-import {Link} from "react-router-dom";
-import AutocompleteComponent from "./autocomplete.component";
-import {makeStyles} from "@material-ui/styles";
-import deviceService from "../../services/deviceService";
+import React, {useEffect} from 'react';
+import {ErrorMessage, Field, Formik} from 'formik';
+import * as Yup from 'yup';
+import {Link} from 'react-router-dom';
+import {makeStyles} from '@material-ui/styles';
+import deviceService from '../../services/deviceService';
+import tenantService from '../../services/tenantService';
+import apiService from '../../services/apiService';
+import {AsyncTypeahead, Typeahead} from 'react-bootstrap-typeahead';
+import DoneIcon from '@material-ui/icons/Done';
+import {getInputClasses} from '../../utils/formik';
+import '../../utils/yup-validations';
+import BlockUi from "react-block-ui";
+import toaster from '../../utils/toaster';
+import { injectIntl } from 'react-intl';
 
 class DeviceFormComponent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            intl: props.intl,
+            id: props.entity,
+            data: props.data,
+            isAddMode: !props.entity,
             groups: [],
+            selectedGroup: [],
             parents: [],
-            selectedGroup: '',
-            selectedGroupId: '',
-            selectedParent: '',
-            selectedParentId: '',
-            isAddMode: true,
-        }
+            selectedParent: [],
+            boardFamilies: [],
+            selectedBoardFamily: [],
+            tenant: {},
+            loading: false,
+            blocking: false,
+        };
     }
 
     componentDidMount() {
-        this.props.groups.then((response) => {
-            this.setState({groups: response.groups});
+        apiService.get('board_families', 100, 0).then((response) => {
+            this.setState({boardFamilies: response.board_families});
         });
-        this.props.parents.then((response) => {
-            this.setState({parents: this.getParents(response.devices)})
+        tenantService.getInfo().then((response) => {
+            this.setState({tenant: response});
         });
-
-        this.setState({isAddMode: !this.props.id});
-
     }
 
     initialValues = {
         id: '',
-        groupId: '',
-        parentId: '',
-        boardFamilyId: '',
+        group_id: '',
+        parent_id: '',
+        board_family_id: '',
         board: '',
         imei: '',
         label: '',
-        metadata: '',
+        meta_data: '{}',
         comments: '',
+        force_board_id: false
     };
 
     validationSchema = Yup.object().shape({
-        id: Yup.string()
-            .required('Device ID is required'),
+        id: Yup.string().required('Device ID is required'),
+        label: Yup.string().required('Label is required'),
+        group_id: Yup.string().required('Group is required'),
+        meta_data: Yup.string()
+                    .required('Metadata is required')
+                    .isJson("Metadata needs to be a valid JSON"),
+        force_board_id: Yup.boolean(),
+        board: Yup.string().when('force_board_id', {
+            is: true,
+            then: Yup.string().required('Board is required')
+        }),
     });
 
     useStyles = makeStyles((theme) => ({
@@ -77,148 +96,186 @@ class DeviceFormComponent extends React.Component {
         },
     }));
 
-
     getParents = (records) => {
         let devices = [];
         records.map((device) => {
-            devices.push({id: device.id, label: device.id})
-        })
+            devices.push({ id: device.id, label: device.id });
+        });
         return devices;
-    }
+    };
 
-    handleGroupsChange = (event, newValue) => {
-        console.log(event);
-        console.log(newValue);
-    }
-
-    onSubmit = (fields,  { setStatus, setSubmitting, resetForm }) => {
-        if (this.state.isAddMode) {
-            console.log("Inserting")
-            this.saveDevice(fields,{ setStatus, setSubmitting, resetForm });
-        } else {
-            console.log("Editing")
-            // updateUser(id, fields, setSubmitting);
-        }
-
-    }
+    getGroups = (records) => {
+        console.log(records);
+        let groups = [];
+        records.map((group) => {
+            groups.push({ id: group.id, label: group.label });
+        });
+        return groups;
+    };
 
     saveDevice = (fields, { setStatus, setSubmitting, resetForm }) => {
-        console.log(fields)
-        const values = {
-            id: fields.id,
-            parent_id:fields.parentId,
-            group_id:this.getSelectedGroup(fields.groups),
-            board_family_id: fields.boardFamilyId,
-            board:fields.board,
-            imei:fields.imei,
-            label:fields.label,
-            meta_data:fields.metadata,
-            comments: fields.comments
+        this.setState({blocking: true});
+        let method = (this.state.isAddMode) ? 'save' : 'update';
+        let msgSuccess = (this.state.isAddMode)
+            ? this.state.intl.formatMessage({id: 'DEVICE.CREATED'})
+            : this.state.intl.formatMessage({id: 'DEVICE.UPDATED'});
+
+        deviceService[method](fields)
+            .then((response) => {
+                toaster.notify('success', msgSuccess);
+                this.setState({blocking: false});
+            });
+    };
+    
+    onChangeGroup = (opt, setFieldValue) => {
+        this.setState({ selectedGroup: opt});
+        setFieldValue('group_id', '');
+
+        if (opt.length > 0) {
+            setFieldValue('group_id', opt[0].id);
         }
-        deviceService.saveDevice(values, this.state.isAddMode).then( function(response) {
-            console.log(response)
+    };
+    
+    onChangeParent = (opt, setFieldValue) => {
+        this.setState({ selectedParent: opt});
+        setFieldValue('parent_id', '');
+
+        if (opt.length > 0) {
+            setFieldValue('parent_id', opt[0].id);
+        }
+    };
+    
+    onChangeBoardFamily = (opt, setFieldValue) => {
+        setFieldValue('board_family_id', '');
+        setFieldValue('force_board_id', false);
+
+        if (opt.length > 0) {
+            setFieldValue('board_family_id', opt[0].id);
+            setFieldValue('force_board_id', opt[0].force_board_id);
+        }
+        this.setState({ selectedBoardFamily: opt});
+    };
+    
+    getSelectedBoardFamily = (boardFamilyId) => {
+        return this.state.boardFamilies.filter(b => b.id == boardFamilyId);
+    };
+
+    handleSearchGroup = (query) => {
+        this.setState({loading: true});
+
+        apiService.getByText('group', query, 100, 0).then((response) => {
+            this.setState({ groups: this.getGroups(response.groups) });
+            this.setState({loading: false});
+        });
+    };
+    handleSearchParent = (query) => {
+        this.setState({loading: true});
+
+        apiService.getByText('device', query, 100, 0).then((response) => {
+            this.setState({ parents: this.getParents(response.devices) });
+            this.setState({loading: false});
         });
     };
 
-    getSelectedGroup = (item) => {
-        console.log(item)
-        this.state.groups.filter(group => {
-           console.log(group);
-        });
-    }
-
-    setSelectedGroup = (groupId) => {
-        this.state.selectedGroupId = groupId;
-    }
-
+    filterBy = () => true;
+    
     render() {
-        const id = this.props.id
-        const isAddMode = !id;
-
         return (
+            <BlockUi tag='div' blocking={this.state.blocking}>
             <Formik
+                enableReinitialize
                 initialValues={this.initialValues}
                 validationSchema={this.validationSchema}
-                onSubmit={ (values, { setStatus, setSubmitting, resetForm }) => {
-                    this.saveDevice(values, {setStatus, setSubmitting, resetForm});
+                onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
+                    this.saveDevice(values, {
+                        setStatus,
+                        setSubmitting,
+                        resetForm,
+                    });
                 }}
-            >
-            {
-                ({
-                     isValid,
-                     getFieldProps,
-                     errors,
-                     touched,
-                     isSubmitting,
-                     setFieldValue,
-                     handleSubmit
+                >
+                {({
+                    isValid,
+                    getFieldProps,
+                    errors,
+                    touched,
+                    isSubmitting,
+                    setFieldValue,
+                    handleSubmit,
+                    handleChange
                 }) => {
-                    const classes   = this.useStyles();
-
-                    let groups      = this.state.groups;
-                    let parents     = this.state.parents;
-
-                    let groupId     = 'a';
+                    const classes = this.useStyles();
 
                     useEffect(() => {
-                        if (!isAddMode) {
-                            apiService.getById('device', id).then(response => {
-                                if(response.devices[0]['containers'] !== undefined) {
-                                    this.setState({selectedGroup: response.devices[0]['containers'][0]['label']});
-                                    this.setState({selectedGroupId: response.devices[0]['containers'][0]['id']});
-                                    groupId = response.devices[0]['containers'][0]['id'];
+                        if (!this.state.isAddMode && this.state.id !== 'new') {
+                            apiService
+                            .getById('device', this.state.id)
+                            .then((response) => {
+                                const device = response.devices[0];
+
+                                setFieldValue('id', device.id, false);
+                                setFieldValue('label', device.label, false);
+                                setFieldValue('board_family_id', device.board_family_id, false);
+                                setFieldValue('board', device.board, false);
+                                setFieldValue('parent_id', device.parent_id, false);
+                                setFieldValue('imei', device.imei, false);
+                                setFieldValue('meta_data', device.meta_data, false);
+                                setFieldValue('comments', device.comments, false);
+
+                                if (device.board_family_id !== '') {
+                                    let selectedBoardFamily = this.getSelectedBoardFamily(device.board_family_id);
+                                    this.setState({ selectedBoardFamily: selectedBoardFamily});
+                                    setFieldValue('force_board_id', selectedBoardFamily[0].force_board_id, false);
                                 }
 
-                                this.setState({selectedParent: '1234567890'});
-                                this.setState({selectedParentId: '1234567890'});
+                                if (device.parent_id !== '') {
+                                    let selectedParent = [{id: device.parent_id, label: device.parent_id}];
+                                    this.setState({ selectedParent: selectedParent});
+                                }
 
-                                setFieldValue('id',             (response.devices[0]['id']),                    false);
-                                setFieldValue('groupId',        (groupId),                                      false);
-                                setFieldValue('parentId',       (response.devices[0]['parent_id']),             false);
-                                setFieldValue('boardFamilyId',  (response.devices[0]['board_family_id']),       false);
-                                setFieldValue('board',          (response.devices[0]['board']),                 false);
-                                setFieldValue('imei',           (response.devices[0]['imei']),                  false);
-                                setFieldValue('label',          (response.devices[0]['label']),                 false);
-                                setFieldValue('metadata',       (response.devices[0]['metadata']),              false);
-                                setFieldValue('comments',       (response.devices[0]['comments']),              false);
+                                if (device.containers !== undefined && device.containers.length > 0) {
+                                    let selectedGroup = [{id: device.containers[0].id, label: device.containers[0].label}];
+                                    this.setState({ selectedGroup: selectedGroup});
+                                    setFieldValue('group_id', device.containers[0].id, false);
+                                }
+
+                                if (device.meta_data === '') {
+                                    setFieldValue('meta_data', '{}', false);
+                                }
                             });
                         }
                     }, []);
 
-
-                    let selectedGroup  = this.state.selectedGroup;
-                    let selectedGroupId  = this.state.selectedGroupId;
-                    let selectedParent = this.state.selectedParent
-                    let selectedParentId  = this.state.selectedParentId;
-
                     return (
-
-                        <form className="card card-custom" onSubmit={handleSubmit}  >
+                        <form
+                            className='card card-custom'
+                            onSubmit={handleSubmit}>
                             {/* begin::Header */}
-                            <div className={`card-header py-3 ` + classes.headerMarginTop}>
-                                <div className="card-title align-items-start flex-column">
-                                    <h3 className="card-label font-weight-bolder text-dark">
+                            <div
+                                className={`card-header py-3 `+ classes.headerMarginTop}>
+                                <div className='card-title align-items-start flex-column'>
+                                    <h3 className='card-label font-weight-bolder text-dark'>
                                         Device Information
                                     </h3>
-                                    <span className="text-muted font-weight-bold font-size-sm mt-1">
-                                    Change general settings of your device
-                                  </span>
+                                    <span className='text-muted font-weight-bold font-size-sm mt-1'>
+                                        Change general settings of your device
+                                    </span>
                                 </div>
-                                <div className="card-toolbar">
+                                <div className='card-toolbar'>
                                     <button
-                                        type="submit"
-                                        className="btn btn-success mr-2"
+                                        type='submit'
+                                        className='btn btn-success mr-2'
                                         disabled={
-                                            isSubmitting || (touched && !isValid)
-                                        }
-                                    >
+                                            isSubmitting ||
+                                            (touched && !isValid)
+                                        }>
+                                        <DoneIcon />
                                         Save Changes
                                         {isSubmitting}
                                     </button>
                                     <Link
-                                        to="/devices/list"
-                                        className="btn btn-secondary"
-                                    >
+                                        to='/devices/list'
+                                        className='btn btn-secondary'>
                                         Cancel
                                     </Link>
                                 </div>
@@ -226,216 +283,187 @@ class DeviceFormComponent extends React.Component {
                             {/* end::Header */}
 
                             {/* begin::Form */}
-                            <div className="form">
-                                <div className="card-body">
-                                    <div className="form-group row">
-                                        <div className="col-xl-6 col-lg-6">
+                            <div className='form'>
+                                <div className='card-body'>
+                                    <div className='form-group row'>
+                                        <div className='col-xl-6 col-lg-6'>
                                             <label>Device ID</label>
                                             <div>
-                                                <input
-                                                    type="text"
-                                                    className={`form-control form-control-lg form-control-solid` + (errors.id && touched.id ? ' is-invalid' : '')}
-                                                    name="id"
-                                                    placeholder="Set the Device ID"
-                                                    {...getFieldProps("id")}
+                                                <Field
+                                                    as="input"
+                                                    className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                        {errors, touched},
+                                                        'id'
+                                                    )}`}
+                                                    name='id'
+                                                    placeholder='Set the Device ID'
+                                                    {...getFieldProps('id')}
                                                 />
-                                                {touched.id && errors.id ? (
-                                                    <div className="invalid-feedback">
-                                                        {errors.id}
-                                                    </div>
-                                                ) : null}
+                                                <ErrorMessage name="id" component="div" className="invalid-feedback" />
                                             </div>
                                         </div>
 
-                                        <div className="col-xl-6 col-lg-6">
+                                        <div className='col-xl-6 col-lg-6'>
                                             <label>Label</label>
-                                            <input
-                                                type="text"
-                                                className={`form-control form-control-lg form-control-solid ` + (errors.label && touched.label ? ' is-invalid' : '')}
-                                                name="label"
-                                                placeholder="Set the Device Label"
-                                                {...getFieldProps("label")}
+                                            <Field
+                                                as="input"
+                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                        {errors, touched},
+                                                        'label'
+                                                    )}`}
+                                                name='label'
+                                                placeholder='Set the Device Label'
+                                                {...getFieldProps('label')}
                                             />
-                                            {touched.label && errors.label ? (
-                                                <div className="invalid-feedback">
-                                                    {errors.label}
-                                                </div>
-                                            ) : null}
+                                            <ErrorMessage name="label" component="div" className="invalid-feedback" />
                                         </div>
                                     </div>
 
-
-                                    {/* begin::Form Group */}
-                                    <div className="form-group row">
-                                        <div className="col-xl-6 col-lg-6">
-                                            <label>Groups {selectedGroup}</label>
-                                            <AutocompleteComponent
-                                                className={ `form-control form-control-lg form-control-solid ` + (errors.label && touched.label ? ' is-invalid' : '') }
-                                                suggestions={ groups }
-                                                placeholder={ 'Select a device group' }
-                                                initialSelectedItem={ selectedGroup.toString() }
-                                                initialSelectedItemId={ selectedGroupId.toString() }
-                                                name={ 'groups' }
-                                                onChange={this.handleGroupsChange}
+                                    <div className='form-group row'>
+                                        <div className='col-xl-6 col-lg-6'>
+                                            <label>
+                                                Groups
+                                            </label>
+                                            <AsyncTypeahead
+                                                id='typeahead-groups'
+                                                labelKey='label'
+                                                size="lg"
+                                                onChange={(data) => this.onChangeGroup(data, setFieldValue)}
+                                                options={this.state.groups}
+                                                clearButton={true}
+                                                placeholder=''
+                                                selected={this.state.selectedGroup}
+                                                onSearch={this.handleSearchGroup}
+                                                isLoading={this.state.loading}
+                                                filterBy={this.filterBy}
+                                                className={getInputClasses({errors, touched}, 'group_id')}
                                             />
-                                            {touched.groups && errors.groups ? (
-                                                <div className="invalid-feedback">
-                                                    {errors.groups}
-                                                </div>
-                                            ) : null}
+                                            <ErrorMessage name="group_id" component="div" className="invalid-feedback" />
                                         </div>
-
-                                        <div className="col-xl-6 col-lg-6">
-                                            <label>Device parent</label>
-                                            <AutocompleteComponent
-                                                className={ `form-control form-control-lg form-control-solid ` + (errors.label && touched.label ? ' is-invalid' : '') }
-                                                suggestions={ parents }
-                                                placeholder={ 'Select a parent device' }
-                                                initialSelectedItem={ selectedParent }
-                                                initialSelectedItemId={ selectedParentId.toString() }
-                                                name={ 'parent' }
+                                        <div className='col-xl-6 col-lg-6'>
+                                        <label>Device parent</label>
+                                            <AsyncTypeahead
+                                                id='typeahead-parent'
+                                                labelKey='label'
+                                                size="lg"
+                                                onChange={(data) => this.onChangeParent(data, setFieldValue)}
+                                                options={this.state.parents}
+                                                clearButton={true}
+                                                placeholder=''
+                                                selected={this.state.selectedParent}
+                                                onSearch={this.handleSearchParent}
+                                                isLoading={this.state.loading}
+                                                filterBy={this.filterBy}
+                                                className={getInputClasses({errors, touched},'parent_id')}
                                             />
+                                            <ErrorMessage name="parentId" component="div" className="invalid-feedback" />
                                         </div>
                                     </div>
-
-
-                                    {/* begin::Form Group */}
-                                    <div className="form-group row">
-                                        <div className="col-lg-3 col-xl-3">
+                                    
+                                    <div className='form-group row'>
+                                        <div className='col-lg-3 col-xl-3'>
                                             <label>Board Family</label>
-                                            <select
-                                                className={'form-control form-control-lg form-control-solid' + (errors.boardFamilies && touched.boardFamilies ? ' is-invalid' : 'is-valid')}
-                                                name="boardFamilies"
-                                                {...getFieldProps("boardFamilies")}
-                                            >
-                                                <option value="unknown">Unknown</option>
-                                                <option value="evian">Evian</option>
-                                                <option value="dandelion">Dandelion</option>
-                                            </select>
+                                            <Typeahead
+                                                id='typeahead-board-family'
+                                                labelKey="name"
+                                                size="lg"
+                                                onChange={data => this.onChangeBoardFamily(data, setFieldValue)}
+                                                options={this.state.boardFamilies}
+                                                clearButton={true}
+                                                placeholder=''
+                                                selected={this.state.selectedBoardFamily}
+                                                class={getInputClasses({errors, touched},'board_family_id')}
+                                            />
+                                            <ErrorMessage name="board_family_id" component="div" className="invalid-feedback" />
                                         </div>
-
-                                        <div className="col-lg-3 col-xl-3">
-                                            <label>Board ID</label>
+                                        <div className='col-lg-3 col-xl-3'>
+                                            <label>Board</label>
                                             <div>
-                                                <input
-                                                    type="text"
-                                                    className={`form-control form-control-lg form-control-solid ` + (errors.board_id && touched.board_id ? ' is-invalid' : 'is-valid')}
-                                                    name="board_id"
-                                                    placeholder="Set the Board ID"
-                                                    {...getFieldProps("board_id")}
+                                                <Field
+                                                    as="input"
+                                                    className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                        {errors, touched},
+                                                        'board'
+                                                    )}`}
+                                                    name='board'
+                                                    placeholder='Set the Board ID'
+                                                    {...getFieldProps('board')}
                                                 />
-                                                {touched.board_id && errors.board_id ? (
-                                                    <div className="invalid-feedback">
-                                                        {errors.board_id}
-                                                    </div>
-                                                ) : null}
+                                                <ErrorMessage name="board" component="div" className="invalid-feedback" />
                                             </div>
                                         </div>
-                                        <div className="col-xl-6 col-lg-6">
+                                        <div className='col-xl-6 col-lg-6'>
                                             <label>IMEI</label>
                                             <div>
-                                                <input
-                                                    type="text"
-                                                    className={`form-control form-control-lg form-control-solid ` + (errors.imei && touched.imei ? ' is-invalid' : 'is-valid')}
-                                                    name="imei"
-                                                    placeholder="Set the Device IMEI"
-                                                    {...getFieldProps("imei")}
+                                                <Field
+                                                    as="input"
+                                                    className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                        {errors, touched},
+                                                        'imei'
+                                                    )}`}
+                                                    name='imei'
+                                                    placeholder='Set the Device IMEI'
+                                                    {...getFieldProps('imei')}
                                                 />
-                                                {touched.imei && errors.imei ? (
-                                                    <div className="invalid-feedback">
-                                                        {errors.imei}
-                                                    </div>
-                                                ) : null}
+                                                <ErrorMessage name="imei" component="div" className="invalid-feedback" />
                                             </div>
                                         </div>
                                     </div>
 
-                                    {/* begin::Form Group */}
-                                    <div className="form-group row">
-                                        <div className="col-xl-6 col-lg-6">
+                                    <div className='form-group row'>
+                                        {this.state.tenant.type === 'master' &&
+                                        <div className='col-xl-6 col-lg-6'>
                                             <label>Metadata</label>
                                             <div>
-                                                <textarea
-                                                    rows="7"
-                                                    className={`form-control form-control-lg form-control-solid ` + (errors.meta_data && touched.meta_data ? ' is-invalid' : '')}
-                                                    name="meta_data"
-                                                    placeholder="Set the Metadata"
-                                                    {...getFieldProps("meta_data")}
+                                                <Field
+                                                    as="textarea"
+                                                    rows='7'
+                                                    className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                        {errors, touched},
+                                                        'meta_data'
+                                                    )}`}
+                                                    name='meta_data'
+                                                    placeholder='Set the meta_data'
+                                                    {...getFieldProps(
+                                                        'meta_data'
+                                                    )}
                                                 />
-                                                {touched.meta_data && errors.meta_data ? (
-                                                    <div className="invalid-feedback">
-                                                        {errors.meta_data}
-                                                    </div>
-                                                ) : null}
+                                                <ErrorMessage name="meta_data" component="div"
+                                                              className="invalid-feedback"/>
                                             </div>
                                         </div>
+                                        }
 
-                                        <div className="col-xl-6 col-lg-6">
+                                        <div className='col-xl-6 col-lg-6'>
                                             <label>Comments</label>
                                             <div>
-                                                <textarea
-                                                    rows="7"
-                                                    className={`form-control form-control-lg form-control-solid ` + (errors.comments && touched.comments ? ' is-invalid' : '')}
-                                                    name="comments"
-                                                    placeholder="Comments and Observations"
-                                                    {...getFieldProps("comments")}
+                                                <Field
+                                                    as="textarea"
+                                                    rows='7'
+                                                    className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                        {errors, touched},
+                                                        'comments'
+                                                    )}`}
+                                                    name='comments'
+                                                    placeholder='Comments and Observations'
+                                                    {...getFieldProps(
+                                                        'comments'
+                                                    )}
                                                 />
-                                                {touched.comments && errors.comments ? (
-                                                    <div className="invalid-feedback">
-                                                        {errors.comments}
-                                                    </div>
-                                                ) : null}
+                                                <ErrorMessage name="comments" component="div" className="invalid-feedback" />
                                             </div>
                                         </div>
                                     </div>
-
-                                    {/* begin::Separator Dashed */}
-                                    <div className="separator separator-dashed my-5"></div>
-
-
-                                    {/* begin::Form Group */}
-                                    {/*
-                                    <div className="row">
-                                        <div className="col-lg-2 col-xl-2">
-                                            <label>Device Thresholds:</label>
-                                        </div>
-                                        <div className="col-xl-10 col-lg-10">
-                                            <Select
-                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                    "thresholds"
-                                                )}`}
-                                                multiple
-                                                value={threshold}
-                                                onChange={handleThresholds}
-                                                input={<Input id="select-multiple-chip"/>}
-                                                renderValue={selected => (
-                                                    <div className={classes.chips}>
-                                                        {selected.map(value => (
-                                                            <Chip key={value} label={value} className={classes.chip}/>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                                MenuProps={MenuProps}
-                                            >
-                                                {thresholds.map(name => (
-                                                    <MenuItem key={name} value={name}>
-                                                        {name}
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
-                                        </div>
-                                    </div>
-                                    */}
                                 </div>
                             </div>
                             {/* end::Form */}
                         </form>
-                    )
-                }
-            }
+                    );
+                }}
             </Formik>
-        )
+            </BlockUi>
+        );
     }
 }
 
-export default DeviceFormComponent;
+export default injectIntl(DeviceFormComponent);
