@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const REGISTER_URL = "api/auth/register";
 export const REQUEST_PASSWORD_URL = "api/auth/forgot-password";
-//export const ME_URL = `${process.env.REACT_APP_API_URL}/auth/me`;
+// export const ME_URL = `${process.env.REACT_APP_API_URL}/auth/me`;
 export const ME_URL = `https://run.mocky.io/v3/17bd11e0-e20d-43de-a438-001e88cd221a`;
 
 export function login(username, password) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import history from '../../../history';
-import deviceService from '../../../services/deviceService';
+import apiService from '../../../services/apiService';
 import { makeStyles } from '@material-ui/core/styles';
 import { Card, CardHeader, CardContent, Button } from '@material-ui/core';
 
@@ -76,13 +76,13 @@ export function DevicesList() {
                             icon: EditIcon,
                             tooltip: 'Edit device',
                             onClick: (event, rowData) => {
-                                history.push(`/device/${rowData.id}`);
+                                history.push(`/devices/edit/${rowData.id}`);
                             },
                         },
                     ]}
                     title=''
                     columns={columns}
-                    service={deviceService}
+                    service={apiService}
                     dataField='devices'
                 />
             </CardContent>
