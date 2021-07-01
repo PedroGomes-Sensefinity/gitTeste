@@ -62,10 +62,10 @@ class TableGrid extends React.Component {
     }
 
     getData = (page, rowsPerPage) => {
-        var pageOrigin = page;
+        let pageOrigin = page;
         page = page + 1;
         this.props.service
-            .get('device',rowsPerPage, pageOrigin * rowsPerPage)
+            .get(this.props.endpoint,rowsPerPage, pageOrigin * rowsPerPage)
             .then((result) => {
                 this.setState({
                     page: pageOrigin,
