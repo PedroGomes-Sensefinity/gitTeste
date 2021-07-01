@@ -233,7 +233,7 @@ class DeviceFormComponent extends React.Component {
                                     this.setState({ selectedParent: selectedParent});
                                 }
 
-                                if (device.containers !== undefined && device.containers.length > 0) {
+                                if (device.containers !== undefined && Array.isArray(device.containers) && device.containers.length > 0) {
                                     let selectedGroup = [{id: device.containers[0].id, label: device.containers[0].label}];
                                     this.setState({ selectedGroup: selectedGroup});
                                     setFieldValue('group_id', device.containers[0].id, false);
@@ -298,6 +298,7 @@ class DeviceFormComponent extends React.Component {
                                                     name='id'
                                                     placeholder='Set the Device ID'
                                                     {...getFieldProps('id')}
+                                                    disabled={true}
                                                 />
                                                 <ErrorMessage name="id" component="div" className="invalid-feedback" />
                                             </div>

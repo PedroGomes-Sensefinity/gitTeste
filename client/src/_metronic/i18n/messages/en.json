@@ -15,5 +15,6 @@
   "UPLOAD.FILE_EMPTY": "File is required",
   "DEVICE.CREATED": "Device created successfully",
   "DEVICE.UPDATED": "Device updated successfully",
-  "DEVICE.CONFIG_MESSAGE": "Configuration message sent successfully"
+  "DEVICE.CONFIG_MESSAGE": "Configuration message sent successfully",
+  "DEVICE.THRESHOLD.SUCCESS": "Thresholds associated successfully"
 }
