@@ -83,6 +83,7 @@ export function DevicesList() {
                     title=''
                     columns={columns}
                     service={apiService}
+                    endpoint={'device'}
                     dataField='devices'
                 />
             </CardContent>
