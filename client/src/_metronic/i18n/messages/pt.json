@@ -15,5 +15,6 @@
   "UPLOAD.FILE_EMPTY": "Arquivo é obrigatório",
   "DEVICE.CREATED": "Device criado com sucesso",
   "DEVICE.UPDATED": "Device atualizado com sucesso",
-  "DEVICE.CONFIG_MESSAGE": "Mensagem de configuração enviada com sucesso"
+  "DEVICE.CONFIG_MESSAGE": "Mensagem de configuração enviada com sucesso",
+  "DEVICE.THRESHOLD.SUCCESS": "Limites associados com sucesso"
 }
