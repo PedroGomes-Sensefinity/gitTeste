@@ -2,7 +2,7 @@ import React, { Suspense, lazy } from "react";
 import { Redirect, Switch } from "react-router-dom";
 import { LayoutSplashScreen, ContentRoute } from "../_metronic/layout";
 import { MyPage } from "./pages/MyPage";
-import { DashboardPage } from "./pages/DashboardPage";
+import { Dashboard } from "./pages/dashboard/Dashboard";
 import { Device } from "./pages/devices/device/Device";
 import { DevicesList } from "./pages/devices/devices-list/DevicesList";
 import { DevicesProvision } from "./pages/devices/devices-provision/DevicesProvision";
@@ -33,7 +33,7 @@ export default function BasePage() {
           /* Redirect from root URL to /dashboard. */
           <Redirect exact from="/" to="/dashboard" />
         }
-        <ContentRoute path="/dashboard" component={DashboardPage} />
+        <ContentRoute path="/dashboard" component={Dashboard} />
 
         <ContentRoute path="/my-page" component={MyPage} />
 
