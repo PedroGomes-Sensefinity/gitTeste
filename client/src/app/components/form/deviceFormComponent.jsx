@@ -105,13 +105,22 @@ class DeviceFormComponent extends React.Component {
     };
 
     getGroups = (records) => {
-        console.log(records);
         let groups = [];
         records.map((group) => {
-            groups.push({ id: group.id, label: group.label });
+            const label = this.makeGroupLabel(group);
+            
+            groups.push({ id: group.id, label: label });
         });
         return groups;
     };
+
+    makeGroupLabel = (group) => {
+        const parentParent = (group.parent_parent_id !== 0) ? "../" : "";
+        const parent = (group.parent_label !== "") ? `${group.parent_label}/` : "";
+        const label = `${parentParent}${parent}${group.label}`;
+
+        return label;
+    }
 
     saveDevice = (fields, { setStatus, setSubmitting, resetForm }) => {
         this.setState({blocking: true});
@@ -224,8 +233,16 @@ class DeviceFormComponent extends React.Component {
 
                                 if (device.board_family_id !== '') {
                                     let selectedBoardFamily = this.getSelectedBoardFamily(device.board_family_id);
+                                    let forceBoardId = false;
                                     this.setState({ selectedBoardFamily: selectedBoardFamily});
-                                    setFieldValue('force_board_id', selectedBoardFamily[0].force_board_id, false);
+                                    
+                                    if(selectedBoardFamily[0]) {
+                                        forceBoardId = (typeof selectedBoardFamily[0].force_board_id !== 'undefined') 
+                                        ? selectedBoardFamily[0].force_board_id
+                                        : false;
+                                    }
+                                    
+                                    setFieldValue('force_board_id', forceBoardId, false);
                                 }
 
                                 if (device.parent_id !== '') {
@@ -234,7 +251,7 @@ class DeviceFormComponent extends React.Component {
                                 }
 
                                 if (device.containers !== undefined && Array.isArray(device.containers) && device.containers.length > 0) {
-                                    let selectedGroup = [{id: device.containers[0].id, label: device.containers[0].label}];
+                                    let selectedGroup = [{id: device.containers[0].id, label: this.makeGroupLabel(device.containers[0])}];
                                     this.setState({ selectedGroup: selectedGroup});
                                     setFieldValue('group_id', device.containers[0].id, false);
                                 }
