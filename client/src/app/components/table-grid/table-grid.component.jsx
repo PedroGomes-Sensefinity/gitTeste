@@ -17,6 +17,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import apiService from '../../services/apiService';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -64,7 +65,7 @@ class TableGrid extends React.Component {
     getData = (page, rowsPerPage) => {
         let pageOrigin = page;
         page = page + 1;
-        this.props.service
+        apiService
             .get(this.props.endpoint,rowsPerPage, pageOrigin * rowsPerPage)
             .then((result) => {
                 this.setState({

@@ -2,7 +2,6 @@ import React from 'react';
 
 import { Link } from 'react-router-dom';
 import history from '../../../history';
-import apiService from '../../../services/apiService';
 import { makeStyles } from '@material-ui/core/styles';
 import { Card, CardHeader, CardContent, Button } from '@material-ui/core';
 
@@ -59,7 +58,6 @@ export function GroupsList() {
                     ]}
                     title=''
                     columns={columns}
-                    service={apiService}
                     endpoint={'group'}
                     dataField='groups'
                 />
