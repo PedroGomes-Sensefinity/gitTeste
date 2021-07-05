@@ -76,6 +76,31 @@ const apiService = {
                 });
         });
     },
+    count: function(endpoint) {
+        return new Promise(function(resolve, reject) {
+            axios
+                .get(`${process.env.REACT_APP_REST_API_URL}${endpoint}/count/`)
+                .then(function(response){
+                    if (response.status !== 200) {
+                        return [];
+                    }
+                
+                    return response.data;
+                })
+                .then(function(responseData){
+                    var result = {total: 0, device: []};
+
+                    if (typeof responseData.data !== 'undefined') {
+                        result = responseData.data;
+                    }
+                    resolve(result);
+                })
+                .catch(function(err) {
+                    console.log(err);
+                    reject(Error(`Something went wrong on count of ${endpoint}... `));
+                });
+        });
+    },
 }
 
 export default apiService;
