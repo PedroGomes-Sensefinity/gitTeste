@@ -73,6 +73,24 @@ const deviceService = {
                 });
         });
     },
+    provision: function(count){
+        return new Promise(function(resolve, reject) {
+            axios.post(`${process.env.REACT_APP_REST_API_URL}device/provision/${count}`)
+            .then((response) => response.data )
+            .then((responseData) => {
+                var result = [];
+
+                if (responseData.code === 200) {
+                    result = responseData.data;
+                }
+                resolve(result);
+            })
+            .catch(function(err) {
+                console.log(err);
+                reject(Error("Something went wrong on post devices provision... "));
+            });
+        });
+    },
 }
 
 export default deviceService;
