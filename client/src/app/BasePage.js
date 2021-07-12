@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import { Redirect, Switch } from "react-router-dom";
 import { LayoutSplashScreen, ContentRoute } from "../_metronic/layout";
-import { MyPage } from "./pages/MyPage";
+
 import { Dashboard } from "./pages/dashboard/Dashboard";
 import { Device } from "./pages/devices/device/Device";
 import { DevicesList } from "./pages/devices/devices-list/DevicesList";
@@ -15,6 +15,7 @@ import { AlarmsList } from "./pages/alarms/alarms-list/AlarmsList";
 import { AlarmsForm } from "./pages/alarms/alarms-form/AlarmsForm";
 import { ThresholdsList } from "./pages/thresholds/thresholds-list/ThresholdsList";
 import { ThresholdsForm } from "./pages/thresholds/thresholds-form/ThresholdsForm";
+import {TenantsList} from "./pages/tenants/tenants-list/TenantsList";
 
 const UserProfilepage = lazy(() =>
   import("./modules/UserProfile/UserProfilePage")
@@ -35,8 +36,6 @@ export default function BasePage() {
         }
         <ContentRoute path="/dashboard" component={Dashboard} />
 
-        <ContentRoute path="/my-page" component={MyPage} />
-
         { /* Devices Routes*/ }
         <ContentRoute path="/devices/list" component={DevicesList} />
         <ContentRoute path="/devices/new" component={Device} />
@@ -53,6 +52,11 @@ export default function BasePage() {
         <ContentRoute path="/thresholds/list" component={ThresholdsList} />
         <ContentRoute path="/thresholds/new" component={ThresholdsForm} />
         <ContentRoute path="/thresholds/edit/:id" component={ThresholdsForm} />
+
+        { /* Tenants Routes*/}
+        <ContentRoute path="/tenants/list" component={TenantsList} />
+        {/*<ContentRoute path="/tenants/new" component={TenantsForm} />*/}
+        {/*<ContentRoute path="/tenants/edit/:id" component={TenantsForm} />*/}
 
         { /* Alarms Routes*/}
         <ContentRoute path="/alarms/list" component={AlarmsList} />
