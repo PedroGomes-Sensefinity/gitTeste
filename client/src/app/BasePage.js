@@ -16,6 +16,7 @@ import { AlarmsForm } from "./pages/alarms/alarms-form/AlarmsForm";
 import { ThresholdsList } from "./pages/thresholds/thresholds-list/ThresholdsList";
 import { ThresholdsForm } from "./pages/thresholds/thresholds-form/ThresholdsForm";
 import {TenantsList} from "./pages/tenants/tenants-list/TenantsList";
+import {TenantsForm} from "./pages/tenants/tenants-form/TenantsForm";
 
 const UserProfilepage = lazy(() =>
   import("./modules/UserProfile/UserProfilePage")
@@ -55,8 +56,8 @@ export default function BasePage() {
 
         { /* Tenants Routes*/}
         <ContentRoute path="/tenants/list" component={TenantsList} />
-        {/*<ContentRoute path="/tenants/new" component={TenantsForm} />*/}
-        {/*<ContentRoute path="/tenants/edit/:id" component={TenantsForm} />*/}
+        <ContentRoute path="/tenants/new" component={TenantsForm} />
+        <ContentRoute path="/tenants/edit/:id" component={TenantsForm} />
 
         { /* Alarms Routes*/}
         <ContentRoute path="/alarms/list" component={AlarmsList} />
