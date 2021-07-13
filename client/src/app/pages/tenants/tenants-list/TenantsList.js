@@ -31,6 +31,10 @@ export function TenantsList() {
         {
             field: 'name',
             title: 'Name',
+        },
+        {
+            field: 'username',
+            title: 'Userame',
         }
     ];
 
