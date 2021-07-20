@@ -85,12 +85,6 @@ export function AlarmsList() {
     const getData = () => {
         notificationService.get('alarm', 'created', statusDateStart, statusDateEnd, rowsPage, getOffset(page, rowsPage))
             .then((result) => {
-                result.push({
-                    id: 0,
-                    data: {value:0},
-                    timestamp: '2021-07-19T15:23:19.978018916Z',
-                    device: '123456',
-                });
                 setData(result);
             });
     }
