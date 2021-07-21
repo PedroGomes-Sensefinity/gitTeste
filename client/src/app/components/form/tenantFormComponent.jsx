@@ -36,7 +36,7 @@ class TenantFormComponent extends React.Component {
     }
 
     initialValues = {
-        id: '',
+        id: this.props.id,
         name: '',
         username: '',
         password: '',
@@ -163,7 +163,6 @@ class TenantFormComponent extends React.Component {
                             .getById('tenant', this.state.id)
                             .then((response) => {
                                 const res = response.tenants[0];
-                                console.log(res.username)
                                 setFieldValue('name', res.name, false);
                                 setFieldValue('username', res.username, false);
 

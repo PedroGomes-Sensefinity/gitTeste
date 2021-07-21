@@ -16,5 +16,13 @@
   "DEVICE.CREATED": "Device criado com sucesso",
   "DEVICE.UPDATED": "Device atualizado com sucesso",
   "DEVICE.CONFIG_MESSAGE": "Mensagem de configuração enviada com sucesso",
-  "DEVICE.THRESHOLD.SUCCESS": "Limites associados com sucesso"
+  "DEVICE.THRESHOLD.SUCCESS": "Limites associados com sucesso",
+  "MODAL.PASSWORD.BUTTON.SAVE": "Salvar",
+  "MODAL.PASSWORD.BUTTON.CLOSE": "Fechar",
+  "MODAL.PASSWORD.TITLE": "Alterar a senha",
+  "MODAL.PASSWORD.SUBTITLE": "Defina a nova senha",
+  "MODAL.PASSWORD.FIELD.PASSWORD": "Senha",
+  "MODAL.PASSWORD.FIELD.PASSWORD.HINT": "Senha é obrigatória",
+  "MODAL.PASSWORD.FIELD.CONFIRM": "Confirmar a senha",
+  "MODAL.PASSWORD.FIELD.CONFIRM.HINT": "Confirmar a senha"
 }
