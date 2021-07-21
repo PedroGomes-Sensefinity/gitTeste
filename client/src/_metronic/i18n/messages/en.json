@@ -16,5 +16,14 @@
   "DEVICE.CREATED": "Device created successfully",
   "DEVICE.UPDATED": "Device updated successfully",
   "DEVICE.CONFIG_MESSAGE": "Configuration message sent successfully",
-  "DEVICE.THRESHOLD.SUCCESS": "Thresholds associated successfully"
+  "DEVICE.THRESHOLD.SUCCESS": "Thresholds associated successfully",
+  "MODAL.PASSWORD.BUTTON.SAVE": "Save",
+  "MODAL.PASSWORD.BUTTON.CLOSE": "Close",
+  "MODAL.PASSWORD.TITLE": "Changing password",
+  "MODAL.PASSWORD.SUBTITLE": "Set the password",
+  "MODAL.PASSWORD.FIELD.PASSWORD": "Password",
+  "MODAL.PASSWORD.FIELD.CONFIRM": "Confirm password",
+  "MODAL.PASSWORD.FIELD.PASSWORD.HINT": "Password is mandatory",
+  "MODAL.PASSWORD.FIELD.CONFIRM.HINT": "Confirm the password",
+  "MODAL.PASSWORD.FIELD.CONFIRM.MISMATCH": "Passwords must match"
 }
