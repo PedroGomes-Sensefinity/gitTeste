@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const notificationService = {
-    count: function (type, status, dateStart, dateEnd) {
+const passwordChangeService = {
+    save: function (formData) {
         return new Promise(function (resolve, reject) {
-            axios.get(`${process.env.REACT_APP_REST_API_URL}notification/${type}/bydates/${dateStart}/${dateEnd}/count/status/${status}`)
+            axios.put(`${process.env.REACT_APP_REST_API_URL}passwordchange/${formData.id}`, formData)
                 .then((response) => response.data)
                 .then((responseData) => {
                     var result = [];
@@ -15,10 +15,10 @@ const notificationService = {
                 })
                 .catch(function (err) {
                     console.log(err);
-                    reject(Error("Something went wrong on get count of notifications... "));
+                    reject(Error("Something went wrong on save device thresholds... "));
                 });
         });
     }
 }
 
-export default notificationService;
+export default passwordChangeService;
