@@ -1,5 +1,8 @@
 import React from "react";
+import GroupsFormComponent from "../../../components/form/groupsFormComponent";
                   
-export function GroupsForm() {
-    return <h1>Groups Form</h1>
+export function GroupsForm({match}) {
+    const {id} = match.params;
+
+    return <GroupsFormComponent id={id}  />
 }  

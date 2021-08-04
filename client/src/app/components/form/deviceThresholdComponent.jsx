@@ -29,7 +29,7 @@ class DeviceThresholdComponent extends React.Component {
     componentDidMount() {
         this.setState({blocking: true});
 
-        thresholdService.getByDevice(this.state.id).then((r) => {
+        thresholdService.getBySpec('bydevice', this.state.id).then((r) => {
             if(typeof r.thresholds !== "undefined") {
                 const selectedIds = r.thresholds.map((t) => t.id);
                 this.setState({thresholds: r.thresholds});
