@@ -20,7 +20,7 @@ export function register(email, fullname, username, password) {
 }
 
 export function requestPassword(email) {
-  return axios.post(REQUEST_PASSWORD_URL, { email });
+  return axios.post(`${process.env.REACT_APP_REST_API_URL}forgot-password/` , { email });
 }
 
 export function getUserByToken() {
