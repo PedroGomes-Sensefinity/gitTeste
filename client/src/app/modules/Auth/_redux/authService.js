@@ -20,7 +20,6 @@ export function register(email, fullname, username, password) {
 }
 
 export function recoverPassword(id, password, confirmPassword) {
-    console.log(id, password, confirmPassword)
     return axios.post(`${process.env.REACT_APP_REST_API_URL}recover-password/`, { id, password, confirmPassword });
 }
 
