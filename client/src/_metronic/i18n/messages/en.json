@@ -26,5 +26,8 @@
   "MODAL.PASSWORD.FIELD.CONFIRM": "Confirm password",
   "MODAL.PASSWORD.FIELD.PASSWORD.HINT": "Password is mandatory",
   "MODAL.PASSWORD.FIELD.CONFIRM.HINT": "Confirm the password",
-  "MODAL.PASSWORD.FIELD.CONFIRM.MISMATCH": "Passwords must match"
+  "MODAL.PASSWORD.FIELD.CONFIRM.MISMATCH": "Passwords must match",
+  "THRESHOLD.CREATED": "Threshold created successfully",
+  "THRESHOLD.UPDATED": "Threshold updated successfully",
+  "THRESHOLD.ACTION_SAVED": "Threshold action saved successfully"
 }

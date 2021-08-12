@@ -5,7 +5,6 @@ import deviceService from '../../../services/deviceService';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { DropzoneArea } from 'material-ui-dropzone';
 import toaster from '../../../utils/toaster';
-import { connect } from "react-redux";
 import { useIntl } from "react-intl";
 
 export function DevicesUpload(props) {

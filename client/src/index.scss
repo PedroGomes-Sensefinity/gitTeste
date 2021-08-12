@@ -112,3 +112,9 @@
 .MuiCardContent-root .MuiPaper-root {
   box-shadow: none;
 }
+
+@media (max-width: 1024px)  {
+  .header-mobile img {
+    width: 100px;
+  }
+}

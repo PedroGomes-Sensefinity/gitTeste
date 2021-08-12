@@ -1,0 +1,9 @@
+.map {
+  height: 500px;
+  width: 500px;
+}
+
+.leaflet-draw-actions a {
+  border-left: 1px solid #AAA;
+  color: #FFF;
+}

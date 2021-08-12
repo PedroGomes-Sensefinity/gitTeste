@@ -19,6 +19,8 @@ import "./_metronic/_assets/plugins/flaticon/flaticon.css";
 import "./_metronic/_assets/plugins/flaticon2/flaticon.css";
 // Datepicker
 import "react-datepicker/dist/react-datepicker.css";
+// Bootstrap Range Slider
+import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
 import {
   MetronicLayoutProvider,
   MetronicSplashScreenProvider,
