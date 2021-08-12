@@ -1,50 +1,27 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { useFormik } from "formik";
 import { connect } from "react-redux";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
 import { FormattedMessage, injectIntl } from "react-intl";
 import * as auth from "../_redux/authRedux";
-import { register } from "../_redux/authService";
+import {recoverPassword, checkInfo} from "../_redux/authService";
+import { useHistory } from "react-router-dom";
+import toaster from '../../../utils/toaster';
 
 const initialValues = {
-  fullname: "",
   email: "",
-  username: "",
   password: "",
   changepassword: "",
-  acceptTerms: false,
 };
 
-function Registration(props) {
+function RecoverPassword(props) {
   const { intl } = props;
+  const { id } = props.match.params;
+  const history = useHistory()
+
   const [loading, setLoading] = useState(false);
   const RegistrationSchema = Yup.object().shape({
-    fullname: Yup.string()
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
-      .required(
-        intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD",
-        })
-      ),
-    email: Yup.string()
-      .email("Wrong email format")
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
-      .required(
-        intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD",
-        })
-      ),
-    username: Yup.string()
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
-      .required(
-        intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD",
-        })
-      ),
     password: Yup.string()
       .min(3, "Minimum 3 symbols")
       .max(50, "Maximum 50 symbols")
@@ -66,9 +43,6 @@ function Registration(props) {
           "Password and Confirm Password didn't match"
         ),
       }),
-    acceptTerms: Yup.bool().required(
-      "You must accept the terms and conditions"
-    ),
   });
 
   const enableLoading = () => {
@@ -97,32 +71,38 @@ function Registration(props) {
     onSubmit: (values, { setStatus, setSubmitting }) => {
       setSubmitting(true);
       enableLoading();
-      register(values.email, values.fullname, values.username, values.password)
+      recoverPassword(id, values.password, values.changepassword)
         .then(({ data: { authToken } }) => {
           props.register(authToken);
           disableLoading();
           setSubmitting(false);
+          toaster.notify('success', "Password changed")
         })
         .catch(() => {
           setSubmitting(false);
-          setStatus(
-            intl.formatMessage({
-              id: "AUTH.VALIDATION.INVALID_LOGIN",
-            })
-          );
+          toaster.notify('error', "Token expired.")
           disableLoading();
         });
     },
   });
 
+  useEffect(() => {
+    checkInfo(id).then((response) => {
+      formik.setFieldValue('email', response.data.data.detail, false);
+    }).catch((error) => {
+      toaster.notify('error', "Token expired")
+      history.push("/auth/forgot-password")
+    });
+  }, []);
+
   return (
     <div className="login-form login-signin" style={{ display: "block" }}>
       <div className="text-center mb-10 mb-lg-20">
         <h3 className="font-size-h1">
-          <FormattedMessage id="AUTH.REGISTER.TITLE" />
+          <FormattedMessage id="AUTH.RECOVER.PÀSSWORD.TITLE" />
         </h3>
         <p className="text-muted font-weight-bold">
-          Enter your new password
+          Enter your details to create your account
         </p>
       </div>
 
@@ -139,28 +119,10 @@ function Registration(props) {
         )}
         {/* end: Alert */}
 
-        {/* begin: Fullname */}
-        <div className="form-group fv-plugins-icon-container">
-          <input
-            placeholder="Full name"
-            type="text"
-            className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
-              "fullname"
-            )}`}
-            name="fullname"
-            {...formik.getFieldProps("fullname")}
-          />
-          {formik.touched.fullname && formik.errors.fullname ? (
-            <div className="fv-plugins-message-container">
-              <div className="fv-help-block">{formik.errors.fullname}</div>
-            </div>
-          ) : null}
-        </div>
-        {/* end: Fullname */}
-
         {/* begin: Email */}
         <div className="form-group fv-plugins-icon-container">
           <input
+              disabled="disabled"
             placeholder="Email"
             type="email"
             className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
@@ -176,25 +138,6 @@ function Registration(props) {
           ) : null}
         </div>
         {/* end: Email */}
-
-        {/* begin: Username */}
-        <div className="form-group fv-plugins-icon-container">
-          <input
-            placeholder="User name"
-            type="text"
-            className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
-              "username"
-            )}`}
-            name="username"
-            {...formik.getFieldProps("username")}
-          />
-          {formik.touched.username && formik.errors.username ? (
-            <div className="fv-plugins-message-container">
-              <div className="fv-help-block">{formik.errors.username}</div>
-            </div>
-          ) : null}
-        </div>
-        {/* end: Username */}
 
         {/* begin: Password */}
         <div className="form-group fv-plugins-icon-container">
@@ -236,39 +179,12 @@ function Registration(props) {
         </div>
         {/* end: Confirm Password */}
 
-        {/* begin: Terms and Conditions */}
-        <div className="form-group">
-          <label className="checkbox">
-            <input
-              type="checkbox"
-              name="acceptTerms"
-              className="m-1"
-              {...formik.getFieldProps("acceptTerms")}
-            />
-            <Link
-              to="/terms"
-              target="_blank"
-              className="mr-1"
-              rel="noopener noreferrer"
-            >
-              I agree the Terms & Conditions
-            </Link>
-            <span />
-          </label>
-          {formik.touched.acceptTerms && formik.errors.acceptTerms ? (
-            <div className="fv-plugins-message-container">
-              <div className="fv-help-block">{formik.errors.acceptTerms}</div>
-            </div>
-          ) : null}
-        </div>
-        {/* end: Terms and Conditions */}
         <div className="form-group d-flex flex-wrap flex-center">
           <button
             type="submit"
             disabled={
               formik.isSubmitting ||
-              !formik.isValid ||
-              !formik.values.acceptTerms
+              !formik.isValid
             }
             className="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4"
           >
@@ -290,4 +206,4 @@ function Registration(props) {
   );
 }
 
-export default injectIntl(connect(null, auth.actions)(Registration));
+export default injectIntl(connect(null, auth.actions)(RecoverPassword));

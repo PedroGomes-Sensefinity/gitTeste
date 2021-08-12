@@ -1,5 +1,7 @@
 {
   "AUTH.LOGIN.TITLE": "Login",
+  "AUTH.REGISTER.TITLE": "Cadastro",
+  "AUTH.RECOVER.PÀSSWORD.TITLE": "Recupere sua senha",
   "AUTH.LOGIN.BUTTON": "Registrar-se",
   "AUTH.VALIDATION.INVALID": "{name} is not valid",
   "AUTH.VALIDATION.REQUIRED": "{name} is required",
