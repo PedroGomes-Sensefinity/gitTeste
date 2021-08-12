@@ -43,7 +43,16 @@ function ForgotPassword(props) {
     validationSchema: ForgotPasswordSchema,
     onSubmit: (values, { setStatus, setSubmitting }) => {
       requestPassword(values.email)
-        .then(() => setIsRequested(true))
+        .then(() => {
+          setSubmitting(false);
+          setStatus(
+              intl.formatMessage(
+                  { id: "AUTH.VALIDATION.NOT_FOUND" },
+                  { name: values.email }
+              )
+          );
+          setIsRequested(false)
+        })
         .catch(() => {
           setIsRequested(false);
           setSubmitting(false);
@@ -59,7 +68,7 @@ function ForgotPassword(props) {
 
   return (
     <>
-      {isRequested && <Redirect to="/auth" />}
+      {/*{isRequested && <Redirect to="/auth" />}*/}
       {!isRequested && (
         <div className="login-form login-forgot" style={{ display: "block" }}>
           <div className="text-center mb-10 mb-lg-20">
@@ -73,7 +82,7 @@ function ForgotPassword(props) {
             className="form fv-plugins-bootstrap fv-plugins-framework animated animate__animated animate__backInUp"
           >
             {formik.status && (
-              <div className="mb-10 alert alert-custom alert-light-danger alert-dismissible">
+              <div className="mb-10 alert alert-custom alert-light-info alert-dismissible">
                 <div className="alert-text font-weight-bold">
                   {formik.status}
                 </div>

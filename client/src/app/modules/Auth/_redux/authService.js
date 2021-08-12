@@ -16,11 +16,19 @@ export function login(username, password) {
 }
 
 export function register(email, fullname, username, password) {
-  return axios.post(REGISTER_URL, { email, fullname, username, password });
+    return axios.post(REGISTER_URL, { email, fullname, username, password });
+}
+
+export function recoverPassword(id, password, confirmPassword) {
+    return axios.post(`${process.env.REACT_APP_REST_API_URL}recover-password/`, { id, password, confirmPassword });
+}
+
+export function checkInfo(id) {
+    return axios.get(`${process.env.REACT_APP_REST_API_URL}checkpasstoken/`+id);
 }
 
 export function requestPassword(email) {
-  return axios.post(REQUEST_PASSWORD_URL, { email });
+  return axios.post(`${process.env.REACT_APP_REST_API_URL}forgot-password/` , { email });
 }
 
 export function getUserByToken() {
