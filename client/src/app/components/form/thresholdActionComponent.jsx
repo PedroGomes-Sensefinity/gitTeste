@@ -1,47 +1,36 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {makeStyles} from '@material-ui/styles';
-import apiService from '../../services/apiService';
 import thresholdService from '../../services/thresholdService';
 import deviceThresholdService from '../../services/deviceThresholdService';
+import apiService from '../../services/apiService';
 import {AsyncTypeahead} from 'react-bootstrap-typeahead';
 import DoneIcon from '@material-ui/icons/Done';
+import '../../utils/yup-validations';
 import BlockUi from "react-block-ui";
-import toaster from '../../utils/toaster';
 import {injectIntl} from 'react-intl';
+import toaster from '../../utils/toaster';
 
-class DeviceThresholdComponent extends React.Component {
+class ThresholdActionComponent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             intl: props.intl,
-            id: props.entity,
-            thresholds: [],
-            selectedThresholdsId: [],
-            selectedThresholds: [],
-            blocking: false,
+            id: props.id,
+            threshold: {},
+            options: [],
+            selected: [],
+            selectedIds: [],
             loading: false,
+            blocking: false,
         };
     }
 
-    componentDidMount() {
-        this.setState({blocking: true});
-
-        thresholdService.getBySpec('bydevice', this.state.id).then((r) => {
-            if(typeof r.thresholds !== "undefined") {
-                const selectedIds = r.thresholds.map((t) => t.id);
-                this.setState({thresholds: r.thresholds});
-                this.setState({selectedThresholds: r.thresholds});
-                this.setState({selectedThresholdsId: selectedIds});
-            }
-        
-            this.setState({blocking: false});
-        });
-    }
+    componentDidMount() {}
 
     initialValues = {
-        threshold: ''
+        action: '',
     };
 
     validationSchema = Yup.object().shape({});
@@ -52,48 +41,60 @@ class DeviceThresholdComponent extends React.Component {
         }
     }));
 
-    save = (fields, { setFieldValue }) => {
-        this.setState({blocking: true});
-
-        const config = {
-            device_id: this.state.id,
-            thresholds_id: this.state.selectedThresholdsId
-        };
-
-        deviceThresholdService.save(JSON.stringify(config))
-            .then(() => {
-                toaster.notify('success', this.state.intl.formatMessage({id: 'DEVICE.THRESHOLD.SUCCESS'}));
-                this.setState({blocking: false});
-            });
-    };
-
-    onChangeThreshold = (opt) => {
-        const selectedIds = opt.map((t) => t.id);
-        this.setState({ selectedThresholdsId: selectedIds});
-        this.setState({ selectedThresholds: opt});
-    };
-
-    handleSearchThreshold = (query) => {
+    handleSearch = (query) => {
         this.setState({loading: true});
 
-        apiService.getByText('threshold', query, 100, 0).then((response) => {
-            const thresholds = (typeof response.thresholds !== undefined && Array.isArray(response.thresholds))
-                ? this.filterThresholdSelected(response.thresholds)
+        apiService.getByText('notificationstemplate', query, 100, 0).then((response) => {
+            console.log(response);
+            const data = (typeof response.notifications_templates !== undefined && Array.isArray(response.notifications_templates))
+                ? this.filterOptionsBySelected(response.notifications_templates)
                 : [];
 
-            this.setState({ thresholds: thresholds });
+            this.setState({ options: data });
             this.setState({ loading: false });
         });
     };
 
-    filterThresholdSelected = (options) => {
-        return options.filter((t) => {
-            return !this.state.selectedThresholdsId.includes(t.id)
+    filterOptionsBySelected = (opt) => {
+        return opt.filter(o => {
+            return !this.state.selectedIds.includes(o.id);
         });
     }
 
+    onChange = (opt) => {
+        const selectedIds = opt.map((t) => t.id);
+        console.log(selectedIds, opt);
+        this.setState({selected: opt});
+        this.setState({selectedIds: selectedIds});
+    };
+
+    save = () => {
+        this.setState({blocking: true});
+
+        let threshold = this.state.threshold;
+        let rule = JSON.parse(threshold.rule);
+
+        rule['what'] = [];
+
+        this.state.selected.map(s => {
+            rule.what.push({
+                id: s.id,
+                type: s.type,
+                label: s.label,
+            });
+        });
+
+        threshold.rule = JSON.stringify(rule);
+        
+        thresholdService.update(threshold)
+            .then(() => {
+                toaster.notify('success', this.state.intl.formatMessage({id: 'THRESHOLD.ACTION_SAVED'}));
+                this.setState({blocking: false});
+            });
+    };
+
     filterBy = () => true;
-    
+
     render() {
         return (
             <BlockUi tag='div' blocking={this.state.blocking}>
@@ -101,10 +102,8 @@ class DeviceThresholdComponent extends React.Component {
                 enableReinitialize
                 initialValues={this.initialValues}
                 validationSchema={this.validationSchema}
-                onSubmit={(values, { setStatus, setSubmitting, resetForm, setFieldValue }) => {
-                    this.save(values, {
-                        setFieldValue,
-                    });
+                onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
+                    this.save();
                 }}
                 >
                 {({
@@ -113,10 +112,29 @@ class DeviceThresholdComponent extends React.Component {
                     errors,
                     touched,
                     isSubmitting,
+                    setFieldValue,
                     handleSubmit,
-                    setFieldValue
+                    values
                 }) => {
                     const classes = this.useStyles();
+
+                    useEffect(() => {
+                        if (!this.state.isAddMode && this.state.id !== 'new') {
+                            apiService
+                            .getById('threshold', this.state.id)
+                            .then((response) => {
+                                const threshold = response.thresholds[0];
+                                const rule = JSON.parse(threshold.rule);
+                                this.setState({threshold: threshold});
+
+                                if(typeof rule.what !== "undefined" && Array.isArray(rule.what)) {
+                                    const actionsId = rule.what.map(function (r) { return r.id });
+                                    this.setState({selected: rule.what});
+                                    this.setState({selectedIds: actionsId});
+                                }
+                            });
+                        }
+                    }, []);
 
                     return (
                         <form
@@ -127,10 +145,10 @@ class DeviceThresholdComponent extends React.Component {
                                 className={`card-header py-3 `+ classes.headerMarginTop}>
                                 <div className='card-title align-items-start flex-column'>
                                     <h3 className='card-label font-weight-bolder text-dark'>
-                                        Device thresholds
+                                        Threshold actions
                                     </h3>
                                     <span className='text-muted font-weight-bold font-size-sm mt-1'>
-                                        Change thresholds of your device
+                                        Change actions of your threshold
                                     </span>
                                 </div>
                                 <div className='card-toolbar'>
@@ -150,19 +168,19 @@ class DeviceThresholdComponent extends React.Component {
                                 <div className='card-body'>
                                     <div className='form-group row'>
                                         <div className='col-xl-6 col-lg-6'>
-                                            <label>Threshold</label>
+                                            <label>Actions</label>
                                             <div>
                                             <AsyncTypeahead
-                                                id='typeahead-threshold'
-                                                labelKey='name'
+                                                id='typeahead-threshold-actions'
+                                                labelKey='label'
                                                 size="lg"
                                                 multiple
-                                                onChange={this.onChangeThreshold}
-                                                options={this.state.thresholds}
+                                                onChange={this.onChange}
+                                                options={this.state.options}
                                                 clearButton={true}
                                                 placeholder=''
-                                                selected={this.state.selectedThresholds}
-                                                onSearch={this.handleSearchThreshold}
+                                                selected={this.state.selected}
+                                                onSearch={this.handleSearch}
                                                 isLoading={this.state.loading}
                                                 filterBy={this.filterBy}
                                                 useCache={false}
@@ -182,4 +200,4 @@ class DeviceThresholdComponent extends React.Component {
     }
 }
 
-export default injectIntl(DeviceThresholdComponent);
+export default injectIntl(ThresholdActionComponent);

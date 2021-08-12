@@ -3,10 +3,9 @@ import {ErrorMessage, Field, Formik} from 'formik';
 import * as Yup from 'yup';
 import {Link} from 'react-router-dom';
 import {makeStyles} from '@material-ui/styles';
-import deviceService from '../../services/deviceService';
 import tenantService from '../../services/tenantService';
 import apiService from '../../services/apiService';
-import {AsyncTypeahead, Typeahead} from 'react-bootstrap-typeahead';
+import {AsyncTypeahead} from 'react-bootstrap-typeahead';
 import DoneIcon from '@material-ui/icons/Done';
 import {getInputClasses} from '../../utils/formik';
 import '../../utils/yup-validations';
@@ -80,7 +79,6 @@ class TenantFormComponent extends React.Component {
         let groups = [];
         records.map((group) => {
             const label = this.makeGroupLabel(group);
-
             groups.push({ id: group.id, label: label });
         });
         return groups;

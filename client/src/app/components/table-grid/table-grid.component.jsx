@@ -15,7 +15,6 @@ class TableGrid extends React.Component {
     }
 
     componentDidMount() {
-        this.getData(this.state.page, this.state.rowsPerPage);
         if(typeof this.props.data === 'undefined') {
             this.getData(this.state.page, this.state.rowsPerPage);
         }
@@ -69,6 +68,7 @@ class TableGrid extends React.Component {
                 data={this.state.data}
                 onChangeRowsPerPage={this.changeRowsPage}
                 onChangePage={this.changePage}
+                editable={this.props.editable || {}}
             />
         );
     }
