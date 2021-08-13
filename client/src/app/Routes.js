@@ -10,7 +10,7 @@ import { Redirect, Switch, Route } from "react-router-dom";
 import { shallowEqual, useSelector } from "react-redux";
 import { Layout } from "../_metronic/layout";
 import BasePage from "./BasePage";
-import { Logout, AuthPage } from "./modules/Auth";
+import { Logout, AuthPage, ForgotPassword } from "./modules/Auth";
 import ErrorsPage from "./modules/ErrorsExamples/ErrorsPage";
 
 export function Routes() {
@@ -33,7 +33,8 @@ export function Routes() {
         <Redirect from="/auth" to="/" />
       )}
 
-      <Route path="/error" component={ErrorsPage} />
+
+    <Route path="/error" component={ErrorsPage} />
       <Route path="/logout" component={Logout} />
 
       {!isAuthorized ? (
