@@ -24,6 +24,8 @@ var allowedOrigins = [process.env.SERVICE_REST_ALLOW_CORS_ORIGIN];
 
 app.use(cors());
 
+
+
 // Return of logo image specific for current infrastructure
 app.get('/api/logo.png', (req, res) => {  
 
