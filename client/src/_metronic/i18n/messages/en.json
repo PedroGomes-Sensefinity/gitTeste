@@ -1,7 +1,7 @@
 {
   "AUTH.LOGIN.TITLE": "Login",
   "AUTH.REGISTER.TITLE": "Sign Up",
-  "AUTH.RECOVER.PÀSSWORD.TITLE": "Recover your password",
+  "AUTH.RECOVER.PASSWORD.TITLE": "Recover your password",
   "AUTH.VALIDATION.INVALID": "{name} is not valid",
   "AUTH.VALIDATION.REQUIRED": "{name} is required",
   "AUTH.VALIDATION.MIN_LENGTH": "{name}} minimum length is {{min}",
