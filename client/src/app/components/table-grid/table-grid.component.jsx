@@ -21,38 +21,12 @@ class TableGrid extends React.Component {
     }
 
     componentDidMount() {
-        if(this.state.remote) {
-            //this.getData(this.state.page, this.state.rowsPerPage);
-        }
     }
     componentDidUpdate(prevProps) {
         if(typeof this.props.data !== "undefined" && prevProps.data !== this.props.data) {
             this.setState({data: this.props.data});
         }
     }
-
-    getData = () => {
-        let page = this.state.page;
-        let rowsPerPage = this.state.rowsPerPage;
-        let pageOrigin = page;
-        page = page + 1;
-
-        this.setState({isLoading: true});
-
-        apiService.get(this.state.endpoint, rowsPerPage, pageOrigin * rowsPerPage)
-            .then((result) => {
-                /*this.setState({
-                    data: result[this.props.dataField],
-                    page: pageOrigin,
-                    total: result.total,
-                });*/
-                this.setState({isLoading: false});
-
-                /*setTimeout(() => {
-                    this.tableRef.current.onQueryChange();
-                }, 0)*/
-            });
-    };
 
     getSortedData = (changedColumn, order) => {};
 
