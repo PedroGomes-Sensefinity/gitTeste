@@ -51,6 +51,31 @@ const apiService = {
                 });
         });
     },
+    getByTextOrdered: function(endpoint, text, limit, offset, field, sort, order){
+        return new Promise(function(resolve, reject) {
+            axios
+                .get(`${process.env.REACT_APP_REST_API_URL}${endpoint}/search/${text}/limit/${limit}/offset/${offset}/sort/${sort}/order/${order}`)
+                .then(function(response){
+                    if (response.status !== 200) {
+                        return [];
+                    }
+
+                    return response.data;
+                })
+                .then(function(responseData){
+                    var result = {total: 0, devices: []};
+
+                    if (typeof responseData.data !== 'undefined') {
+                        result = responseData.data;
+                    }
+                    resolve(result);
+                })
+                .catch(function(err) {
+                    console.log(err);
+                    reject(Error("Something went wrong on get " + endpoint + " ... "));
+                });
+        });
+    },
     getById: function(endpoint, id) {
         return new Promise(function(resolve, reject) {
             axios

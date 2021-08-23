@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import history from '../../../history';
-import apiService from '../../../services/apiService';
+import deviceService from '../../../services/deviceService';
 import { makeStyles } from '@material-ui/core/styles';
 import { Card, CardHeader, CardContent, Button } from '@material-ui/core';
 

@@ -13,6 +13,7 @@ import '../../utils/yup-validations';
 import BlockUi from "react-block-ui";
 import toaster from '../../utils/toaster';
 import { injectIntl } from 'react-intl';
+import history from '../../history';
 
 class DeviceFormComponent extends React.Component {
     constructor(props) {
@@ -131,7 +132,9 @@ class DeviceFormComponent extends React.Component {
 
         deviceService[method](fields)
             .then((response) => {
-                toaster.notify('success', msgSuccess);
+                toaster.notify('success', msgSuccess, () => {
+                    history.push(`/devices/list`);
+                });
                 this.setState({blocking: false});
             });
     };
@@ -315,7 +318,7 @@ class DeviceFormComponent extends React.Component {
                                                     name='id'
                                                     placeholder='Set the Device ID'
                                                     {...getFieldProps('id')}
-                                                    disabled={true}
+                                                    disabled={!this.state.isAddMode}
                                                 />
                                                 <ErrorMessage name="id" component="div" className="invalid-feedback" />
                                             </div>
