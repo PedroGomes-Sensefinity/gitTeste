@@ -1,23 +1,26 @@
-import React, { forwardRef } from 'react';
+import React from 'react';
 
 import MaterialTable from 'material-table';
 import apiService from '../../services/apiService';
 
 class TableGrid extends React.Component {
+    tableRef = React.createRef();
+
     constructor(props) {
         super(props);
+        console.log(props);
         this.state = {
             data: props.data || [],
+            remote: (typeof props.data === "undefined"),
+            endpoint: props.endpoint,
             total: 0,
             page: 0,
             rowsPerPage: 10,
+            isLoading: false,
         };
     }
 
     componentDidMount() {
-        if(typeof this.props.data === 'undefined') {
-            this.getData(this.state.page, this.state.rowsPerPage);
-        }
     }
     componentDidUpdate(prevProps) {
         if(typeof this.props.data !== "undefined" && prevProps.data !== this.props.data) {
@@ -25,47 +28,65 @@ class TableGrid extends React.Component {
         }
     }
 
-    getData = (page, rowsPerPage) => {
-        let pageOrigin = page;
-        page = page + 1;
-        apiService
-            .get(this.props.endpoint,rowsPerPage, pageOrigin * rowsPerPage)
-            .then((result) => {
-                this.setState({
-                    page: pageOrigin,
-                    data: result[this.props.dataField],
-                    total: result.total
-                });
-            });
-    };
-
     getSortedData = (changedColumn, order) => {};
 
     changePage = (page) => {
-        this.props.onChangePage(page);
+        //this.props.onChangePage(page);
     };
 
     changeRowsPage = (rowsPerPage) => {
-        this.props.onChangeRowsPage(rowsPerPage);
+        //this.props.onChangeRowsPage(rowsPerPage);
     };
 
     render() {
         const options = {
-            pageSize: 10,
+            pageSize: this.state.rowsPerPage,
             pageSizeOptions: [10, 15, 100],
             exportButton: true,
-            isLoading: true,
             onOrderChange: (rderedColumnId, orderDirection) => {},
-            onSearchChange: (search) => {}
+            onSearchChange: (search) => {},
+            sorting: false
         };
 
         return (
             <MaterialTable
+                tableRef={this.tableRef}
                 actions={this.props.actions}
                 title={this.props.title}
                 columns={this.props.columns}
                 options={options}
-                data={this.state.data}
+                data={query =>
+                    new Promise((resolve, reject) => {
+                        if(!this.state.remote) {
+                            resolve({
+                                data: this.state.data,
+                                page: 0,
+                                totalCount: this.state.data.length,
+                            });
+                            return;
+                        }
+
+                        const pageSize = query.pageSize;
+                        const page = query.page;
+                        let method = 'get';
+                        let params = [this.props.endpoint, pageSize, page * pageSize];
+
+                        if(query.search !== "") {
+                            method = 'getByText'
+                            params = [this.props.endpoint, query.search, pageSize, page * pageSize]
+                        }
+
+                        apiService[method](...params)
+                        .then((result) => {
+                            resolve({
+                                data: result[this.props.dataField],
+                                page: page,
+                                totalCount: result.total,
+                            });
+                        });
+                    })
+                }
+                isLoading={this.state.isLoading}
                 onChangeRowsPerPage={this.changeRowsPage}
                 onChangePage={this.changePage}
                 editable={this.props.editable || {}}

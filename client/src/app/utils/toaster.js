@@ -2,7 +2,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const toaster = {
-    notify( type = "", msg = "") {
+    notify(type = "info", msg = "", callback) {
         const toasterProperties = {
             position: "top-right",
             autoClose: 5000,
@@ -11,16 +11,12 @@ const toaster = {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
+            onClose: callback,
         }
 
         const types = ["success", "info", "warning", "error"]
-        
-        if ( !types.includes( type ) ) {
-            toast( msg, toasterProperties );
-            return;
-        }
 
-        toast[type]( msg, toasterProperties );
+        toast[type](msg, toasterProperties);
     }
 
 }
