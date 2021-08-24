@@ -19,9 +19,11 @@ class ThresholdGroupsComponent extends React.Component {
     }
 
     componentDidMount() {
-        groupsThresholdService.getByThreshold(this.state.id, 100, 0)
+        this.setState({loading: true});
+        groupsThresholdService.getByThreshold(this.state.id, 99999999, 0)
         .then((response) => {
             this.setState({groups: response.groups});
+            this.setState({loading: false});
         });
 
     }

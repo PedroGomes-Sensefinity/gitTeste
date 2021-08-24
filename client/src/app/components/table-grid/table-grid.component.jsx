@@ -8,7 +8,6 @@ class TableGrid extends React.Component {
 
     constructor(props) {
         super(props);
-        console.log(props);
         this.state = {
             data: props.data || [],
             remote: (typeof props.data === "undefined"),
@@ -16,7 +15,7 @@ class TableGrid extends React.Component {
             total: 0,
             page: 0,
             rowsPerPage: 10,
-            isLoading: false,
+            isLoading: props.isLoading || false,
         };
     }
 
@@ -25,6 +24,7 @@ class TableGrid extends React.Component {
     componentDidUpdate(prevProps) {
         if(typeof this.props.data !== "undefined" && prevProps.data !== this.props.data) {
             this.setState({data: this.props.data});
+            this.tableRef.current.onQueryChange();
         }
     }
 

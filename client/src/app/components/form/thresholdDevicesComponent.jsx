@@ -19,9 +19,11 @@ class ThresholdDevicesComponent extends React.Component {
     }
 
     componentDidMount() {
-        deviceThresholdService.getByThreshold(this.state.id, 100, 0)
+        this.setState({loading: true});
+        deviceThresholdService.getByThreshold(this.state.id, 99999999, 0)
         .then((response) => {
             this.setState({devices: response.devices});
+            this.setState({loading: false});
         });
 
     }
@@ -45,10 +47,6 @@ class ThresholdDevicesComponent extends React.Component {
             {
                 field: 'label',
                 title: 'Label',
-            },
-            {
-                field: 'group',
-                title: 'Group',
             }
         ];
 
@@ -60,6 +58,7 @@ class ThresholdDevicesComponent extends React.Component {
                             title=''
                             columns={columns}
                             data={this.state.devices}
+                            isLoading={this.state.loading}
                         />
                     </CardContent>
                 </Card>
