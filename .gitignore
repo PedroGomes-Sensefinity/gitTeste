@@ -44,6 +44,7 @@ app/go.sum# See https://help.github.com/articles/ignoring-files/ for more about 
 # dependencies
 /node_modules
 node_modules
+client/node_modules
 /.pnp
 .pnp.js
 
