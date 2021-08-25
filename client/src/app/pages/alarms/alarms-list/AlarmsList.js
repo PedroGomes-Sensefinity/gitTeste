@@ -133,8 +133,8 @@ export function AlarmsList() {
                     title=''
                     columns={columns}
                     data={data}
-                    onChangePage={onChangePage}
-                    onChangeRowsPage={onChangeRowsPage}
+                    onPageChange={onChangePage}
+                    onRowsPerPageChange={onChangeRowsPage}
                 />
             </CardContent>
         </Card>

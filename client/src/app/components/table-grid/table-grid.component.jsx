@@ -87,8 +87,8 @@ class TableGrid extends React.Component {
                     })
                 }
                 isLoading={this.state.isLoading}
-                onChangeRowsPerPage={this.changeRowsPage}
-                onChangePage={this.changePage}
+                onRowsPerPageChange={this.changeRowsPage}
+                onPageChange={this.changePage}
                 editable={this.props.editable || {}}
             />
         );
