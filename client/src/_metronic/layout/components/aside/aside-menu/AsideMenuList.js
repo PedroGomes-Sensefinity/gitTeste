@@ -133,6 +133,12 @@ export function AsideMenuList({ layoutProps }) {
                   </i>
                   <span className="menu-text">Device Upload</span>
                 </NavLink>
+                <NavLink className="menu-link" to="/board-families/list">
+                  <i className="menu-bullet menu-bullet-dot">
+                    <span />
+                  </i>
+                  <span className="menu-text">Board family</span>
+                </NavLink>
               </li>
               {/*end::2 Level*/}
             </ul>x
