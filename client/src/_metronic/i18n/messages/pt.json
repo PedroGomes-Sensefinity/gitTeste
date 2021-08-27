@@ -29,5 +29,7 @@
   "MODAL.PASSWORD.FIELD.CONFIRM.HINT": "Confirmar a senha",
   "THRESHOLD.CREATED": "Threshold criado com sucesso",
   "THRESHOLD.UPDATED": "Threshold atualizado com sucesso",
-  "THRESHOLD.ACTION_SAVED": "Ação para threshold vinculada com sucesso"
+  "THRESHOLD.ACTION_SAVED": "Ação para threshold vinculada com sucesso",
+  "BOARDFAMILY.CREATED": "Board family criado com sucesso",
+  "BOARDFAMILY.UPDATED": "Board family atualizado com sucesso"
 }

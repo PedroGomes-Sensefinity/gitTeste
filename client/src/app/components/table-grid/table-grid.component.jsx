@@ -9,7 +9,7 @@ class TableGrid extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: props.data || [],
+            data: props.data,
             remote: (typeof props.data === "undefined"),
             endpoint: props.endpoint,
             total: 0,
@@ -24,7 +24,7 @@ class TableGrid extends React.Component {
     componentDidUpdate(prevProps) {
         if(typeof this.props.data !== "undefined" && prevProps.data !== this.props.data) {
             this.setState({data: this.props.data});
-            this.tableRef.current.onQueryChange();
+            //this.tableRef.current.onQueryChange();
         }
     }
 
@@ -48,50 +48,55 @@ class TableGrid extends React.Component {
             sorting: false
         };
 
-        return (
-            <MaterialTable
-                tableRef={this.tableRef}
-                actions={this.props.actions}
-                title={this.props.title}
-                columns={this.props.columns}
-                options={options}
-                data={query =>
-                    new Promise((resolve, reject) => {
-                        if(!this.state.remote) {
-                            resolve({
-                                data: this.state.data,
-                                page: 0,
-                                totalCount: this.state.data.length,
+        if(!this.state.remote) {
+            return (
+                <MaterialTable
+                    tableRef={this.tableRef}
+                    actions={this.props.actions}
+                    title={this.props.title}
+                    columns={this.props.columns}
+                    options={options}
+                    data={this.state.data}
+                    editable={this.props.editable || {}}
+                />
+            );
+        }
+
+        if (this.state.remote) {
+            return (
+                <MaterialTable
+                    tableRef={this.tableRef}
+                    actions={this.props.actions}
+                    title={this.props.title}
+                    columns={this.props.columns}
+                    options={options}
+                    data={query =>
+                        new Promise((resolve, reject) => {
+                            const pageSize = query.pageSize;
+                            const page = query.page;
+                            let method = 'get';
+                            let params = [this.props.endpoint, pageSize, page * pageSize];
+    
+                            if(query.search !== "") {
+                                method = 'getByText'
+                                params = [this.props.endpoint, query.search, pageSize, page * pageSize]
+                            }
+    
+                            apiService[method](...params)
+                            .then((result) => {
+                                resolve({
+                                    data: result[this.props.dataField],
+                                    page: page,
+                                    totalCount: result.total,
+                                });
                             });
-                            return;
-                        }
-
-                        const pageSize = query.pageSize;
-                        const page = query.page;
-                        let method = 'get';
-                        let params = [this.props.endpoint, pageSize, page * pageSize];
-
-                        if(query.search !== "") {
-                            method = 'getByText'
-                            params = [this.props.endpoint, query.search, pageSize, page * pageSize]
-                        }
-
-                        apiService[method](...params)
-                        .then((result) => {
-                            resolve({
-                                data: result[this.props.dataField],
-                                page: page,
-                                totalCount: result.total,
-                            });
-                        });
-                    })
-                }
-                isLoading={this.state.isLoading}
-                onRowsPerPageChange={this.changeRowsPage}
-                onPageChange={this.changePage}
-                editable={this.props.editable || {}}
-            />
-        );
+                        })
+                    }
+                    isLoading={this.state.isLoading}
+                    editable={this.props.editable || {}}
+                />
+            );
+        }
     }
 }
 
