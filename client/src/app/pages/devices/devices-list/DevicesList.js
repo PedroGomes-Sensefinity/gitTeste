@@ -50,7 +50,7 @@ export function DevicesList() {
         },
         {
             field: 'board',
-            title: 'Board Id',
+            title: 'Board ID',
         },
         {
             field: 'imei',
