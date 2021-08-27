@@ -18,6 +18,7 @@ import { ThresholdsForm } from "./pages/thresholds/thresholds-form/ThresholdsFor
 import {TenantsList} from "./pages/tenants/tenants-list/TenantsList";
 import {TenantsForm} from "./pages/tenants/tenants-form/TenantsForm";
 import { BoardFamiliesList } from "./pages/board-families/list/BoardFamiliesList";
+import { BoardFamiliesForm } from "./pages/board-families/form/BoardFamiliesForm";
 
 const UserProfilepage = lazy(() =>
   import("./modules/UserProfile/UserProfilePage")
@@ -47,6 +48,8 @@ export default function BasePage() {
 
         { /* Board families Routes*/ }
         <ContentRoute path="/board-families/list" component={BoardFamiliesList} />
+        <ContentRoute path="/board-families/new" component={BoardFamiliesForm} />
+        <ContentRoute path="/board-families/edit/:id" component={BoardFamiliesForm} />
 
         { /* Groups Routes*/}
         <ContentRoute path="/groups/list" component={GroupsList} />
