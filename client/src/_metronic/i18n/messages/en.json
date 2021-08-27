@@ -29,5 +29,7 @@
   "MODAL.PASSWORD.FIELD.CONFIRM.MISMATCH": "Passwords must match",
   "THRESHOLD.CREATED": "Threshold created successfully",
   "THRESHOLD.UPDATED": "Threshold updated successfully",
-  "THRESHOLD.ACTION_SAVED": "Threshold action saved successfully"
+  "THRESHOLD.ACTION_SAVED": "Threshold action saved successfully",
+  "BOARDFAMILY.CREATED": "Board family created successfully",
+  "BOARDFAMILY.UPDATED": "Board family updated successfully"
 }
