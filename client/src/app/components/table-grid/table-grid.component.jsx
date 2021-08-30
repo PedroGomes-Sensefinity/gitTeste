@@ -41,7 +41,7 @@ class TableGrid extends React.Component {
     render() {
         const options = {
             pageSize: this.state.rowsPerPage,
-            pageSizeOptions: [10, 15, 100],
+            pageSizeOptions: [10, 50, 100],
             exportButton: true,
             onOrderChange: (rderedColumnId, orderDirection) => {},
             onSearchChange: (search) => {},

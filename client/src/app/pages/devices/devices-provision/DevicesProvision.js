@@ -18,7 +18,7 @@ export function DevicesProvision() {
     });
 
     const initialValues = {
-        count: '',
+        count: 0,
     };
 
     const formik = useFormik({
@@ -65,7 +65,7 @@ export function DevicesProvision() {
                                 (formik.touched && !formik.isValid)
                             }>
                             <DoneIcon />
-                            Save
+                            Create
                             {formik.isSubmitting}
                         </button>
                     </div>
@@ -75,7 +75,7 @@ export function DevicesProvision() {
                     <div className='card-body'>
                         <div className='form-group row'>
                             <div className='col-xl-2 col-lg-2'>
-                                <label>Quantity</label>
+                                <label>Quantity to create</label>
                                 <div>
                                     <input
                                         type='number'

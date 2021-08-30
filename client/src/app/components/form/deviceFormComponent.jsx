@@ -398,7 +398,7 @@ class DeviceFormComponent extends React.Component {
                                             <ErrorMessage name="board_family_id" component="div" className="invalid-feedback" />
                                         </div>
                                         <div className='col-lg-3 col-xl-3'>
-                                            <label>Board</label>
+                                            <label>Board ID</label>
                                             <div>
                                                 <Field
                                                     as="input"
