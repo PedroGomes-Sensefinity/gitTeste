@@ -57,10 +57,12 @@ class BoardFamiliesFormComponent extends React.Component {
                 toaster.notify('success', msgSuccess);
                 setSubmitting(false);
                 
-                resetForm(this.initialValues);
-                setFieldValue('force_board_id', false, false);
-                
                 this.setState({blocking: false});
+                
+                if (this.state.id === 'new') {
+                    resetForm(this.initialValues);
+                    setFieldValue('force_board_id', false, false);
+                }
             });
     };
     
@@ -86,7 +88,8 @@ class BoardFamiliesFormComponent extends React.Component {
                     touched,
                     isSubmitting,
                     setFieldValue,
-                    handleSubmit
+                    handleSubmit,
+                    values
                 }) => {
                     const classes = this.useStyles();
 
@@ -94,15 +97,16 @@ class BoardFamiliesFormComponent extends React.Component {
                         console.log(this.state.isAddMode, this.state.id);
                         if (!this.state.isAddMode && this.state.id !== 'new') {
                             apiService
-                            .getById('board_family', this.state.id)
+                            .getById('board_families', this.state.id)
                             .then((response) => {
                                 let item = [];
-                                if(response.board_family !== undefined && response.board_family.length > 0) {
-                                    item = response.board_family[0];
+                                if(response.board_families !== undefined && response.board_families.length > 0) {
+                                    item = response.board_families[0];
                                 }
-
+                                
                                 setFieldValue('id', item.id, false);
                                 setFieldValue('name', item.name, false);
+                                setFieldValue('force_board_id', item.force_board_id, false);
                             });
                         }
                     }, []);
@@ -135,7 +139,7 @@ class BoardFamiliesFormComponent extends React.Component {
                                         {isSubmitting}
                                     </button>
                                     <Link
-                                        to='/devices/list'
+                                        to='/board-families/list'
                                         className='btn btn-secondary'>
                                         Cancel
                                     </Link>
@@ -171,6 +175,7 @@ class BoardFamiliesFormComponent extends React.Component {
                                                     name="force_board_id" 
                                                     type="checkbox" 
                                                     id="force_board_id" 
+                                                    checked={values.force_board_id === true}
                                                     {...getFieldProps('force_board_id')}
                                                 />
                                             </div>
