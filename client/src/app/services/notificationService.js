@@ -41,7 +41,42 @@ const notificationService = {
                     reject(Error("Something went wrong on get count of notifications... "));
                 });
         });
-    }
+    },
+    save: function (formData) {
+        return new Promise(function (resolve, reject) {
+            axios.post(`${process.env.REACT_APP_REST_API_URL}notificationstemplate/`, formData)
+                .then((response) => response.data)
+                .then((responseData) => {
+                    let result = [];
+                    if (responseData.code === 200) {
+                        result = responseData.data;
+                    }
+                    resolve(result);
+                })
+                .catch(function (err) {
+                    console.log(err);
+                    reject(Error("Something went wrong on save notification template... "));
+                });
+        });
+    },
+    update: function (formData) {
+        console.log(formData)
+        return new Promise(function (resolve, reject) {
+            axios.put(`${process.env.REACT_APP_REST_API_URL}notificationstemplate/${formData.id}`, formData)
+                .then((response) => response.data)
+                .then((responseData) => {
+                    let result = [];
+                    if (responseData.code === 200) {
+                        result = responseData.data;
+                    }
+                    resolve(result);
+                })
+                .catch(function (err) {
+                    console.log(err);
+                    reject(Error("Something went wrong on update template... "));
+                });
+        });
+    },
 }
 
 export default notificationService;
