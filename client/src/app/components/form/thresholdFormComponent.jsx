@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom';
 import {makeStyles} from '@material-ui/styles';
 import thresholdService from '../../services/thresholdService';
 import apiService from '../../services/apiService';
-import {AsyncTypeahead} from 'react-bootstrap-typeahead';
+
 import DoneIcon from '@material-ui/icons/Done';
 import {getInputClasses} from '../../utils/formik';
 import '../../utils/yup-validations';
@@ -75,7 +75,7 @@ class ThresholdFormComponent extends React.Component {
         min: false,
         minValue: 0,
         max: false,
-        maxValue: 0,
+        maxValue: '',
     };
 
     validationSchema = Yup.object().shape({
@@ -95,10 +95,13 @@ class ThresholdFormComponent extends React.Component {
                 is: (val) => (val !== 'geofences'),
                 then: Yup.number().required('Min value is required')
             })
-            .lessThan(Yup.ref('maxValue'), 'Must be less than Max value'),
+            .when('maxValue', {
+                is: (val) => (val !== ''),
+                then: Yup.number().lessThan(Yup.ref('maxValue'), 'Must be less than Max value')
+            }),
         maxValue: Yup.number()
             .min(-100, `Must be less or equal than 100`)
-            .default(0)
+            .default('')
             .typeError('Must be a valid number')
             .when('ruleMeasurementType', {
                 is: (val) => (val !== 'geofences'),

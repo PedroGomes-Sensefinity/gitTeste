@@ -1,5 +1,8 @@
 import React from "react";
+import NotificationsTemplatesFormComponent from "../../../components/form/notificationTemplatesFormComponent";
                   
-export function NotificationTemplatesForm() {
-    return <h1>NotificationTemplatesForm</h1>
+export function NotificationTemplatesForm({match}) {
+    const {id} = match.params;
+
+    return <NotificationsTemplatesFormComponent id={id}  />
 }  
