@@ -83,20 +83,10 @@ export function AlarmsList() {
     }, []);
 
     const getData = () => {
-        notificationService.get('alarm', 'created', statusDateStart, statusDateEnd, rowsPage, getOffset(page, rowsPage))
+        notificationService.get('alarm', 'created', statusDateStart, statusDateEnd, 999999, 0/* getOffset(page, rowsPage) */)
             .then((result) => {
-                setData(result);
+                setData(result.alarms);
             });
-    }
-
-    const onChangePage = (page) => {
-        setPage(page);
-        getData();
-    }
-
-    const onChangeRowsPage = (rowsPage) => {
-        setRowsPage(rowsPage);
-        getData();
     }
 
     return (
@@ -133,8 +123,6 @@ export function AlarmsList() {
                     title=''
                     columns={columns}
                     data={data}
-                    onPageChange={onChangePage}
-                    onRowsPerPageChange={onChangeRowsPage}
                 />
             </CardContent>
         </Card>

@@ -4,17 +4,18 @@ const notificationService = {
     get: function(type, status, dateStart, dateEnd, limit, offset){
         return new Promise(function(resolve, reject) {
             axios.get(`${process.env.REACT_APP_REST_API_URL}notification/${type}/bydates/${dateStart}/${dateEnd}/status/${status}/limit/${limit}/offset/${offset}`)
-                .then(function(response){
+                .then(function(response) {
                     if (response.status !== 200) {
                         return [];
-                    } else {
-                        return response.json();
                     }
+                
+                    return response.data;
                 })
-                .then(function(responseData){
-                    var result = [];
-                    if (typeof responseData.data !== 'undefined') {
-                        result = responseData.data.alarms;
+                .then((response) => {
+                    let result = [];
+                    
+                    if (typeof response.data !== 'undefined') {
+                        result = response.data;
                     }
                     resolve(result);
                 })
