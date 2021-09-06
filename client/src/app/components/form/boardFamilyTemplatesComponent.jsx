@@ -16,7 +16,6 @@ import EditIcon from '@material-ui/icons/Edit';
 import toaster from '../../utils/toaster';
 
 class BoardFamilyTemplatesComponent extends React.Component {
-    tableRef = React.createRef();
 
     constructor(props) {
         super(props);
@@ -40,7 +39,6 @@ class BoardFamilyTemplatesComponent extends React.Component {
 
     getData = () => {
         boardFamilyTemplatesService.byBoardFamily(this.state.id, 99999999, 0).then(response => {
-            console.log(response);
             this.setState({ templates: response.board_family_templates });
             this.setState({ loading: false });
         });

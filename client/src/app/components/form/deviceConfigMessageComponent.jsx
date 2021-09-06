@@ -8,6 +8,11 @@ import {getInputClasses} from '../../utils/formik';
 import BlockUi from "react-block-ui";
 import toaster from '../../utils/toaster';
 import {injectIntl} from 'react-intl';
+import { Button, Container, Modal } from 'react-bootstrap'
+import BuildIcon from '@material-ui/icons/Build';
+import {Typeahead} from 'react-bootstrap-typeahead';
+import apiService from '../../services/apiService';
+import boardFamilyTemplatesService from '../../services/boardFamilyTemplatesService';
 
 class DeviceConfigMessageComponent extends React.Component {
     constructor(props) {
@@ -15,11 +20,33 @@ class DeviceConfigMessageComponent extends React.Component {
         this.state = {
             intl: props.intl,
             id: props.entity,
+            device: {},
             blocking: false,
+            modalShow: false,
+            templates: [],
         };
     }
 
-    componentDidMount() {}
+    componentDidMount() {
+        apiService.getById('device', this.state.id)
+            .then((response) => {
+                const device = response.devices[0];
+                this.setState({device: device})
+
+                boardFamilyTemplatesService.byBoardFamily(device.board_family_id, 100, 0).then(response => {
+                    let templates = [];
+
+                    response.board_family_templates.forEach(function (t, i) {
+                        t.version = String(t.version);
+
+                        templates.push(t);
+                    });
+
+                    this.setState({ templates: templates });
+                });
+
+            });
+    }
 
     initialValues = {
         message: ''
@@ -50,6 +77,56 @@ class DeviceConfigMessageComponent extends React.Component {
                 setFieldValue('message', '', false);
             });
     };
+
+    onHideModal = () => {
+        this.setState({modalShow: false});
+        this.getData();
+    }
+
+    onChangeTemplate = (data, setFieldValue) => {
+        this.setState({modalShow: false});
+        setFieldValue('message', data[0].template, false);
+    }
+
+    FormModalTemplate(props) {
+        return (
+            <Modal {...props} aria-labelledby="contained-modal-title-vcenter">
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                        Template
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="show-grid">
+                <Container>
+                    {/* begin::Form */}
+                    <div className='form'>
+                        <div className='form-group row'>
+                            <div className='col-xl-12 col-lg-12'>
+                                <label>Template</label>
+                                <div>
+                                    <Typeahead
+                                        id='typeahead-board-family'
+                                        labelKey="version"
+                                        size="lg"
+                                        options={props.options}
+                                        clearButton={true}
+                                        placeholder=''
+                                        filterBy={() => true}
+                                        onChange={props.onChangeTemplate}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {/* end::Form */}
+                </Container>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={props.onHide}>Close</Button>
+                </Modal.Footer>
+            </Modal>
+        );
+      }
     
     render() {
         return (
@@ -129,14 +206,30 @@ class DeviceConfigMessageComponent extends React.Component {
                                                 <ErrorMessage name="message" component="div" className="invalid-feedback" />
                                             </div>
                                         </div>
+                                        <div className='col-xl-2 col-lg-2'>
+                                            <Button 
+                                                className='btn btn-success'
+                                                onClick={() => this.setState({modalShow: true}) }
+                                            >
+                                                <BuildIcon /> Load template
+                                            </Button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            <this.FormModalTemplate
+                                show={this.state.modalShow}
+                                onHide={this.onHideModal}
+                                onChangeTemplate={(data) => this.onChangeTemplate(data, setFieldValue)}
+                                options={this.state.templates}
+                                backdrop="static"
+                                keyboard={false}
+                            />
                             {/* end::Form */}
                         </form>
                     );
                 }}
-            </Formik>
+                </Formik>
             </BlockUi>
         );
     }
