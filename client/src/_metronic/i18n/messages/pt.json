@@ -31,5 +31,7 @@
   "THRESHOLD.UPDATED": "Threshold atualizado com sucesso",
   "THRESHOLD.ACTION_SAVED": "Ação para threshold vinculada com sucesso",
   "BOARDFAMILY.CREATED": "Board family criado com sucesso",
-  "BOARDFAMILY.UPDATED": "Board family atualizado com sucesso"
+  "BOARDFAMILY.UPDATED": "Board family atualizado com sucesso",
+  "BOARDFAMILYTEMPLATE.CREATED": "Board family template criado com sucesso",
+  "BOARDFAMILYTEMPLATE.UPDATED": "Board family template atualizado com sucesso"
 }

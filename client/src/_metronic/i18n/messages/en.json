@@ -31,5 +31,7 @@
   "THRESHOLD.UPDATED": "Threshold updated successfully",
   "THRESHOLD.ACTION_SAVED": "Threshold action saved successfully",
   "BOARDFAMILY.CREATED": "Board family created successfully",
-  "BOARDFAMILY.UPDATED": "Board family updated successfully"
+  "BOARDFAMILY.UPDATED": "Board family updated successfully",
+  "BOARDFAMILYTEMPLATE.CREATED": "Board family template created successfully",
+  "BOARDFAMILYTEMPLATE.UPDATED": "Board family template updated successfully"
 }

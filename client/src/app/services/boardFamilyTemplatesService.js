@@ -20,7 +20,7 @@ const boardFamilyTemplatesService = {
     },
     save: function (formData) {
         return new Promise(function (resolve, reject) {
-            axios.post(`${process.env.REACT_APP_REST_API_URL}board_families/`, formData)
+            axios.post(`${process.env.REACT_APP_REST_API_URL}board_family_templates/`, formData)
                 .then((response) => response.data)
                 .then((responseData) => {
                     let result = [];
@@ -37,7 +37,7 @@ const boardFamilyTemplatesService = {
     },
     update: function (formData) {
         return new Promise(function (resolve, reject) {
-            axios.put(`${process.env.REACT_APP_REST_API_URL}board_families/${formData.id}`, formData)
+            axios.put(`${process.env.REACT_APP_REST_API_URL}board_family_templates/${formData.id}`, formData)
                 .then((response) => response.data)
                 .then((responseData) => {
                     let result = [];
