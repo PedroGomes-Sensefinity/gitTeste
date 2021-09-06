@@ -59,8 +59,8 @@ class BoardFamiliesFormComponent extends React.Component {
                 
                 this.setState({blocking: false});
                 
-                if (this.state.id === 'new') {
-                    resetForm(this.initialValues);
+                if (this.state.isAddMode) {
+                    setFieldValue('name', '', false);
                     setFieldValue('force_board_id', false, false);
                 }
             });
