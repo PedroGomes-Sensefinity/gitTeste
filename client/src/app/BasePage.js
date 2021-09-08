@@ -21,6 +21,7 @@ import { BoardFamiliesList } from "./pages/board-families/list/BoardFamiliesList
 import { BoardFamiliesForm } from "./pages/board-families/form/BoardFamiliesForm";
 import {ProfilesForm} from "./pages/profiles/profiles-form/ProfilesForm";
 import { ProfilesList } from "./pages/profiles/profiles-list/ProfilesList";
+import {UsersList} from "./pages/users/users-list/UsersList";
 
 const UserProfilepage = lazy(() =>
   import("./modules/UserProfile/UserProfilePage")
@@ -73,15 +74,20 @@ export default function BasePage() {
         <ContentRoute path="/profiles/new" component={ProfilesForm} />
         <ContentRoute path="/profiles/edit/:id" component={ProfilesForm} />
 
+        { /* Users Routes*/}
+        <ContentRoute path="/users/list" component={UsersList} />
+        {/*<ContentRoute path="/users/new" component={ProfilesForm} />*/}
+        {/*<ContentRoute path="/users/edit/:id" component={ProfilesForm} />*/}
+
         { /* Alarms Routes*/}
         <ContentRoute path="/alarms/list" component={AlarmsList} />
         <ContentRoute path="/alarms/new" component={AlarmsForm} />
         <ContentRoute path="/alarms/edit/:id" component={AlarmsForm} />
 
-          { /* NotificationTemplates Routes*/}
-          <ContentRoute path="/notification-templates/list" component={NotificationTemplatesList} />
-          <ContentRoute path="/notification-templates/new" component={NotificationTemplatesForm} />
-          <ContentRoute path="/notification-templates/edit/:id" component={NotificationTemplatesForm} />
+        { /* NotificationTemplates Routes*/}
+        <ContentRoute path="/notification-templates/list" component={NotificationTemplatesList} />
+        <ContentRoute path="/notification-templates/new" component={NotificationTemplatesForm} />
+        <ContentRoute path="/notification-templates/edit/:id" component={NotificationTemplatesForm} />
 
         <Redirect to="error/error-v1" />
       </Switch>
