@@ -1,9 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import history from '../../../history';
-import deviceService from '../../../services/deviceService';
 import { makeStyles } from '@material-ui/core/styles';
-import { Card, CardHeader, CardContent, Button } from '@material-ui/core';
+import { Card, CardContent, Button } from '@material-ui/core';
 
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
@@ -13,14 +12,8 @@ const useStyles = makeStyles((theme) => ({
     button: {
         margin: theme.spacing(1),
     },
-    rightIcon: {
-        marginLeft: theme.spacing(1),
-    },
     leftIcon: {
         marginRight: theme.spacing(1),
-    },
-    iconSmall: {
-        fontSize: 20,
     },
 }));
 

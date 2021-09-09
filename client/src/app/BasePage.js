@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense } from "react";
 import { Redirect, Switch } from "react-router-dom";
 import { LayoutSplashScreen, ContentRoute } from "../_metronic/layout";
 
@@ -23,9 +23,9 @@ import {ProfilesForm} from "./pages/profiles/profiles-form/ProfilesForm";
 import { ProfilesList } from "./pages/profiles/profiles-list/ProfilesList";
 import {UsersList} from "./pages/users/users-list/UsersList";
 
-const UserProfilepage = lazy(() =>
+/*const UserProfilepage = lazy(() =>
   import("./modules/UserProfile/UserProfilePage")
-);
+);*/
 
 export default function BasePage() {
   // useEffect(() => {

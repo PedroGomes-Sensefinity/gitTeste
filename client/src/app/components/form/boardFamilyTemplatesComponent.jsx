@@ -50,7 +50,6 @@ class BoardFamilyTemplatesComponent extends React.Component {
     }
 
     FormModalTemplate(props) {
-        console.log(props);
         let initialValues = {
             id: props.data.id || '',
             template: props.data.template || '',
@@ -62,12 +61,6 @@ class BoardFamilyTemplatesComponent extends React.Component {
             .required('Template is required')
             .isJson("Template needs to be a valid JSON"),
         });
-
-        let useStyles = makeStyles((theme) => ({
-            headerMarginTop: {
-                marginTop: theme.spacing(5),
-            }
-        }));
 
         return (
             <Formik

@@ -5,7 +5,6 @@ import history from '../../../history';
 import { Card, CardContent } from '@material-ui/core';
 import Form from 'react-bootstrap/Form';
 import notificationService from "../../../services/notificationService";
-import {getOffset} from '../../../utils/grid';
 
 import EditIcon from '@material-ui/icons/Edit';
 import TableGrid from '../../../components/table-grid/table-grid.component';
@@ -16,8 +15,6 @@ export function AlarmsList() {
     const [data, setData] = React.useState([]);
     const [statusDateStart, setStatusDateStart] = React.useState('-');
     const [statusDateEnd, setStatusDateEnd] = React.useState('-');
-    const [page, setPage] = React.useState(0);
-    const [rowsPage, setRowsPage] = React.useState(10);
     const locale = useLang();
 
     const timefilterOptions = [

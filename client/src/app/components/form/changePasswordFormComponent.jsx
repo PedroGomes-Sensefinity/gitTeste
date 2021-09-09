@@ -55,7 +55,6 @@ class ChangePasswordFormComponent extends React.Component {
     };
 
     render() {
-        let intl = this.state.intl;
         return (
             <BlockUi tag='div' blocking={this.state.blocking}>
             <Formik

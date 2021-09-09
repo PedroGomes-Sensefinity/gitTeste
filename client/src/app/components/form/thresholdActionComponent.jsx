@@ -3,7 +3,6 @@ import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {makeStyles} from '@material-ui/styles';
 import thresholdService from '../../services/thresholdService';
-import deviceThresholdService from '../../services/deviceThresholdService';
 import apiService from '../../services/apiService';
 import {AsyncTypeahead} from 'react-bootstrap-typeahead';
 import DoneIcon from '@material-ui/icons/Done';
@@ -82,6 +81,7 @@ class ThresholdActionComponent extends React.Component {
                 type: s.type,
                 label: s.label,
             });
+            return null;
         });
 
         threshold.rule = JSON.stringify(rule);

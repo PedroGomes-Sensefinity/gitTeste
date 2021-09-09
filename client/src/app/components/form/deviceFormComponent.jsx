@@ -101,6 +101,7 @@ class DeviceFormComponent extends React.Component {
         let devices = [];
         records.map((device) => {
             devices.push({ id: device.id, label: device.id });
+            return null;
         });
         return devices;
     };
@@ -109,8 +110,8 @@ class DeviceFormComponent extends React.Component {
         let groups = [];
         records.map((group) => {
             const label = this.makeGroupLabel(group);
-            
             groups.push({ id: group.id, label: label });
+            return null;
         });
         return groups;
     };
