@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import { connect } from "react-redux";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import { injectIntl } from "react-intl";
 import * as auth from "../_redux/authRedux";

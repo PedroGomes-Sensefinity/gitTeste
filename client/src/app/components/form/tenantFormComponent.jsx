@@ -80,6 +80,7 @@ class TenantFormComponent extends React.Component {
         records.map((group) => {
             const label = this.makeGroupLabel(group);
             groups.push({ id: group.id, label: label });
+            return null;
         });
         return groups;
     };

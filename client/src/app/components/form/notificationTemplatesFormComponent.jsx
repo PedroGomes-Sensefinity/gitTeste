@@ -7,7 +7,7 @@ import * as Yup from 'yup';
 import {Link} from 'react-router-dom';
 import {makeStyles} from '@material-ui/styles';
 import apiService from '../../services/apiService';
-import {AsyncTypeahead, Typeahead} from 'react-bootstrap-typeahead';
+import {AsyncTypeahead} from 'react-bootstrap-typeahead';
 import DoneIcon from '@material-ui/icons/Done';
 
 import '../../utils/yup-validations';
