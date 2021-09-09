@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import history from '../../../history';
 import { makeStyles } from '@material-ui/core/styles';
-import { Card, CardHeader, CardContent, Button } from '@material-ui/core';
+import { Card, CardContent, Button } from '@material-ui/core';
 
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';

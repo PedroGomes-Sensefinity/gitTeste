@@ -1,5 +1,4 @@
 import React from "react";
-import thresholdService from "../../../services/thresholdService";
 import ThresholdFormComponent from "../../../components/form/thresholdFormComponent";
 import ThresholdActionComponent from "../../../components/form/thresholdActionComponent";
 import ThresholdDevicesComponent from "../../../components/form/thresholdDevicesComponent";

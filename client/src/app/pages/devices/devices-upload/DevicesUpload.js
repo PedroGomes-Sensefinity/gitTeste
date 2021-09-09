@@ -48,7 +48,7 @@ export function DevicesUpload(props) {
             toaster.notify('success', intl.formatMessage({id: 'UPLOAD.SUCCESS'}));
             setBlocking(false);
             setSubmitting(false);
-            setTimestamp((new Date).getTime())
+            setTimestamp((new Date()).getTime())
         });
     };
 

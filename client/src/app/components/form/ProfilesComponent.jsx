@@ -10,6 +10,7 @@ import toaster from '../../utils/toaster';
 import { injectIntl } from 'react-intl';
 import apiService from '../../services/apiService';
 import profilesService from "../../services/profilesService";
+import { Typeahead } from 'react-bootstrap-typeahead';
 
 class ProfilesFormComponent extends React.Component {
     constructor(props) {
@@ -20,14 +21,21 @@ class ProfilesFormComponent extends React.Component {
             isAddMode: !props.id,
             loading: false,
             blocking: false,
+            permissions: [],
+            selectedPermissions: [],
         };
     }
 
-    componentDidMount() {}
+    componentDidMount() {
+        apiService.get('permission', 100, 0).then((response) => {
+            this.setState({permissions: response.permissions});
+        });
+    }
 
     initialValues = {
         id: '',
         name: '',
+        permissions: [],
     };
 
     validationSchema = Yup.object().shape({
@@ -60,6 +68,19 @@ class ProfilesFormComponent extends React.Component {
                     setFieldValue('name', '', false);
                 }
             });
+    };
+
+    onChangePermissions = (opt, setFieldValue) => {
+        setFieldValue('permissions', []);
+
+        if (opt.length > 0) {
+            let permissionsIds = opt.map((o) => {
+                return o.id;
+            });
+            setFieldValue('permissions', permissionsIds);
+        }
+
+        this.setState({ selectedPermissions: opt});
     };
 
     render() {
@@ -143,8 +164,7 @@ class ProfilesFormComponent extends React.Component {
                             <div className='form'>
                                 <div className='card-body'>
                                     <div className='form-group row'>
-
-                                        <div className='col-xl-12 col-lg-12'>
+                                        <div className='col-xl-6 col-lg-6'>
                                             <label>Name</label>
                                             <Field
                                                 as="input"
@@ -157,6 +177,21 @@ class ProfilesFormComponent extends React.Component {
                                                 {...getFieldProps('name')}
                                             />
                                             <ErrorMessage name="name" component="div" className="invalid-feedback" />
+                                        </div>
+                                        <div className='col-lg-6 col-xl-6'>
+                                            <label>Permissions</label>
+                                            <Typeahead
+                                                multiple
+                                                id='typeahead-permissions'
+                                                labelKey="slug"
+                                                size="lg"
+                                                onChange={data => this.onChangePermissions(data, setFieldValue)}
+                                                options={this.state.permissions}
+                                                clearButton={true}
+                                                placeholder=''
+                                                selected={this.state.selectedPermissions}
+                                                class={getInputClasses({errors, touched},'permissions')}
+                                            />
                                         </div>
                                     </div>
                                 </div>
