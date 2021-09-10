@@ -3,7 +3,7 @@ import {ErrorMessage, Field, Formik} from 'formik';
 import * as Yup from 'yup';
 import {Link} from 'react-router-dom';
 import {makeStyles} from '@material-ui/styles';
-import tenantService from '../../services/tenantService';
+import userService from '../../services/userService';
 import apiService from '../../services/apiService';
 import {AsyncTypeahead} from 'react-bootstrap-typeahead';
 import DoneIcon from '@material-ui/icons/Done';
@@ -13,42 +13,55 @@ import BlockUi from "react-block-ui";
 import toaster from '../../utils/toaster';
 import { injectIntl } from 'react-intl';
 
-class TenantFormComponent extends React.Component {
+class UserFormComponent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             intl: props.intl,
             id: props.id,
             isAddMode: !props.id,
-            groups: [],
-            selectedGroup: [],
+            profiles: [],
             username: "",
             password: "",
-            meta_data: "",
+            metadata: "",
+            profile_id: 0,
             loading: false,
             blocking: false,
         };
+
     }
 
     componentDidMount() {
-
+        apiService
+            .get('profile',100, 0)
+            .then((response) => {
+                this.setState({profiles: response.profiles})
+            });
     }
 
     initialValues = {
         id: this.props.id,
+        profileId: 0,
         name: '',
         username: '',
+        email: '',
         password: '',
-        containers: {id: 0},
-        meta_data: '{}',
+        phone: '',
+        address: '',
+        comments: '',
+        metadata: {},
+        profile: {},
     };
 
+
     validationSchema = Yup.object().shape({
-        name: Yup.string().required('Name ID is required'),
+        name: Yup.string().required('Name is required'),
         username: Yup.string().required('Username is required'),
-        password: Yup.string().required('Password is required'),
+        password: Yup.string().required('Password is required').min(6),
         confirmPassword: Yup.string()
-            .oneOf([Yup.ref('password'), null], 'Passwords must match')
+            .oneOf([Yup.ref('password'), null], 'Passwords must match'),
+        email: Yup.string().email(),
+        phone: Yup.number(),
     });
 
     useStyles = makeStyles((theme) => ({
@@ -77,59 +90,30 @@ class TenantFormComponent extends React.Component {
         },
     }));
 
-    getGroups = (records) => {
-        let groups = [];
-        records.map((group) => {
-            const label = this.makeGroupLabel(group);
-            groups.push({ id: group.id, label: label });
-            return null;
+    saveUser = (fields, { setStatus, setSubmitting, resetForm }) => {
+        fields.metadata = JSON.stringify({
+            address: fields.address,
+            phone: fields.address,
+            comments: fields.address,
         });
-        return groups;
-    };
+        const profileArr = this.state.profiles.filter((e) => {
+            return e.id === parseInt(fields.profileId);
+        });
+        fields.profile = profileArr[0];
 
-    makeGroupLabel = (group) => {
-        const parentParent = (group.parent_parent_id !== 0) ? "../" : "";
-        const parent = (group.parent_label !== "") ? `${group.parent_label}/` : "";
-        const label = `${parentParent}${parent}${group.label}`;
-
-        return label;
-    }
-
-    saveTenant = (fields, { setStatus, setSubmitting, resetForm }) => {
-        fields.containers = [{ id : fields.group_id }]
-        console.log(fields)
         this.setState({blocking: true});
         let method = (this.state.isAddMode) ? 'save' : 'update';
         let msgSuccess = (this.state.isAddMode)
-            ? this.state.intl.formatMessage({id: 'DEVICE.CREATED'})
-            : this.state.intl.formatMessage({id: 'DEVICE.UPDATED'});
+            ? this.state.intl.formatMessage({id: 'USER.CREATED'})
+            : this.state.intl.formatMessage({id: 'USER.UPDATED'});
 
-        tenantService[method](fields)
+        userService[method](fields)
             .then((response) => {
                 toaster.notify('success', msgSuccess);
                 this.setState({blocking: false});
+                setSubmitting(false);
             });
     };
-
-    onChangeGroup = (opt, setFieldValue) => {
-        this.setState({ selectedGroup: opt});
-        setFieldValue('group_id', '');
-
-        if (opt.length > 0) {
-            setFieldValue('group_id', opt[0].id);
-        }
-    };
-
-    handleSearchGroup = (query) => {
-        this.setState({loading: true});
-        apiService.getByText('group', query, 100, 0).then((response) => {
-            console.log(response)
-            this.setState({ groups: this.getGroups(response.groups) });
-            this.setState({loading: false});
-        });
-    };
-
-    filterBy = () => true;
 
     render() {
         return (
@@ -139,7 +123,7 @@ class TenantFormComponent extends React.Component {
                 initialValues={this.initialValues}
                 validationSchema={this.validationSchema}
                 onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
-                    this.saveTenant(values, {
+                    this.saveUser(values, {
                         setStatus,
                         setSubmitting,
                         resetForm,
@@ -161,21 +145,15 @@ class TenantFormComponent extends React.Component {
                     useEffect(() => {
                         if (!this.state.isAddMode && this.state.id !== 'new') {
                             apiService
-                            .getById('tenant', this.state.id)
+                            .getById('user', this.state.id)
                             .then((response) => {
-                                const res = response.tenants[0];
+                                const res = response.users[0];
                                 setFieldValue('name', res.name, false);
                                 setFieldValue('username', res.username, false);
 
-                                if (res.containers !== undefined && Array.isArray(res.containers) && res.containers.length > 0) {
-                                    let selectedGroup = [{id: res.containers[0].id, label: this.makeGroupLabel(res.containers[0])}];
-                                    this.setState({ selectedGroup: selectedGroup});
-                                    setFieldValue('group_id', res.containers[0].id, false);
-                                }
-
-                                setFieldValue('meta_data', res.meta_data, false);
-                                if (res.meta_data === '') {
-                                    setFieldValue('meta_data', '{}', false);
+                                setFieldValue('metadata', res.metadata, false);
+                                if (res.metadata === '') {
+                                    setFieldValue('metadata', '{}', false);
                                 }
                             });
                         }
@@ -190,10 +168,10 @@ class TenantFormComponent extends React.Component {
                                 className={`card-header py-3 `+ classes.headerMarginTop}>
                                 <div className='card-title align-items-start flex-column'>
                                     <h3 className='card-label font-weight-bolder text-dark'>
-                                        Tenant Information
+                                        User Information
                                     </h3>
                                     <span className='text-muted font-weight-bold font-size-sm mt-1'>
-                                        Change information about the tenants
+                                        Change information about the users
                                     </span>
                                 </div>
                                 <div className='card-toolbar'>
@@ -222,7 +200,7 @@ class TenantFormComponent extends React.Component {
                                 <div className='card-body'>
                                     <div className='form-group row'>
                                         <div className='col-xl-6 col-lg-6'>
-                                            <label>Tenant Name</label>
+                                            <label>Name</label>
                                             <div>
                                                 <Field
                                                     as="input"
@@ -231,50 +209,47 @@ class TenantFormComponent extends React.Component {
                                                         'name'
                                                     )}`}
                                                     name='name'
-                                                    placeholder='Set the Tenant name'
+                                                    placeholder='Set the name of the user'
                                                     {...getFieldProps('name')}
                                                 />
                                                 <ErrorMessage name="name" component="div" className="invalid-feedback" />
                                             </div>
                                         </div>
-
                                         <div className='col-xl-6 col-lg-6'>
+                                            <label>Profile</label>
+                                            <Field
+                                                component="select"
+                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                    { errors, touched },
+                                                    'type'
+                                                )}`}
+                                                name='profileId'
+                                                placeholder='Select the user profile'
+                                            >
+                                                <option key='0' value=''>&nbsp;</option>
+                                                {this.state.profiles.map((e) =>
+                                                    <option value={e.id} key={e.id}>{e.name}</option>
+                                                )}
+                                            </Field>
+                                        </div>
+                                    </div>
+
+                                    <div className='form-group row'>
+                                        <div className='col-xl-4 col-lg-4'>
                                             <label>Username</label>
                                             <Field
                                                 className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                        {errors, touched},
-                                                        'username'
-                                                    )}`}
+                                                    {errors, touched},
+                                                    'username'
+                                                )}`}
                                                 placeholder='Set the username'
                                                 {...getFieldProps('username')}
                                             />
                                             <ErrorMessage name="username" component="div" className="invalid-feedback" />
                                         </div>
-                                    </div>
 
-                                    <div className='form-group row'>
-                                        <div className='col-xl-6 col-lg-6'>
-                                            <label>
-                                                Groups
-                                            </label>
-                                            <AsyncTypeahead
-                                                id='typeahead-groups'
-                                                labelKey='label'
-                                                size="lg"
-                                                onChange={(data) => this.onChangeGroup(data, setFieldValue)}
-                                                options={this.state.groups}
-                                                clearButton={true}
-                                                placeholder='Start typing see the groups'
-                                                selected={this.state.selectedGroup}
-                                                onSearch={this.handleSearchGroup}
-                                                isLoading={this.state.loading}
-                                                filterBy={this.filterBy}
-                                                className={getInputClasses({errors, touched}, 'group_id')}
-                                            />
-                                            <ErrorMessage name="group_id" component="div" className="invalid-feedback" />
-                                        </div>
 
-                                        <div className='col-xl-6 col-lg-6'>
+                                        <div className='col-xl-4 col-lg-4'>
                                             <label>Password</label>
                                             <Field
                                                 as="input"
@@ -289,29 +264,88 @@ class TenantFormComponent extends React.Component {
                                             />
                                             <ErrorMessage name="password" component="div" className="invalid-feedback" />
                                         </div>
+
+                                        <div className='col-xl-4 col-lg-4'>
+                                            <label>Repeat Password</label>
+                                            <Field
+                                                as="input"
+                                                type="password"
+                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                    {errors, touched},
+                                                    'confirmPassword'
+                                                )}`}
+                                                name='confirmPassword'
+                                                placeholder='confirm your password'
+                                                {...getFieldProps('confirmPassword')}
+                                            />
+                                            <ErrorMessage name="confirmPassword" component="div" className="invalid-feedback" />
+                                        </div>
+                                    </div>
+                                    <div className='form-group row'>
+                                        <div className='col-xl-6 col-lg-6'>
+                                            <label>Email</label>
+                                            <Field
+                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                    {errors, touched},
+                                                    'email'
+                                                )}`}
+                                                placeholder='Set the email'
+                                                {...getFieldProps('email')}
+                                            />
+                                            <ErrorMessage name="email" component="div" className="invalid-feedback" />
+                                        </div>
+
+                                        <div className='col-xl-6 col-lg-6'>
+                                            <label>Phone number</label>
+                                            <Field
+                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                    {errors, touched},
+                                                    'phone'
+                                                )}`}
+                                                placeholder='Set the phone number'
+                                                {...getFieldProps('phone')}
+                                            />
+                                            <ErrorMessage name="phone" component="div" className="invalid-feedback" />
+                                        </div>
                                     </div>
 
                                     <div className='form-group row'>
                                         <div className='col-xl-12 col-lg-12'>
-                                            <label>Metadata</label>
+                                            <label>Address</label>
+                                            <Field
+                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                    {errors, touched},
+                                                    'address'
+                                                )}`}
+                                                placeholder='Set the address'
+                                                {...getFieldProps('address')}
+                                            />
+                                            <ErrorMessage name="address" component="div" className="invalid-feedback" />
+                                        </div>
+                                    </div>
+
+                                    <div className='form-group row'>
+
+                                        <div className='col-xl-12 col-lg-12'>
+                                            <label>Comments</label>
                                             <div>
                                                 <Field
                                                     as="textarea"
-                                                    rows='7'
+                                                    rows='3'
                                                     className={`form-control form-control-lg form-control-solid ${getInputClasses(
                                                         {errors, touched},
-                                                        'meta_data'
+                                                        'comments'
                                                     )}`}
-                                                    name='meta_data'
-                                                    placeholder='Set the meta_data'
+                                                    name='comments'
+                                                    placeholder=''
                                                     {...getFieldProps(
-                                                        'meta_data'
+                                                        'comments'
                                                     )}
                                                 />
-                                                <ErrorMessage name="meta_data" component="div"
-                                                              className="invalid-feedback"/>
+                                                <ErrorMessage name="comments" component="div" className="invalid-feedback" />
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -325,4 +359,4 @@ class TenantFormComponent extends React.Component {
     }
 }
 
-export default injectIntl(TenantFormComponent);
+export default injectIntl(UserFormComponent);
