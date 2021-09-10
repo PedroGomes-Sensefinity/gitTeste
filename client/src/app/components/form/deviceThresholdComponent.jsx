@@ -35,14 +35,12 @@ class DeviceThresholdComponent extends React.Component {
                 this.setState({selectedThresholds: r.thresholds});
                 this.setState({selectedThresholdsId: selectedIds});
             }
-        
+
             this.setState({blocking: false});
         });
     }
 
-    initialValues = {
-        threshold: ''
-    };
+    initialValues = {};
 
     validationSchema = Yup.object().shape({});
 
@@ -52,7 +50,7 @@ class DeviceThresholdComponent extends React.Component {
         }
     }));
 
-    save = (fields, { setFieldValue }) => {
+    save = (fields, { setFieldValue, setSubmitting }) => {
         this.setState({blocking: true});
 
         const config = {
@@ -64,11 +62,17 @@ class DeviceThresholdComponent extends React.Component {
             .then(() => {
                 toaster.notify('success', this.state.intl.formatMessage({id: 'DEVICE.THRESHOLD.SUCCESS'}));
                 this.setState({blocking: false});
+                setSubmitting(false);
             });
     };
 
     onChangeThreshold = (opt) => {
-        const selectedIds = opt.map((t) => t.id);
+        let selectedIds = [];
+
+        if (opt.length > 0) {
+            selectedIds = opt.map((t) => t.id);
+        }
+
         this.setState({ selectedThresholdsId: selectedIds});
         this.setState({ selectedThresholds: opt});
     };
@@ -93,7 +97,7 @@ class DeviceThresholdComponent extends React.Component {
     }
 
     filterBy = () => true;
-    
+
     render() {
         return (
             <BlockUi tag='div' blocking={this.state.blocking}>
@@ -104,6 +108,7 @@ class DeviceThresholdComponent extends React.Component {
                 onSubmit={(values, { setStatus, setSubmitting, resetForm, setFieldValue }) => {
                     this.save(values, {
                         setFieldValue,
+                        setSubmitting
                     });
                 }}
                 >
@@ -159,7 +164,6 @@ class DeviceThresholdComponent extends React.Component {
                                                 multiple
                                                 onChange={this.onChangeThreshold}
                                                 options={this.state.thresholds}
-                                                clearButton={true}
                                                 placeholder=''
                                                 selected={this.state.selectedThresholds}
                                                 onSearch={this.handleSearchThreshold}
