@@ -66,21 +66,6 @@ export function AsideMenuList({ layoutProps }) {
                               <span className="menu-text">Users List</span>
                           </NavLink>
                       </li>
-                      {/*begin::2 Level*/}
-                      <li
-                          className={`menu-item ${getMenuItemActive(
-                              "/users/new"
-                          )}`}
-                          aria-haspopup="true"
-                      >
-                          <NavLink className="menu-link" to="/users/new">
-                              <i className="menu-bullet menu-bullet-dot">
-                                  <span />
-                              </i>
-                              <span className="menu-text">Users Add</span>
-                          </NavLink>
-                      </li>
-                      {/*end::2 Level*/}
                   </ul>
               </div>
           </li>

@@ -53,11 +53,15 @@ class UserFormComponent extends React.Component {
         profile: {},
     };
 
-
     validationSchema = Yup.object().shape({
         name: Yup.string().required('Name is required'),
         username: Yup.string().required('Username is required'),
-        password: Yup.string().required('Password is required').min(6),
+        password: Yup.string().when('id', {
+            is: (id) => {
+                return typeof id === 'undefined'
+            },
+            then: Yup.string().required('Password is required').min(6)
+        }),
         confirmPassword: Yup.string()
             .oneOf([Yup.ref('password'), null], 'Passwords must match'),
         email: Yup.string().email(),
@@ -92,9 +96,9 @@ class UserFormComponent extends React.Component {
 
     saveUser = (fields, { setStatus, setSubmitting, resetForm }) => {
         fields.metadata = JSON.stringify({
-            address: fields.address,
-            phone: fields.address,
-            comments: fields.address,
+            address : fields.address,
+            phone   : fields.phone,
+            comments: fields.comments,
         });
         const profileArr = this.state.profiles.filter((e) => {
             return e.id === parseInt(fields.profileId);
@@ -147,13 +151,20 @@ class UserFormComponent extends React.Component {
                             apiService
                             .getById('user', this.state.id)
                             .then((response) => {
-                                const res = response.users[0];
+                                const res       = response.users[0];
                                 setFieldValue('name', res.name, false);
                                 setFieldValue('username', res.username, false);
+                                setFieldValue('profileId', res.profile.id, false);
+                                setFieldValue('email', res.email, false);
 
-                                setFieldValue('metadata', res.metadata, false);
-                                if (res.metadata === '') {
-                                    setFieldValue('metadata', '{}', false);
+                                if (res.metadata !== '') {
+                                    const metadata  = JSON.parse(res.metadata);
+                                    console.log(metadata.phone)
+                                    console.log(metadata.comments)
+                                    console.log(metadata.address)
+                                    setFieldValue('phone', metadata.phone, false);
+                                    setFieldValue('comments', metadata.comments, false);
+                                    setFieldValue('address', metadata.address, false);
                                 }
                             });
                         }
@@ -234,6 +245,7 @@ class UserFormComponent extends React.Component {
                                         </div>
                                     </div>
 
+                                    { this.state.isAddMode &&
                                     <div className='form-group row'>
                                         <div className='col-xl-4 col-lg-4'>
                                             <label>Username</label>
@@ -248,7 +260,6 @@ class UserFormComponent extends React.Component {
                                             <ErrorMessage name="username" component="div" className="invalid-feedback" />
                                         </div>
 
-
                                         <div className='col-xl-4 col-lg-4'>
                                             <label>Password</label>
                                             <Field
@@ -262,17 +273,16 @@ class UserFormComponent extends React.Component {
                                                 placeholder='Set the password'
                                                 {...getFieldProps('password')}
                                             />
-                                            <ErrorMessage name="password" component="div" className="invalid-feedback" />
+                                            <ErrorMessage name="password" component="div" className="invalid-feedback"/>
                                         </div>
-
                                         <div className='col-xl-4 col-lg-4'>
                                             <label>Repeat Password</label>
                                             <Field
                                                 as="input"
                                                 type="password"
                                                 className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                    {errors, touched},
-                                                    'confirmPassword'
+                                                {errors, touched},
+                                                'confirmPassword'
                                                 )}`}
                                                 name='confirmPassword'
                                                 placeholder='confirm your password'
@@ -281,6 +291,25 @@ class UserFormComponent extends React.Component {
                                             <ErrorMessage name="confirmPassword" component="div" className="invalid-feedback" />
                                         </div>
                                     </div>
+                                    }
+
+                                    {!this.state.isAddMode &&
+                                    <div className='form-group row'>
+                                        <div className='col-xl-12 col-lg-12'>
+                                            <label>Username</label>
+                                            <Field
+                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                    {errors, touched},
+                                                    'username'
+                                                )}`}
+                                                placeholder='Set the username'
+                                                {...getFieldProps('username')}
+                                            />
+                                            <ErrorMessage name="username" component="div" className="invalid-feedback"/>
+                                        </div>
+                                    </div>
+                                    }
+
                                     <div className='form-group row'>
                                         <div className='col-xl-6 col-lg-6'>
                                             <label>Email</label>
