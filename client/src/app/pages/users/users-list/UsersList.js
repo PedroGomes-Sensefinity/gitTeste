@@ -31,7 +31,7 @@ export function UsersList() {
     const classes = useStyles();
     const [show, setShow] = useState(false);
     const [userId, setUserId] = useState(0);
-    const [tenantUsername, setTenantUsername] = useState('');
+    const [userUsername, setUserUsername] = useState('');
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -58,7 +58,7 @@ export function UsersList() {
                         color='secondary'
                         className={classes.button}>
                         <AddIcon className={classes.leftIcon} />
-                        New Tenant
+                        New User
                     </Button>
                 </Link>
                 <TableGrid
@@ -75,7 +75,7 @@ export function UsersList() {
                             tooltip: "Change user's password",
                             onClick: (event, rowData) => {
                                 setUserId(rowData.id)
-                                setTenantUsername(rowData.username)
+                                setUserUsername(rowData.username)
                                 handleShow(true);
                             },
                         },
@@ -91,8 +91,8 @@ export function UsersList() {
                 content={ChangePasswordComponent}
                 show={show}
                 handleClose={handleClose}
-                title={'Changing password [' + tenantUsername + ']'}
-                // title={intl.formatMessage({id: 'MODAL.PASSWORD.TITLE'}) + tenantUsername}
+                title={'Changing password [' + userUsername + ']'}
+                // title={intl.formatMessage({id: 'MODAL.PASSWORD.TITLE'}) + userUsername}
             />
         </Card>
 
