@@ -44,9 +44,11 @@ class TenantFormComponent extends React.Component {
     };
 
     validationSchema = Yup.object().shape({
-        name: Yup.string().required('Device ID is required'),
-        username: Yup.string().required('Label is required'),
-        password: Yup.string().required('Group is required')
+        name: Yup.string().required('Name ID is required'),
+        username: Yup.string().required('Username is required'),
+        password: Yup.string().required('Password is required'),
+        confirmPassword: Yup.string()
+            .oneOf([Yup.ref('password'), null], 'Passwords must match')
     });
 
     useStyles = makeStyles((theme) => ({

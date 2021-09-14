@@ -35,5 +35,7 @@
   "BOARDFAMILYTEMPLATE.CREATED": "Board family template created successfully",
   "BOARDFAMILYTEMPLATE.UPDATED": "Board family template updated successfully",
   "PROFILES.CREATED": "Profile created successfully",
-  "PROFILES.UPDATED": "Profile updated successfully"
+  "PROFILES.UPDATED": "Profile updated successfully",
+  "USER.CREATED": "User created successfully",
+  "USER.UPDATED": "User updated successfully"
 }
