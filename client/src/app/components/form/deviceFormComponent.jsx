@@ -61,6 +61,7 @@ class DeviceFormComponent extends React.Component {
         id: Yup.string().required('Device ID is required'),
         label: Yup.string().required('Label is required'),
         group_id: Yup.string().required('Group is required'),
+        board_family_id: Yup.number().required('Board family is required'),
         meta_data: Yup.string()
                     .required('Metadata is required')
                     .isJson("Metadata needs to be a valid JSON"),
@@ -72,28 +73,8 @@ class DeviceFormComponent extends React.Component {
     });
 
     useStyles = makeStyles((theme) => ({
-        root: {
-            display: 'flex',
-            flexWrap: 'wrap',
-        },
-        formControl: {
-            margin: theme.spacing(1),
-            minWidth: 120,
-            maxWidth: 300,
-        },
-        chips: {
-            display: 'flex',
-            flexWrap: 'wrap',
-        },
-        chip: {
-            margin: 2,
-            height: 50,
-        },
         headerMarginTop: {
             marginTop: theme.spacing(5),
-        },
-        noLabel: {
-            marginTop: theme.spacing(3),
         },
     }));
 
@@ -124,7 +105,7 @@ class DeviceFormComponent extends React.Component {
         return label;
     }
 
-    saveDevice = (fields, { setStatus, setSubmitting, resetForm }) => {
+    saveDevice = (fields, { setFieldValue, setSubmitting, resetForm }) => {
         this.setState({blocking: true});
         let method = (this.state.isAddMode) ? 'save' : 'update';
         let msgSuccess = (this.state.isAddMode)
@@ -133,13 +114,17 @@ class DeviceFormComponent extends React.Component {
 
         deviceService[method](fields)
             .then((response) => {
-                toaster.notify('success', msgSuccess, () => {
-                    history.push(`/devices/list`);
-                });
+                toaster.notify('success', msgSuccess);
                 this.setState({blocking: false});
+                setSubmitting(false);
+
+                // clean form
+                resetForm(this.initialValues);
+                this.setState({selectedGroup: []});
+                this.setState({selectedBoardFamily: []});
             });
     };
-    
+
     onChangeGroup = (opt, setFieldValue) => {
         this.setState({ selectedGroup: opt});
         setFieldValue('group_id', '');
@@ -148,7 +133,7 @@ class DeviceFormComponent extends React.Component {
             setFieldValue('group_id', opt[0].id);
         }
     };
-    
+
     onChangeParent = (opt, setFieldValue) => {
         this.setState({ selectedParent: opt});
         setFieldValue('parent_id', '');
@@ -157,7 +142,7 @@ class DeviceFormComponent extends React.Component {
             setFieldValue('parent_id', opt[0].id);
         }
     };
-    
+
     onChangeBoardFamily = (opt, setFieldValue) => {
         setFieldValue('board_family_id', '');
         setFieldValue('force_board_id', false);
@@ -168,7 +153,7 @@ class DeviceFormComponent extends React.Component {
         }
         this.setState({ selectedBoardFamily: opt});
     };
-    
+
     getSelectedBoardFamily = (boardFamilyId) => {
         return this.state.boardFamilies.filter(b => b.id == boardFamilyId);
     };
@@ -191,7 +176,7 @@ class DeviceFormComponent extends React.Component {
     };
 
     filterBy = () => true;
-    
+
     render() {
         return (
             <BlockUi tag='div' blocking={this.state.blocking}>
@@ -199,9 +184,9 @@ class DeviceFormComponent extends React.Component {
                 enableReinitialize
                 initialValues={this.initialValues}
                 validationSchema={this.validationSchema}
-                onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
+                onSubmit={(values, { setFieldValue, setSubmitting, resetForm }) => {
                     this.saveDevice(values, {
-                        setStatus,
+                        setFieldValue,
                         setSubmitting,
                         resetForm,
                     });
@@ -215,7 +200,7 @@ class DeviceFormComponent extends React.Component {
                     isSubmitting,
                     setFieldValue,
                     handleSubmit,
-                    handleChange
+                    values
                 }) => {
                     const classes = this.useStyles();
 
@@ -239,13 +224,13 @@ class DeviceFormComponent extends React.Component {
                                     let selectedBoardFamily = this.getSelectedBoardFamily(device.board_family_id);
                                     let forceBoardId = false;
                                     this.setState({ selectedBoardFamily: selectedBoardFamily});
-                                    
+
                                     if(selectedBoardFamily[0]) {
-                                        forceBoardId = (typeof selectedBoardFamily[0].force_board_id !== 'undefined') 
+                                        forceBoardId = (typeof selectedBoardFamily[0].force_board_id !== 'undefined')
                                         ? selectedBoardFamily[0].force_board_id
                                         : false;
                                     }
-                                    
+
                                     setFieldValue('force_board_id', forceBoardId, false);
                                 }
 
@@ -281,6 +266,9 @@ class DeviceFormComponent extends React.Component {
                                     <span className='text-muted font-weight-bold font-size-sm mt-1'>
                                         Change general settings of your device
                                     </span>
+                                    <span className='text-muted font-weight-bold font-size-sm mt-1'>
+                                        <label className="required">&nbsp;</label> All fields marked with asterisks are required
+                                    </span>
                                 </div>
                                 <div className='card-toolbar'>
                                     <button
@@ -308,7 +296,7 @@ class DeviceFormComponent extends React.Component {
                                 <div className='card-body'>
                                     <div className='form-group row'>
                                         <div className='col-xl-6 col-lg-6'>
-                                            <label>Device ID</label>
+                                            <label className={`required`}>Device ID</label>
                                             <div>
                                                 <Field
                                                     as="input"
@@ -326,7 +314,7 @@ class DeviceFormComponent extends React.Component {
                                         </div>
 
                                         <div className='col-xl-6 col-lg-6'>
-                                            <label>Label</label>
+                                            <label className={`required`}>Label</label>
                                             <Field
                                                 as="input"
                                                 className={`form-control form-control-lg form-control-solid ${getInputClasses(
@@ -343,9 +331,7 @@ class DeviceFormComponent extends React.Component {
 
                                     <div className='form-group row'>
                                         <div className='col-xl-6 col-lg-6'>
-                                            <label>
-                                                Groups
-                                            </label>
+                                            <label className={`required`}>Groups</label>
                                             <AsyncTypeahead
                                                 id='typeahead-groups'
                                                 labelKey='label'
@@ -381,25 +367,24 @@ class DeviceFormComponent extends React.Component {
                                             <ErrorMessage name="parentId" component="div" className="invalid-feedback" />
                                         </div>
                                     </div>
-                                    
+
                                     <div className='form-group row'>
                                         <div className='col-lg-3 col-xl-3'>
-                                            <label>Board Family</label>
+                                            <label className={`required`}>Board Family</label>
                                             <Typeahead
                                                 id='typeahead-board-family'
                                                 labelKey="name"
                                                 size="lg"
                                                 onChange={data => this.onChangeBoardFamily(data, setFieldValue)}
                                                 options={this.state.boardFamilies}
-                                                clearButton={true}
                                                 placeholder=''
                                                 selected={this.state.selectedBoardFamily}
-                                                class={getInputClasses({errors, touched},'board_family_id')}
+                                                className={getInputClasses({errors, touched},'board_family_id')}
                                             />
                                             <ErrorMessage name="board_family_id" component="div" className="invalid-feedback" />
                                         </div>
                                         <div className='col-lg-3 col-xl-3'>
-                                            <label>Board ID</label>
+                                            <label className={`${values.force_board_id ? 'required' : ''}`}>Board ID</label>
                                             <div>
                                                 <Field
                                                     as="input"
@@ -435,7 +420,7 @@ class DeviceFormComponent extends React.Component {
                                     <div className='form-group row'>
                                         {this.state.tenant.type === 'master' &&
                                         <div className='col-xl-6 col-lg-6'>
-                                            <label>Metadata</label>
+                                            <label className={`required`}>Metadata</label>
                                             <div>
                                                 <Field
                                                     as="textarea"
