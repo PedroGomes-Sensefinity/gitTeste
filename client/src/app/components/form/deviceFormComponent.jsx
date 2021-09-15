@@ -12,8 +12,7 @@ import {getInputClasses} from '../../utils/formik';
 import '../../utils/yup-validations';
 import BlockUi from "react-block-ui";
 import toaster from '../../utils/toaster';
-import { injectIntl } from 'react-intl';
-import history from '../../history';
+import {injectIntl} from 'react-intl';
 
 class DeviceFormComponent extends React.Component {
     constructor(props) {
@@ -70,6 +69,7 @@ class DeviceFormComponent extends React.Component {
             is: true,
             then: Yup.string().required('Board is required')
         }),
+        comments: Yup.string().max(256, 'Comments must be at most 256 characters'),
     });
 
     useStyles = makeStyles((theme) => ({
@@ -119,9 +119,11 @@ class DeviceFormComponent extends React.Component {
                 setSubmitting(false);
 
                 // clean form
-                resetForm(this.initialValues);
-                this.setState({selectedGroup: []});
-                this.setState({selectedBoardFamily: []});
+                if (this.state.isAddMode) {
+                    resetForm(this.initialValues);
+                    this.setState({selectedGroup: []});
+                    this.setState({selectedBoardFamily: []});
+                }
             });
     };
 
