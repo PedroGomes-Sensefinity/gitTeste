@@ -8,7 +8,7 @@ import {getInputClasses} from '../../utils/formik';
 import BlockUi from "react-block-ui";
 import toaster from '../../utils/toaster';
 import {injectIntl} from 'react-intl';
-import { Button, Container, Modal } from 'react-bootstrap'
+import {Button, Container, Modal} from 'react-bootstrap'
 import BuildIcon from '@material-ui/icons/Build';
 import {Typeahead} from 'react-bootstrap-typeahead';
 import apiService from '../../services/apiService';
@@ -36,11 +36,13 @@ class DeviceConfigMessageComponent extends React.Component {
                 boardFamilyTemplatesService.byBoardFamily(device.board_family_id, 100, 0).then(response => {
                     let templates = [];
 
-                    response.board_family_templates.forEach(function (t, i) {
-                        t.version = String(t.version);
+                    if ('board_family_templates' in response) {
+                        response.board_family_templates.forEach(function (t, i) {
+                            t.version = String(t.version);
 
-                        templates.push(t);
-                    });
+                            templates.push(t);
+                        });
+                    }
 
                     this.setState({ templates: templates });
                 });
@@ -127,7 +129,7 @@ class DeviceConfigMessageComponent extends React.Component {
             </Modal>
         );
       }
-    
+
     render() {
         return (
             <BlockUi tag='div' blocking={this.state.blocking}>
@@ -207,7 +209,7 @@ class DeviceConfigMessageComponent extends React.Component {
                                             </div>
                                         </div>
                                         <div className='col-xl-2 col-lg-2'>
-                                            <Button 
+                                            <Button
                                                 className='btn btn-success'
                                                 onClick={() => this.setState({modalShow: true}) }
                                             >
