@@ -27,6 +27,8 @@
   "MODAL.PASSWORD.FIELD.PASSWORD.HINT": "Senha é obrigatória",
   "MODAL.PASSWORD.FIELD.CONFIRM": "Confirmar a senha",
   "MODAL.PASSWORD.FIELD.CONFIRM.HINT": "Confirmar a senha",
+  "GROUP.CREATED": "Grupo criado com sucesso",
+  "GROUP.UPDATED": "Grupo atualizado com sucesso",
   "THRESHOLD.CREATED": "Threshold criado com sucesso",
   "THRESHOLD.UPDATED": "Threshold atualizado com sucesso",
   "THRESHOLD.ACTION_SAVED": "Ação para threshold vinculada com sucesso",
