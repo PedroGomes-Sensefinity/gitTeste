@@ -10,8 +10,9 @@ import {getInputClasses} from '../../utils/formik';
 import '../../utils/yup-validations';
 import BlockUi from "react-block-ui";
 import toaster from '../../utils/toaster';
-import { injectIntl } from 'react-intl';
+import {injectIntl} from 'react-intl';
 import thresholdService from "../../services/thresholdService";
+import groupsService from "../../services/groupsService";
 
 class GroupsFormComponent extends React.Component {
     constructor(props) {
@@ -60,28 +61,8 @@ class GroupsFormComponent extends React.Component {
     });
 
     useStyles = makeStyles((theme) => ({
-        root: {
-            display: 'flex',
-            flexWrap: 'wrap',
-        },
-        formControl: {
-            margin: theme.spacing(1),
-            minWidth: 120,
-            maxWidth: 300,
-        },
-        chips: {
-            display: 'flex',
-            flexWrap: 'wrap',
-        },
-        chip: {
-            margin: 2,
-            height: 50,
-        },
         headerMarginTop: {
             marginTop: theme.spacing(5),
-        },
-        noLabel: {
-            marginTop: theme.spacing(3),
         },
     }));
 
@@ -96,38 +77,45 @@ class GroupsFormComponent extends React.Component {
 
     getGroups = (records) => {
         let groups = [];
-        records.map((group) => {
-            const label = this.makeGroupLabel(group);
-            groups.push({ id: group.id, label: label });
-            return null;
-        });
+        if (Array.isArray(records)) {
+            records.map((group) => {
+                const label = this.makeGroupLabel(group);
+                groups.push({id: group.id, label: label});
+                return null;
+            });
+        }
         return groups;
     };
 
     makeGroupLabel = (group) => {
         const parentParent = (group.parent_parent_id !== 0) ? "../" : "";
         const parent = (group.parent_label !== "") ? `${group.parent_label}/` : "";
-        const label = `${parentParent}${parent}${group.label}`;
-
-        return label;
+        return `${parentParent}${parent}${group.label}`;
     }
 
     save = (fields, { setStatus, setSubmitting, resetForm }) => {
         this.setState({blocking: true});
         let method = (this.state.isAddMode) ? 'save' : 'update';
         let msgSuccess = (this.state.isAddMode)
-            ? this.state.intl.formatMessage({id: 'DEVICE.CREATED'})
-            : this.state.intl.formatMessage({id: 'DEVICE.UPDATED'});
+            ? this.state.intl.formatMessage({id: 'GROUP.CREATED'})
+            : this.state.intl.formatMessage({id: 'GROUP.UPDATED'});
 
         fields.thresholds = this.state.selectedThresholds
 
-        thresholdService[method](fields)
+        groupsService[method](fields)
             .then((response) => {
                 toaster.notify('success', msgSuccess);
                 this.setState({blocking: false});
+                setSubmitting(false);
+
+                if (this.state.isAddMode) {
+                    resetForm(this.initialValues);
+                    this.setState({selectedGroup: []});
+                    this.setState({selectedThresholds: []});
+                }
             });
     };
-    
+
     onChangeGroup = (opt, setFieldValue) => {
         this.setState({ selectedGroup: opt});
         setFieldValue('parent_id', '');
@@ -173,7 +161,7 @@ class GroupsFormComponent extends React.Component {
     }
 
     filterBy = () => true;
-    
+
     render() {
         return (
             <BlockUi tag='div' blocking={this.state.blocking}>
@@ -247,6 +235,9 @@ class GroupsFormComponent extends React.Component {
                                     <span className='text-muted font-weight-bold font-size-sm mt-1'>
                                         Change general configurations about a group
                                     </span>
+                                    <span className='text-muted font-weight-bold font-size-sm mt-1'>
+                                        <label className="required">&nbsp;</label> All fields marked with asterisks are required
+                                    </span>
                                 </div>
                                 <div className='card-toolbar'>
                                     <button
@@ -261,7 +252,7 @@ class GroupsFormComponent extends React.Component {
                                         {isSubmitting}
                                     </button>
                                     <Link
-                                        to='/devices/list'
+                                        to='/groups/list'
                                         className='btn btn-secondary'>
                                         Cancel
                                     </Link>
@@ -275,7 +266,7 @@ class GroupsFormComponent extends React.Component {
                                     <div className='form-group row'>
 
                                         <div className='col-xl-6 col-lg-6'>
-                                            <label>Group Label</label>
+                                            <label className={`required`}>Group Label</label>
                                             <Field
                                                 as="input"
                                                 className={`form-control form-control-lg form-control-solid ${getInputClasses(
@@ -291,16 +282,13 @@ class GroupsFormComponent extends React.Component {
 
 
                                         <div className='col-xl-6 col-lg-6'>
-                                            <label>
-                                                Parent Group
-                                            </label>
+                                            <label className={`required`}>Parent Group</label>
                                             <AsyncTypeahead
                                                 id='typeahead-groups'
                                                 labelKey='label'
                                                 size="lg"
                                                 onChange={(data) => this.onChangeGroup(data, setFieldValue)}
                                                 options={this.state.groups}
-                                                clearButton={true}
                                                 placeholder=''
                                                 selected={this.state.selectedGroup}
                                                 onSearch={this.handleSearchGroup}
