@@ -74,10 +74,7 @@ class ProfilesFormComponent extends React.Component {
         setFieldValue('permissions', []);
 
         if (opt.length > 0) {
-            let permissionsIds = opt.map((o) => {
-                return o.id;
-            });
-            setFieldValue('permissions', permissionsIds);
+            setFieldValue('permissions', opt);
         }
 
         this.setState({ selectedPermissions: opt});
@@ -110,7 +107,6 @@ class ProfilesFormComponent extends React.Component {
                     const classes = this.useStyles();
 
                     useEffect(() => {
-                        console.log(this.state.isAddMode, this.state.id);
                         if (!this.state.isAddMode && this.state.id !== 'new') {
                             apiService
                             .getById('profile', this.state.id)
@@ -119,6 +115,12 @@ class ProfilesFormComponent extends React.Component {
                                     let profile = response.profiles[0];
                                     setFieldValue('id', profile.id, false);
                                     setFieldValue('name', profile.name, false);
+
+                                    if ('permissions' in profile && Array.isArray(profile.permissions)) {
+                                        this.setState({selectedPermissions: profile.permissions});
+                                        setFieldValue('name', profile.name, false);
+                                        setFieldValue('permissions', profile.permissions);
+                                    }
                                 }
                             });
                         }
