@@ -39,5 +39,7 @@
   "PROFILES.CREATED": "Profile created successfully",
   "PROFILES.UPDATED": "Profile updated successfully",
   "USER.CREATED": "User created successfully",
-  "USER.UPDATED": "User updated successfully"
+  "USER.UPDATED": "User updated successfully",
+  "TENANT.CREATED": "Tenant created successfully",
+  "TENANT.UPDATED": "Tenant updated successfully"
 }

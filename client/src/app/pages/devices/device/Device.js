@@ -23,7 +23,6 @@ export function Device({history, match}) {
                 <Tabs value={value} indicatorColor="primary" textColor="primary" onChange={handleChange}>
                     <Tab label="Device Info"/>
                     <Tab label="Thresholds" disabled={typeof id === 'undefined'}/>
-                    <Tab label="Configuration" disabled={typeof id === 'undefined'} hidden={tenant.type !== 'master'} />
                 </Tabs>
             </Paper>
             <TabContainer>

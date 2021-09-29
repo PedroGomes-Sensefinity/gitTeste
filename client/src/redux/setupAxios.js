@@ -12,10 +12,12 @@ export default function setupAxios(axios, store) {
             /**
              * Common headers
              */
-            config.headers['Content-Type'] = 'application/json';
+            if (typeof config.headers['Content-Type'] === 'undefined') {
+                config.headers['Content-Type']  = 'application/json';
+            }
             config.headers['Cache-Control'] = 'no-cache';
-            config.headers['Accept'] = 'application/json';
-            config.headers['Version'] = process.env.REACT_APP_REST_API_VERSION;
+            config.headers['Accept']        = 'application/json';
+            config.headers['Version']       = process.env.REACT_APP_REST_API_VERSION;
 
             return config;
         },
