@@ -24,6 +24,7 @@ import { ProfilesList } from "./pages/profiles/profiles-list/ProfilesList";
 import {UsersList} from "./pages/users/users-list/UsersList";
 import {UsersForm} from "./pages/users/users-form/UsersForm";
 import {TenantsNewList} from "./pages/tenants.new/tenants-list/TenantsList";
+import {TenantsNewForm} from "./pages/tenants.new/tenants-form/TenantsForm";
 
 /*const UserProfilepage = lazy(() =>
   import("./modules/UserProfile/UserProfilePage")
@@ -83,8 +84,8 @@ export default function BasePage() {
 
         { /* Tenants (as companies Routes*/}
         <ContentRoute path="/tenants-new/list" component={TenantsNewList} />
-        {/*<ContentRoute path="/tenants-new/new" component={UsersForm} />*/}
-        {/*<ContentRoute path="/tenants-new/edit/:id" component={UsersForm} />*/}
+        <ContentRoute path="/tenants-new/new" component={TenantsNewForm} />
+        <ContentRoute path="/tenants-new/edit/:id" component={TenantsNewForm} />
 
         { /* Alarms Routes*/}
         <ContentRoute path="/alarms/list" component={AlarmsList} />
