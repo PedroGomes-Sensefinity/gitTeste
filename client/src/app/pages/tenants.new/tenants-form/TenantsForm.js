@@ -1,10 +1,34 @@
 import React from "react";
-import TenantFormComponent from "../../../components/form/tenantFormComponent";
+import TenantsFormComponent from "../../../components/form/TenantsComponent";
+import {Paper, Tab, Tabs} from "@material-ui/core";
+import {TabContainer} from "react-bootstrap";
+import TenantsPersonalizationComponent from "../../../components/form/TenantsPersonalizationComponent";
 
-export function TenantsForm({match}) {
+export function TenantsNewForm({match}) {
     const {id} = match.params;
+    const [value, setValue] = React.useState(0);
+
+    function handleChange(event, newValue) {
+        setValue(newValue);
+    }
 
     return (
-        <TenantFormComponent id={id} />
-    );
+        <div>
+            <Paper square>
+                <Tabs value={value}
+                      indicatorColor="primary"
+                      textColor="primary"
+                      onChange={handleChange}>
+                    <Tab label="Tenant"/>
+                    <Tab label="Personalization"/>
+                </Tabs>
+            </Paper>
+            <TabContainer>
+                {value === 0 && <TenantsFormComponent id={id} />}
+            </TabContainer>
+            <TabContainer>
+                {value === 1 && <TenantsPersonalizationComponent id={id} />}
+            </TabContainer>
+        </div>
+    )
 }

@@ -159,9 +159,6 @@ class UserFormComponent extends React.Component {
 
                                 if (res.metadata !== '') {
                                     const metadata  = JSON.parse(res.metadata);
-                                    console.log(metadata.phone)
-                                    console.log(metadata.comments)
-                                    console.log(metadata.address)
                                     setFieldValue('phone', metadata.phone, false);
                                     setFieldValue('comments', metadata.comments, false);
                                     setFieldValue('address', metadata.address, false);
