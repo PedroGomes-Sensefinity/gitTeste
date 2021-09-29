@@ -7,18 +7,10 @@ const apiService = {
                 .get(`${process.env.REACT_APP_REST_API_URL}${endpoint}/limit/${limit}/offset/${offset}`)
                 .then(function(response) {
                     if (response.status !== 200) {
-                        return [];
+                        resolve([]);
                     }
-                
-                    return response.data;
-                })
-                .then(function(responseData) {
-                    var result = {total: 0, devices: []};
-                    
-                    if (typeof responseData.data !== 'undefined') {
-                        result = responseData.data;
-                    }
-                    resolve(result);
+
+                    resolve(response.data.data);
                 })
                 .catch(function(err) {
                     console.log(err);
@@ -34,7 +26,7 @@ const apiService = {
                     if (response.status !== 200) {
                         return [];
                     }
-                
+
                     return response.data;
                 })
                 .then(function(responseData){
@@ -84,7 +76,7 @@ const apiService = {
                     if (response.status !== 200) {
                         return [];
                     }
-                
+
                     return response.data;
                 })
                 .then(function(responseData){
@@ -109,7 +101,7 @@ const apiService = {
                     if (response.status !== 200) {
                         return [];
                     }
-                
+
                     return response.data;
                 })
                 .then(function(responseData){
