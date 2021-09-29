@@ -38,6 +38,44 @@ export function AsideMenuList({ layoutProps }) {
               className={`menu-item ${getMenuItemActive("/users", true)}`}
               aria-haspopup="true"
           >
+              <NavLink className="menu-link menu-toggle" to="/tenants/new">
+            <span className="svg-icon menu-icon">
+              <SVG src={toAbsoluteUrl("/media/svg/icons/Files/User-folder.svg")} />
+            </span>
+                  <span className="menu-text">Tenants New</span>
+              </NavLink>
+              <div className="menu-submenu">
+                  <i className="menu-arrow" />
+                  <ul className="menu-subnav">
+                      <li className="menu-item menu-item-parent" aria-haspopup="true">
+                        <span className="menu-link">
+                          <span className="menu-text">Tenants</span>
+                        </span>
+                      </li>
+                      {/*begin::2 Level*/}
+                      <li
+                          className={`menu-item ${getMenuItemActive(
+                              "/tenants"
+                          )}`}
+                          aria-haspopup="true"
+                      >
+                          <NavLink className="menu-link" to="/tenants-new/list">
+                              <i className="menu-bullet menu-bullet-dot">
+                                  <span />
+                              </i>
+                              <span className="menu-text">Tenants List</span>
+                          </NavLink>
+                      </li>
+                  </ul>
+              </div>
+          </li>
+          {/*end::1 Level*/}
+
+          {/*begin::1 Level*/}
+          <li
+              className={`menu-item ${getMenuItemActive("/users", true)}`}
+              aria-haspopup="true"
+          >
               <NavLink className="menu-link menu-toggle" to="/users">
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/Files/User-folder.svg")} />
