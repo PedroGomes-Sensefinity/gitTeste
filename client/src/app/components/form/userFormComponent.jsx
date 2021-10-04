@@ -21,6 +21,7 @@ class UserFormComponent extends React.Component {
             id: props.id,
             isAddMode: !props.id,
             profiles: [],
+            tenants: [],
             username: "",
             password: "",
             metadata: "",
@@ -37,11 +38,17 @@ class UserFormComponent extends React.Component {
             .then((response) => {
                 this.setState({profiles: response.profiles})
             });
+        apiService
+            .get('tenant_new',100, 0)
+            .then((response) => {
+                this.setState({tenants: response.tenants_new})
+            });
     }
 
     initialValues = {
         id: this.props.id,
         profileId: 0,
+        tenantId: 0,
         name: '',
         username: '',
         email: '',
@@ -95,21 +102,29 @@ class UserFormComponent extends React.Component {
     }));
 
     saveUser = (fields, { setStatus, setSubmitting, resetForm }) => {
-        fields.metadata = JSON.stringify({
-            address : fields.address,
-            phone   : fields.phone,
-            comments: fields.comments,
-        });
-        const profileArr = this.state.profiles.filter((e) => {
-            return e.id === parseInt(fields.profileId);
-        });
-        fields.profile = profileArr[0];
-
         this.setState({blocking: true});
         let method = (this.state.isAddMode) ? 'save' : 'update';
         let msgSuccess = (this.state.isAddMode)
             ? this.state.intl.formatMessage({id: 'USER.CREATED'})
             : this.state.intl.formatMessage({id: 'USER.UPDATED'});
+
+        fields.metadata = JSON.stringify({
+            address : fields.address,
+            phone   : fields.phone,
+            comments: fields.comments,
+        });
+
+        // Profile Selection
+        const profileArr = this.state.profiles.filter((e) => {
+            return e.id === parseInt(fields.profileId);
+        });
+        fields.profile = profileArr[0];
+
+        // Tenant Selection
+        const tenantArr = this.state.tenants.filter((e) => {
+            return e.id === parseInt(fields.tenantId);
+        });
+        fields.tenant = tenantArr[0];
 
         userService[method](fields)
             .then((response) => {
@@ -155,6 +170,7 @@ class UserFormComponent extends React.Component {
                                 setFieldValue('name', res.name, false);
                                 setFieldValue('username', res.username, false);
                                 setFieldValue('profileId', res.profile.id, false);
+                                setFieldValue('tenantId', res.tenant.id, false);
                                 setFieldValue('email', res.email, false);
 
                                 if (res.metadata !== '') {
@@ -207,7 +223,7 @@ class UserFormComponent extends React.Component {
                             <div className='form'>
                                 <div className='card-body'>
                                     <div className='form-group row'>
-                                        <div className='col-xl-6 col-lg-6'>
+                                        <div className='col-xl-4 col-lg-4'>
                                             <label>Name</label>
                                             <div>
                                                 <Field
@@ -223,7 +239,24 @@ class UserFormComponent extends React.Component {
                                                 <ErrorMessage name="name" component="div" className="invalid-feedback" />
                                             </div>
                                         </div>
-                                        <div className='col-xl-6 col-lg-6'>
+                                        <div className='col-xl-4 col-lg-4'>
+                                            <label>Tenant</label>
+                                            <Field
+                                                component="select"
+                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                    { errors, touched },
+                                                    'type'
+                                                )}`}
+                                                name='tenantId'
+                                                placeholder='Select tenant for this user'
+                                            >
+                                                <option key='0' value=''>&nbsp;</option>
+                                                {this.state.tenants.map((e) =>
+                                                    <option value={e.id} key={e.id}>{e.name}</option>
+                                                )}
+                                            </Field>
+                                        </div>
+                                        <div className='col-xl-4 col-lg-4'>
                                             <label>Profile</label>
                                             <Field
                                                 component="select"
