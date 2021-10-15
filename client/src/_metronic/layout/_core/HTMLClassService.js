@@ -1,5 +1,6 @@
 import objectPath from "object-path";
 import {toAbsoluteUrl} from "../../_helpers";
+import { getTenantLogo } from '../../../app/services/authService';
 
 export class HtmlClassService {
   // Public properties
@@ -60,7 +61,7 @@ export class HtmlClassService {
     const subheaderFixed = objectPath.get(updatedConfig, "subheader.fixed");
     if (subheaderFixed && headerSelfFixedDesktop) {
       // Page::setOption('layout', 'subheader/style', 'solid');
-      updatedConfig.subheader.style = "solid";      
+      updatedConfig.subheader.style = "solid";
     } else {
       // Page::setOption('layout', 'subheader/fixed', false);
       updatedConfig.subheader.fixed = false;
@@ -98,7 +99,16 @@ export class HtmlClassService {
     if (brandSkin === "light") {
       return toAbsoluteUrl("/media/logos/logo-dark.png");
     } else {
-      return toAbsoluteUrl("/media/logos/sensefinity_iot-small.png");
+        var tenantLogo = getTenantLogo();
+
+        /**
+         * Default logo
+         */
+        if(tenantLogo === '') {
+            tenantLogo = toAbsoluteUrl("/media/logos/sensefinity_iot-small.png");
+        }
+
+        return tenantLogo;
     }
   }
 
