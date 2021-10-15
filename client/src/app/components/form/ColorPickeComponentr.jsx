@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { SketchPicker } from 'react-color';
 export const ColorPickerComponent = ({label, onChange}) => {
-    const [color, setColor] = useState("#333");
+    const [color, setColor] = useState(label);
     const handleChange = color => {
         setColor(color.hex);
     };

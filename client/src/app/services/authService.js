@@ -4,13 +4,15 @@ import moment from 'moment';
 
 export const TOKEN_KEY = '@sense-token';
 export const USER_KEY = '@sense-user';
+export const TENANT_LOGO_KEY = '@sense-tenant-logo';
 
 export const isAuthenticated = () => localStorage.getItem(TOKEN_KEY) !== null;
 
 export const getToken = () => localStorage.getItem(TOKEN_KEY);
 export const getUser = () => JSON.parse(localStorage.getItem(USER_KEY));
+export const getTenantLogo = () => localStorage.getItem(TENANT_LOGO_KEY);
 
-export const login = (username, password) => {
+/*export const login = (username, password) => {
     let config = {
         auth: {
             username: username,
@@ -18,6 +20,13 @@ export const login = (username, password) => {
         },
     };
     return axios.get(`${process.env.REACT_APP_REST_API_URL}jwt/`, config);
+};*/
+
+export const login = (email, password) => {
+    return axios.post(`${process.env.REACT_APP_REST_API_URL}auth/login/`, {
+        email: email,
+        password: password,
+    });
 };
 
 
@@ -36,6 +45,10 @@ export const setToken = (token) => {
 
 export const setUser = (user) => {
     localStorage.setItem(USER_KEY, JSON.stringify(user));
+};
+
+export const setTenantLogo = (logo) => {
+    localStorage.setItem(TENANT_LOGO_KEY, logo);
 };
 
 export const removeToken = () => {
@@ -58,6 +71,6 @@ export const checkJwtIsCloseToExpire = () => {
 
     let duration = moment.duration(expireToken.diff(now));
     let minutes = duration.asMinutes();
-    
+
     return (minutes < 5);
 };

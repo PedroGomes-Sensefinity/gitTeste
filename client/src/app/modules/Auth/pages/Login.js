@@ -8,7 +8,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 //import { login } from '../_redux/authService';
 import { toAbsoluteUrl } from '../../../../_metronic/_helpers';
 import toaster from '../../../utils/toaster';
-import { login, setToken, setUser } from '../../../services/authService';
+import { login, setToken, setUser, setTenantLogo } from '../../../services/authService';
 import history from '../../../history';
 
 /*
@@ -81,18 +81,21 @@ function Login(props) {
                         let user = {
                             username: tenant.username,
                             password: '',
-                            email: '',
+                            email: tenant.email,
                             authToken: tenant.hash,
                             refreshToken: tenant.hash,
+                            tenantLogo: ("logo" in tenant) ? tenant.logo : '',
+                            tenant: ("tenant" in tenant) ? tenant.tenant : '',
                             roles: [1], // Administrator
                             pic: toAbsoluteUrl('/media/users/300_21.jpg'),
-                            fullname: tenant.username,
-                            firstname: tenant.username,
+                            fullname: "",
+                            firstname: "",
                             lastname: '',
                         };
 
                         setToken(tenant.hash);
                         setUser(user);
+                        setTenantLogo(user.tenantLogo);
                         history.push("/");
 
                         disableLoading();
@@ -157,7 +160,7 @@ function Login(props) {
 
                 <div className='form-group fv-plugins-icon-container'>
                     <input
-                        placeholder='Username'
+                        placeholder='Email'
                         type='text'
                         className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
                             'email'

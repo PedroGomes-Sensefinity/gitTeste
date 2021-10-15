@@ -53,6 +53,7 @@ class UserFormComponent extends React.Component {
         username: '',
         email: '',
         password: '',
+        confirmPassword: '',
         phone: '',
         address: '',
         comments: '',
@@ -131,6 +132,10 @@ class UserFormComponent extends React.Component {
                 toaster.notify('success', msgSuccess);
                 this.setState({blocking: false});
                 setSubmitting(false);
+
+                if (this.state.isAddMode) {
+                    resetForm(this.initialValues);
+                }
             });
     };
 
@@ -211,7 +216,7 @@ class UserFormComponent extends React.Component {
                                         {isSubmitting}
                                     </button>
                                     <Link
-                                        to='/devices/list'
+                                        to='/users/list'
                                         className='btn btn-secondary'>
                                         Cancel
                                     </Link>

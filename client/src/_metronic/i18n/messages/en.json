@@ -41,5 +41,6 @@
   "USER.CREATED": "User created successfully",
   "USER.UPDATED": "User updated successfully",
   "TENANT.CREATED": "Tenant created successfully",
-  "TENANT.UPDATED": "Tenant updated successfully"
+  "TENANT.UPDATED": "Tenant updated successfully",
+  "TENANT.UPLOAD": "Tenant personalization saved successfully"
 }
