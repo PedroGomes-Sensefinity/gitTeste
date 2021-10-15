@@ -20,14 +20,16 @@ export function TenantsNewForm({match}) {
                       textColor="primary"
                       onChange={handleChange}>
                     <Tab label="Tenant"/>
-                    <Tab label="Personalization"/>
+                    {typeof id !== "undefined" &&
+                        <Tab label="Personalization"/>
+                    }
                 </Tabs>
             </Paper>
             <TabContainer>
                 {value === 0 && <TenantsFormComponent id={id} />}
             </TabContainer>
             <TabContainer>
-                {value === 1 && <TenantsPersonalizationComponent id={id} />}
+                {value === 1 &&  <TenantsPersonalizationComponent id={id} />}
             </TabContainer>
         </div>
     )
