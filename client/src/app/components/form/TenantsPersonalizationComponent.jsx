@@ -47,7 +47,7 @@ class TenantsPersonalizationComponent extends React.Component {
 
     initialValues = {
         id:    this.props.id,
-        color: '#FFFFFF',
+        color: '',
         files: [],
         file:  File
     };
@@ -72,6 +72,25 @@ class TenantsPersonalizationComponent extends React.Component {
         setSubmitting(true);
 
         let data = new FormData();
+
+        if (typeof fields.files[0] === "undefined") {
+            tenantsService.tenantAttachment({
+                id: parseInt(fields.id),
+                attachment: {
+                    id: 0
+                },
+                color: fields.color
+            })
+            .then((res) => {
+                toaster.notify('success', msgSuccess);
+                this.setState({blocking: false});
+            });
+
+            this.setState({blocking: false});
+            setSubmitting(false);
+            return;
+        }
+
         data.append('file', fields.files[0])
 
         let msgSuccess = this.state.intl.formatMessage({id: 'TENANT.UPLOAD'})
@@ -85,11 +104,13 @@ class TenantsPersonalizationComponent extends React.Component {
                     },
                     color: fields.color
                 })
-                    .then((res) => {
+                .then((res) => {
                         toaster.notify('success', msgSuccess);
                         this.setState({blocking: false});
                 });
             });
+
+        this.setState({blocking: false});
         setSubmitting(false);
     }
 
@@ -100,7 +121,6 @@ class TenantsPersonalizationComponent extends React.Component {
                     enableReinitialize
                     initialValues={this.initialValues}
                     onSubmit={(values, { setSubmitting}) => {
-                        console.log(values)
                         this.upload(values, {
                             setSubmitting,
                         });
@@ -121,8 +141,17 @@ class TenantsPersonalizationComponent extends React.Component {
                                     .getById('tenant_new', this.state.id)
                                     .then((response) => {
                                         if ('tenants_new' in response && response.tenants_new.length === 1) {
+                                            let color = "";
+                                            console.log(response.tenants_new[0].color)
+                                            if (typeof response.tenants_new[0].color !== "undefined") {
+                                                color = { hex: response.tenants_new[0].color };
+                                            }
 
-                                            setFieldValue('color', response.tenants_new[0].color)
+                                            // setFieldValue('color', color);
+                                            this.setState(
+                                                { 'color' : color }
+                                            );
+
                                             const attachment = response.tenants_new[0].attachment;
                                             if (attachment !== undefined) {
                                                 this.setState({logoUrl: `${attachment.url}`});
@@ -198,10 +227,11 @@ class TenantsPersonalizationComponent extends React.Component {
                                                 <div>
                                                     <label>Color picker</label>
                                                     <ColorPickerComponent
-                                                        label={"#000"} className={`${getInputClasses(
-                                                        {errors, touched},
-                                                        'color'
-                                                    )}`}
+                                                        label={this.state.color}
+                                                        className={`${getInputClasses(
+                                                            {errors, touched},
+                                                            'color'
+                                                        )}`}
                                                         onChange={color => {
                                                             setFieldValue('color', color)
                                                         }}
