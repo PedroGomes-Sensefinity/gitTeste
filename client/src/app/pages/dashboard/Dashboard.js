@@ -11,9 +11,9 @@ export function Dashboard() {
     const [alarms, setAlarms] = React.useState(0);
 
     useEffect(() => {
-        apiService.count('device').then((r) => setDevices(r.affected) );
-        apiService.count('group').then((r) => setGroups(r.affected) );
-        apiService.count('threshold').then((r) => setThresholds(r.affected) );
+        apiService.count('device').then((r) => { if ("affected" in r ) setDevices(r.affected) });
+        apiService.count('group').then((r) => { if ("affected" in r ) setGroups(r.affected) });
+        apiService.count('threshold').then((r) => { if ("affected" in r ) setThresholds(r.affected) });
         notificationService.count('alarm', 'created', '-', '-').then((r) => {
             if(typeof r.affected !== 'undefined') {
                 setAlarms(r.affected)
