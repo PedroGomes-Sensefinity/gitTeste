@@ -51,7 +51,8 @@ export function QuickUser() {
               href="#"
               className="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"
             >
-              {user.firstname} {user.lastname}
+              {/*{user.firstname} {user.lastname}*/}
+                {user.email[0] || user.username[0]}
             </a>
             <div className="text-muted mt-1">{user.occupation}</div>
             <div className="navi mt-2">
@@ -67,7 +68,7 @@ export function QuickUser() {
                     </span>
                   </span>
                   <span className="navi-text text-muted text-hover-primary">
-                    {user.email}
+                    {user.email || user.username}
                   </span>
                 </span>
               </a>
