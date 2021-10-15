@@ -10,11 +10,6 @@ import toaster from '../../utils/toaster';
 import { injectIntl } from 'react-intl';
 import apiService from '../../services/apiService';
 import tenantsService from "../../services/tenantsService";
-import {AsyncTypeahead} from "react-bootstrap-typeahead";
-import {Paper, Tab, Tabs} from "@material-ui/core";
-import {TabContainer} from "react-bootstrap";
-import {UploadComponent} from './UploadComponent'
-import {ColorPickerComponent} from './ColorPickeComponentr'
 
 class TenantsFormComponent extends React.Component {
     constructor(props) {
@@ -26,9 +21,7 @@ class TenantsFormComponent extends React.Component {
             isAddMode: !props.id,
             loading: false,
             blocking: false,
-            tabValue: 0,
-            groups: [],
-            selectedGroups: [],
+            tabValue: 0
         };
     }
 
@@ -58,7 +51,7 @@ class TenantsFormComponent extends React.Component {
     };
 
     validationSchema = Yup.object().shape({
-        name:    Yup.string().required('Name is required'),
+        name:    Yup.string().required('Tenant name is required'),
         address: Yup.string().required('Address is required'),
         email:   Yup.string().email('Must be a valid email'),
         phone:   Yup.number().typeError('Must be only numbers'),
@@ -75,16 +68,7 @@ class TenantsFormComponent extends React.Component {
         this.setState({blocking: true});
         setSubmitting(true);
 
-        let data = new FormData();
-
-        for ( let key in fields ) {
-            data.append(key, fields[key]);
-        }
-        data.append('id', fields.id)
-        data.append('containers', this.state.selectedGroups);
-        data.append('file', fields.files)
-
-        data.append('metadata', JSON.stringify({
+        fields.metadata =  JSON.stringify({
             contact_name : fields.contact_name,
             email        : fields.email,
             phone        : fields.phone,
@@ -94,14 +78,14 @@ class TenantsFormComponent extends React.Component {
             city         : fields.city,
             address      : fields.address,
             comments     : fields.comments,
-        }));
+        });
 
         let method = (this.state.isAddMode) ? 'save' : 'update';
         let msgSuccess = (this.state.isAddMode)
             ? this.state.intl.formatMessage({id: 'TENANT.CREATED'})
             : this.state.intl.formatMessage({id: 'TENANT.UPDATED'});
 
-        tenantsService[method](data, fields.id)
+        tenantsService[method](fields, fields.id)
             .then((response) => {
                 toaster.notify('success', msgSuccess);
                 setSubmitting(false);
@@ -150,17 +134,6 @@ class TenantsFormComponent extends React.Component {
                                             let tenant = response.tenants_new[0];
                                             setFieldValue('id', tenant.id, false);
                                             setFieldValue('name', tenant.name, false);
-
-                                            if (tenant.containers !== undefined && Array.isArray(tenant.containers) && tenant.containers.length > 0) {
-                                                const containers = tenant.containers
-                                                const selectedGroups = [];
-
-                                                containers.forEach(e => {
-                                                    selectedGroups.push({id: e.id, label: e.label});
-                                                })
-
-                                                this.setState({selectedGroups: selectedGroups});
-                                            }
 
                                             if (tenant.metadata !== '') {
                                                 const metadata = JSON.parse(tenant.metadata);
@@ -221,8 +194,8 @@ class TenantsFormComponent extends React.Component {
                                 <div className='form'>
                                     <div className='card-body'>
                                         <div className='form-group row'>
-                                            <div className='col-xl-6 col-lg-6'>
-                                                <label>Name</label>
+                                            <div className='col-xl-12 col-lg-12'>
+                                                <label>Tenant name</label>
                                                 <Field
                                                     as="input"
                                                     className={`form-control form-control-lg form-control-solid ${getInputClasses(
@@ -236,32 +209,7 @@ class TenantsFormComponent extends React.Component {
                                                 <ErrorMessage name="name" component="div"
                                                               className="invalid-feedback"/>
                                             </div>
-                                            <div className='col-xl-6 col-lg-6'>
-                                                <label>
-                                                    Groups
-                                                </label>
-                                                <AsyncTypeahead
-                                                    multiple
-                                                    name={'group'}
-                                                    id='typeahead-groups'
-                                                    labelKey='label'
-                                                    size="lg"
-                                                    onChange={(data) => this.onChangeGroup(data, setFieldValue)}
-                                                    options={this.state.groups}
-                                                    clearButton={true}
-                                                    placeholder='Start typing see the groups'
-                                                    selected={this.state.selectedGroups}
-                                                    onSearch={this.handleSearchGroup}
-                                                    isLoading={this.state.loading}
-                                                    filterBy={this.filterBy}
-                                                    className={getInputClasses(
-                                                        {errors, touched},
-                                                        'group')
-                                                    }
-                                                />
-                                                <ErrorMessage name="group" component="div"
-                                                              className="invalid-feedback"/>
-                                            </div>
+
                                         </div>
 
                                         <div className='form-group row'>
@@ -412,47 +360,6 @@ class TenantsFormComponent extends React.Component {
                 </Formik>
             </BlockUi>
         );
-    }
-
-
-    getGroups = (records) => {
-        let groups = [];
-        if (Array.isArray(records)) {
-            records.map((group) => {
-                groups.push({id: group.id, label: group.label});
-                return null;
-            });
-        }
-        return groups;
-    };
-
-    onChangeGroup = (opt, setFieldValue) => {
-        this.setState({ selectedGroup: opt});
-        setFieldValue('groups', []);
-        if (opt.length > 0) {
-            let groupsIds = opt.map((o) => {
-                return o.id;
-            });
-            setFieldValue('groups', groupsIds);
-        }
-
-        this.setState({ selectedGroups: opt});
-    };
-
-    handleSearchGroup = (query) => {
-        this.setState({loading: true});
-        apiService.getByText('group', query, 100, 0).then((response) => {
-            this.setState({ groups: this.getGroups(response.groups) });
-            this.setState({loading: false});
-        });
-    };
-
-    filterBy = () => true;
-
-    handleTabChange(event, newValue) {
-        console.log(newValue)
-        this.setState({loading:  false});
-        this.setState({tabValue: newValue})
     }
 }
 

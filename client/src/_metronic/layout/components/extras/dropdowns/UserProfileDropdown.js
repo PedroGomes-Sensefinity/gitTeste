@@ -35,11 +35,11 @@ export function UserProfileDropdown() {
             Hi,
           </span>{" "}
           <span className="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-3">
-            {user.firstname} {user.lastname}
+            {user.email || user.username}
           </span>
           <span className="symbol symbol-35 symbol-light-success">
             <span className="symbol-label font-size-h5 font-weight-bold">
-              {user.firstname[0]}
+                {user.email[0] || user.username[0]}
             </span>
           </span>
         </div>
@@ -75,12 +75,16 @@ export function UserProfileDropdown() {
             >
               <div className="symbol bg-white-o-15 mr-3">
                 <span className="symbol-label text-success font-weight-bold font-size-h4">
-                  {user.firstname[0]}
+                  {user.email[0] || user.username[0]}
                 </span>
                 {/*<img alt="Pic" className="hidden" src={user.pic} />*/}
               </div>
               <div className="text-white m-0 flex-grow-1 mr-3 font-size-h5">
-                {user.firstname} {user.lastname}
+                {/*{user.firstname} {user.lastname}*/}
+                {user.email || user.username}
+              </div>
+              <div className="text-white m-0 flex-grow-1 mr-3 font-size-h6">
+                    {user.tenant}
               </div>
               {/*<span className="label label-success label-lg font-weight-bold label-inline">*/}
               {/*  3 messages*/}
