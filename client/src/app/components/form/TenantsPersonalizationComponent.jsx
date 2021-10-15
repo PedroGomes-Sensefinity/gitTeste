@@ -179,6 +179,7 @@ class TenantsPersonalizationComponent extends React.Component {
                                                     )}`}
                                                     setFieldValue={setFieldValue}
                                                 />
+                                                <p>Upload an image of max 200x100px so that it displays correctly. The image will be showed after new login.</p>
                                                 <ErrorMessage name="file" component="div"
                                                               className="invalid-feedback" />
                                             </div>
