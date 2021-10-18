@@ -2,8 +2,15 @@ import axios from "axios";
 
 const groupsService = {
     get: function(limit, offset) {
-        return axios.get(`${process.env.REACT_APP_REST_API_URL}group/limit/${limit}/offset/${offset}`)
-                    .then(async r => r.data.data);
+        return axios
+            .get(`${process.env.REACT_APP_REST_API_URL}group/limit/${limit}/offset/${offset}`)
+            .then((r) => r.data)
+            .then((r) => {
+                if (r.code === 200) {
+                    return r.data;
+                }
+                return [];
+            })
     },
     save: function (formData) {
         return new Promise(function (resolve, reject) {

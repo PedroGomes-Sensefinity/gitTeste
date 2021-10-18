@@ -57,7 +57,6 @@ class GroupsFormComponent extends React.Component {
 
     validationSchema = Yup.object().shape({
         label: Yup.string().required('Label is required'),
-        parent_id: Yup.string().required('Parent Group is required'),
     });
 
     useStyles = makeStyles((theme) => ({
@@ -282,7 +281,7 @@ class GroupsFormComponent extends React.Component {
 
 
                                         <div className='col-xl-6 col-lg-6'>
-                                            <label className={`required`}>Parent Group</label>
+                                            <label className={``}>Parent Group</label>
                                             <AsyncTypeahead
                                                 id='typeahead-groups'
                                                 labelKey='label'
