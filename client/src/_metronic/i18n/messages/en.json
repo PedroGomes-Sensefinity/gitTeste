@@ -40,6 +40,7 @@
   "PROFILES.UPDATED": "Profile updated successfully",
   "USER.CREATED": "User created successfully",
   "USER.UPDATED": "User updated successfully",
+  "USER.PASSWORD.UPDATED": "Password changed successfully",
   "TENANT.CREATED": "Tenant created successfully",
   "TENANT.UPDATED": "Tenant updated successfully",
   "TENANT.UPLOAD": "Tenant personalization saved successfully"
