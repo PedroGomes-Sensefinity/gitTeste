@@ -51,8 +51,7 @@ const deviceService = {
                     resolve(result);
                 })
                 .catch(function (err) {
-                    console.log(err);
-                    reject(Error("Something went wrong on update devices... "));
+                    reject(err.response.data);
                 });
         });
     },
@@ -68,8 +67,7 @@ const deviceService = {
                     resolve(result);
                 })
                 .catch(function (err) {
-                    console.log(err);
-                    reject(Error("Something went wrong on update devices... "));
+                    reject(err.response.data);
                 });
         });
     },
