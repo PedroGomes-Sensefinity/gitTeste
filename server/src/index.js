@@ -206,7 +206,10 @@ app.all('/api/*', (req, res) => {
   .catch(function (error) {
     console.log(error);
     if (error.response) {
-      res.status(error.response.status).end();
+        res.set('Content-Type', 'application/json')
+          .status(error.response.status)
+          .send(error.response.data)
+          .end();
     } else {
       res.status(500).end();
     }

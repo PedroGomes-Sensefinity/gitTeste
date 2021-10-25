@@ -126,21 +126,21 @@ class ThresholdFormComponent extends React.Component {
         }
 
         const rule = {
-            type: values.ruleMeasurementType, 
+            type: values.ruleMeasurementType,
             do: {
                 value: ruleValues
-            }, 
+            },
             when: {
-                cron: (values.ruleWhenCron !== 'custom') ? values.ruleWhenCron : values.customCron, 
+                cron: (values.ruleWhenCron !== 'custom') ? values.ruleWhenCron : values.customCron,
                 successive_time: values.ruleWhenSuccessiveTime * 60
-            }, 
+            },
             what: [],
         };
 
         if (this.state.ruleMeasurementType === 'geofences') {
             rule['geofences'] = this.state.geofences;
         }
-        
+
         const obj = {
             name: values.name,
             rule: JSON.stringify(rule)
@@ -153,7 +153,7 @@ class ThresholdFormComponent extends React.Component {
         return obj;
     }
 
-    save = (fields) => {
+    save = (fields, { setSubmitting, resetForm }) => {
         let threshold = this.createThresholdObject(fields);
 
         this.setState({blocking: true});
@@ -166,13 +166,15 @@ class ThresholdFormComponent extends React.Component {
             .then((response) => {
                 toaster.notify('success', msgSuccess);
 
-                if (method === 'save') {
-                    setTimeout(() => {
-                        history.push(`/thresholds/edit/${response.id}`);
-                    }, 3000);
+                if (this.state.isAddMode) {
+                    resetForm(this.initialValues);
                 }
-
+            }).catch((err) => {
+                toaster.notify('error', err.data.detail);
+            })
+            .finally(() => {
                 this.setState({blocking: false});
+                setSubmitting(false);
             });
     };
 
@@ -216,7 +218,6 @@ class ThresholdFormComponent extends React.Component {
                 validationSchema={this.validationSchema}
                 onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
                     this.save(values, {
-                        setStatus,
                         setSubmitting,
                         resetForm,
                     });
@@ -237,11 +238,11 @@ class ThresholdFormComponent extends React.Component {
                     useEffect(() => {
                         this.setState({rangeMinValue: values.minValue});
                     }, [values.minValue]);
-                    
+
                     useEffect(() => {
                         this.setState({rangeMaxValue: values.maxValue});
                     }, [values.maxValue]);
-                    
+
                     useEffect(() => {
                         this.setState({ruleCurrentSymbol: this.state.ruleSymbol[values.ruleMeasurementType]});
                         this.setState({ruleMeasurementType: values.ruleMeasurementType});
@@ -296,7 +297,7 @@ class ThresholdFormComponent extends React.Component {
                                     <h3 className='card-label font-weight-bolder text-dark'>
                                         Threshold Information
                                     </h3>
-                                    {typeof this.state.id !== "undefined" && 
+                                    {typeof this.state.id !== "undefined" &&
                                         <span className='text-muted font-weight-bold font-size-sm mt-1'>
                                             Change information about the thresholds
                                         </span>
@@ -378,7 +379,7 @@ class ThresholdFormComponent extends React.Component {
                                                         name='min'
                                                         type='checkbox'
                                                     />
-                                                    <label htmlFor="min" className='form-check-label"'>Min</label>
+                                                    <label htmlFor="min" className='form-check-label"' style={{'marginTop':'5px'}}>Min</label>
                                                 </div>
                                                 <div className="form-check form-check-inline">
                                                     <Field
@@ -386,7 +387,7 @@ class ThresholdFormComponent extends React.Component {
                                                         name='max'
                                                         type='checkbox'
                                                     />
-                                                    <label htmlFor="max" className='form-check-label"'>Max</label>
+                                                    <label htmlFor="max" className='form-check-label"' style={{'marginTop':'5px'}}>Max</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -454,7 +455,7 @@ class ThresholdFormComponent extends React.Component {
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div className={'form-group row'}>
                                         <div className={`col-xl-3 col-lg-3`}>
                                             <label>When</label>
