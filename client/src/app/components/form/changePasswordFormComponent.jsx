@@ -22,7 +22,7 @@ class ChangePasswordFormComponent extends React.Component {
     }
 
     initialValues = {
-        id: this.props.tenantId,
+        id: this.props.userId,
         password: '',
         confirmPassword: '',
     };
@@ -39,17 +39,18 @@ class ChangePasswordFormComponent extends React.Component {
 
     });
 
-    save = (fields) => {
+    save = (fields, {resetForm}) => {
         if (fields.password !== fields.confirmPassword) {
             toaster.notify('error', 'The passwords must match');
             return;
         }
 
         this.setState({blocking: true});
-        let msgSuccess = "ssss";
+        let msgSuccess = this.state.intl.formatMessage({id: 'USER.PASSWORD.UPDATED'});
         passwordChangeService.save(fields)
             .then((response) => {
                 toaster.notify('success', msgSuccess);
+                resetForm(this.initialValues)
                 this.setState({blocking: false});
             });
     };
@@ -63,7 +64,7 @@ class ChangePasswordFormComponent extends React.Component {
                 validationSchema={this.validationSchema}
                 onSubmit={(values, { setStatus, setSubmitting, resetForm, setFieldValue }) => {
                     this.save(values, {
-                        setFieldValue,
+                        resetForm
                     });
                 }}
                 >

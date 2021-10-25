@@ -115,15 +115,19 @@ class DeviceFormComponent extends React.Component {
         deviceService[method](fields)
             .then((response) => {
                 toaster.notify('success', msgSuccess);
-                this.setState({blocking: false});
-                setSubmitting(false);
 
-                // clean form
                 if (this.state.isAddMode) {
                     resetForm(this.initialValues);
                     this.setState({selectedGroup: []});
                     this.setState({selectedBoardFamily: []});
                 }
+            })
+            .catch((err) => {
+                toaster.notify('error', err.data.detail);
+            })
+            .finally(() => {
+                this.setState({blocking: false});
+                setSubmitting(false);
             });
     };
 

@@ -14,8 +14,7 @@ const thresholdService = {
                     resolve(result);
                 })
                 .catch(function (err) {
-                    console.log(err);
-                    reject(Error("Something went wrong on get thresholds of device... "));
+                    reject(err.response.data);
                 });
         });
     },
@@ -31,8 +30,7 @@ const thresholdService = {
                     resolve(result);
                 })
                 .catch(function (err) {
-                    console.log(err);
-                    reject(Error("Something went wrong on update devices... "));
+                    reject(err.response.data);
                 });
         });
     },
@@ -48,8 +46,7 @@ const thresholdService = {
                     resolve(result);
                 })
                 .catch(function (err) {
-                    console.log(err);
-                    reject(Error("Something went wrong on update devices... "));
+                    reject(err.response.data);
                 });
         });
     },
