@@ -33,7 +33,7 @@ class ProfilesFormComponent extends React.Component {
     }
 
     initialValues = {
-        id: '',
+        id: parseInt(this.props.id),
         name: '',
         permissions: [],
     };
@@ -65,7 +65,7 @@ class ProfilesFormComponent extends React.Component {
                 this.setState({blocking: false});
 
                 if (this.state.isAddMode) {
-                    setFieldValue('name', '', false);
+                    resetForm(this.initialValues);
                 }
             });
     };
