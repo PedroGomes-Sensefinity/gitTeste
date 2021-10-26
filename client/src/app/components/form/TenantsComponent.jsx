@@ -32,7 +32,7 @@ class TenantsFormComponent extends React.Component {
     }
 
     initialValues = {
-        id:         '',
+        id:         parseInt(this.props.id),
         name:       '',
         metadata:   '',
         containers: {id: 0},
@@ -93,7 +93,7 @@ class TenantsFormComponent extends React.Component {
                 this.setState({blocking: false});
 
                 if (this.state.isAddMode) {
-                    setFieldValue('name', '', false);
+                    resetForm(this.initialValues);
                 }
             });
     };
@@ -182,7 +182,7 @@ class TenantsFormComponent extends React.Component {
                                             {isSubmitting}
                                         </button>
                                         <Link
-                                            to='/tenants/list'
+                                            to='/tenants-new/list'
                                             className='btn btn-secondary'>
                                             Cancel
                                         </Link>
