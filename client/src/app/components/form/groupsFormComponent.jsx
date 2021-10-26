@@ -49,7 +49,7 @@ class GroupsFormComponent extends React.Component {
     }
 
     initialValues = {
-        id: '',
+        id: parseInt(this.props.id),
         parent_id: '',
         thresholds: [],
         label: '',
