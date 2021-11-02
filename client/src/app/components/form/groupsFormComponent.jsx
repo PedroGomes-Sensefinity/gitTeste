@@ -78,6 +78,11 @@ class GroupsFormComponent extends React.Component {
         let groups = [];
         if (Array.isArray(records)) {
             records.map((group) => {
+                // If is edit mode, remove actual group to avoid circular reference
+                if (!this.state.isAddMode && group.id === parseInt(this.state.id)) {
+                    return null;
+                }
+
                 const label = this.makeGroupLabel(group);
                 groups.push({id: group.id, label: label});
                 return null;
@@ -202,9 +207,11 @@ class GroupsFormComponent extends React.Component {
                                     setFieldValue('id', groups.id, false);
                                     setFieldValue('label', groups.label, false);
 
-                                    let selectedGroup = [{id: groups.id, label: this.makeGroupLabel(groups)}];
-                                    this.setState({ selectedGroup: selectedGroup});
-                                    setFieldValue('parent_id', groups.id, false);
+                                    if (groups.parent_id !== 0) {
+                                        let selectedGroup = [{id: groups.id, label: this.makeGroupLabel(groups)}];
+                                        this.setState({selectedGroup: selectedGroup});
+                                        setFieldValue('parent_id', groups.id, false);
+                                    }
                                 }
 
                                 let thresholds = [];
