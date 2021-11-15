@@ -62,7 +62,6 @@ class DeviceFormComponent extends React.Component {
         group_id: Yup.string().required('Group is required'),
         board_family_id: Yup.number().required('Board family is required'),
         meta_data: Yup.string()
-                    .required('Metadata is required')
                     .isJson("Metadata needs to be a valid JSON"),
         force_board_id: Yup.boolean(),
         board: Yup.string().when('force_board_id', {
@@ -464,6 +463,25 @@ class DeviceFormComponent extends React.Component {
                                                     )}
                                                 />
                                                 <ErrorMessage name="comments" component="div" className="invalid-feedback" />
+                                            </div>
+                                        </div>
+                                        <div className='col-xl-6 col-lg-6'>
+                                            <label>Metadata</label>
+                                            <div>
+                                                <Field
+                                                    as="textarea"
+                                                    rows='7'
+                                                    className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                        {errors, touched},
+                                                        'meta_data'
+                                                    )}`}
+                                                    name='meta_data'
+                                                    placeholder='Device metadata'
+                                                    {...getFieldProps(
+                                                        'meta_data'
+                                                    )}
+                                                />
+                                                <ErrorMessage name="metadata" component="div" className="invalid-feedback" />
                                             </div>
                                         </div>
                                     </div>
