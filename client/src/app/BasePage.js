@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+    import React, { Suspense } from "react";
 import { Redirect, Switch } from "react-router-dom";
 import { LayoutSplashScreen, ContentRoute } from "../_metronic/layout";
 
@@ -25,6 +25,8 @@ import {UsersList} from "./pages/users/users-list/UsersList";
 import {UsersForm} from "./pages/users/users-form/UsersForm";
 import {TenantsNewList} from "./pages/tenants.new/tenants-list/TenantsList";
 import {TenantsNewForm} from "./pages/tenants.new/tenants-form/TenantsForm";
+    import {FloorMapsList} from "./pages/floor-maps/list/FloorMapsList";
+    import {FloorMapsForm} from "./pages/floor-maps/form/FloorMapsForm";
 
 /*const UserProfilepage = lazy(() =>
   import("./modules/UserProfile/UserProfilePage")
@@ -96,6 +98,11 @@ export default function BasePage() {
         <ContentRoute path="/notification-templates/list" component={NotificationTemplatesList} />
         <ContentRoute path="/notification-templates/new" component={NotificationTemplatesForm} />
         <ContentRoute path="/notification-templates/edit/:id" component={NotificationTemplatesForm} />
+
+        { /* Floor Maps Routes*/}
+        <ContentRoute path="/floor-maps/list" component={FloorMapsList} />
+        <ContentRoute path="/floor-maps/new" component={FloorMapsForm} />
+        <ContentRoute path="/floor-maps/edit/:id" component={FloorMapsForm} />
 
         <Redirect to="error/error-v1" />
       </Switch>

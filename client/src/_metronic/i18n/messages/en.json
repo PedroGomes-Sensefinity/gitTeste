@@ -43,5 +43,8 @@
   "USER.PASSWORD.UPDATED": "Password changed successfully",
   "TENANT.CREATED": "Tenant created successfully",
   "TENANT.UPDATED": "Tenant updated successfully",
-  "TENANT.UPLOAD": "Tenant personalization saved successfully"
+  "TENANT.UPLOAD": "Tenant personalization saved successfully",
+  "FLOORMAP.UPDATED": "FloorMap updated successfully",
+  "FLOORMAP.FILE_TOO_LARGE": "File is too large",
+  "FLOORMAP.FILE_INVALID_FORMAT": "Formato não suportado"
 }
