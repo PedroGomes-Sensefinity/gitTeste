@@ -6,11 +6,11 @@ const apiService = {
             axios
                 .get(`${process.env.REACT_APP_REST_API_URL}${endpoint}/limit/${limit}/offset/${offset}`)
                 .then(function(response) {
-                    if (response.status !== 200) {
-                        resolve([]);
+                    let data = [];
+                    if (response.status === 200) {
+                        data = response.data.data;
                     }
-
-                    resolve(response.data.data);
+                    resolve(data);
                 })
                 .catch(function(err) {
                     console.log(err);
@@ -115,6 +115,18 @@ const apiService = {
                 .catch(function(err) {
                     console.log(err);
                     reject(Error(`Something went wrong on count of ${endpoint}... `));
+                });
+        });
+    },
+    upload: async function (formData) {
+        return new Promise(function (resolve, reject) {
+            axios.post(`${process.env.REACT_APP_REST_API_URL}upload`, formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            })
+                .then((response) => resolve(response.data.data))
+                .catch(function (err) {
+                    console.log(err);
+                    reject(Error("Something went wrong on upload image... "));
                 });
         });
     },

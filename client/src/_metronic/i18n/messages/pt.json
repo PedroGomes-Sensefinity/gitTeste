@@ -43,5 +43,8 @@
   "USER.PASSWORD.UPDATED": "Senha alterada com sucesso",
   "TENANT.CREATED": "Tenant criado com sucesso",
   "TENANT.UPDATED": "Tenant atualizado com sucesso",
-  "TENANT.UPLOAD": "Tenant personalização gravada com sucesso"
+  "TENANT.UPLOAD": "Tenant personalização gravada com sucesso",
+  "FLOORMAP.UPDATED": "Planta atualizada com sucesso",
+  "FLOORMAP.FILE_TOO_LARGE": "Tamanho do arquivo é maior do que o permitido",
+  "FLOORMAP.FILE_INVALID_FORMAT": "Unsupported file format"
 }
