@@ -51,7 +51,7 @@ class Map extends React.Component {
                 polyline: false,
                 marker: false,
                 circlemarker: false,
-                circle: false,
+                circle: true,
                 polygon: {
                     allowIntersection: false,
                     showArea: true,
@@ -75,7 +75,7 @@ class Map extends React.Component {
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(function (location) {
                     var latlng = new L.LatLng(location.coords.latitude, location.coords.longitude);
-                    
+
                     if(latlng.toBounds(0).isValid()) {
                         map.setView(latlng);
                     }
@@ -132,6 +132,15 @@ class Map extends React.Component {
 
         shapes.forEach((s) => {
             let conf = {};
+            // Circle shape
+            if (s.geoJSON.properties.radius !== null) {
+                conf = {
+                    pointToLayer: (feature, latlng) => {
+                        return new L.Circle(latlng, feature.properties.radius);
+                    }
+                };
+            }
+
             var geojsonLayer = L.geoJson(s.geoJSON, conf);
             geojsonLayer.eachLayer(function (l) {
                 l.bindTooltip(s.name, { permanent: true, interactive: false });
@@ -142,7 +151,7 @@ class Map extends React.Component {
 
     setMapView = () => {
         let bounds = this.drawnItems.getBounds();
-        
+
         if (bounds.isValid()) {
             this.map.fitBounds(this.drawnItems.getBounds());
         }
@@ -153,11 +162,12 @@ class Map extends React.Component {
 
         this.drawnItems.eachLayer((layer) => {
             let geojson = layer.toGeoJSON();
-            let properties = {
-                name: 'Name'
-            };
             let radius = "_mRadius" in layer ? layer._mRadius : null;
-            geojson.properties = properties;
+
+            geojson.properties = {
+                name: 'Name',
+                radius: radius
+            };
 
             let newShape = {
                 id: layer._leaflet_id,
