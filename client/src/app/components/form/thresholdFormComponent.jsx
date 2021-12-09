@@ -24,6 +24,7 @@ class ThresholdFormComponent extends React.Component {
             intl: props.intl,
             isAddMode: !props.id,
             id: props.id,
+            threshold: {},
             name: "",
             rule: {},
             ruleMeasurementType: '',
@@ -95,19 +96,22 @@ class ThresholdFormComponent extends React.Component {
                 is: (val) => (val !== 'geofences'),
                 then: Yup.number().required('Min value is required')
             })
-            .when('maxValue', {
-                is: (val) => (val !== ''),
+            .when(['ruleMeasurementType', 'maxValue'], {
+                is: (ruleMeasurementType, maxValue) => (ruleMeasurementType !== 'geofences' && maxValue !== ''),
                 then: Yup.number().lessThan(Yup.ref('maxValue'), 'Must be less than Max value')
             }),
         maxValue: Yup.number()
             .min(-100, `Must be less or equal than 100`)
-            .default('')
+            .default(0)
             .typeError('Must be a valid number')
             .when('ruleMeasurementType', {
                 is: (val) => (val !== 'geofences'),
                 then: Yup.number().required('Max value is required')
             })
-            .moreThan(Yup.ref('minValue'), 'Must be greather than Min value')
+            .when('ruleMeasurementType', {
+                is: (val) => (val !== 'geofences'),
+                then: Yup.number().moreThan(Yup.ref('minValue'), 'Must be greather than Min value')
+            })
     });
 
     useStyles = makeStyles((theme) => ({
@@ -134,7 +138,7 @@ class ThresholdFormComponent extends React.Component {
                 cron: (values.ruleWhenCron !== 'custom') ? values.ruleWhenCron : values.customCron,
                 successive_time: values.ruleWhenSuccessiveTime * 60
             },
-            what: [],
+            what: (typeof this.state.threshold.rule.what !== "undefined") ? this.state.threshold.rule.what : [],
         };
 
         if (this.state.ruleMeasurementType === 'geofences') {
@@ -193,23 +197,7 @@ class ThresholdFormComponent extends React.Component {
         setFieldValue('maxValue', value, false);
     }
 
-    onChangeShape = (shapes) => {
-        console.log('onChangeShape', shapes);
-        this.setState({ geofences: shapes });
-    };
-
     render() {
-        const columnsGeofences = [
-            {
-                field: 'name',
-                title: 'Shape'
-            }, {
-                field: 'alert',
-                title: 'Alert on',
-                lookup: { 'in': 'In', 'out': 'Out' }
-            }
-        ];
-
         return (
             <BlockUi tag='div' blocking={this.state.blocking}>
             <Formik
@@ -253,10 +241,12 @@ class ThresholdFormComponent extends React.Component {
                             apiService
                             .getById('threshold', this.state.id)
                             .then((response) => {
-                                const res = response.thresholds[0];
-                                const rule = JSON.parse(res.rule);
+                                const threshold = response.thresholds[0];
+                                const rule = JSON.parse(threshold.rule);
+                                threshold.rule = rule;
+                                this.setState({threshold: threshold});
 
-                                setFieldValue('name', res.name, false);
+                                setFieldValue('name', threshold.name, false);
                                 setFieldValue('ruleMeasurementType', rule.type, false);
 
                                 if (typeof(rule.do) !== 'undefined') {
@@ -278,6 +268,10 @@ class ThresholdFormComponent extends React.Component {
                                         setFieldValue('ruleWhenCron', rule.when.cron, false);
 
                                     }
+                                }
+
+                                if (rule.type === 'geofences' && typeof rule.geofences !== 'undefined') {
+                                    this.setState({geofences: rule.geofences})
                                 }
                             });
                         }
@@ -468,7 +462,7 @@ class ThresholdFormComponent extends React.Component {
                                                 name='ruleWhenCron'
                                                 {...getFieldProps('ruleWhenCron')}
                                             >
-                                                <option key='' value=''></option>
+                                                <option key='' value=''/>
                                                 {this.state.ruleWhenCronsOptions.map((e) => {
                                                     return (<option key={e.id} value={e.id}>{e.name}</option>);
                                                 })}
@@ -551,34 +545,6 @@ class ThresholdFormComponent extends React.Component {
                                             />
                                         </div>
                                     </div>
-                                    { this.state.ruleMeasurementType === 'geofences' &&
-                                    <div className="form-group row">
-                                        <div className={`col-xl-6 col-lg-6`}>
-                                            <Map shapes={this.state.geofences} onChangeShape={this.onChangeShape} />
-                                        </div>
-                                        <div className={`col-xl-6 col-lg-6`}>
-                                            <TableGrid
-                                                title=''
-                                                columns={columnsGeofences}
-                                                data={this.state.geofences}
-                                                style={{height: 500}}
-                                                editable={{
-                                                    onRowUpdate: (newData, oldData) =>
-                                                        new Promise((resolve, reject) => {
-                                                            setTimeout(() => {
-                                                                const dataUpdate = [...this.state.geofences];
-                                                                const index = oldData.tableData.id;
-                                                                dataUpdate[index] = newData;
-                                                                //this.setState({geofences: dataUpdate});
-                                                                this.onChangeShape(dataUpdate);
-                                                                resolve();
-                                                            }, 1000)
-                                                        })
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                    }
                                 </div>
                             </div>
                             {/* end::Form */}
