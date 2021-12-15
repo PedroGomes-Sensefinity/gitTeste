@@ -47,8 +47,8 @@ class UserFormComponent extends React.Component {
 
     initialValues = {
         id: this.props.id,
-        profileId: 0,
-        tenantId: 0,
+        profileId: '',
+        tenantId: '',
         name: '',
         username: '',
         email: '',
@@ -72,34 +72,16 @@ class UserFormComponent extends React.Component {
         }),
         confirmPassword: Yup.string()
             .oneOf([Yup.ref('password'), null], 'Passwords must match'),
-        email: Yup.string().email(),
+        email: Yup.string().required('Email is required').email(),
+        tenantId: Yup.string().required('Tenant is required'),
+        profileId: Yup.string().required('Profile is required'),
         phone: Yup.number(),
     });
 
     useStyles = makeStyles((theme) => ({
-        root: {
-            display: 'flex',
-            flexWrap: 'wrap',
-        },
-        formControl: {
-            margin: theme.spacing(1),
-            minWidth: 120,
-            maxWidth: 300,
-        },
-        chips: {
-            display: 'flex',
-            flexWrap: 'wrap',
-        },
-        chip: {
-            margin: 2,
-            height: 50,
-        },
         headerMarginTop: {
             marginTop: theme.spacing(5),
-        },
-        noLabel: {
-            marginTop: theme.spacing(3),
-        },
+        }
     }));
 
     saveUser = (fields, { setStatus, setSubmitting, resetForm }) => {
@@ -229,7 +211,7 @@ class UserFormComponent extends React.Component {
                                 <div className='card-body'>
                                     <div className='form-group row'>
                                         <div className='col-xl-4 col-lg-4'>
-                                            <label>Name</label>
+                                            <label className={`required`}>Name</label>
                                             <div>
                                                 <Field
                                                     as="input"
@@ -245,45 +227,49 @@ class UserFormComponent extends React.Component {
                                             </div>
                                         </div>
                                         <div className='col-xl-4 col-lg-4'>
-                                            <label>Tenant</label>
+                                            <label className={`required`}>Tenant</label>
                                             <Field
                                                 component="select"
                                                 className={`form-control form-control-lg form-control-solid ${getInputClasses(
                                                     { errors, touched },
-                                                    'type'
+                                                    'tenantId'
                                                 )}`}
                                                 name='tenantId'
                                                 placeholder='Select tenant for this user'
+                                                {...getFieldProps('tenantId')}
                                             >
-                                                <option key='0' value=''>&nbsp;</option>
+                                                <option key='' value=''>&nbsp;</option>
                                                 {this.state.tenants.map((e) =>
                                                     <option value={e.id} key={e.id}>{e.name}</option>
                                                 )}
                                             </Field>
+                                            <ErrorMessage name="tenantId" component="div" className="invalid-feedback" />
                                         </div>
                                         <div className='col-xl-4 col-lg-4'>
-                                            <label>Profile</label>
+                                            <label className={`required`}>Profile</label>
                                             <Field
                                                 component="select"
                                                 className={`form-control form-control-lg form-control-solid ${getInputClasses(
                                                     { errors, touched },
-                                                    'type'
+                                                    'profileId'
                                                 )}`}
                                                 name='profileId'
                                                 placeholder='Select the user profile'
+                                                {...getFieldProps('profileId')}
                                             >
-                                                <option key='0' value=''>&nbsp;</option>
+                                                <option key='' value=''>&nbsp;</option>
                                                 {this.state.profiles.map((e) =>
                                                     <option value={e.id} key={e.id}>{e.name}</option>
                                                 )}
                                             </Field>
+                                            <ErrorMessage name="profileId" component="div" className="invalid-feedback" />
                                         </div>
                                     </div>
 
                                     { this.state.isAddMode &&
                                     <div className='form-group row'>
                                         <div className='col-xl-4 col-lg-4'>
-                                            <label>Username</label>
+                                            <label className={`required`}>Username</label>
                                             <Field
                                                 className={`form-control form-control-lg form-control-solid ${getInputClasses(
                                                     {errors, touched},
@@ -296,7 +282,7 @@ class UserFormComponent extends React.Component {
                                         </div>
 
                                         <div className='col-xl-4 col-lg-4'>
-                                            <label>Password</label>
+                                            <label className={`required`}>Password</label>
                                             <Field
                                                 as="input"
                                                 type="password"
@@ -311,7 +297,7 @@ class UserFormComponent extends React.Component {
                                             <ErrorMessage name="password" component="div" className="invalid-feedback"/>
                                         </div>
                                         <div className='col-xl-4 col-lg-4'>
-                                            <label>Repeat Password</label>
+                                            <label className={`required`}>Repeat Password</label>
                                             <Field
                                                 as="input"
                                                 type="password"
@@ -331,7 +317,7 @@ class UserFormComponent extends React.Component {
                                     {!this.state.isAddMode &&
                                     <div className='form-group row'>
                                         <div className='col-xl-12 col-lg-12'>
-                                            <label>Username</label>
+                                            <label className={`required`}>Username</label>
                                             <Field
                                                 className={`form-control form-control-lg form-control-solid ${getInputClasses(
                                                     {errors, touched},
@@ -347,7 +333,7 @@ class UserFormComponent extends React.Component {
 
                                     <div className='form-group row'>
                                         <div className='col-xl-6 col-lg-6'>
-                                            <label>Email</label>
+                                            <label className={`required`}>Email</label>
                                             <Field
                                                 className={`form-control form-control-lg form-control-solid ${getInputClasses(
                                                     {errors, touched},
