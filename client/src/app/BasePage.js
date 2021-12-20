@@ -21,12 +21,14 @@ import { BoardFamiliesList } from "./pages/board-families/list/BoardFamiliesList
 import { BoardFamiliesForm } from "./pages/board-families/form/BoardFamiliesForm";
 import {ProfilesForm} from "./pages/profiles/profiles-form/ProfilesForm";
 import { ProfilesList } from "./pages/profiles/profiles-list/ProfilesList";
+import { AssetsList } from "./pages/assets/assets-list/AssetsList";
+import { AssetsForm } from "./pages/assets/assets-form/AssetsForm";
 import {UsersList} from "./pages/users/users-list/UsersList";
 import {UsersForm} from "./pages/users/users-form/UsersForm";
 import {TenantsNewList} from "./pages/tenants.new/tenants-list/TenantsList";
 import {TenantsNewForm} from "./pages/tenants.new/tenants-form/TenantsForm";
-    import {FloorMapsList} from "./pages/floor-maps/list/FloorMapsList";
-    import {FloorMapsForm} from "./pages/floor-maps/form/FloorMapsForm";
+import {FloorMapsList} from "./pages/floor-maps/list/FloorMapsList";
+import {FloorMapsForm} from "./pages/floor-maps/form/FloorMapsForm";
 
 /*const UserProfilepage = lazy(() =>
   import("./modules/UserProfile/UserProfilePage")
@@ -78,6 +80,11 @@ export default function BasePage() {
         <ContentRoute path="/profiles/list" component={ProfilesList} />
         <ContentRoute path="/profiles/new" component={ProfilesForm} />
         <ContentRoute path="/profiles/edit/:id" component={ProfilesForm} />
+
+        { /* Profiles Routes*/}
+        <ContentRoute path="/assets/list" component={AssetsList} />
+        <ContentRoute path="/assets/new" component={AssetsForm} />
+        <ContentRoute path="/assets/edit/:id" component={AssetsForm} />
 
         { /* Users Routes*/}
         <ContentRoute path="/users/list" component={UsersList} />
