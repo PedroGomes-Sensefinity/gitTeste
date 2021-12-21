@@ -108,6 +108,8 @@ export function AsideMenuList({ layoutProps }) {
               </div>
           </li>
           {/*end::1 Level*/}
+
+          {/*begin::1 Level*/}
         <li
             className={`menu-item ${getMenuItemActive("/profiles", true)}`}
             aria-haspopup="true"
@@ -145,6 +147,43 @@ export function AsideMenuList({ layoutProps }) {
           </div>
         </li>
 
+          {/*begin::1 Level*/}
+          <li
+              className={`menu-item ${getMenuItemActive("/assets", true)}`}
+              aria-haspopup="true"
+          >
+              <NavLink className="menu-link menu-toggle" to="/assets">
+            <span className="svg-icon menu-icon">
+              <SVG src={toAbsoluteUrl("/media/svg/icons/Communication/Group.svg")} />
+            </span>
+                  <span className="menu-text">Assets</span>
+              </NavLink>
+              <div className="menu-submenu">
+                  <i className="menu-arrow" />
+                  <ul className="menu-subnav">
+                      <li className="menu-item menu-item-parent" aria-haspopup="true">
+                <span className="menu-link">
+                  <span className="menu-text">Assets</span>
+                </span>
+                      </li>
+                      {/*begin::2 Level*/}
+                      <li
+                          className={`menu-item ${getMenuItemActive(
+                              "/assets/list"
+                          )}`}
+                          aria-haspopup="true"
+                      >
+                          <NavLink className="menu-link" to="/assets/list">
+                              <i className="menu-bullet menu-bullet-dot">
+                                  <span />
+                              </i>
+                              <span className="menu-text">Asset List</span>
+                          </NavLink>
+                      </li>
+                      {/*end::2 Level*/}
+                  </ul>x
+              </div>
+          </li>
         {/*begin::1 Level*/}
         <li
             className={`menu-item ${getMenuItemActive("/devices", true)}`}

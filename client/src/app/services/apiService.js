@@ -13,8 +13,7 @@ const apiService = {
                     resolve(data);
                 })
                 .catch(function(err) {
-                    console.log(err);
-                    reject(Error("Something went wrong on get " + endpoint + "... "));
+                    reject(err.response.data);
                 });
         });
     },
@@ -38,8 +37,7 @@ const apiService = {
                     resolve(result);
                 })
                 .catch(function(err) {
-                    console.log(err);
-                    reject(Error("Something went wrong on get " + endpoint + " ... "));
+                    reject(err.response.data);
                 });
         });
     },
@@ -63,8 +61,7 @@ const apiService = {
                     resolve(result);
                 })
                 .catch(function(err) {
-                    console.log(err);
-                    reject(Error("Something went wrong on get " + endpoint + " ... "));
+                    reject(err.response.data);
                 });
         });
     },
@@ -88,8 +85,7 @@ const apiService = {
                     resolve(result);
                 })
                 .catch(function(err) {
-                    console.log(err);
-                    reject(Error("Something went wrong on get " + endpoint + " by id... "));
+                    reject(err.response.data);
                 });
         });
     },
@@ -113,8 +109,7 @@ const apiService = {
                     resolve(result);
                 })
                 .catch(function(err) {
-                    console.log(err);
-                    reject(Error(`Something went wrong on count of ${endpoint}... `));
+                    reject(err.response.data);
                 });
         });
     },

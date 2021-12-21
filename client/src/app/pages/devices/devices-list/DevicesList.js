@@ -8,6 +8,8 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import TableGrid from '../../../components/table-grid/table-grid.component';
 
+import PermissionGate from "../../../modules/Permission/permissionGate";
+
 const useStyles = makeStyles((theme) => ({
     button: {
         margin: theme.spacing(1),
@@ -52,33 +54,35 @@ export function DevicesList() {
     ];
 
     return (
-        <Card>
-            <CardContent>
-                <Link to='/devices/new'>
-                    <Button
-                        variant='contained'
-                        color='secondary'
-                        className={classes.button}>
-                        <AddIcon className={classes.leftIcon} />
-                        New device
-                    </Button>
-                </Link>
-                <TableGrid
-                    actions={[
-                        {
-                            icon: EditIcon,
-                            tooltip: 'Edit device',
-                            onClick: (event, rowData) => {
-                                history.push(`/devices/edit/${rowData.id}`);
+        <PermissionGate permission={'device_view'}>
+            <Card>
+                <CardContent>
+                    <Link to='/devices/new'>
+                        <Button
+                            variant='contained'
+                            color='secondary'
+                            className={classes.button}>
+                            <AddIcon className={classes.leftIcon} />
+                            New device
+                        </Button>
+                    </Link>
+                    <TableGrid
+                        actions={[
+                            {
+                                icon: EditIcon,
+                                tooltip: 'Edit device',
+                                onClick: (event, rowData) => {
+                                    history.push(`/devices/edit/${rowData.id}`);
+                                },
                             },
-                        },
-                    ]}
-                    title=''
-                    columns={columns}
-                    endpoint={'device'}
-                    dataField='devices'
-                />
-            </CardContent>
-        </Card>
+                        ]}
+                        title=''
+                        columns={columns}
+                        endpoint={'device'}
+                        dataField='devices'
+                    />
+                </CardContent>
+            </Card>
+        </PermissionGate>
     );
 }
