@@ -5,6 +5,7 @@ import DeviceThresholdComponent from "../../../components/form/deviceThresholdCo
 import tenantService from '../../../services/tenantService';
 import {Paper, Tab, Tabs} from "@material-ui/core";
 import {TabContainer} from "react-bootstrap";
+import PermissionGate from "../../../modules/Permission/permissionGate";
 
 export function Device({history, match}) {
     const {id} = match.params;
@@ -18,24 +19,26 @@ export function Device({history, match}) {
     }, []);
 
     return (
-        <div>
-            <Paper square>
-                <Tabs value={value} indicatorColor="primary" textColor="primary" onChange={handleChange}>
-                    <Tab label="Device Info"/>
-                    <Tab label="Thresholds" disabled={typeof id === 'undefined'}/>
-                    <Tab label="Config Message" disabled={typeof id === 'undefined'}/>
-                </Tabs>
-            </Paper>
-            <TabContainer>
-                {value === 0 && <DeviceFormComponent entity={id} />}
-            </TabContainer>
-            <TabContainer>
-                {value === 1 && <DeviceThresholdComponent entity={id} /> }
-            </TabContainer>
-            <TabContainer>
-                {value === 2 && <DeviceConfigMessageComponent entity={id} /> }
-            </TabContainer>
-        </div>
+        <PermissionGate permission={'device_create'}>
+            <div>
+                <Paper square>
+                    <Tabs value={value} indicatorColor="primary" textColor="primary" onChange={handleChange}>
+                        <Tab label="Device Info"/>
+                        <Tab label="Thresholds" disabled={typeof id === 'undefined'}/>
+                        <Tab label="Config Message" disabled={typeof id === 'undefined'}/>
+                    </Tabs>
+                </Paper>
+                <TabContainer>
+                    {value === 0 && <DeviceFormComponent entity={id} />}
+                </TabContainer>
+                <TabContainer>
+                    {value === 1 && <DeviceThresholdComponent entity={id} /> }
+                </TabContainer>
+                <TabContainer>
+                    {value === 2 && <DeviceConfigMessageComponent entity={id} /> }
+                </TabContainer>
+            </div>
+        </PermissionGate>
     )
 
     function handleChange(event, newValue) {
