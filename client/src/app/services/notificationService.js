@@ -8,12 +8,12 @@ const notificationService = {
                     if (response.status !== 200) {
                         return [];
                     }
-                
+
                     return response.data;
                 })
                 .then((response) => {
                     let result = [];
-                    
+
                     if (typeof response.data !== 'undefined') {
                         result = response.data;
                     }
@@ -38,8 +38,7 @@ const notificationService = {
                     resolve(result);
                 })
                 .catch(function (err) {
-                    console.log(err);
-                    reject(Error("Something went wrong on get count of notifications... "));
+                    reject(err.response.data);
                 });
         });
     },

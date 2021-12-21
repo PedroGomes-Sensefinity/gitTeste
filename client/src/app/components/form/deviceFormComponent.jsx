@@ -79,20 +79,24 @@ class DeviceFormComponent extends React.Component {
 
     getParents = (records) => {
         let devices = [];
-        records.map((device) => {
-            devices.push({ id: device.id, label: device.id });
-            return null;
-        });
+        if (Array.isArray(records)) {
+            records.map((device) => {
+                devices.push({id: device.id, label: device.id});
+                return null;
+            });
+        }
         return devices;
     };
 
     getGroups = (records) => {
         let groups = [];
-        records.map((group) => {
-            const label = this.makeGroupLabel(group);
-            groups.push({ id: group.id, label: label });
-            return null;
-        });
+        if (Array.isArray(records)) {
+            records.map((group) => {
+                const label = this.makeGroupLabel(group);
+                groups.push({ id: group.id, label: label });
+                return null;
+            });
+        }
         return groups;
     };
 
@@ -313,6 +317,7 @@ class DeviceFormComponent extends React.Component {
                                                     placeholder='Set the Device ID'
                                                     {...getFieldProps('id')}
                                                     disabled={!this.state.isAddMode}
+                                                    maxlength={18}
                                                 />
                                                 <ErrorMessage name="id" component="div" className="invalid-feedback" />
                                             </div>
