@@ -29,6 +29,10 @@ export function GroupsList() {
 
     const columns = [
         {
+            field: 'id',
+            title: 'ID',
+        },
+        {
             field: 'label',
             title: 'Label',
         }
