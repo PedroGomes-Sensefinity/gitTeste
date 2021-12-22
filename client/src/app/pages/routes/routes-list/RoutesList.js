@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
         fontSize: 20,
     },
 }));
-export function AssetsList() {
+export function RoutesList() {
     const classes = useStyles();
     const locale = useLang();
 
@@ -46,29 +46,29 @@ export function AssetsList() {
     return (
         <Card>
             <CardContent>
-                <Link to='/assets/new'>
+                <Link to='/routes/new'>
                     <Button
                         variant='contained'
                         color='secondary'
                         className={classes.button}>
                         <AddIcon className={classes.leftIcon} />
-                        New Asset
+                        New Route
                     </Button>
                 </Link>
                 <TableGrid
                     actions={[
                         {
                             icon: EditIcon,
-                            tooltip: 'Edit asset',
+                            tooltip: 'Edit route',
                             onClick: (event, rowData) => {
-                                history.push(`/assets/edit/${rowData.id}`);
+                                history.push(`/routes/edit/${rowData.id}`);
                             },
                         },
                     ]}
                     title=''
                     columns={columns}
-                    endpoint={'asset'}
-                    dataField='assets'
+                    endpoint={'route'}
+                    dataField='routes'
                 />
             </CardContent>
         </Card>
