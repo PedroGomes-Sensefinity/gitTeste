@@ -48,5 +48,7 @@
   "FLOORMAP.FILE_TOO_LARGE": "Tamanho do arquivo é maior do que o permitido",
   "FLOORMAP.FILE_INVALID_FORMAT": "Unsupported file format",
   "ASSETS.CREATED": "Asset criado com sucesso",
-  "ASSETS.UPDATED": "Asset alterado com sucesso"
+  "ASSETS.UPDATED": "Asset alterado com sucesso",
+  "ROUTES.CREATED": "Routes criado com sucesso",
+  "ROUTES.UPDATED": "Routes alterado com sucesso"
 }

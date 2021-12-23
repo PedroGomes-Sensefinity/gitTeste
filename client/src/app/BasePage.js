@@ -29,6 +29,8 @@ import {TenantsNewList} from "./pages/tenants.new/tenants-list/TenantsList";
 import {TenantsNewForm} from "./pages/tenants.new/tenants-form/TenantsForm";
 import {FloorMapsList} from "./pages/floor-maps/list/FloorMapsList";
 import {FloorMapsForm} from "./pages/floor-maps/form/FloorMapsForm";
+import {RoutesList} from "./pages/routes/routes-list/RoutesList";
+import {RoutesForm} from "./pages/routes/routes-form/RoutesForm";
 
 /*const UserProfilepage = lazy(() =>
   import("./modules/UserProfile/UserProfilePage")
@@ -81,10 +83,15 @@ export default function BasePage() {
         <ContentRoute path="/profiles/new" component={ProfilesForm} />
         <ContentRoute path="/profiles/edit/:id" component={ProfilesForm} />
 
-        { /* Profiles Routes*/}
-        <ContentRoute path="/assets/list" component={AssetsList} />
-        <ContentRoute path="/assets/new" component={AssetsForm} />
-        <ContentRoute path="/assets/edit/:id" component={AssetsForm} />
+      { /* Assets Routes*/}
+      <ContentRoute path="/assets/list" component={AssetsList} />
+      <ContentRoute path="/assets/new" component={AssetsForm} />
+      <ContentRoute path="/assets/edit/:id" component={AssetsForm} />
+
+      { /* Routes Routes*/}
+      <ContentRoute path="/routes/list" component={RoutesList} />
+      <ContentRoute path="/routes/new" component={RoutesForm} />
+      <ContentRoute path="/routes/edit/:id" component={RoutesForm} />
 
         { /* Users Routes*/}
         <ContentRoute path="/users/list" component={UsersList} />

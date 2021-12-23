@@ -11,10 +11,10 @@ import toaster from '../../utils/toaster';
 import { injectIntl } from 'react-intl';
 import apiService from '../../services/apiService';
 import {Form, ListGroup} from 'react-bootstrap';
-import assetsService from "../../services/assetsService";
+import routesService from "../../services/routesService";
 import {AsyncTypeahead} from "react-bootstrap-typeahead";
 
-class AssetsFormComponent extends React.Component {
+class RoutesFormComponent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -53,10 +53,10 @@ class AssetsFormComponent extends React.Component {
 
         let method = (this.state.isAddMode) ? 'save' : 'update';
         let msgSuccess = (this.state.isAddMode)
-            ? this.state.intl.formatMessage({id: 'ASSETS.CREATED'})
-            : this.state.intl.formatMessage({id: 'ASSETS.UPDATED'});
+            ? this.state.intl.formatMessage({id: 'ROUTES.CREATED'})
+            : this.state.intl.formatMessage({id: 'ROUTES.UPDATED'});
 
-        assetsService[method](fields)
+        routesService[method](fields)
             .then((response) => {
                 toaster.notify('success', msgSuccess);
                 setSubmitting(false);
@@ -118,11 +118,11 @@ class AssetsFormComponent extends React.Component {
                         console.log(this.state.isAddMode, this.state.id);
                         if (!this.state.isAddMode && this.state.id !== 'new') {
                             apiService
-                            .getById('asset', this.state.id)
+                            .getById('route', this.state.id)
                             .then((response) => {
                                 let item = [];
-                                if(response.assets !== undefined && response.assets.length > 0) {
-                                    item = response.assets[0];
+                                if(response.routes !== undefined && response.routes.length > 0) {
+                                    item = response.routes[0];
                                 }
 
                                 setFieldValue('id', item.id);
@@ -141,10 +141,10 @@ class AssetsFormComponent extends React.Component {
                                 className={`card-header py-3 `+ classes.headerMarginTop}>
                                 <div className='card-title align-items-start flex-column'>
                                     <h3 className='card-label font-weight-bolder text-dark'>
-                                        Asset Information
+                                        Route Information
                                     </h3>
                                     <span className='text-muted font-weight-bold font-size-sm mt-1'>
-                                        Change general configurations about board family
+                                        Change general configurations about the route
                                     </span>
                                 </div>
                                 <div className='card-toolbar'>
@@ -160,7 +160,7 @@ class AssetsFormComponent extends React.Component {
                                         {isSubmitting}
                                     </button>
                                     <Link
-                                        to='/assets/list'
+                                        to='/routes/list'
                                         className='btn btn-secondary'>
                                         Cancel
                                     </Link>
@@ -182,7 +182,7 @@ class AssetsFormComponent extends React.Component {
                                                         'label'
                                                     )}`}
                                                 name='name'
-                                                placeholder='Set the asset label'
+                                                placeholder='Set the route label'
                                                 {...getFieldProps('label')}
                                             />
                                             <ErrorMessage name="label" component="div" className="invalid-feedback" />
@@ -218,4 +218,4 @@ class AssetsFormComponent extends React.Component {
     }
 }
 
-export default injectIntl(AssetsFormComponent);
+export default injectIntl(RoutesFormComponent);

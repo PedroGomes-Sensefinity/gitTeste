@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const assetsService = {
+const routesService = {
     save: function (formData) {
         return new Promise(function (resolve, reject) {
-            axios.post(`${process.env.REACT_APP_REST_API_URL}asset/`, formData)
+            axios.post(`${process.env.REACT_APP_REST_API_URL}route/`, formData)
                 .then((response) => response.data)
                 .then((responseData) => {
                     let result = [];
@@ -14,13 +14,13 @@ const assetsService = {
                 })
                 .catch(function (err) {
                     console.log(err);
-                    reject(Error("Something went wrong on save asset... "));
+                    reject(Error("Something went wrong on save route... "));
                 });
         });
     },
     update: function (formData) {
         return new Promise(function (resolve, reject) {
-            axios.put(`${process.env.REACT_APP_REST_API_URL}asset/${formData.id}`, formData)
+            axios.put(`${process.env.REACT_APP_REST_API_URL}route/${formData.id}`, formData)
                 .then((response) => response.data)
                 .then((responseData) => {
                     let result = [];
@@ -31,10 +31,10 @@ const assetsService = {
                 })
                 .catch(function (err) {
                     console.log(err);
-                    reject(Error("Something went wrong on update asset... "));
+                    reject(Error("Something went wrong on update route... "));
                 });
         });
     },
 }
 
-export default assetsService;
+export default routesService;
