@@ -53,8 +53,8 @@ class RoutesFormComponent extends React.Component {
 
         let method = (this.state.isAddMode) ? 'save' : 'update';
         let msgSuccess = (this.state.isAddMode)
-            ? this.state.intl.formatMessage({id: 'ASSETS.CREATED'})
-            : this.state.intl.formatMessage({id: 'ASSETS.UPDATED'});
+            ? this.state.intl.formatMessage({id: 'ROUTES.CREATED'})
+            : this.state.intl.formatMessage({id: 'ROUTES.UPDATED'});
 
         routesService[method](fields)
             .then((response) => {
