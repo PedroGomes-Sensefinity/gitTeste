@@ -56,7 +56,7 @@ class Map extends React.Component {
                     allowIntersection: false,
                     showArea: true,
                 },
-            },
+            }
         });
         map.addControl(drawControl);
 
