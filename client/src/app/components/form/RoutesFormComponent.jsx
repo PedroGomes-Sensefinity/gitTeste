@@ -115,7 +115,6 @@ class RoutesFormComponent extends React.Component {
                     const classes = this.useStyles();
 
                     useEffect(() => {
-                        console.log(this.state.isAddMode, this.state.id);
                         if (!this.state.isAddMode && this.state.id !== 'new') {
                             apiService
                             .getById('route', this.state.id)
