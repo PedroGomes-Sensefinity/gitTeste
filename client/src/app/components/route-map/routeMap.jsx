@@ -20,6 +20,7 @@ class RouteMap extends React.Component {
             route: props.route || {},
             prevRoute: props.route ? this.copyObject(props.route) : {},
             showGeofencing: props.showGeofencing || false,
+            generatedGeofence: {},
         };
     }
 
@@ -89,10 +90,6 @@ class RouteMap extends React.Component {
     }
 
     componentDidUpdate() {
-        console.log("componentDidUpdate");
-        console.log("this.state.prevRoute: ", this.state.prevRoute);
-        console.log("this.props.route: ", this.props.route);
-        console.log("isEqual: ", this.isEqualObject(this.state.prevRoute, this.props.route));
         // Verify if shapes sent are diferent than initialized map
         if (!this.isEqualObject(this.state.prevRoute, this.props.route)) {
             // update shapes
@@ -121,9 +118,9 @@ class RouteMap extends React.Component {
         let coordinatesLine1 = offsetLine1.geometry.coordinates;
         let coordinatesLine2 = offsetLine2.geometry.coordinates.reverse();
 
-        let generatedGeofencing = coordinatesLine1.concat([coordinatesLine2[0]]);
-        generatedGeofencing = generatedGeofencing.concat(coordinatesLine2);
-        generatedGeofencing = generatedGeofencing.concat([coordinatesLine1[0]]);
+        let generatedGeofence = coordinatesLine1.concat([coordinatesLine2[0]]);
+        generatedGeofence = generatedGeofence.concat(coordinatesLine2);
+        generatedGeofence = generatedGeofence.concat([coordinatesLine1[0]]);
 
         let conf = {
             style: {
@@ -132,9 +129,11 @@ class RouteMap extends React.Component {
             }
         };
 
-        let geojsonGeneratedGeofencing = L.geoJson(turf.polygon([generatedGeofencing]), conf);
+        let geojsonGeneratedGeofence = turf.polygon([generatedGeofence]);
+        let leafletGeojson = L.geoJson(geojsonGeneratedGeofence, conf);
 
-        this.drawnItems.addLayer(geojsonGeneratedGeofencing);
+        this.setState({generatedGeofence: geojsonGeneratedGeofence});
+        this.drawnItems.addLayer(leafletGeojson);
         this.generateMarkers(coordinatesLine1.concat(coordinatesLine2));
     }
 
@@ -167,12 +166,11 @@ class RouteMap extends React.Component {
 
     removeAllLayers = () => {
         this.drawnItems.clearLayers();
+        this.setState({generatedGeofence: {}})
         this.updateRoute({});
     }
 
     drawRoute = (route) => {
-        console.log("drawRoute: ", route);
-
         let drawnItems = this.drawnItems;
         var geojsonLayer = L.geoJson(route, {});
         geojsonLayer.eachLayer(function (l) {
@@ -194,9 +192,7 @@ class RouteMap extends React.Component {
     }
 
     updateRoute = (route) => {
-        console.log("updateRoute");
-        console.log("updateRoute route: ", route);
-        this.props.onChangeRoute(route);
+        this.props.onChangeRoute({route: route, geofence: this.state.generatedGeofence});
     };
 
     /**
