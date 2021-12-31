@@ -37,6 +37,7 @@ class ThresholdFormComponent extends React.Component {
             limitMaxValue: 100,
             rangeMinValue: 0,
             rangeMaxValue: 0,
+            routeOptions: [],
             ruleCurrentSymbol: '',
             ruleTypeOptions: [
                 {id: "temperaturedegree", name: "Temperature"},
@@ -66,6 +67,7 @@ class ThresholdFormComponent extends React.Component {
 
     initialValues = {
         id: parseInt(this.props.id),
+        routeId: 0,
         name: '',
         ruleMeasurementType: '',
         ruleWhenCron: '',
@@ -147,13 +149,14 @@ class ThresholdFormComponent extends React.Component {
 
         const obj = {
             name: values.name,
+            route_id: parseInt(values.routeId),
             rule: JSON.stringify(rule)
         };
 
         if (typeof values.id !== "undefined") {
             obj['id'] = values.id;
         }
-
+        console.log(obj)
         return obj;
     }
 
@@ -230,6 +233,21 @@ class ThresholdFormComponent extends React.Component {
                     useEffect(() => {
                         this.setState({rangeMaxValue: values.maxValue});
                     }, [values.maxValue]);
+
+                    useEffect(() => {
+                        apiService.get('route', 100, 0).then((response) => {
+                            let routes = [];
+
+                            response.routes.forEach(function (route) {
+                                routes.push({
+                                    id: route.id,
+                                    name: route.label,
+                                });
+                            });
+                            console.log(routes)
+                            this.setState({routeOptions: routes});
+                        });
+                    }, []);
 
                     useEffect(() => {
                         this.setState({ruleCurrentSymbol: this.state.ruleSymbol[values.ruleMeasurementType]});
@@ -342,7 +360,7 @@ class ThresholdFormComponent extends React.Component {
                                                 />
                                             </div>
                                         </div>
-                                        <div className='col-xl-4 col-lg-4'>
+                                        <div className='col-xl-3 col-lg-3'>
                                             <label>Type</label>
                                             <Field
                                                 as="select"
@@ -365,15 +383,15 @@ class ThresholdFormComponent extends React.Component {
                                                 className='invalid-feedback'
                                             />
                                         </div>
-                                        <div className={`col-xl-2 col-lg-2 ${(values.ruleMeasurementType === 'geofences' ? 'hide' : '')}`}>
-                                            <div className='mt-10'>
+                                        <div className={`col-xl-3 col-lg-3 ${(values.ruleMeasurementType === 'geofences' ? 'hide' : '')}`}>
+                                            <div className={`mt-10 `}>
                                                 <div className="form-check form-check-inline">
                                                     <Field
                                                         className='form-check-input'
                                                         name='min'
                                                         type='checkbox'
                                                     />
-                                                    <label htmlFor="min" className='form-check-label"' style={{'marginTop':'5px'}}>Min</label>
+                                                    <label htmlFor="min" className='form-check-label"' style={{'marginTop':'5px'}}> Min</label>
                                                 </div>
                                                 <div className="form-check form-check-inline">
                                                     <Field
@@ -384,6 +402,29 @@ class ThresholdFormComponent extends React.Component {
                                                     <label htmlFor="max" className='form-check-label"' style={{'marginTop':'5px'}}>Max</label>
                                                 </div>
                                             </div>
+                                        </div>
+                                        <div className={`col-xl-3 col-lg-3 ${(values.ruleMeasurementType === 'geofences' ? '' : 'hide')}`}>
+                                            <label>Route</label>
+                                            <Field
+                                                as="select"
+                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                    {errors, touched},
+                                                    'routeId'
+                                                )}`}
+                                                name='routeId'
+                                                placeholder=''
+                                                {...getFieldProps('routeId')}
+                                            >
+                                                <option key='' value=''></option>
+                                                {this.state.routeOptions.map((e) => {
+                                                    return (<option key={e.id} value={e.id}>{e.name}</option>);
+                                                })}
+                                            </Field>
+                                            <ErrorMessage
+                                                name='route'
+                                                component='div'
+                                                className='invalid-feedback'
+                                            />
                                         </div>
                                     </div>
 
