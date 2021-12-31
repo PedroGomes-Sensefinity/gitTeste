@@ -20,6 +20,7 @@ class RoutesMapComponent extends React.Component {
             intl: props.intl,
             id: props.id,
             route: {},
+            geofence: {},
             entity: {},
             loading: false,
             blocking: false,
@@ -46,6 +47,7 @@ class RoutesMapComponent extends React.Component {
     save = (fields, { setSubmitting }) => {
         let route = this.state.entity;
         route.metadata.route = this.state.route;
+        route.metadata.geofence = this.state.geofence;
         route.metadata = JSON.stringify(route.metadata);
 
         this.setState({blocking: true});
@@ -64,8 +66,8 @@ class RoutesMapComponent extends React.Component {
     };
 
     onChangeRoute = (route) => {
-        console.log("onChangeRoute: ", route);
-        this.setState({ route: route });
+        this.setState({ route: route.route });
+        this.setState({ geofence: route.geofence });
     };
 
     render() {
@@ -97,6 +99,10 @@ class RoutesMapComponent extends React.Component {
 
                                 if("route" in entity.metadata) {
                                     this.setState({route: entity.metadata.route});
+                                }
+
+                                if("geofence" in entity.metadata) {
+                                    this.setState({geofence: entity.metadata.geofence});
                                 }
                             });
                     }, []);
