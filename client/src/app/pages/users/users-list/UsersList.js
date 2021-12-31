@@ -11,6 +11,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import TableGrid from '../../../components/table-grid/table-grid.component';
 import GenericModalComponent from '../../../components/modal/genericModalComponent'
 import ChangePasswordFormComponent from "../../../components/form/changePasswordFormComponent";
+import PermissionGate from "../../../modules/Permission/permissionGate";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -50,51 +51,52 @@ export function UsersList() {
     ];
 
     return (
-        <Card>
-            <CardContent>
-                <Link to='/users/new'>
-                    <Button
-                        variant='contained'
-                        color='secondary'
-                        className={classes.button}>
-                        <AddIcon className={classes.leftIcon} />
-                        New User
-                    </Button>
-                </Link>
-                <TableGrid
-                    actions={[
-                        {
-                            icon: EditIcon,
-                            tooltip: 'Edit user',
-                            onClick: (event, rowData) => {
-                                history.push(`/users/edit/${rowData.id}`);
+        <PermissionGate permission={'user_view'}>
+            <Card>
+                <CardContent>
+                    <Link to='/users/new'>
+                        <Button
+                            variant='contained'
+                            color='secondary'
+                            className={classes.button}>
+                            <AddIcon className={classes.leftIcon} />
+                            New User
+                        </Button>
+                    </Link>
+                    <TableGrid
+                        actions={[
+                            {
+                                icon: EditIcon,
+                                tooltip: 'Edit user',
+                                onClick: (event, rowData) => {
+                                    history.push(`/users/edit/${rowData.id}`);
+                                },
                             },
-                        },
-                        {
-                            icon: ChangePasswordIcon,
-                            tooltip: "Change user's password",
-                            onClick: (event, rowData) => {
-                                setUserId(rowData.id)
-                                setUserUsername(rowData.username)
-                                handleShow(true);
+                            {
+                                icon: ChangePasswordIcon,
+                                tooltip: "Change user's password",
+                                onClick: (event, rowData) => {
+                                    setUserId(rowData.id)
+                                    setUserUsername(rowData.username)
+                                    handleShow(true);
+                                },
                             },
-                        },
-                    ]}
-                    title=''
-                    columns={columns}
-                    endpoint={'user'}
-                    dataField='users'
+                        ]}
+                        title=''
+                        columns={columns}
+                        endpoint={'user'}
+                        dataField='users'
+                    />
+                </CardContent>
+
+                <GenericModalComponent
+                    content={ChangePasswordComponent}
+                    show={show}
+                    handleClose={handleClose}
+                    title={'Changing password [' + userUsername + ']'}
+                    // title={intl.formatMessage({id: 'MODAL.PASSWORD.TITLE'}) + userUsername}
                 />
-            </CardContent>
-
-            <GenericModalComponent
-                content={ChangePasswordComponent}
-                show={show}
-                handleClose={handleClose}
-                title={'Changing password [' + userUsername + ']'}
-                // title={intl.formatMessage({id: 'MODAL.PASSWORD.TITLE'}) + userUsername}
-            />
-        </Card>
-
+            </Card>
+        </PermissionGate>
     );
 }
