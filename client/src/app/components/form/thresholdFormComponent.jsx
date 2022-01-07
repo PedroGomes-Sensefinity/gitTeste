@@ -158,7 +158,6 @@ class ThresholdFormComponent extends React.Component {
         if (typeof values.id !== "undefined") {
             obj['id'] = values.id;
         }
-        console.log(obj)
         return obj;
     }
 
@@ -246,7 +245,6 @@ class ThresholdFormComponent extends React.Component {
                                     name: route.label,
                                 });
                             });
-                            console.log(routes)
                             this.setState({routeOptions: routes});
                         });
                     }, []);
@@ -267,6 +265,7 @@ class ThresholdFormComponent extends React.Component {
                                 this.setState({threshold: threshold});
 
                                 setFieldValue('name', threshold.name, false);
+                                setFieldValue('routeId', threshold.route_id, false);
                                 setFieldValue('ruleMeasurementType', rule.type, false);
 
                                 if (typeof(rule.do) !== 'undefined') {
