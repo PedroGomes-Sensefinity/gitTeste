@@ -140,7 +140,9 @@ class ThresholdFormComponent extends React.Component {
                 cron: (values.ruleWhenCron !== 'custom') ? values.ruleWhenCron : values.customCron,
                 successive_time: values.ruleWhenSuccessiveTime * 60
             },
-            what: (typeof this.state.threshold.rule.what !== "undefined") ? this.state.threshold.rule.what : [],
+            what: (typeof this.state.threshold.rule !== "undefined" && typeof this.state.threshold.rule.what !== "undefined")
+                ? this.state.threshold.rule.what
+                : [],
         };
 
         if (this.state.ruleMeasurementType === 'geofences') {
