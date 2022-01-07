@@ -46,5 +46,9 @@
   "TENANT.UPLOAD": "Tenant personalization saved successfully",
   "FLOORMAP.UPDATED": "FloorMap updated successfully",
   "FLOORMAP.FILE_TOO_LARGE": "File is too large",
-  "FLOORMAP.FILE_INVALID_FORMAT": "Formato não suportado"
+  "FLOORMAP.FILE_INVALID_FORMAT": "Formato não suportado",
+  "ASSETS.CREATED": "Asset created successfully",
+  "ASSETS.UPDATED": "Asset updated successfully",
+  "ROUTES.CREATED": "Route created successfully",
+  "ROUTES.UPDATED": "Route updated successfully"
 }
