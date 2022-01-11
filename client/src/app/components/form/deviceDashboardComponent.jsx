@@ -24,10 +24,7 @@ class DeviceDashboardComponent extends React.Component {
                 last_battery_voltage_value: '',
                 last_power_saving_mode_timestamp: '',
                 last_power_saving_mode_value: '',
-                last_position: {
-                    lat: 46.94795471025061,
-                    lon: 7.4510452289808615
-                },
+                last_position: {},
                 last_alarm_timestamp: '',
                 last_alarm_id: '',
             },
