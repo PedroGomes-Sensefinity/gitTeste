@@ -4,12 +4,14 @@ import apiService from '../../services/apiService';
 import '../../utils/yup-validations';
 import BlockUi from "react-block-ui";
 import {injectIntl} from 'react-intl';
-import {BsClock, BsFillCloudArrowUpFill, BsBatteryFull} from "react-icons/bs";
-import {MdPower, MdBatterySaver, MdWifiTethering, MdOutlineWarningAmber} from "react-icons/md";
+import {BsBatteryFull, BsClock, BsFillCloudArrowUpFill} from "react-icons/bs";
+import {MdBatterySaver, MdOutlineWarningAmber, MdPower, MdWifiTethering} from "react-icons/md";
 import PositionMap from "../position-map/positionMap";
+
 class DeviceDashboardComponent extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
             intl: props.intl,
             id: props.entity,
@@ -24,10 +26,7 @@ class DeviceDashboardComponent extends React.Component {
                 last_battery_voltage_value: '',
                 last_power_saving_mode_timestamp: '',
                 last_power_saving_mode_value: '',
-                last_position: {
-                    lat: 46.94795471025061,
-                    lon: 7.4510452289808615
-                },
+                last_position: {},
                 last_alarm_timestamp: '',
                 last_alarm_id: '',
             },
@@ -37,17 +36,38 @@ class DeviceDashboardComponent extends React.Component {
     }
 
     componentDidMount() {
+        this.initDashboard();
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (!this.isEqualObject(this.props, prevProps)) {
+            this.setState({id: this.props.entity})
+            this.initDashboard();
+        }
+    }
+
+    componentWillUnmount() {
+        this.setState({dashboard: {}});
+        this.setState({device: {}});
+    }
+
+    initDashboard() {
         this.setState({blocking: true});
         apiService.getById('device', this.state.id).then((response) => {
             const device = response.devices[0];
             this.setState({device: device})
             this.setState({blocking: false});
         });
+
         deviceService.dashboard(this.state.id).then((response) => {
             this.setState({dashboard: response})
             this.setState({blocking: false});
         });
     }
+
+    isEqualObject = (obj1, obj2) => {
+        return JSON.stringify(obj1) === JSON.stringify(obj2);
+    };
 
     render() {
         return (
