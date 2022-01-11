@@ -317,7 +317,7 @@ class DeviceFormComponent extends React.Component {
                                                     placeholder='Set the Device ID'
                                                     {...getFieldProps('id')}
                                                     disabled={!this.state.isAddMode}
-                                                    maxlength={18}
+                                                    maxLength={18}
                                                 />
                                                 <ErrorMessage name="id" component="div" className="invalid-feedback" />
                                             </div>
