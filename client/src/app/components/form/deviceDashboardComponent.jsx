@@ -16,6 +16,7 @@ class DeviceDashboardComponent extends React.Component {
             intl: props.intl,
             id: props.entity,
             device: {},
+            last_alarm_timestamp: '',
             dashboard: {
                 last_communication_timestamp: '',
                 last_communication_timeserver: '',
@@ -49,8 +50,8 @@ class DeviceDashboardComponent extends React.Component {
     }
 
     componentWillUnmount() {
-        this.setState({dashboard: {}});
-        this.setState({device: {}});
+        //this.setState({dashboard: {}});
+        //this.setState({device: {}});
     }
 
     initDashboard() {
@@ -62,9 +63,8 @@ class DeviceDashboardComponent extends React.Component {
         ]).then(allResponses => {
             const device = allResponses[0];
             const dashboard = allResponses[1];
-            this.setState({device: device.devices[0]})
-            this.setState({dashboard: dashboard})
-
+            this.setState({device: device.devices[0]});
+            this.setState({dashboard: dashboard});
             this.setState({blocking: false});
         });
     }

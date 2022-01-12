@@ -20,7 +20,6 @@ class DeviceFormComponent extends React.Component {
         this.state = {
             intl: props.intl,
             id: props.entity,
-            data: props.data,
             isAddMode: !props.entity,
             groups: [],
             selectedGroup: [],
@@ -41,6 +40,9 @@ class DeviceFormComponent extends React.Component {
         tenantService.getInfo().then((response) => {
             this.setState({tenant: response});
         });
+    }
+
+    componentWillUnmount() {
     }
 
     initialValues = {
