@@ -1,12 +1,12 @@
 import React from 'react';
-import deviceService from '../../services/deviceService';
-import apiService from '../../services/apiService';
 import '../../utils/yup-validations';
 import BlockUi from "react-block-ui";
 import {injectIntl} from 'react-intl';
 import {BsBatteryFull, BsClock, BsFillCloudArrowUpFill} from "react-icons/bs";
 import {MdBatterySaver, MdOutlineWarningAmber, MdPower, MdWifiTethering} from "react-icons/md";
 import PositionMap from "../position-map/positionMap";
+import apiService from "../../services/apiService";
+import deviceService from "../../services/deviceService";
 
 class DeviceDashboardComponent extends React.Component {
     constructor(props) {
@@ -53,14 +53,16 @@ class DeviceDashboardComponent extends React.Component {
 
     initDashboard() {
         this.setState({blocking: true});
-        apiService.getById('device', this.state.id).then((response) => {
-            const device = response.devices[0];
-            this.setState({device: device})
-            this.setState({blocking: false});
-        });
 
-        deviceService.dashboard(this.state.id).then((response) => {
-            this.setState({dashboard: response})
+        Promise.all([
+            apiService.getById('device', this.state.id),
+            deviceService.dashboard(this.state.id)
+        ]).then(allResponses => {
+            const device = allResponses[0];
+            const dashboard = allResponses[1];
+            this.setState({device: device.devices[0]})
+            this.setState({dashboard: dashboard})
+
             this.setState({blocking: false});
         });
     }
