@@ -36,11 +36,13 @@ class DeviceDashboardComponent extends React.Component {
     }
 
     componentDidMount() {
+        console.log('componentDidMount', this.props);
         this.initDashboard();
     }
 
     componentDidUpdate(prevProps, prevState) {
         if (!this.isEqualObject(this.props, prevProps)) {
+            console.log('componentDidUpdate', this.props);
             this.setState({id: this.props.entity})
             this.initDashboard();
         }
