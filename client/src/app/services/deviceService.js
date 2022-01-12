@@ -110,12 +110,7 @@ const deviceService = {
             axios.get(`${process.env.REACT_APP_REST_API_URL}device/dashboard/${id}`)
                 .then((response) => response.data)
                 .then((responseData) => {
-                    var result = [];
-
-                    if (responseData.code === 200) {
-                        result = responseData.data;
-                    }
-                    resolve(result);
+                    resolve(responseData);
                 })
                 .catch(function (err) {
                     reject(err.response.data);
