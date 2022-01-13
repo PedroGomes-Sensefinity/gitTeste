@@ -16,21 +16,18 @@ class DeviceDashboardComponent extends React.Component {
             intl: props.intl,
             id: props.entity,
             device: {},
+            last_communication_timestamp: '',
+            last_communication_timeserver: '',
+            last_gateway_used: '',
+            last_power_on_off_timestamp: '',
+            last_power_on_off_value: '',
+            last_battery_voltage_timestamp: '',
+            last_battery_voltage_value: '',
+            last_power_saving_mode_timestamp: '',
+            last_power_saving_mode_value: '',
+            last_position: {},
             last_alarm_timestamp: '',
-            dashboard: {
-                last_communication_timestamp: '',
-                last_communication_timeserver: '',
-                last_gateway_used: '',
-                last_power_on_off_timestamp: '',
-                last_power_on_off_value: '',
-                last_battery_voltage_timestamp: '',
-                last_battery_voltage_value: '',
-                last_power_saving_mode_timestamp: '',
-                last_power_saving_mode_value: '',
-                last_position: {},
-                last_alarm_timestamp: '',
-                last_alarm_id: '',
-            },
+            last_alarm_id: '',
             loading: false,
             blocking: false,
         };
@@ -50,8 +47,6 @@ class DeviceDashboardComponent extends React.Component {
     }
 
     componentWillUnmount() {
-        //this.setState({dashboard: {}});
-        //this.setState({device: {}});
     }
 
     initDashboard() {
@@ -63,10 +58,50 @@ class DeviceDashboardComponent extends React.Component {
         ]).then(allResponses => {
             const device = allResponses[0];
             const dashboard = allResponses[1];
+
             this.setState({device: device.devices[0]});
-            this.setState({dashboard: dashboard});
+            this.setDashboardValues(dashboard);
+
             this.setState({blocking: false});
         });
+    }
+
+    setDashboardValues(values) {
+        if ('last_communication_timestamp' in values && values.last_communication_timestamp !== '') {
+            this.setState({last_communication_timestamp: values.last_communication_timestamp});
+        }
+
+        if ('last_communication_timeserver' in values && values.last_communication_timeserver !== '') {
+            this.setState({last_communication_timeserver: values.last_communication_timeserver});
+        }
+
+        if ('last_gateway_used' in values && values.last_gateway_used !== '') {
+            this.setState({last_gateway_used: values.last_gateway_used});
+        }
+
+        if ('last_power_on_off_timestamp' in values && values.last_power_on_off_timestamp !== '') {
+            this.setState({last_power_on_off_timestamp: values.last_power_on_off_timestamp});
+            this.setState({last_power_on_off_value: values.last_power_on_off_value});
+        }
+
+        if ('last_battery_voltage_timestamp' in values && values.last_battery_voltage_timestamp !== '') {
+            this.setState({last_battery_voltage_timestamp: values.last_battery_voltage_timestamp});
+            this.setState({last_battery_voltage_value: `${values.last_battery_voltage_value}%`});
+        }
+
+        if ('last_power_saving_mode_timestamp' in values && values.last_power_saving_mode_timestamp !== '') {
+            this.setState({last_power_saving_mode_timestamp: values.last_power_saving_mode_timestamp});
+            this.setState({last_power_saving_mode_value: values.last_power_saving_mode_value});
+        }
+
+        if ('last_alarm_timestamp' in values && values.last_alarm_timestamp !== '') {
+            this.setState({last_alarm_timestamp: values.last_alarm_timestamp});
+            this.setState({last_alarm_id: values.last_alarm_id});
+        }
+
+        if ('last_position' in values && JSON.stringify(values.last_position) !== '{}') {
+            this.setState({last_position: values.last_position});
+        }
     }
 
     isEqualObject = (obj1, obj2) => {
@@ -99,8 +134,8 @@ class DeviceDashboardComponent extends React.Component {
                             </div>
                             <div className='card-body'>
                                 <ul style={{'listStyle': 'none'}}>
-                                    <li><BsClock /> Timestamp: {this.state.dashboard.last_communication_timestamp}</li>
-                                    <li><BsFillCloudArrowUpFill /> Timeserver: {this.state.dashboard.last_communication_timeserver}</li>
+                                    <li><BsClock /> Timestamp: {this.state.last_communication_timestamp}</li>
+                                    <li><BsFillCloudArrowUpFill /> Timeserver: {this.state.last_communication_timeserver}</li>
                                 </ul>
                             </div>
                         </div>
@@ -110,14 +145,14 @@ class DeviceDashboardComponent extends React.Component {
                             <div className='card-header'>
                                 <div className='card-title'>
                                     <h3 className="card-label">
-                                        Battery voltage
+                                        Last Battery voltage
                                     </h3>
                                 </div>
                             </div>
                             <div className='card-body'>
                                 <ul style={{'listStyle': 'none'}}>
-                                    <li><BsBatteryFull /> Battery: {this.state.dashboard.last_battery_voltage_value}</li>
-                                    <li><BsClock /> Timestamp: {this.state.dashboard.last_battery_voltage_timestamp}</li>
+                                    <li><BsBatteryFull /> Battery: {this.state.last_battery_voltage_value}</li>
+                                    <li><BsClock /> Timestamp: {this.state.last_battery_voltage_timestamp}</li>
                                 </ul>
                             </div>
                         </div>
@@ -133,8 +168,8 @@ class DeviceDashboardComponent extends React.Component {
                             </div>
                             <div className='card-body'>
                                 <ul style={{'listStyle': 'none'}}>
-                                    <li><MdPower /> On/Off: {this.state.dashboard.last_power_on_off_timestamp}</li>
-                                    <li><BsClock /> Timestamp: {this.state.dashboard.last_power_on_off_value}</li>
+                                    <li><MdPower /> On/Off: {this.state.last_power_on_off_value}</li>
+                                    <li><BsClock /> Timestamp: {this.state.last_power_on_off_timestamp}</li>
                                 </ul>
                             </div>
                         </div>
@@ -153,8 +188,8 @@ class DeviceDashboardComponent extends React.Component {
                             </div>
                             <div className='card-body'>
                                 <ul style={{'listStyle': 'none'}}>
-                                    <li><MdBatterySaver /> Value: {this.state.dashboard.last_power_saving_mode_value}</li>
-                                    <li><BsClock /> Timestamp: {this.state.dashboard.last_power_saving_mode_timestamp}</li>
+                                    <li><MdBatterySaver /> Value: {this.state.last_power_saving_mode_value}</li>
+                                    <li><BsClock /> Timestamp: {this.state.last_power_saving_mode_timestamp}</li>
                                 </ul>
                             </div>
                         </div>
@@ -170,7 +205,7 @@ class DeviceDashboardComponent extends React.Component {
                             </div>
                             <div className='card-body'>
                                 <ul style={{'listStyle': 'none'}}>
-                                    <li><MdWifiTethering /> {this.state.dashboard.last_gateway_used}</li>
+                                    <li><MdWifiTethering /> {this.state.last_gateway_used}</li>
                                     <li style={{visibility: 'hidden'}}><MdWifiTethering /></li>
                                 </ul>
                             </div>
@@ -187,8 +222,8 @@ class DeviceDashboardComponent extends React.Component {
                             </div>
                             <div className='card-body'>
                                 <ul style={{'listStyle': 'none'}}>
-                                    <li><MdOutlineWarningAmber /> ID: {this.state.dashboard.last_alarm_id}</li>
-                                    <li><BsClock /> Timestamp: {this.state.dashboard.last_alarm_timestamp}</li>
+                                    <li><MdOutlineWarningAmber /> ID: {this.state.last_alarm_id}</li>
+                                    <li><BsClock /> Timestamp: {this.state.last_alarm_timestamp}</li>
                                 </ul>
                             </div>
                         </div>
@@ -206,7 +241,7 @@ class DeviceDashboardComponent extends React.Component {
                                 </div>
                             </div>
                             <div className='card-body'>
-                                <PositionMap position={this.state.dashboard.last_position} />
+                                <PositionMap position={this.state.last_position} />
                             </div>
                         </div>
                     </div>
