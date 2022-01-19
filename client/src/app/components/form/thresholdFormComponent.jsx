@@ -67,7 +67,7 @@ class ThresholdFormComponent extends React.Component {
 
     initialValues = {
         id: parseInt(this.props.id),
-        routeId: 0,
+        routeId: '',
         name: '',
         ruleMeasurementType: '',
         ruleWhenCron: '',
