@@ -98,8 +98,8 @@ class ThresholdFormComponent extends React.Component {
                 is: (val) => (val !== 'geofences'),
                 then: Yup.number().required('Min value is required')
             })
-            .when(['ruleMeasurementType', 'maxValue'], {
-                is: (ruleMeasurementType, maxValue) => (ruleMeasurementType !== 'geofences' && maxValue !== ''),
+            .when(['ruleMeasurementType', 'max'], {
+                is: (ruleMeasurementType, max) => (ruleMeasurementType !== 'geofences' && max),
                 then: Yup.number().lessThan(Yup.ref('maxValue'), 'Must be less than Max value')
             }),
         maxValue: Yup.number()
@@ -110,9 +110,9 @@ class ThresholdFormComponent extends React.Component {
                 is: (val) => (val !== 'geofences'),
                 then: Yup.number().required('Max value is required')
             })
-            .when('ruleMeasurementType', {
-                is: (val) => (val !== 'geofences'),
-                then: Yup.number().moreThan(Yup.ref('minValue'), 'Must be greather than Min value')
+            .when(['ruleMeasurementType', 'min'], {
+                is: (ruleMeasurementType, min) => (ruleMeasurementType !== 'geofences' && min),
+                then: Yup.number().moreThan(Yup.ref('minValue'), 'Must be greater than Min value')
             })
     });
 
