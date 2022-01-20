@@ -59,18 +59,26 @@ class DeviceFormComponent extends React.Component {
     };
 
     validationSchema = Yup.object().shape({
-        id: Yup.string().required('Device ID is required'),
-        label: Yup.string().required('Label is required'),
-        group_id: Yup.string().required('Group is required'),
-        board_family_id: Yup.number().required('Board family is required'),
+        id: Yup.number('Device ID must be numeric').moreThan(0, 'Device ID must be a positive number.')
+            .test('len', 'Device ID be less or equal 18 digits',
+                    val => val.toString().length <= 18)
+            .required('Device ID is required'),
+        label: Yup.string()
+            .required('Label is required'),
+        group_id: Yup.string()
+            .required('Group is required'),
+        board_family_id: Yup.number()
+            .required('Board family is required'),
         meta_data: Yup.string()
                     .isJson("Metadata needs to be a valid JSON"),
         force_board_id: Yup.boolean(),
         board: Yup.string().when('force_board_id', {
             is: true,
-            then: Yup.string().required('Board is required')
+            then: Yup.string()
+                .required('Board is required')
         }),
-        comments: Yup.string().max(256, 'Comments must be at most 256 characters'),
+        comments: Yup.string()
+            .max(256, 'Comments must be at most 256 characters'),
     });
 
     useStyles = makeStyles((theme) => ({
@@ -220,44 +228,49 @@ class DeviceFormComponent extends React.Component {
                             apiService
                             .getById('device', this.state.id)
                             .then((response) => {
-                                const device = response.devices[0];
+                                if (response.devices.length > 0) {
+                                    const device = response.devices[0];
 
-                                setFieldValue('id', device.id, false);
-                                setFieldValue('label', device.label, false);
-                                setFieldValue('board_family_id', device.board_family_id, false);
-                                setFieldValue('board', device.board, false);
-                                setFieldValue('parent_id', device.parent_id, false);
-                                setFieldValue('imei', device.imei, false);
-                                setFieldValue('meta_data', device.meta_data, false);
-                                setFieldValue('comments', device.comments, false);
+                                    setFieldValue('id', device.id, false);
+                                    setFieldValue('label', device.label, false);
+                                    setFieldValue('board_family_id', device.board_family_id, false);
+                                    setFieldValue('board', device.board, false);
+                                    setFieldValue('parent_id', device.parent_id, false);
+                                    setFieldValue('imei', device.imei, false);
+                                    setFieldValue('meta_data', device.meta_data, false);
+                                    setFieldValue('comments', device.comments, false);
 
-                                if (device.board_family_id !== '') {
-                                    let selectedBoardFamily = this.getSelectedBoardFamily(device.board_family_id);
-                                    let forceBoardId = false;
-                                    this.setState({ selectedBoardFamily: selectedBoardFamily});
+                                    if (device.board_family_id !== '') {
+                                        let selectedBoardFamily = this.getSelectedBoardFamily(device.board_family_id);
+                                        let forceBoardId = false;
+                                        this.setState({selectedBoardFamily: selectedBoardFamily});
 
-                                    if(selectedBoardFamily[0]) {
-                                        forceBoardId = (typeof selectedBoardFamily[0].force_board_id !== 'undefined')
-                                        ? selectedBoardFamily[0].force_board_id
-                                        : false;
+                                        if (selectedBoardFamily[0]) {
+                                            forceBoardId = (typeof selectedBoardFamily[0].force_board_id !== 'undefined')
+                                                ? selectedBoardFamily[0].force_board_id
+                                                : false;
+                                        }
+
+                                        setFieldValue('force_board_id', forceBoardId, false);
                                     }
 
-                                    setFieldValue('force_board_id', forceBoardId, false);
-                                }
+                                    if (device.parent_id !== '') {
+                                        let selectedParent = [{id: device.parent_id, label: device.parent_id}];
+                                        this.setState({selectedParent: selectedParent});
+                                    }
 
-                                if (device.parent_id !== '') {
-                                    let selectedParent = [{id: device.parent_id, label: device.parent_id}];
-                                    this.setState({ selectedParent: selectedParent});
-                                }
+                                    if (device.containers !== undefined && Array.isArray(device.containers) && device.containers.length > 0) {
+                                        let selectedGroup = [{
+                                            id: device.containers[0].id,
+                                            label: this.makeGroupLabel(device.containers[0])
+                                        }];
+                                        this.setState({selectedGroup: selectedGroup});
+                                        setFieldValue('group_id', device.containers[0].id, false);
+                                    }
 
-                                if (device.containers !== undefined && Array.isArray(device.containers) && device.containers.length > 0) {
-                                    let selectedGroup = [{id: device.containers[0].id, label: this.makeGroupLabel(device.containers[0])}];
-                                    this.setState({ selectedGroup: selectedGroup});
-                                    setFieldValue('group_id', device.containers[0].id, false);
-                                }
-
-                                if (device.meta_data === '') {
-                                    setFieldValue('meta_data', '{}', false);
+                                    if (device.meta_data === '') {
+                                        setFieldValue('meta_data', '{}', false);
+                                    }
                                 }
                             });
                         }
