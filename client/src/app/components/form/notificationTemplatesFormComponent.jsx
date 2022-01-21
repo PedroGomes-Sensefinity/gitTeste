@@ -520,11 +520,13 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                         </div>
                                     </div>
                                     <div className='col-xl-12 col-lg-12'>
-                                        <small>
-                                            Available variables: %timestamp% %device_group% %device_id%
-                                            %device_label% %measurement_type% %measurement_value% %threshold_name%
-                                            %threshold_id%
-                                        </small>
+                                        <div className='alert alert-primary'>
+                                            <span>
+                                                Available variables: %timestamp% %device_group% %device_id%
+                                                %device_label% %measurement_type% %measurement_value% %threshold_name%
+                                                %threshold_id%
+                                            </span>
+                                        </div>
                                     </div>
                                     {(values.type === 'sms') &&
                                     <div className={'form-group row '}>
