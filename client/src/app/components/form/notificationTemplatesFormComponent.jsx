@@ -14,15 +14,14 @@ import '../../utils/yup-validations';
 import BlockUi from "react-block-ui";
 import groupsUtil from '../../utils/groups';
 import toaster from '../../utils/toaster';
-import { injectIntl } from 'react-intl';
+import {injectIntl} from 'react-intl';
 
-import { EditorState, convertToRaw, ContentState } from 'draft-js';
-import { Editor } from "react-draft-wysiwyg";
+import {ContentState, convertToRaw, EditorState} from 'draft-js';
+import {Editor} from "react-draft-wysiwyg";
 import draftToHtml from "draftjs-to-html";
 import htmlToDraft from "html-to-draftjs";
 
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-
 import * as ace from 'brace';
 import 'brace/mode/json';
 import 'brace/theme/monokai';
@@ -520,7 +519,13 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                             />
                                         </div>
                                     </div>
-
+                                    <div className='col-xl-12 col-lg-12'>
+                                        <small>
+                                            Available variables: %timestamp% %device_group% %device_id%
+                                            %device_label% %measurement_type% %measurement_value% %threshold_name%
+                                            %threshold_id%
+                                        </small>
+                                    </div>
                                     {(values.type === 'sms') &&
                                     <div className={'form-group row '}>
                                         <div className='col-xl-4 col-lg-4'>

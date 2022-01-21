@@ -124,11 +124,11 @@ class ThresholdFormComponent extends React.Component {
 
     createThresholdObject = (values) => {
         const ruleValues = {
-            min: (values.min) ? values.minValue : 0
+            min: (values.min) ? parseFloat(values.minValue) : 0
         };
 
         if (values.max) {
-            ruleValues['max'] = values.maxValue;
+            ruleValues['max'] = parseFloat(values.maxValue);
         }
 
         const rule = {
