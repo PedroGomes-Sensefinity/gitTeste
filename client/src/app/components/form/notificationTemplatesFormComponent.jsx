@@ -73,7 +73,6 @@ class NotificationsTemplatesFormComponent extends React.Component {
 
     initialValues = {
         id: this.props.id,
-        group_id: '',
         thresholds: [],
         label: '',
         emailsName: '',
@@ -92,10 +91,9 @@ class NotificationsTemplatesFormComponent extends React.Component {
     validationSchema = Yup.object().shape({
         type: Yup.string().required('Type is required'),
         label: Yup.string().required('Label is required'),
-        // group_id: Yup.string().required('Parent Group is required'),
         smsName: Yup.string().matches(/^[a-zA-Z\s]+$/, "Must be only letters and spaces"),
         smsNumber: Yup.string()
-            .matches(/^[0-9]+$/, "Must be a valid number")
+            .matches(/^\+?\d+(-\d+)*$/, "Must be a valid number")
             .min(10, 'Must have at least 10 digits'),
         emailsName: Yup.string().matches(/^[a-zA-Z\s]+$/, "Must be only letters and spaces"),
         emailsEmail: Yup.string().email(),
@@ -190,7 +188,6 @@ class NotificationsTemplatesFormComponent extends React.Component {
             id: fields.id,
             type: fields.type,
             label: fields.label,
-            group_id: fields.group_id,
             template: JSON.stringify(template)
         }
     }
@@ -199,44 +196,9 @@ class NotificationsTemplatesFormComponent extends React.Component {
         return draftToHtml(convertToRaw(content))
     }
 
-    onChangeGroup = (opt, setFieldValue) => {
-        this.setState({ selectedGroup: opt});
-        setFieldValue('group_id', '');
-
-        if (opt.length > 0) {
-            setFieldValue('group_id', opt[0].id);
-        }
-    };
-
     onChangeContentType = (val, setFieldValue) => {
         setFieldValue('contentType', val[0]);
     };
-
-    onChangeCharset = (val, setFieldValue ) => {
-        setFieldValue('charset',val[0]);
-    };
-
-    getGroups = (records) => {
-        let groups = [];
-        records.map((group) => {
-            const label = groupsUtil.makeGroupLabel(group);
-            groups.push({ id: group.id, label: label });
-        });
-        return groups;
-    };
-
-    handleSearchGroup = (query) => {
-        this.setState({loading: true});
-
-        apiService.getByText('group', query, 100, 0).then((response) => {
-            this.setState({ groups: this.getGroups(response.groups) });
-            this.setState({loading: false});
-        });
-    };
-
-    getGroupList = () => {
-        return apiService.get('group', 100, 0);
-    }
 
     filterBy = () => true;
 
@@ -368,8 +330,6 @@ class NotificationsTemplatesFormComponent extends React.Component {
                     const classes = this.useStyles();
 
                     useEffect(() => {
-
-
                         if (!this.state.isAddMode && this.state.id !== 'new') {
                             apiService
                             .getById('notificationstemplate', this.state.id)
@@ -377,23 +337,8 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                 const notification = response.notifications_templates[0]
                                 const template     = JSON.parse(notification.template);
 
-
-                                this.getGroupList().then((response) => {
-                                    this.setState({ groupList: response.groups });
-                                    const group = this.state.groupList.filter((group) => {
-                                        return group.id === notification.group_id;
-                                    })
-
-                                    let selectedGroup = [{id: notification.group_id, label: groupsUtil.makeGroupLabel(group[0])}];
-                                    this.setState({ selectedGroup: selectedGroup});
-                                });
-
                                 setFieldValue('label', notification.label, false);
                                 setFieldValue('type', notification.type, false);
-
-
-
-                                setFieldValue('group_id', notification.group_id, false);
 
                                 if(notification.type === 'sms') {
                                     this.setTargets(template.targets_list, 'smsAdded');
@@ -455,7 +400,7 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                         {isSubmitting}
                                     </button>
                                     <Link
-                                        to='/devices/list'
+                                        to='/notification-templates/list'
                                         className='btn btn-secondary'>
                                         Cancel
                                     </Link>
@@ -486,7 +431,7 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                             </Field>
                                         </div>
 
-                                        <div className='col-xl-4 col-lg-4'>
+                                        <div className='col-xl-8 col-lg-8'>
                                             <label>Template Label</label>
                                             <Field
                                                 component="input"
@@ -496,26 +441,6 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                                 )}`}
                                                 name='label'
                                                 placeholder='Set the Group Label'
-                                            />
-                                        </div>
-
-                                        <div className='col-xl-4 col-lg-4'>
-                                            <label>
-                                                Group
-                                            </label>
-                                            <AsyncTypeahead
-                                                id='typeahead-groups'
-                                                labelKey='label'
-                                                size="lg"
-                                                name={'group_id'}
-                                                onSearch={this.handleSearchGroup}
-                                                onChange={(data) => this.onChangeGroup(data, setFieldValue)}
-                                                options={this.state.groups}
-                                                clearButton={true}
-                                                placeholder='Select a group'
-                                                selected={this.state.selectedGroup}
-                                                isLoading={this.state.loading}
-                                                filterBy={this.filterBy}
                                             />
                                         </div>
                                     </div>
@@ -529,7 +454,7 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                         </div>
                                     </div>
                                     {(values.type === 'sms') &&
-                                    <div className={'form-group row '}>
+                                    <div className={'form-group row'}>
                                         <div className='col-xl-4 col-lg-4'>
                                             <label>Contact Name</label>
                                             <Field
