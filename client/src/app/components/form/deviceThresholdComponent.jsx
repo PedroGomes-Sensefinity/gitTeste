@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {makeStyles} from '@material-ui/styles';
 import apiService from '../../services/apiService';
 import thresholdService from '../../services/thresholdService';
 import deviceThresholdService from '../../services/deviceThresholdService';
-import {AsyncTypeahead} from 'react-bootstrap-typeahead';
+import {AsyncTypeahead, Typeahead} from 'react-bootstrap-typeahead';
 import DoneIcon from '@material-ui/icons/Done';
 import BlockUi from "react-block-ui";
 import toaster from '../../utils/toaster';
@@ -20,6 +20,8 @@ class DeviceThresholdComponent extends React.Component {
             thresholds: [],
             selectedThresholdsId: [],
             selectedThresholds: [],
+            groupThresholds: [],
+            selectedGroupThresholds: [],
             blocking: false,
             loading: false,
         };
@@ -28,16 +30,24 @@ class DeviceThresholdComponent extends React.Component {
     componentDidMount() {
         this.setState({blocking: true});
 
-        thresholdService.getBySpec('bydevice', this.state.id).then((r) => {
-            if(typeof r.thresholds !== "undefined") {
-                const selectedIds = r.thresholds.map((t) => t.id);
-                this.setState({thresholds: r.thresholds});
-                this.setState({selectedThresholds: r.thresholds});
+        deviceThresholdService.getByDevice(this.state.id).then((response) => {
+            if ('group' in response) {
+                this.setState({selectedGroupThresholds: response.group});
+                this.setState({groupThresholds: response.group});
+            }
+
+            if ('device' in response) {
+                const selectedIds = response.device.map((t) => t.id);
+                this.setState({thresholds: response.device});
+                this.setState({selectedThresholds: response.device});
                 this.setState({selectedThresholdsId: selectedIds});
             }
 
             this.setState({blocking: false});
         });
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
     }
 
     initialValues = {};
@@ -91,9 +101,16 @@ class DeviceThresholdComponent extends React.Component {
     };
 
     filterThresholdSelected = (options) => {
-        return options.filter((t) => {
-            return !this.state.selectedThresholdsId.includes(t.id)
+        let data = [];
+        options.map((t) => {
+            if(!this.state.selectedThresholdsId.includes(t.id)) {
+                data.push({
+                    id: t.id,
+                    label: t.name
+                });
+            }
         });
+        return data;
     }
 
     filterBy = () => true;
@@ -159,7 +176,7 @@ class DeviceThresholdComponent extends React.Component {
                                             <div>
                                             <AsyncTypeahead
                                                 id='typeahead-threshold'
-                                                labelKey='name'
+                                                labelKey='label'
                                                 size="lg"
                                                 multiple
                                                 onChange={this.onChangeThreshold}
@@ -170,6 +187,22 @@ class DeviceThresholdComponent extends React.Component {
                                                 isLoading={this.state.loading}
                                                 filterBy={this.filterBy}
                                                 useCache={false}
+                                            />
+                                            </div>
+                                        </div>
+                                        <div className='col-xl-6 col-lg-6'>
+                                            <label>Group Thresholds</label>
+                                            <div>
+                                            <Typeahead
+                                                id='typeahead-threshold-group'
+                                                labelKey='label'
+                                                size="lg"
+                                                multiple
+                                                disabled={true}
+                                                options={this.state.groupThresholds}
+                                                selected={this.state.selectedGroupThresholds}
+                                                placeholder=''
+                                                isLoading={this.state.loading}
                                             />
                                             </div>
                                         </div>
