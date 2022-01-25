@@ -139,7 +139,7 @@ class RoutesMapComponent extends React.Component {
                                     <Link
                                         to='/routes/list'
                                         className='btn btn-secondary'>
-                                        Cancel
+                                        Back to list
                                     </Link>
                                 </div>
                             </div>

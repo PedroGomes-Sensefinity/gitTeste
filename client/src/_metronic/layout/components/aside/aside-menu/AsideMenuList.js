@@ -246,15 +246,42 @@ export function AsideMenuList({ layoutProps }) {
                   </i>
                   <span className="menu-text">Device Upload</span>
                 </NavLink>
-                <NavLink className="menu-link" to="/board-families/list">
-                  <i className="menu-bullet menu-bullet-dot">
-                    <span />
-                  </i>
-                  <span className="menu-text">Board family</span>
-                </NavLink>
               </li>
               {/*end::2 Level*/}
-            </ul>x
+            </ul>
+          </div>
+        </li>
+        {/*end::1 Level*/}
+
+        {/*begin::1 Level*/}
+        <li
+          className={`menu-item ${getMenuItemActive("/devices", true)}`}
+          aria-haspopup="true"
+        >
+          <NavLink className="menu-link menu-toggle" to="/devices">
+        <span className="svg-icon menu-icon">
+          <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Router2.svg")} />
+        </span>
+              <span className="menu-text">Board family</span>
+          </NavLink>
+          <div className="menu-submenu">
+              <i className="menu-arrow" />
+              <ul className="menu-subnav">
+                  {/*begin::2 Level*/}
+                  <li className={`menu-item ${getMenuItemActive(
+                      "/board-families/list"
+                  )}`}
+                  aria-haspopup="true"
+                  >
+                      <NavLink className="menu-link" to="/board-families/list">
+                          <i className="menu-bullet menu-bullet-dot">
+                              <span />
+                          </i>
+                          <span className="menu-text">Board family</span>
+                      </NavLink>
+                  </li>
+                  {/*end::2 Level*/}
+              </ul>
           </div>
         </li>
         {/*end::1 Level*/}
