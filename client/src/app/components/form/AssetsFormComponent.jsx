@@ -162,7 +162,7 @@ class AssetsFormComponent extends React.Component {
                                     <Link
                                         to='/assets/list'
                                         className='btn btn-secondary'>
-                                        Cancel
+                                        Back to list
                                     </Link>
                                 </div>
                             </div>

@@ -184,7 +184,7 @@ class TenantsFormComponent extends React.Component {
                                         <Link
                                             to='/tenants-new/list'
                                             className='btn btn-secondary'>
-                                            Cancel
+                                            Back to list
                                         </Link>
                                     </div>
                                 </div>

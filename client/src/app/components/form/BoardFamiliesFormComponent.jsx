@@ -56,16 +56,16 @@ class BoardFamiliesFormComponent extends React.Component {
             .then((response) => {
                 toaster.notify('success', msgSuccess);
                 setSubmitting(false);
-                
+
                 this.setState({blocking: false});
-                
+
                 if (this.state.isAddMode) {
                     setFieldValue('name', '', false);
                     setFieldValue('force_board_id', false, false);
                 }
             });
     };
-    
+
     render() {
         return (
             <BlockUi tag='div' blocking={this.state.blocking}>
@@ -103,7 +103,7 @@ class BoardFamiliesFormComponent extends React.Component {
                                 if(response.board_families !== undefined && response.board_families.length > 0) {
                                     item = response.board_families[0];
                                 }
-                                
+
                                 setFieldValue('id', item.id, false);
                                 setFieldValue('name', item.name, false);
                                 setFieldValue('force_board_id', item.force_board_id, false);
@@ -141,7 +141,7 @@ class BoardFamiliesFormComponent extends React.Component {
                                     <Link
                                         to='/board-families/list'
                                         className='btn btn-secondary'>
-                                        Cancel
+                                        Back to list
                                     </Link>
                                 </div>
                             </div>
@@ -170,11 +170,11 @@ class BoardFamiliesFormComponent extends React.Component {
 
                                         <div className='col-xl-6 col-lg-6'>
                                             <div className='mt-10'>
-                                                <Form.Check 
-                                                    label="Force board ID" 
-                                                    name="force_board_id" 
-                                                    type="checkbox" 
-                                                    id="force_board_id" 
+                                                <Form.Check
+                                                    label="Force board ID"
+                                                    name="force_board_id"
+                                                    type="checkbox"
+                                                    id="force_board_id"
                                                     checked={values.force_board_id === true}
                                                     {...getFieldProps('force_board_id')}
                                                 />
