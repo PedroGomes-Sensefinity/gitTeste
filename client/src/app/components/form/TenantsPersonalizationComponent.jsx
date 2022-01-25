@@ -190,7 +190,7 @@ class TenantsPersonalizationComponent extends React.Component {
                                         <Link
                                             to='/tenants/list'
                                             className='btn btn-secondary'>
-                                            Cancel
+                                            Back to list
                                         </Link>
                                     </div>
                                 </div>

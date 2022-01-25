@@ -260,7 +260,7 @@ class GroupsFormComponent extends React.Component {
                                     <Link
                                         to='/groups/list'
                                         className='btn btn-secondary'>
-                                        Cancel
+                                        Back to list
                                     </Link>
                                 </div>
                             </div>

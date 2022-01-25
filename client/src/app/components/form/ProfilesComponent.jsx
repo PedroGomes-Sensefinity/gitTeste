@@ -156,7 +156,7 @@ class ProfilesFormComponent extends React.Component {
                                     <Link
                                         to='/profiles/list'
                                         className='btn btn-secondary'>
-                                        Cancel
+                                        Back to list
                                     </Link>
                                 </div>
                             </div>

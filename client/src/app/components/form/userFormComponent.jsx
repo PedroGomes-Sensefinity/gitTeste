@@ -200,7 +200,7 @@ class UserFormComponent extends React.Component {
                                     <Link
                                         to='/users/list'
                                         className='btn btn-secondary'>
-                                        Cancel
+                                        Back to list
                                     </Link>
                                 </div>
                             </div>

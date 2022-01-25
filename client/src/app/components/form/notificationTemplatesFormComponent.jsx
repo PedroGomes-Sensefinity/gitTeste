@@ -402,7 +402,7 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                     <Link
                                         to='/notification-templates/list'
                                         className='btn btn-secondary'>
-                                        Cancel
+                                        Back to list
                                     </Link>
                                 </div>
                             </div>
