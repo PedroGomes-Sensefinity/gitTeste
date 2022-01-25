@@ -37,6 +37,23 @@ const deviceThresholdService = {
             });
         });
     },
+    getByDevice: function(deviceId) {
+        return new Promise(function(resolve, reject) {
+            axios.get(`${process.env.REACT_APP_REST_API_URL}device/thresholds/${deviceId}`)
+            .then((response) => {
+                let result = [];
+
+                if (response.status === 200) {
+                    result = response.data;
+                }
+
+                resolve(result);
+            })
+            .catch(function(err) {
+                reject(err.response.data);
+            });
+        });
+    },
 }
 
 export default deviceThresholdService;
