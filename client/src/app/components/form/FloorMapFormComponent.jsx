@@ -147,7 +147,7 @@ class FloorMapFormComponent extends React.Component {
                                     <Link
                                         to='/floor-maps/list'
                                         className='btn btn-secondary'>
-                                        Cancel
+                                        Back to list
                                     </Link>
                                 </div>
                             </div>

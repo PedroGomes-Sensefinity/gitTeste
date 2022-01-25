@@ -145,7 +145,7 @@ class ThresholdGeofencingComponent extends React.Component {
                                     <Link
                                         to='/thresholds/list'
                                         className='btn btn-secondary'>
-                                        Cancel
+                                        Back to list
                                     </Link>
                                 </div>
                             </div>
