@@ -230,7 +230,7 @@ class DeviceFormComponent extends React.Component {
                             .then((response) => {
                                 if (response.devices.length > 0) {
                                     const device = response.devices[0];
-
+                                    console.log(device.container)
                                     setFieldValue('id', device.id, false);
                                     setFieldValue('label', device.label, false);
                                     setFieldValue('board_family_id', device.board_family_id, false);
@@ -259,13 +259,13 @@ class DeviceFormComponent extends React.Component {
                                         this.setState({selectedParent: selectedParent});
                                     }
 
-                                    if (device.containers !== undefined && Array.isArray(device.containers) && device.containers.length > 0) {
+                                    if (device.container !== undefined) {
                                         let selectedGroup = [{
-                                            id: device.containers[0].id,
-                                            label: this.makeGroupLabel(device.containers[0])
+                                            id: device.container.id,
+                                            label: this.makeGroupLabel(device.container)
                                         }];
                                         this.setState({selectedGroup: selectedGroup});
-                                        setFieldValue('group_id', device.containers[0].id, false);
+                                        setFieldValue('group_id', device.container.id, false);
                                     }
 
                                     if (device.meta_data === '') {

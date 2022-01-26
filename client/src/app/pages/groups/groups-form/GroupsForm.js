@@ -17,15 +17,15 @@ export function GroupsForm({match}) {
             <Paper square>
                 <Tabs value={value} indicatorColor="primary" textColor="primary" onChange={handleChange}>
                     <Tab label="Group Info"/>
-                    <Tab label="Devices" disabled={typeof id === 'undefined'}/>
+                    {/*<Tab label="Devices" disabled={typeof id === 'undefined'}/>*/}
                 </Tabs>
             </Paper>
             <TabContainer>
                 {value === 0 && <GroupsFormComponent id={id} />}
             </TabContainer>
-            <TabContainer>
-                {value === 1 && <GroupsDevicesComponent id={id} /> }
-            </TabContainer>
+            {/*<TabContainer>*/}
+            {/*    {value === 1 && <GroupsDevicesComponent id={id} /> }*/}
+            {/*</TabContainer>*/}
         </div>
     );
 }

@@ -36,7 +36,7 @@ export function DevicesList() {
             title: 'Label',
         },
         {
-            field: 'containers[0].label',
+            field: 'container_name',
             title: 'Group',
         },
         {
