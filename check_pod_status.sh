@@ -1,9 +1,9 @@
-#!/bin/bash 
+#!/bin/bash
 
 count=0
 retry=6
 sleep_value=10
-app_name=$CI_PROJECT_TITLE
+app_name="ui-admin-v2"
 while [ $count -le $retry ]
 do
         echo "Executing kubectl to check the new pod status retry $count / $retry "
