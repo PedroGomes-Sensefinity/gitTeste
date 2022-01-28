@@ -10,17 +10,13 @@ import DeviceDashboardComponent from "../../../components/form/deviceDashboardCo
 
 export function Device({history, match}) {
     const {id} = match.params;
-    const [value, setValue] = React.useState(1);
+    const [value, setValue] = React.useState(0);
     const [tenant, setTenant] = React.useState({});
 
     useEffect(() => {
         if (typeof id !== 'undefined') {
             setValue(0);
         }
-
-        tenantService.getInfo().then((response) => {
-            setTenant(response);
-        });
     }, []);
 
     return (

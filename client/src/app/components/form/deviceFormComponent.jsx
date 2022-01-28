@@ -34,11 +34,19 @@ class DeviceFormComponent extends React.Component {
     }
 
     componentDidMount() {
-        apiService.get('board_families', 100, 0).then((response) => {
-            this.setState({boardFamilies: response.board_families});
-        });
-        tenantService.getInfo().then((response) => {
-            this.setState({tenant: response});
+        this.setState({blocking: true});
+
+        Promise.all([
+            apiService.get('board_families', 100, 0),
+            tenantService.getInfo()
+        ]).then(allResponses => {
+            const boardFamilies = allResponses[0];
+            const tenant = allResponses[1];
+
+            this.setState({boardFamilies: boardFamilies.board_families});
+            this.setState({tenant: tenant});
+
+            this.setState({blocking: false});
         });
     }
 
@@ -230,7 +238,6 @@ class DeviceFormComponent extends React.Component {
                             .then((response) => {
                                 if (response.devices.length > 0) {
                                     const device = response.devices[0];
-                                    console.log(device.container)
                                     setFieldValue('id', device.id, false);
                                     setFieldValue('label', device.label, false);
                                     setFieldValue('board_family_id', device.board_family_id, false);
