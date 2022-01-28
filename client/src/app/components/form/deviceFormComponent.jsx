@@ -34,20 +34,6 @@ class DeviceFormComponent extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({blocking: true});
-
-        Promise.all([
-            apiService.get('board_families', 100, 0),
-            tenantService.getInfo()
-        ]).then(allResponses => {
-            const boardFamilies = allResponses[0];
-            const tenant = allResponses[1];
-
-            this.setState({boardFamilies: boardFamilies.board_families});
-            this.setState({tenant: tenant});
-
-            this.setState({blocking: false});
-        });
     }
 
     componentWillUnmount() {
@@ -94,6 +80,49 @@ class DeviceFormComponent extends React.Component {
             marginTop: theme.spacing(5),
         },
     }));
+
+    initForm = (device, {setFieldValue}) => {
+        setFieldValue('id', device.id, false);
+        setFieldValue('label', device.label, false);
+        setFieldValue('board_family_id', device.board_family_id, false);
+        setFieldValue('board', device.board, false);
+        setFieldValue('parent_id', device.parent_id, false);
+        setFieldValue('imei', device.imei, false);
+        setFieldValue('meta_data', device.meta_data, false);
+        setFieldValue('comments', device.comments, false);
+
+        if (device.board_family_id !== '') {
+            let selectedBoardFamily = this.getSelectedBoardFamily(device.board_family_id);
+            let forceBoardId = false;
+            this.setState({selectedBoardFamily: selectedBoardFamily});
+
+            if (selectedBoardFamily[0]) {
+                forceBoardId = (typeof selectedBoardFamily[0].force_board_id !== 'undefined')
+                    ? selectedBoardFamily[0].force_board_id
+                    : false;
+            }
+
+            setFieldValue('force_board_id', forceBoardId, false);
+        }
+
+        if (device.parent_id !== '') {
+            let selectedParent = [{id: device.parent_id, label: device.parent_id}];
+            this.setState({selectedParent: selectedParent});
+        }
+
+        if (device.container !== undefined) {
+            let selectedGroup = [{
+                id: device.container.id,
+                label: this.makeGroupLabel(device.container)
+            }];
+            this.setState({selectedGroup: selectedGroup});
+            setFieldValue('group_id', device.container.id, false);
+        }
+
+        if (device.meta_data === '') {
+            setFieldValue('meta_data', '{}', false);
+        }
+    }
 
     getParents = (records) => {
         let devices = [];
@@ -232,55 +261,31 @@ class DeviceFormComponent extends React.Component {
                     const classes = this.useStyles();
 
                     useEffect(() => {
-                        if (!this.state.isAddMode && this.state.id !== 'new') {
-                            apiService
-                            .getById('device', this.state.id)
-                            .then((response) => {
-                                if (response.devices.length > 0) {
-                                    const device = response.devices[0];
-                                    setFieldValue('id', device.id, false);
-                                    setFieldValue('label', device.label, false);
-                                    setFieldValue('board_family_id', device.board_family_id, false);
-                                    setFieldValue('board', device.board, false);
-                                    setFieldValue('parent_id', device.parent_id, false);
-                                    setFieldValue('imei', device.imei, false);
-                                    setFieldValue('meta_data', device.meta_data, false);
-                                    setFieldValue('comments', device.comments, false);
+                        this.setState({blocking: true});
 
-                                    if (device.board_family_id !== '') {
-                                        let selectedBoardFamily = this.getSelectedBoardFamily(device.board_family_id);
-                                        let forceBoardId = false;
-                                        this.setState({selectedBoardFamily: selectedBoardFamily});
+                        let promises = [
+                            apiService.get('board_families', 100, 0),
+                            tenantService.getInfo()
+                        ];
 
-                                        if (selectedBoardFamily[0]) {
-                                            forceBoardId = (typeof selectedBoardFamily[0].force_board_id !== 'undefined')
-                                                ? selectedBoardFamily[0].force_board_id
-                                                : false;
-                                        }
+                        Promise.all(promises).then(allResponses => {
+                            const boardFamilies = allResponses[0];
+                            const tenant = allResponses[1];
 
-                                        setFieldValue('force_board_id', forceBoardId, false);
+                            this.setState({boardFamilies: boardFamilies.board_families});
+                            this.setState({tenant: tenant});
+
+                            this.setState({blocking: false});
+
+                            if (!this.state.isAddMode && this.state.id !== 'new') {
+                                apiService.getById('device', this.state.id).then((response) => {
+                                    if (response.devices.length > 0) {
+                                        const device = response.devices[0];
+                                        this.initForm(device, {setFieldValue})
                                     }
-
-                                    if (device.parent_id !== '') {
-                                        let selectedParent = [{id: device.parent_id, label: device.parent_id}];
-                                        this.setState({selectedParent: selectedParent});
-                                    }
-
-                                    if (device.container !== undefined) {
-                                        let selectedGroup = [{
-                                            id: device.container.id,
-                                            label: this.makeGroupLabel(device.container)
-                                        }];
-                                        this.setState({selectedGroup: selectedGroup});
-                                        setFieldValue('group_id', device.container.id, false);
-                                    }
-
-                                    if (device.meta_data === '') {
-                                        setFieldValue('meta_data', '{}', false);
-                                    }
-                                }
-                            });
-                        }
+                                });
+                            }
+                        });
                     }, []);
 
                     return (
