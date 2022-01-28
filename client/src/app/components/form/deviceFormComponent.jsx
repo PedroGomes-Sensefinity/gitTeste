@@ -15,30 +15,6 @@ import toaster from '../../utils/toaster';
 import {injectIntl} from 'react-intl';
 
 class DeviceFormComponent extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            intl: props.intl,
-            id: props.entity,
-            isAddMode: !props.entity,
-            groups: [],
-            selectedGroup: [],
-            parents: [],
-            selectedParent: [],
-            boardFamilies: [],
-            selectedBoardFamily: [],
-            tenant: {},
-            loading: false,
-            blocking: false,
-        };
-    }
-
-    componentDidMount() {
-    }
-
-    componentWillUnmount() {
-    }
-
     initialValues = {
         id: '',
         group_id: '',
@@ -81,7 +57,58 @@ class DeviceFormComponent extends React.Component {
         },
     }));
 
-    initForm = (device, {setFieldValue}) => {
+    constructor(props) {
+        super(props);
+        this.state = {
+            intl: props.intl,
+            id: props.entity,
+            isAddMode: !props.entity,
+            groups: [],
+            selectedGroup: [],
+            parents: [],
+            selectedParent: [],
+            boardFamilies: [],
+            selectedBoardFamily: [],
+            tenant: {},
+            loading: false,
+            blocking: false,
+        };
+    }
+
+    componentDidMount() {
+        console.log("componentDidMount: ", this.initialValues);
+        this.setState({blocking: true});
+
+        let promises = [
+            apiService.get('board_families', 100, 0),
+            tenantService.getInfo()
+        ];
+
+        Promise.all(promises).then(allResponses => {
+            const boardFamilies = allResponses[0];
+            const tenant = allResponses[1];
+
+            this.setState({boardFamilies: boardFamilies.board_families});
+            this.setState({tenant: tenant});
+
+            this.setState({blocking: false});
+
+            if (!this.state.isAddMode && this.state.id !== 'new') {
+                apiService.getById('device', this.state.id).then((response) => {
+                    if (response.devices.length > 0) {
+                        const device = response.devices[0];
+                        //this.initForm(device, {setFieldValue});
+                        this.initForm(device);
+                    }
+                });
+            }
+        });
+    }
+
+    componentWillUnmount() {
+    }
+
+    /*initForm = (device, {setFieldValue}) => {
         setFieldValue('id', device.id, false);
         setFieldValue('label', device.label, false);
         setFieldValue('board_family_id', device.board_family_id, false);
@@ -122,6 +149,55 @@ class DeviceFormComponent extends React.Component {
         if (device.meta_data === '') {
             setFieldValue('meta_data', '{}', false);
         }
+    }*/
+
+    initForm = (device) => {
+        console.log("initForm: ", this.device);
+        this.initialValues.id = device.id;
+        this.initialValues.label = device.label;
+        this.initialValues.board_family_id = device.board_family_id;
+        this.initialValues.board = device.board;
+        this.initialValues.parent_id = device.parent_id;
+        this.initialValues.imei = device.imei;
+        this.initialValues.meta_data = device.meta_data;
+        this.initialValues.comments = device.comments;
+
+        if (device.board_family_id !== '') {
+            let selectedBoardFamily = this.getSelectedBoardFamily(device.board_family_id);
+            let forceBoardId = false;
+            this.setState({selectedBoardFamily: selectedBoardFamily});
+
+            if (selectedBoardFamily[0]) {
+                forceBoardId = (typeof selectedBoardFamily[0].force_board_id !== 'undefined')
+                    ? selectedBoardFamily[0].force_board_id
+                    : false;
+            }
+
+            this.initialValues.force_board_id = forceBoardId;
+        }
+
+        if (device.parent_id !== '') {
+            let selectedParent = [{id: device.parent_id, label: device.parent_id}];
+            this.setState({selectedParent: selectedParent});
+        }
+
+        if (device.container !== undefined) {
+            console.log("initForm container", device.container);
+            let selectedGroup = [{
+                id: device.container.id,
+                label: this.makeGroupLabel(device.container)
+            }];
+            console.log("initForm selectedGroup", selectedGroup);
+
+            this.setState({selectedGroup: selectedGroup});
+            this.initialValues.group_id = device.container.id;
+        }
+
+        if (device.meta_data === '') {
+            this.initialValues.meta_data = '{}';
+        }
+
+        console.log("initForm values: ", this.initialValues);
     }
 
     getParents = (records) => {
@@ -150,9 +226,7 @@ class DeviceFormComponent extends React.Component {
     makeGroupLabel = (group) => {
         const parentParent = (group.parent_parent_id !== 0) ? "../" : "";
         const parent = (group.parent_label !== "") ? `${group.parent_label}/` : "";
-        const label = `${parentParent}${parent}${group.label}`;
-
-        return label;
+        return `${parentParent}${parent}${group.label}`;
     }
 
     saveDevice = (fields, { setFieldValue, setSubmitting, resetForm }) => {
@@ -259,34 +333,6 @@ class DeviceFormComponent extends React.Component {
                     values
                 }) => {
                     const classes = this.useStyles();
-
-                    useEffect(() => {
-                        this.setState({blocking: true});
-
-                        let promises = [
-                            apiService.get('board_families', 100, 0),
-                            tenantService.getInfo()
-                        ];
-
-                        Promise.all(promises).then(allResponses => {
-                            const boardFamilies = allResponses[0];
-                            const tenant = allResponses[1];
-
-                            this.setState({boardFamilies: boardFamilies.board_families});
-                            this.setState({tenant: tenant});
-
-                            this.setState({blocking: false});
-
-                            if (!this.state.isAddMode && this.state.id !== 'new') {
-                                apiService.getById('device', this.state.id).then((response) => {
-                                    if (response.devices.length > 0) {
-                                        const device = response.devices[0];
-                                        this.initForm(device, {setFieldValue})
-                                    }
-                                });
-                            }
-                        });
-                    }, []);
 
                     return (
                         <form
