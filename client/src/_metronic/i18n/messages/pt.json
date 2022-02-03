@@ -49,6 +49,8 @@
   "FLOORMAP.FILE_INVALID_FORMAT": "Unsupported file format",
   "ASSETS.CREATED": "Asset criado com sucesso",
   "ASSETS.UPDATED": "Asset alterado com sucesso",
+  "ASSET_DEVICE.INCLUDED": "Devices incluídos no ativo",
+  "ASSET_DEVICE.REMOVED": "Device removido do ativo",
   "ROUTES.CREATED": "Routes criado com sucesso",
   "ROUTES.UPDATED": "Routes alterado com sucesso"
 }
