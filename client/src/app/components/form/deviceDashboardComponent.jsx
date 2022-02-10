@@ -7,6 +7,7 @@ import {MdBatterySaver, MdOutlineWarningAmber, MdPower, MdWifiTethering} from "r
 import PositionMap from "../position-map/positionMap";
 import apiService from "../../services/apiService";
 import deviceService from "../../services/deviceService";
+import {OverlayTrigger, Tooltip} from "react-bootstrap";
 
 class DeviceDashboardComponent extends React.Component {
     constructor(props) {
@@ -28,6 +29,7 @@ class DeviceDashboardComponent extends React.Component {
             last_position: {},
             last_alarm_timestamp: '',
             last_alarm_id: '',
+            pendingConfigMessages: [],
             loading: false,
             blocking: false,
         };
@@ -52,12 +54,15 @@ class DeviceDashboardComponent extends React.Component {
 
         Promise.all([
             apiService.getById('device', this.state.id),
-            deviceService.dashboard(this.state.id)
+            deviceService.dashboard(this.state.id),
+            deviceService.getPendingConfig(this.state.id)
         ]).then(allResponses => {
             const device = allResponses[0];
             const dashboard = allResponses[1];
+            const pendingConfigMessages = allResponses[2];
 
             this.setState({device: device.devices[0]});
+            this.setState({pendingConfigMessages: pendingConfigMessages.length});
             this.setDashboardValues(dashboard);
 
             this.setState({blocking: false});
@@ -229,7 +234,7 @@ class DeviceDashboardComponent extends React.Component {
                 </div>
 
                 <div className='row mt-3'>
-                    <div className='col-xl-12 col-lg-12'>
+                    <div className='col-xl-10 col-lg-10'>
                         <div className='card card-custom'>
                             <div className='card-header'>
                                 <div className='card-title'>
@@ -240,6 +245,32 @@ class DeviceDashboardComponent extends React.Component {
                             </div>
                             <div className='card-body'>
                                 <PositionMap position={this.state.last_position} />
+                            </div>
+                        </div>
+                    </div>
+                    <div className='col-xl-2 col-lg-2'>
+                        <div className='card card-custom'>
+                            <div className='card-body'>
+                                <div className="d-flex align-items-center py-lg-0 py-2">
+                                    <div className="d-flex flex-column text-right">
+                                        <span className="text-dark-75 font-weight-bolder font-size-h4">
+                                            {this.state.pendingConfigMessages}
+                                        </span>
+                                        <span className="text-muted font-size-sm font-weight-bolder">
+                                            <OverlayTrigger
+                                                key={'top'}
+                                                placement={'top'}
+                                                overlay={
+                                                    <Tooltip id={`tooltip-top`}>
+                                                        {this.state.intl.formatMessage({id: 'DEVICE.QTT_PENDING_MESSAGES'})}
+                                                    </Tooltip>
+                                                }
+                                            >
+                                            <span>config messages</span>
+                                            </OverlayTrigger>
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

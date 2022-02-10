@@ -108,49 +108,6 @@ class DeviceFormComponent extends React.Component {
     componentWillUnmount() {
     }
 
-    /*initForm = (device, {setFieldValue}) => {
-        setFieldValue('id', device.id, false);
-        setFieldValue('label', device.label, false);
-        setFieldValue('board_family_id', device.board_family_id, false);
-        setFieldValue('board', device.board, false);
-        setFieldValue('parent_id', device.parent_id, false);
-        setFieldValue('imei', device.imei, false);
-        setFieldValue('meta_data', device.meta_data, false);
-        setFieldValue('comments', device.comments, false);
-
-        if (device.board_family_id !== '') {
-            let selectedBoardFamily = this.getSelectedBoardFamily(device.board_family_id);
-            let forceBoardId = false;
-            this.setState({selectedBoardFamily: selectedBoardFamily});
-
-            if (selectedBoardFamily[0]) {
-                forceBoardId = (typeof selectedBoardFamily[0].force_board_id !== 'undefined')
-                    ? selectedBoardFamily[0].force_board_id
-                    : false;
-            }
-
-            setFieldValue('force_board_id', forceBoardId, false);
-        }
-
-        if (device.parent_id !== '') {
-            let selectedParent = [{id: device.parent_id, label: device.parent_id}];
-            this.setState({selectedParent: selectedParent});
-        }
-
-        if (device.container !== undefined) {
-            let selectedGroup = [{
-                id: device.container.id,
-                label: this.makeGroupLabel(device.container)
-            }];
-            this.setState({selectedGroup: selectedGroup});
-            setFieldValue('group_id', device.container.id, false);
-        }
-
-        if (device.meta_data === '') {
-            setFieldValue('meta_data', '{}', false);
-        }
-    }*/
-
     initForm = (device) => {
         console.log("initForm: ", this.device);
         this.initialValues.id = device.id;
