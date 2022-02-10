@@ -13,8 +13,23 @@ import BuildIcon from '@material-ui/icons/Build';
 import {Typeahead} from 'react-bootstrap-typeahead';
 import apiService from '../../services/apiService';
 import boardFamilyTemplatesService from '../../services/boardFamilyTemplatesService';
+import {MdContentCopy} from "react-icons/all";
 
 class DeviceConfigMessageComponent extends React.Component {
+    initialValues = {
+        message: ''
+    };
+
+    validationSchema = Yup.object().shape({
+        message: Yup.string().required('Message is required')
+    });
+
+    useStyles = makeStyles((theme) => ({
+        headerMarginTop: {
+            marginTop: theme.spacing(5),
+        }
+    }));
+
     constructor(props) {
         super(props);
         this.state = {
@@ -24,6 +39,7 @@ class DeviceConfigMessageComponent extends React.Component {
             blocking: false,
             modalShow: false,
             templates: [],
+            pendingConfigMessages: [],
         };
     }
 
@@ -31,7 +47,7 @@ class DeviceConfigMessageComponent extends React.Component {
         apiService.getById('device', this.state.id)
             .then((response) => {
                 const device = response.devices[0];
-                this.setState({device: device})
+                this.setState({device: device});
 
                 boardFamilyTemplatesService.byBoardFamily(device.board_family_id, 100, 0).then(response => {
                     let templates = [];
@@ -47,24 +63,11 @@ class DeviceConfigMessageComponent extends React.Component {
                     this.setState({ templates: templates });
                 });
 
+                this.loadPendingConfigMessages();
             });
     }
 
-    initialValues = {
-        message: ''
-    };
-
-    validationSchema = Yup.object().shape({
-        message: Yup.string().required('Message is required')
-    });
-
-    useStyles = makeStyles((theme) => ({
-        headerMarginTop: {
-            marginTop: theme.spacing(5),
-        }
-    }));
-
-    sendMessage = (fields, { setFieldValue }) => {
+    sendMessage = (fields, { setFieldValue, setSubmitting }) => {
         this.setState({blocking: true});
 
         const config = {
@@ -77,6 +80,9 @@ class DeviceConfigMessageComponent extends React.Component {
                 toaster.notify('success', this.state.intl.formatMessage({id: 'DEVICE.CONFIG_MESSAGE'}));
                 this.setState({blocking: false});
                 setFieldValue('message', '', false);
+                setSubmitting(false);
+
+                this.loadPendingConfigMessages();
             });
     };
 
@@ -89,6 +95,17 @@ class DeviceConfigMessageComponent extends React.Component {
         this.setState({modalShow: false});
         setFieldValue('message', data[0].template, false);
     }
+
+    loadPendingConfigMessages = () => {
+        deviceService.getPendingConfig(this.state.id).then(data => {
+            this.setState({pendingConfigMessages: data});
+        });
+    }
+
+    copyToClipboard = (value) => {
+        navigator.clipboard.writeText(value);
+        toaster.notify('info', this.state.intl.formatMessage({id: 'GENERAL.COPY_CLIPBOARD'}));
+    };
 
     FormModalTemplate(props) {
         return (
@@ -140,6 +157,7 @@ class DeviceConfigMessageComponent extends React.Component {
                 onSubmit={(values, { setStatus, setSubmitting, resetForm, setFieldValue }) => {
                     this.sendMessage(values, {
                         setFieldValue,
+                        setSubmitting
                     });
                 }}
                 >
@@ -206,15 +224,59 @@ class DeviceConfigMessageComponent extends React.Component {
                                                     )}
                                                 />
                                                 <ErrorMessage name="message" component="div" className="invalid-feedback" />
+
+                                                <div className={'row'}>
+                                                    <div className='col-xl-12 col-lg-12 mt-2'>
+                                                        <Button
+                                                            className='btn btn-success'
+                                                            onClick={() => this.setState({modalShow: true}) }
+                                                        >
+                                                            <BuildIcon /> Load template
+                                                        </Button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className='col-xl-2 col-lg-2'>
-                                            <Button
-                                                className='btn btn-success'
-                                                onClick={() => this.setState({modalShow: true}) }
-                                            >
-                                                <BuildIcon /> Load template
-                                            </Button>
+                                        <div className='col-xl-4 col-lg-4'>
+                                            <div className='card card-custom'>
+                                                <div className='card-header'>
+                                                    <div className='card-title'>
+                                                        <h3 className="card-label">
+                                                            Pending config messages
+                                                        </h3>
+                                                    </div>
+                                                </div>
+                                                <div className='card-body'>
+                                                    { this.state.pendingConfigMessages.length > 0 &&
+                                                    <table className='table table-bordered table-responsive-sm'>
+                                                        <thead>
+                                                            <tr>
+                                                                <th />
+                                                                <th>Message</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        {this.state.pendingConfigMessages.map(( value, i ) => {
+                                                            return (
+                                                                <tr key={i}>
+                                                                    <td>
+                                                                        <Button
+                                                                            className='btn btn-sm btn-success'
+                                                                            onClick={() => this.copyToClipboard(value.message)}
+                                                                        >
+                                                                            <MdContentCopy/>
+                                                                        </Button>
+                                                                </td>
+                                                                <td>
+                                                                    <span className={'ml-2'}>{value.message}</span>
+                                                                </td>
+                                                            </tr>
+                                                            );
+                                                        })}
+                                                        </tbody>
+                                                    </table>}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

@@ -1,4 +1,5 @@
 {
+  "GENERAL.COPY_CLIPBOARD": "Copied to clipboard",
   "AUTH.LOGIN.TITLE": "Login",
   "AUTH.REGISTER.TITLE": "Sign Up",
   "AUTH.RECOVER.PASSWORD.TITLE": "Recover your password",
@@ -18,6 +19,7 @@
   "DEVICE.UPDATED": "Device updated successfully",
   "DEVICE.CONFIG_MESSAGE": "Configuration message sent successfully",
   "DEVICE.THRESHOLD.SUCCESS": "Thresholds associated successfully",
+  "DEVICE.QTT_PENDING_MESSAGES": "Quantity of pending messages waiting send to device",
   "MODAL.PASSWORD.BUTTON.SAVE": "Save",
   "MODAL.PASSWORD.BUTTON.CLOSE": "Close",
   "MODAL.PASSWORD.TITLE": "Changing password",
