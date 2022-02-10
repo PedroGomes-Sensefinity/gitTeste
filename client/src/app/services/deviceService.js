@@ -134,6 +134,21 @@ const deviceService = {
                 });
         });
     },
+    getPendingConfig: function (id) {
+        return new Promise(function (resolve, reject) {
+            axios.get(`${process.env.REACT_APP_REST_API_URL}config/pending/${id}`)
+                .then((responseData) => {
+                    let result = [];
+                    if (responseData.status === 200) {
+                        result = responseData.data;
+                    }
+                    resolve(result);
+                })
+                .catch(function (err) {
+                    reject(err.response.data);
+                });
+        });
+    },
 }
 
 export default deviceService;

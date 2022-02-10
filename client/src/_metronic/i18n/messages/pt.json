@@ -1,4 +1,5 @@
 {
+  "GENERAL.COPY_CLIPBOARD": "Copiado para área de transferência",
   "AUTH.LOGIN.TITLE": "Login",
   "AUTH.REGISTER.TITLE": "Cadastro",
   "AUTH.RECOVER.PASSWORD.TITLE": "Recupere sua senha",
@@ -19,6 +20,7 @@
   "DEVICE.UPDATED": "Device atualizado com sucesso",
   "DEVICE.CONFIG_MESSAGE": "Mensagem de configuração enviada com sucesso",
   "DEVICE.THRESHOLD.SUCCESS": "Limites associados com sucesso",
+  "DEVICE.QTT_PENDING_MESSAGES": "Quantidade de mensagens pendentes aguardando envio para dispositivo",
   "MODAL.PASSWORD.BUTTON.SAVE": "Salvar",
   "MODAL.PASSWORD.BUTTON.CLOSE": "Fechar",
   "MODAL.PASSWORD.TITLE": "Alterar a senha",
