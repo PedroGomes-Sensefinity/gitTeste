@@ -30,11 +30,12 @@ export function Device({history, match}) {
                         <Tab label="Config Message" disabled={typeof id === 'undefined'}/>
                     </Tabs>
                 </Paper>
-                <TabContainer>
+                { (typeof id !== 'undefined') ? <TabContainer>
                     {value === 0 && <DeviceDashboardComponent entity={id} />}
-                </TabContainer>
+                </TabContainer> : null }
+
                 <TabContainer>
-                    {value === 1 && <DeviceFormComponent entity={id} />}
+                    {(typeof id === 'undefined' || value === 1) && <DeviceFormComponent entity={id} />}
                 </TabContainer>
                 <TabContainer>
                     {value === 2 && <DeviceThresholdComponent entity={id} /> }
