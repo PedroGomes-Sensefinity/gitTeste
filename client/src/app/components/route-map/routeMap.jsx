@@ -16,11 +16,13 @@ class RouteMap extends React.Component {
         super(props);
 
         this.state = {
-            sizeMeters: 0.1,
+            sizeMeters: 100,
             route: props.route || {},
             prevRoute: props.route ? this.copyObject(props.route) : {},
             showGeofencing: props.showGeofencing || false,
             generatedGeofence: {},
+            geofenceSizes: props.geofenceSizes ? this.copyObject(props.geofenceSizes) : [],
+            prevGeofenceSizes: props.geofenceSizes ? this.copyObject(props.geofenceSizes) : [],
         };
     }
 
@@ -89,12 +91,14 @@ class RouteMap extends React.Component {
         }
     }
 
-    componentDidUpdate() {
-        // Verify if shapes sent are diferent than initialized map
-        if (!this.isEqualObject(this.state.prevRoute, this.props.route)) {
-            // update shapes
+    componentDidUpdate(prevProps) {
+        // Verify if shapes sent are different than initialized map
+        if (!this.isEqualObject(prevProps, this.props)) {
+            // update values
             this.setState({route: this.props.route});
             this.setState({prevRoute: this.props.route});
+            this.setState({geofenceSizes: this.props.geofenceSizes});
+            this.setState({prevGeofenceSizes: this.props.geofenceSizes});
 
             if (typeof this.props.route !== "undefined" && JSON.stringify(this.props.route) !== '{}') {
                 this.removeAllLayers();
@@ -111,12 +115,26 @@ class RouteMap extends React.Component {
     }
 
     generateGeofencing(lineCoordinates) {
-        let line = turf.lineString(lineCoordinates, {});
-        let offsetLine1 = turf.lineOffset(line, this.state.sizeMeters, {units: 'kilometers'});
-        let offsetLine2 = turf.lineOffset(line, -this.state.sizeMeters, {units: 'kilometers'});
+        let sizes = this.props.geofenceSizes;
+        // If array sizes empty, fill with default value
+        if (Array.isArray(sizes) && sizes.length === 0) {
+            sizes = Array(lineCoordinates.length).fill(this.state.sizeMeters);
+        }
 
-        let coordinatesLine1 = offsetLine1.geometry.coordinates;
-        let coordinatesLine2 = offsetLine2.geometry.coordinates.reverse();
+        let line = turf.lineString(lineCoordinates, {});
+        let coordinatesLine1 = [];
+        let coordinatesLine2 = [];
+
+        // Calculate offset based on size number
+        lineCoordinates.map((value, i) => {
+            let distance = sizes[i];
+            let offsetLine1 = turf.lineOffset(line, distance, {units: 'meters'});
+            let offsetLine2 = turf.lineOffset(line, -distance, {units: 'meters'});
+            coordinatesLine1.push(offsetLine1.geometry.coordinates[i]);
+            coordinatesLine2.push(offsetLine2.geometry.coordinates[i]);
+        });
+
+        coordinatesLine2 = coordinatesLine2.reverse();
 
         let generatedGeofence = coordinatesLine1.concat([coordinatesLine2[0]]);
         generatedGeofence = generatedGeofence.concat(coordinatesLine2);
@@ -131,10 +149,15 @@ class RouteMap extends React.Component {
 
         let geojsonGeneratedGeofence = turf.polygon([generatedGeofence]);
         let leafletGeojson = L.geoJson(geojsonGeneratedGeofence, conf);
+        let geofenceSizes = [];
 
+        lineCoordinates.map(() => {
+            geofenceSizes.push(this.state.sizeMeters);
+        });
+
+        this.setState({geofenceSizes: geofenceSizes})
         this.setState({generatedGeofence: geojsonGeneratedGeofence});
         this.drawnItems.addLayer(leafletGeojson);
-        this.generateMarkers(coordinatesLine1.concat(coordinatesLine2));
     }
 
     generateMarkers(coordinates) {
@@ -166,7 +189,8 @@ class RouteMap extends React.Component {
 
     removeAllLayers = () => {
         this.drawnItems.clearLayers();
-        this.setState({generatedGeofence: {}})
+        this.setState({generatedGeofence: {}});
+        this.setState({geofenceSizes: []});
         this.updateRoute({});
     }
 
@@ -178,10 +202,8 @@ class RouteMap extends React.Component {
         });
 
         let coordinates = route.geometry.coordinates;
-        // If showGeofencing is disabled, we need show markers according route
-        if (!this.state.showGeofencing) {
-            this.generateMarkers(coordinates);
-        }
+        // Show markers according route
+        this.generateMarkers(coordinates);
 
         if (this.state.showGeofencing) {
             this.generateGeofencing(coordinates);
@@ -192,7 +214,11 @@ class RouteMap extends React.Component {
     }
 
     updateRoute = (route) => {
-        this.props.onChangeRoute({route: route, geofence: this.state.generatedGeofence});
+        this.props.onChangeRoute({
+            route: route,
+            geofence: this.state.generatedGeofence,
+            geofenceSizes: this.props.geofenceSizes
+        });
     };
 
     /**
