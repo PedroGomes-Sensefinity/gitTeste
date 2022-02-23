@@ -8,10 +8,6 @@ import "./indoorMap.css";
 class IndoorMap extends React.Component {
     map = null;
 
-    constructor(props) {
-        super(props);
-    }
-
     componentDidMount() {
         const script = document.createElement("script");
         script.src = "https://leaflet.github.io/Leaflet.Icon.Glyph/Leaflet.Icon.Glyph.js";

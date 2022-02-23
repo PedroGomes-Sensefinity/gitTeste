@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {makeStyles} from '@material-ui/styles';
 import deviceThresholdService from '../../services/deviceThresholdService';
 import BlockUi from "react-block-ui";

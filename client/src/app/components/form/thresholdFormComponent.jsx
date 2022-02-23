@@ -5,7 +5,6 @@ import {Link} from 'react-router-dom';
 import {makeStyles} from '@material-ui/styles';
 import thresholdService from '../../services/thresholdService';
 import apiService from '../../services/apiService';
-
 import DoneIcon from '@material-ui/icons/Done';
 import {getInputClasses} from '../../utils/formik';
 import '../../utils/yup-validations';
@@ -13,9 +12,6 @@ import BlockUi from "react-block-ui";
 import RangeSlider from 'react-bootstrap-range-slider';
 import toaster from '../../utils/toaster';
 import {injectIntl} from 'react-intl';
-import history from '../../history';
-import Map from "../geo-fencing-map/map";
-import TableGrid from '../table-grid/table-grid.component';
 
 class ThresholdFormComponent extends React.Component {
     constructor(props) {

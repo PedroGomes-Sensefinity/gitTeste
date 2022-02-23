@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {makeStyles} from '@material-ui/styles';
 import groupsDevicesService from '../../services/groupsDevicesService';
 import BlockUi from "react-block-ui";

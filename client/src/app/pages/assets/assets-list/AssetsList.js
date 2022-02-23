@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 
 import history from '../../../history';
 import {Button, Card, CardContent} from '@material-ui/core';
