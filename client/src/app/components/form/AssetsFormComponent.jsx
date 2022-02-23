@@ -10,9 +10,7 @@ import BlockUi from "react-block-ui";
 import toaster from '../../utils/toaster';
 import { injectIntl } from 'react-intl';
 import apiService from '../../services/apiService';
-import {Form, ListGroup} from 'react-bootstrap';
 import assetsService from "../../services/assetsService";
-import {AsyncTypeahead} from "react-bootstrap-typeahead";
 
 class AssetsFormComponent extends React.Component {
     constructor(props) {

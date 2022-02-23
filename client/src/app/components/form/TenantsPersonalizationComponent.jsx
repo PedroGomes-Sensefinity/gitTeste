@@ -6,14 +6,12 @@ import {UploadComponent} from "./UploadComponent";
 import {ColorPickerComponent} from "./ColorPickeComponentr";
 import * as Yup from "yup";
 import BlockUi from "react-block-ui";
-import {ErrorMessage, Field, Formik} from 'formik';
+import {ErrorMessage, Formik} from 'formik';
 import {injectIntl} from "react-intl";
 import {makeStyles} from "@material-ui/styles";
 import tenantsService from "../../services/tenantsService";
 import toaster from "../../utils/toaster";
 import {getInputClasses} from "../../utils/formik";
-import {Image} from "@material-ui/icons";
-
 
 class TenantsPersonalizationComponent extends React.Component {
     constructor(props) {

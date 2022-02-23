@@ -4,8 +4,6 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-//import * as auth from '../_redux/authRedux';
-//import { login } from '../_redux/authService';
 import { toAbsoluteUrl } from '../../../../_metronic/_helpers';
 import toaster from '../../../utils/toaster';
 import { login, setToken, setUser, setTenantLogo } from '../../../services/authService';
@@ -128,6 +126,7 @@ function Login(props) {
                 <img
                     src={toAbsoluteUrl('/media/logos/sensefinity_iot.png')}
                     width='50%'
+                    alt={'Login'}
                 />
             </div>
             {/* begin::Head */}

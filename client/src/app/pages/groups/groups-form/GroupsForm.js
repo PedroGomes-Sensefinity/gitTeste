@@ -2,7 +2,6 @@ import React from "react";
 import GroupsFormComponent from "../../../components/form/groupsFormComponent";
 import {Paper, Tab, Tabs} from "@material-ui/core";
 import {TabContainer} from "react-bootstrap";
-import GroupsDevicesComponent from "../../../components/form/groupsDevicesComponent";
 
 export function GroupsForm({match}) {
     const {id} = match.params;
