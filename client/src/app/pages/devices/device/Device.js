@@ -2,7 +2,6 @@ import React, {useEffect} from "react";
 import DeviceFormComponent from "../../../components/form/deviceFormComponent";
 import DeviceConfigMessageComponent from "../../../components/form/deviceConfigMessageComponent";
 import DeviceThresholdComponent from "../../../components/form/deviceThresholdComponent";
-import tenantService from '../../../services/tenantService';
 import {Paper, Tab, Tabs} from "@material-ui/core";
 import {TabContainer} from "react-bootstrap";
 import PermissionGate from "../../../modules/Permission/permissionGate";
@@ -11,7 +10,6 @@ import DeviceDashboardComponent from "../../../components/form/deviceDashboardCo
 export function Device({history, match}) {
     const {id} = match.params;
     const [value, setValue] = React.useState(0);
-    const [tenant, setTenant] = React.useState({});
 
     useEffect(() => {
         if (typeof id !== 'undefined') {

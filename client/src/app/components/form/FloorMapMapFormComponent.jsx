@@ -1,8 +1,7 @@
 import React, {useEffect} from 'react';
-import {ErrorMessage, Field, Formik} from 'formik';
+import {ErrorMessage, Formik} from 'formik';
 import * as Yup from 'yup';
 import {makeStyles} from '@material-ui/styles';
-import {UploadComponent} from "./UploadComponent";
 import floorMapService from '../../services/floorMapService';
 import apiService from '../../services/apiService';
 import DoneIcon from '@material-ui/icons/Done';
@@ -12,7 +11,6 @@ import BlockUi from "react-block-ui";
 import toaster from '../../utils/toaster';
 import {injectIntl} from 'react-intl';
 import NumberFormat from 'react-number-format';
-import Dropzone from 'react-dropzone'
 import IndoorMap from "../indoor-map/indoorMap";
 
 class FloorMapMapFormComponent extends React.Component {
@@ -100,7 +98,7 @@ class FloorMapMapFormComponent extends React.Component {
 
         this.state.floormap.metadata = JSON.stringify(metadata);
 
-        if (values.attachment_id != '') {
+        if (values.attachment_id !== '') {
             this.state.floormap.attachment.id = values.attachment_id;
         }
 

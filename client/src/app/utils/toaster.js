@@ -12,9 +12,7 @@ const toaster = {
             draggable: true,
             progress: undefined,
             onClose: callback,
-        }
-
-        const types = ["success", "info", "warning", "error"]
+        };
 
         toast[type](msg, toasterProperties);
     }

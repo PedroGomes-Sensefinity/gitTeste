@@ -114,7 +114,7 @@ export function getInitLayoutConfig() {
       style: "solid", // solid/transparent
     },
     content: {
-      width: "fixed", // fluid|fixed
+      width: "fluid", // fluid|fixed
     },
     brand: {
       self: {
@@ -127,9 +127,9 @@ export function getInitLayoutConfig() {
         display: true,
         fixed: true,
         minimize: {
-          toggle: true, // allow toggle
-          default: true, // default state
-          hoverable: true, // allow hover
+          toggle: false, // allow toggle
+          default: false, // default state
+          hoverable: false, // allow hover
         },
       },
       footer: {

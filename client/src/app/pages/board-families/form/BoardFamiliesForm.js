@@ -1,9 +1,9 @@
-import React, {useEffect} from "react";
+import React from "react";
 import BoardFamiliesFormComponent from "../../../components/form/BoardFamiliesFormComponent";
 import BoardFamilyTemplatesComponent from "../../../components/form/boardFamilyTemplatesComponent";
 import {Paper, Tab, Tabs} from "@material-ui/core";
 import {TabContainer} from "react-bootstrap";
-                  
+
 export function BoardFamiliesForm({match}) {
     const {id} = match.params;
     const [value, setValue] = React.useState(0);
@@ -28,4 +28,4 @@ export function BoardFamiliesForm({match}) {
             </TabContainer>
         </div>
     )
-}  
+}

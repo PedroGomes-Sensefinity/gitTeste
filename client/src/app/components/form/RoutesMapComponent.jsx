@@ -4,7 +4,6 @@ import * as Yup from 'yup';
 import {Link} from 'react-router-dom';
 import {makeStyles} from '@material-ui/styles';
 import DoneIcon from '@material-ui/icons/Done';
-import { BsTrash } from "react-icons/bs";
 import '../../utils/yup-validations';
 import BlockUi from "react-block-ui";
 import toaster from '../../utils/toaster';
@@ -12,6 +11,8 @@ import { injectIntl } from 'react-intl';
 import apiService from '../../services/apiService';
 import routesService from "../../services/routesService";
 import RouteMap from "../route-map/routeMap";
+import TableGrid from "../table-grid/table-grid.component";
+import '../../utils/utils';
 
 class RoutesMapComponent extends React.Component {
     constructor(props) {
@@ -21,6 +22,8 @@ class RoutesMapComponent extends React.Component {
             id: props.id,
             route: {},
             geofence: {},
+            geofenceSizes: [],
+            gridDataGeofencesSizes: [],
             entity: {},
             loading: false,
             blocking: false,
@@ -28,9 +31,7 @@ class RoutesMapComponent extends React.Component {
         };
     }
 
-    componentDidMount() {
-
-    }
+    componentDidMount() {}
 
     initialValues = {
         id: parseInt(this.props.id)
@@ -48,6 +49,7 @@ class RoutesMapComponent extends React.Component {
         let route = this.state.entity;
         route.metadata.route = this.state.route;
         route.metadata.geofence = this.state.geofence;
+        route.metadata.geofenceSizes = this.state.geofenceSizes;
         route.metadata = JSON.stringify(route.metadata);
 
         this.setState({blocking: true});
@@ -68,9 +70,41 @@ class RoutesMapComponent extends React.Component {
     onChangeRoute = (route) => {
         this.setState({ route: route.route });
         this.setState({ geofence: route.geofence });
+        this.setState({ geofenceSizes: route.geofenceSizes });
     };
 
+    mountGridGeofenceSizes = () => {
+        let data = [];
+        this.state.geofenceSizes.map((value, i) => {
+            data.push({
+                point: i+1,
+                size: value,
+            });
+        });
+        this.setState({gridDataGeofencesSizes: data});
+    }
+
+    async onChangePointSize (data, index) {
+        let gridDataGeofencesSizes = this.state.gridDataGeofencesSizes;
+        gridDataGeofencesSizes[index] = data;
+        let sizes = gridDataGeofencesSizes.map((item) => item.size);
+
+        await this.setState({ gridDataGeofencesSizes: gridDataGeofencesSizes });
+        await this.setState({ geofenceSizes: sizes });
+    }
+
     render() {
+        const columns = [
+            {
+                field: 'point',
+                title: 'Point',
+                editable: 'never'
+            }, {
+                field: 'size',
+                title: 'Size (meters)',
+            }
+        ];
+
         return (
             <BlockUi tag='div' blocking={this.state.blocking}>
             <Formik
@@ -104,6 +138,12 @@ class RoutesMapComponent extends React.Component {
                                 if("geofence" in entity.metadata) {
                                     this.setState({geofence: entity.metadata.geofence});
                                 }
+
+                                if("geofenceSizes" in entity.metadata) {
+                                    this.setState({geofenceSizes: entity.metadata.geofenceSizes});
+                                }
+
+                                this.mountGridGeofenceSizes();
                             });
                     }, []);
 
@@ -152,10 +192,28 @@ class RoutesMapComponent extends React.Component {
                                         <div className={`col-xl-9 col-lg-9`}>
                                             <RouteMap
                                                 route={this.state.route}
+                                                geofenceSizes={this.state.geofenceSizes}
                                                 showGeofencing={true}
                                                 onChangeRoute={this.onChangeRoute} />
                                         </div>
                                         <div className={`col-xl-3 col-lg-3`}>
+                                            <TableGrid
+                                                title=''
+                                                columns={columns}
+                                                data={this.state.gridDataGeofencesSizes}
+                                                style={{height: 500}}
+                                                editable={{
+                                                    onRowUpdate: (newData, oldData) =>
+                                                        new Promise((resolve, reject) => {
+                                                            //setTimeout(() => {
+                                                                newData.size = parseFloat(newData.size);
+                                                                const index = oldData.tableData.id;
+                                                                this.onChangePointSize(newData, index);
+                                                                resolve();
+                                                            //}, 1000)
+                                                        })
+                                                }}
+                                            />
                                         </div>
                                     </div>
                                 </div>

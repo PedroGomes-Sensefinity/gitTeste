@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {ErrorMessage, Field, Formik} from 'formik';
 import * as Yup from 'yup';
 import {Link} from 'react-router-dom';
@@ -242,7 +242,7 @@ class DeviceFormComponent extends React.Component {
     };
 
     getSelectedBoardFamily = (boardFamilyId) => {
-        return this.state.boardFamilies.filter(b => b.id == boardFamilyId);
+        return this.state.boardFamilies.filter(b => b.id === boardFamilyId);
     };
 
     handleSearchGroup = (query) => {

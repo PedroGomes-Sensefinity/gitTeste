@@ -1,6 +1,6 @@
 import React from 'react';
 
-import MaterialTable from 'material-table';
+import MaterialTable from '@material-table/core';
 import apiService from '../../services/apiService';
 
 class TableGrid extends React.Component {
@@ -76,12 +76,12 @@ class TableGrid extends React.Component {
                             const page = query.page;
                             let method = 'get';
                             let params = [this.props.endpoint, pageSize, page * pageSize];
-    
+
                             if(query.search !== "") {
                                 method = 'getByText'
                                 params = [this.props.endpoint, query.search, pageSize, page * pageSize]
                             }
-    
+
                             apiService[method](...params)
                             .then((result) => {
                                 resolve({

@@ -1,9 +1,8 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {makeStyles} from '@material-ui/styles';
 import apiService from '../../services/apiService';
-import thresholdService from '../../services/thresholdService';
 import deviceThresholdService from '../../services/deviceThresholdService';
 import {AsyncTypeahead, Typeahead} from 'react-bootstrap-typeahead';
 import DoneIcon from '@material-ui/icons/Done';

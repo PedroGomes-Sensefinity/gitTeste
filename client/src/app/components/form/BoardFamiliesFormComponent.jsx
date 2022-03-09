@@ -94,7 +94,6 @@ class BoardFamiliesFormComponent extends React.Component {
                     const classes = this.useStyles();
 
                     useEffect(() => {
-                        console.log(this.state.isAddMode, this.state.id);
                         if (!this.state.isAddMode && this.state.id !== 'new') {
                             apiService
                             .getById('board_families', this.state.id)

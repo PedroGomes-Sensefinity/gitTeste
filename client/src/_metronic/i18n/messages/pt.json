@@ -53,6 +53,6 @@
   "ASSETS.UPDATED": "Asset alterado com sucesso",
   "ASSET_DEVICE.INCLUDED": "Devices incluídos no ativo",
   "ASSET_DEVICE.REMOVED": "Device removido do ativo",
-  "ROUTES.CREATED": "Routes criado com sucesso",
-  "ROUTES.UPDATED": "Routes alterado com sucesso"
+  "ROUTES.CREATED": "Rota criada com sucesso",
+  "ROUTES.UPDATED": "Rota alterada com sucesso"
 }

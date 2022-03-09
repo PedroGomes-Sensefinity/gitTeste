@@ -7,12 +7,10 @@ import * as Yup from 'yup';
 import {Link} from 'react-router-dom';
 import {makeStyles} from '@material-ui/styles';
 import apiService from '../../services/apiService';
-import {AsyncTypeahead} from 'react-bootstrap-typeahead';
 import DoneIcon from '@material-ui/icons/Done';
 
 import '../../utils/yup-validations';
 import BlockUi from "react-block-ui";
-import groupsUtil from '../../utils/groups';
 import toaster from '../../utils/toaster';
 import {injectIntl} from 'react-intl';
 
