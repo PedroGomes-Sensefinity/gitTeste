@@ -39,6 +39,7 @@ class ThresholdFormComponent extends React.Component {
                 {id: "temperaturedegree", name: "Temperature"},
                 {id: "humidityrelative", name: "Humidity"},
                 {id: "geofences", name: "Geo-fences"},
+                {id: "buttonpressed", name: "Button pressed"},
             ],
             ruleActionTypesOptions: [
                 {id: "alarm", name: "Alarm"},
