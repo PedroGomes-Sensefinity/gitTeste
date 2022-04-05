@@ -75,7 +75,7 @@ class ThresholdFormComponent extends React.Component {
         min: false,
         minValue: 0,
         max: false,
-        maxValue: '',
+        maxValue: 100,
     };
 
     validationSchema = Yup.object().shape({
