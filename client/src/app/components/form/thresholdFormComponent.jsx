@@ -75,7 +75,7 @@ class ThresholdFormComponent extends React.Component {
         min: false,
         minValue: 0,
         max: false,
-        maxValue: '',
+        maxValue: 100,
     };
 
     validationSchema = Yup.object().shape({
@@ -313,6 +313,7 @@ class ThresholdFormComponent extends React.Component {
                                         </span>
                                     }
                                 </div>
+                                <div>{console.log("RESULT: " + isValid)}</div>
                                 <div className='card-toolbar'>
                                     <button
                                         type='submit'
