@@ -57,9 +57,6 @@ class ChangePasswordFormComponent extends React.Component {
 
     render() {
         const closeButtonStyle = {
-            'background-color': '#C8C8C8',
-            'border': '#C8C8C8',
-            'padding': '10px 10px',
             'float': 'right'
         };
         const saveButtonStyle = {
@@ -143,8 +140,9 @@ class ChangePasswordFormComponent extends React.Component {
                                 <div className='card-toolbar'>
                                     <button
                                         onClick = {this.props.handleClose}
-                                        className='btn'
-                                        style = {closeButtonStyle}>
+                                        className='btn btn-secondary'
+                                        style = {closeButtonStyle}
+                                        >
                                         {/* <DoneIcon /> */}
                                         {this.props.intl.formatMessage({id: 'MODAL.PASSWORD.BUTTON.CLOSE'})}
                                         {/* {isSubmitting} */}
