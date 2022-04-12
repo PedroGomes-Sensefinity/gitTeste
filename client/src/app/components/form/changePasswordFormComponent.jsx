@@ -56,6 +56,15 @@ class ChangePasswordFormComponent extends React.Component {
     };
 
     render() {
+        const closeButtonStyle = {
+            'background-color': '#C8C8C8',
+            'border': '#C8C8C8',
+            'padding': '10px 10px',
+            'float': 'right'
+        };
+        const saveButtonStyle = {
+            'float': 'right'
+        };
         return (
             <BlockUi tag='div' blocking={this.state.blocking}>
             <Formik
@@ -97,7 +106,7 @@ class ChangePasswordFormComponent extends React.Component {
                                                         'password'
                                                     )}`}
                                                     name='password'
-                                                    placeholder='Entre new password'
+                                                    placeholder='Enter new password'
                                                     {...getFieldProps(
                                                         'password'
                                                     )}
@@ -133,18 +142,28 @@ class ChangePasswordFormComponent extends React.Component {
                                 className={`card-footer py-3 `}>
                                 <div className='card-toolbar'>
                                     <button
+                                        onClick = {this.props.handleClose}
+                                        className='btn'
+                                        style = {closeButtonStyle}>
+                                        {/* <DoneIcon /> */}
+                                        {this.props.intl.formatMessage({id: 'MODAL.PASSWORD.BUTTON.CLOSE'})}
+                                        {/* {isSubmitting} */}
+                                    </button>
+                                    <button
                                         type='submit'
                                         className='btn btn-success mr-2'
                                         disabled={
                                             isSubmitting ||
                                             (touched && !isValid)
-                                        }>
+                                        }
+                                        style={saveButtonStyle}>
                                         <DoneIcon />
                                         {this.props.intl.formatMessage({id: 'MODAL.PASSWORD.BUTTON.SAVE'})}
                                         {isSubmitting}
                                     </button>
                                 </div>
                             </div>
+                            
                             {/* end::Footer */}
                         </form>
                     );

@@ -38,11 +38,11 @@ class GenericModalComponent extends React.Component {
                 <Modal.Body>
                     { this.props.content }
                 </Modal.Body>
-                <Modal.Footer>
+                {/* <Modal.Footer>
                     <Button onClick={this.props.handleClose}>
                         {this.state.intl.formatMessage({id: 'MODAL.PASSWORD.BUTTON.CLOSE'})}
                     </Button>
-                </Modal.Footer>
+                </Modal.Footer> */}
             </Modal>
         );
     }
