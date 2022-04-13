@@ -37,7 +37,7 @@ export function UsersList() {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const ChangePasswordComponent = <ChangePasswordFormComponent userId={userId} />
+    const ChangePasswordComponent = <ChangePasswordFormComponent userId={userId} handleClose={handleClose}/>
 
     const columns = [
         {
