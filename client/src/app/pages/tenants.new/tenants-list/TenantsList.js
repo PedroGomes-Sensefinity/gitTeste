@@ -21,6 +21,10 @@ export function TenantsNewList() {
 
     const columns = [
         {
+            field: 'id',
+            title: 'Id',
+        },
+        {
             field: 'name',
             title: 'Name',
         }
