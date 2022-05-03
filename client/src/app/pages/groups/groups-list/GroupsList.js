@@ -35,7 +35,11 @@ export function GroupsList() {
         {
             field: 'label',
             title: 'Label',
-        }
+        },
+        {
+            field: 'parent_label',
+            title: 'Parent label'
+        },
     ];
 
     return (
