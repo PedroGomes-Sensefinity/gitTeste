@@ -86,25 +86,26 @@ export function AlarmsList() {
     const getData = () => {
         notificationService.get('alarm', 'created', statusDateStart, statusDateEnd, 999999, 0/* getOffset(page, rowsPage) */)
             .then((result) => {
-                result.alarms.forEach(alarm => {
-                    switch(alarm.type) {
-                        case 'temperaturedegree':
-                            alarm.type = "Temperature";
-                            break;
-                        case 'geofences':
-                            alarm.type = "Geo-fences";
-                            break;
-                        case 'humidityrelative':
-                            alarm.type = "Humidity";
-                            break;
-                        case 'buttonpressed':
-                            alarm.type = "Button pressed"
-                            break;
-                        default:
-                            console.log("Error: Unidentified threshold type.")
-                    }
-                    
-                });
+                if (result.length != 0) {
+                    result.alarms.forEach(alarm => {
+                        switch(alarm.type) {
+                            case 'temperaturedegree':
+                                alarm.type = "Temperature";
+                                break;
+                            case 'geofences':
+                                alarm.type = "Geo-fences";
+                                break;
+                            case 'humidityrelative':
+                                alarm.type = "Humidity";
+                                break;
+                            case 'buttonpressed':
+                                alarm.type = "Button pressed"
+                                break;
+                            default:
+                                console.log("Error: Unidentified threshold type.")
+                        }
+                    });
+                }
                 setData(result.alarms);
             });
     }
