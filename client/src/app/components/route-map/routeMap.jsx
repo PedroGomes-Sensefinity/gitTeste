@@ -213,11 +213,20 @@ class RouteMap extends React.Component {
         this.updateRoute(route);
     }
 
+    /**
+     * When there is no route drawn yet, props.geofenceSizes coming from the parent component is empty so we use state.geofenceSizes. 
+     * Otherwise, geofenceSizes is loaded from the database and passed down to routeMap in props.geofenceSizes. In these cases we use the props.
+     */
     updateRoute = (route) => {
+        var geofenceSizesToSend = this.props.geofenceSizes; // 
+
+        if (this.props.geofenceSizes.length===0) {
+            geofenceSizesToSend = this.state.geofenceSizes;
+        }
         this.props.onChangeRoute({
             route: route,
             geofence: this.state.generatedGeofence,
-            geofenceSizes: this.props.geofenceSizes
+            geofenceSizes: geofenceSizesToSend
         });
     };
 
