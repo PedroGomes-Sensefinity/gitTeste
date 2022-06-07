@@ -63,6 +63,15 @@ class ThresholdGeofencingComponent extends React.Component {
             });
     };
 
+    getGeofenceIndexById = (id) => {
+        for (let i = 0; i < this.state.geofences.length; i++) {
+            if (this.state.geofences[i].id === id) {
+                return i;
+            }
+        }
+        return -1;
+    };
+
     onChangeShape = (shapes) => {
         this.setState({ geofences: shapes });
     };
@@ -168,7 +177,7 @@ class ThresholdGeofencingComponent extends React.Component {
                                                         new Promise((resolve, reject) => {
                                                             setTimeout(() => {
                                                                 const dataUpdate = [...this.state.geofences];
-                                                                const index = oldData.tableData.id;
+                                                                const index = this.getGeofenceIndexById(oldData.tableData.id);
                                                                 dataUpdate[index] = newData;
                                                                 this.onChangeShape(dataUpdate);
                                                                 resolve();
