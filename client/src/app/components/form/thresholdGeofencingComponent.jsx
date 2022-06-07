@@ -73,7 +73,6 @@ class ThresholdGeofencingComponent extends React.Component {
     };
 
     onChangeShape = (shapes) => {
-        console.log("on change shape!!!!!!!!!!!!!!1");
         this.setState({ geofences: shapes });
     };
 
