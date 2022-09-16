@@ -18,7 +18,7 @@ build:
   only:
     - master
   image:
-    name: docker/docker:latest
+    name: docker:latest
     entrypoint: [""]
   script:
     - echo "Build on Azure"
