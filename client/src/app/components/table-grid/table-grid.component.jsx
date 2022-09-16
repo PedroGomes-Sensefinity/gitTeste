@@ -10,6 +10,7 @@ class TableGrid extends React.Component {
         super(props);
         this.state = {
             data: props.data,
+            date: props.date,
             remote: (typeof props.data === "undefined"),
             endpoint: props.endpoint,
             total: 0,
@@ -76,16 +77,25 @@ class TableGrid extends React.Component {
                             const page = query.page;
                             let method = 'get';
                             let params = [this.props.endpoint, pageSize, page * pageSize];
-
+                            
                             if(query.search !== "") {
                                 method = 'getByText'
                                 params = [this.props.endpoint, query.search, pageSize, page * pageSize]
                             }
-
+                            if(this.state.date !== undefined) {
+                                if(this.state.date.start !== "0" && query.search === ""){
+                                    method = 'getByTimestamp'
+                                    params = [this.props.endpoint ,this.state.date.start, this.state.date.end, pageSize, page * pageSize]
+                                }else{
+                                    method = 'getByTimestampSearch'
+                                    params = [this.props.endpoint,query.search ,this.state.date.start, this.state.date.end, pageSize, page * pageSize]
+                                }
+                            }
+                            
                             apiService[method](...params)
                             .then((result) => {
                                 resolve({
-                                    data: result[this.props.dataField],
+                                    data: (result[this.props.dataField]) !== undefined && (result[this.props.dataField]).length > 0 ? result[this.props.dataField] : [] ,
                                     page: page,
                                     totalCount: result.total,
                                 });

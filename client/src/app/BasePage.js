@@ -31,6 +31,7 @@ import {FloorMapsList} from "./pages/floor-maps/list/FloorMapsList";
 import {FloorMapsForm} from "./pages/floor-maps/form/FloorMapsForm";
 import {RoutesList} from "./pages/routes/routes-list/RoutesList";
 import {RoutesForm} from "./pages/routes/routes-form/RoutesForm";
+import { RouteCompletion } from "./pages/routes/routes-list/RouteCompletion";
 
 /*const UserProfilepage = lazy(() =>
   import("./modules/UserProfile/UserProfilePage")
@@ -92,6 +93,7 @@ export default function BasePage() {
       <ContentRoute path="/routes/list" component={RoutesList} />
       <ContentRoute path="/routes/new" component={RoutesForm} />
       <ContentRoute path="/routes/edit/:id" component={RoutesForm} />
+      <ContentRoute path="/routes/completion" component={RouteCompletion} />
 
         { /* Users Routes*/}
         <ContentRoute path="/users/list" component={UsersList} />
