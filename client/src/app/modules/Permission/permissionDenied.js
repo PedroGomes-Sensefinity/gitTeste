@@ -14,13 +14,13 @@ export default function PermissionDenied() {
                     <h1
                         className="error-title font-weight-boldest text-white mb-12"
                     >
-                        Oops...
+                        Sensefinity
                     </h1>
-                    <p className="display-4 font-weight-bold text-white" style={{marginTop: "22rem"}}>
-                        Looks like something went wrong.
+                    <p className="display-4 font-weight-bold" style={{marginTop: "22rem"}}>
+                        You don’t have permissions to see this page.
                     </p>
-                    <p className="display-4 font-weight-bold text-white">
-                        We're working on it
+                    <p className="display-4 font-weight-bold">
+                        Please contact Sensefinity Team if you think this is an error.
                     </p>
                 </div>
             </div>
