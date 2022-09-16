@@ -16,7 +16,7 @@ class RouteMap extends React.Component {
         super(props);
 
         this.state = {
-            sizeMeters: 100,
+            sizeMeters: 15,
             route: props.route || {},
             prevRoute: props.route ? this.copyObject(props.route) : {},
             showGeofencing: props.showGeofencing || false,

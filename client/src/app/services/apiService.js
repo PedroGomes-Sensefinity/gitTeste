@@ -1,12 +1,46 @@
 import axios from "axios";
 
 const apiService = {
+    
     get: function(endpoint, limit, offset){
         return new Promise(function(resolve, reject) {
             axios
                 .get(`${process.env.REACT_APP_REST_API_URL}${endpoint}/limit/${limit}/offset/${offset}`)
                 .then(function(response) {
                     let data = [];
+                    if (response.status === 200) {
+                        data = response.data.data;
+                    }
+                    resolve(data);
+                })
+                .catch(function(err) {
+                    reject(err.response.data);
+                });
+        });
+    },
+    getByTimestamp: function(endpoint, dateStart, dateEnd, limit, offset){
+        return new Promise(function(resolve, reject) {
+            axios
+                .get(`${process.env.REACT_APP_REST_API_URL}${endpoint}/datestart/${dateStart}/dateend/${dateEnd}/limit/${limit}/offset/${offset}`)
+                .then(function(response) {
+                    let data = [];
+                    if (response.status === 200) {
+                        data = response.data.data;
+                    }
+                    resolve(data);
+                })
+                .catch(function(err) {
+                    reject(err.response.data);
+                });
+        });
+    },
+    getByTimestampSearch: function(endpoint, text,dateStart, dateEnd, limit, offset){
+        return new Promise(function(resolve, reject) {
+            axios
+                .get(`${process.env.REACT_APP_REST_API_URL}${endpoint}/search/${text}/datestart/${dateStart}/dateend/${dateEnd}/limit/${limit}/offset/${offset}`)
+                .then(function(response) {
+                    var data = [];
+                    
                     if (response.status === 200) {
                         data = response.data.data;
                     }
