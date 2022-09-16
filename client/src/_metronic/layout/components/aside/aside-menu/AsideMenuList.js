@@ -143,7 +143,7 @@ export function AsideMenuList({ layoutProps }) {
                 </NavLink>
               </li>
               {/*end::2 Level*/}
-            </ul>x
+            </ul>
           </div>
         </li>
 
@@ -181,7 +181,7 @@ export function AsideMenuList({ layoutProps }) {
                           </NavLink>
                       </li>
                       {/*end::2 Level*/}
-                  </ul>x
+                  </ul>
               </div>
           </li>
         {/*begin::1 Level*/}
@@ -333,8 +333,21 @@ export function AsideMenuList({ layoutProps }) {
                               <span className="menu-text">Route List</span>
                           </NavLink>
                       </li>
+                      <li
+                          className={`menu-item ${getMenuItemActive(
+                              "/routes/completion"
+                          )}`}
+                          aria-haspopup="true"
+                      >
+                          <NavLink className="menu-link" to="/routes/completion">
+                              <i className="menu-bullet menu-bullet-dot">
+                                  <span />
+                              </i>
+                              <span className="menu-text">Route Completion</span>
+                          </NavLink>
+                      </li>
                       {/*end::2 Level*/}
-                  </ul>x
+                  </ul>
               </div>
           </li>
         {/*begin::1 Level*/}
