@@ -2,11 +2,10 @@ version: '3.7'
 services:
   server:
     container_name: ui-admin-server
-    build:
-      context: ./server/
+    image: ui-admin-server-dev
     command: /app/node_modules/.bin/nodemon src/index.js
     env_file:
-      - /server/env/test.env
+      - ./server/env/test.env
     volumes:
       - ./server/:/app
       - /app/node_modules
@@ -16,8 +15,7 @@ services:
       - tools_proxy   
   client:
     container_name: ui-admin-client
-    build:
-      context: ./client/
+    image: ui-admin-client-dev
     command: npm start
     volumes:
       - ./client/:/app
