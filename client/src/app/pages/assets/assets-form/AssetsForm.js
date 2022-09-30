@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import {Paper, Tab, Tabs, Card, CardContent, Select, MenuItem, CircularProgress} from "@material-ui/core";
-import {TabContainer} from "react-bootstrap";
+import { Paper, Tab, Tabs } from "@material-ui/core";
+import React from "react";
+import { TabContainer } from "react-bootstrap";
 
-import AssetsFormComponent from "../../../components/form/AssetsFormComponent";
 import AssetDevicesComponent from "../../../components/form/AssetDevicesComponent";
+import AssetsFormComponent from "../../../components/form/AssetsFormComponent";
 import DeviceSelector from "./DeviceSelector";
 
 
@@ -18,7 +18,7 @@ export function AssetsForm({match}) {
     function renderSwitch(value) {
         switch (value ) {
             case 0:
-                return <DeviceSelector />
+                return <DeviceSelector assetId={id}/>
             case 1: 
                 return <AssetsFormComponent id={id} />
             case 2: 

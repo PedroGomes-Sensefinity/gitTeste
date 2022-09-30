@@ -1,15 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import { Button, Card, CardContent, CircularProgress } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
 
-import history from '../../../history';
-import {Button, Card, CardContent, CircularProgress} from '@material-ui/core';
-
-import EditIcon from '@material-ui/icons/Edit';
-import TableGrid from '../../../components/table-grid/table-grid.component';
-import DetailsIcon from '@material-ui/icons/Details';
+import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
-import {makeStyles} from "@material-ui/core/styles";
-import usePermissions from '../../../utils/customHooks';
+import DetailsIcon from '@material-ui/icons/Details';
+import EditIcon from '@material-ui/icons/Edit';
+import { useHistory } from 'react-router-dom';
+import TableGrid from '../../../components/table-grid/table-grid.component';
 import PermissionDenied from '../../../modules/Permission/permissionDenied';
+import usePermissions from '../../../utils/customHooks';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -19,12 +18,14 @@ const useStyles = makeStyles((theme) => ({
         marginRight: theme.spacing(1),
     }
 }));
+
 export function AssetsList() {
+    const history = useHistory()
     const classes = useStyles();
     const [actions, setActions] = useState([])
     const {
-        asset_view: canView, 
-        asset_edit: canEdit, 
+        asset_view: canView,
+        asset_edit: canEdit,
         asset_create: canCreate
     } = usePermissions('asset_view', 'asset_edit', 'asset_create')
 
@@ -33,11 +34,11 @@ export function AssetsList() {
 
     useEffect(() => {
         // Change this so it removes action on permission change very rare usecase tho
-        if(canEdit === undefined || canView === undefined )
-            return 
+        if (canEdit === undefined || canView === undefined)
+            return
 
         let newActions = []
-        if(canView) {
+        if (canView) {
             newActions.push(
                 {
                     icon: DetailsIcon,
@@ -49,7 +50,7 @@ export function AssetsList() {
             )
         }
 
-        if(canEdit) {
+        if (canEdit) {
             newActions.push(
                 {
                     icon: EditIcon,
@@ -79,27 +80,27 @@ export function AssetsList() {
     if (isLoading)
         //check this maybe apply to more componnents
         return <CircularProgress />
-    else if(!canEdit && !canView) 
-        return <PermissionDenied/>
+    else if (!canEdit && !canView)
+        return <PermissionDenied />
     else
         return <Card>
-                    <CardContent>
-                        <Button
-                            variant='contained'
-                            color='secondary'
-                            onClick={() => history.push('/assets/new')}
-                            disabled={!canCreate}
-                            className={classes.button}>
-                            <AddIcon className={classes.leftIcon} />
-                            New Asset
-                        </Button>
-                        <TableGrid
-                            actions={actions}
-                            title=''
-                            columns={columns}
-                            endpoint={'asset'}
-                            dataField='assets'
-                        />
-                    </CardContent>
-                </Card>
+            <CardContent>  
+                <Button
+                    variant='contained'
+                    color='secondary'
+                    onClick={() => history.push('/assets/new')}
+                    disabled={!canCreate}
+                    className={classes.button}>
+                    <AddIcon className={classes.leftIcon} />
+                    New Asset
+                </Button>
+                <TableGrid
+                    actions={actions}
+                    title=''
+                    columns={columns}
+                    endpoint={'asset'}
+                    dataField='assets'
+                />
+            </CardContent>
+        </Card>
 }

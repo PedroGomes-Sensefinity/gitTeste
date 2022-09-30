@@ -23,6 +23,7 @@ import {ProfilesForm} from "./pages/profiles/profiles-form/ProfilesForm";
 import { ProfilesList } from "./pages/profiles/profiles-list/ProfilesList";
 import { AssetsList } from "./pages/assets/assets-list/AssetsList";
 import { AssetsForm } from "./pages/assets/assets-form/AssetsForm";
+import { CreateAsset } from "./pages/assets/assets-form/CreateAsset";
 import {UsersList} from "./pages/users/users-list/UsersList";
 import {UsersForm} from "./pages/users/users-form/UsersForm";
 import {TenantsNewList} from "./pages/tenants.new/tenants-list/TenantsList";
@@ -32,6 +33,7 @@ import {FloorMapsForm} from "./pages/floor-maps/form/FloorMapsForm";
 import {RoutesList} from "./pages/routes/routes-list/RoutesList";
 import {RoutesForm} from "./pages/routes/routes-form/RoutesForm";
 import { RouteCompletion } from "./pages/routes/routes-list/RouteCompletion";
+import ResourceNotFound from "./modules/Permission/resourceNotFound";
 
 /*const UserProfilepage = lazy(() =>
   import("./modules/UserProfile/UserProfilePage")
@@ -87,7 +89,7 @@ export default function BasePage() {
 
       { /* Assets Routes*/}
       <ContentRoute path="/assets/list" component={AssetsList} />
-      <ContentRoute path="/assets/new" component={AssetsForm} />
+      <ContentRoute path="/assets/new" component={CreateAsset} />
       <ContentRoute path="/assets/:id/edit" component={AssetsForm} />
       <ContentRoute path="/assets/:id" component={AssetsForm} />
 
@@ -121,6 +123,9 @@ export default function BasePage() {
         <ContentRoute path="/floor-maps/list" component={FloorMapsList} />
         <ContentRoute path="/floor-maps/new" component={FloorMapsForm} />
         <ContentRoute path="/floor-maps/edit/:id" component={FloorMapsForm} />
+        
+        { /* Fallback Error Routes */}
+        <ContentRoute path="/not-found" component={ResourceNotFound} />
 
         <Redirect to="error/error-v1" />
       </Switch>
