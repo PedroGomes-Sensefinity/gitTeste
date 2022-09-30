@@ -18,7 +18,6 @@ function DeviceDashboard(props) {
     const [pendingConfigMessages, setPendingConfigMessages] = useState(0)
 
     function initDashboard() {
-
         Promise.all([
             apiService.getById('device', props.id),
             deviceService.dashboard(props.id),

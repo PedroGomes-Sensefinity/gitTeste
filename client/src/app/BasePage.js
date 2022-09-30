@@ -88,7 +88,8 @@ export default function BasePage() {
       { /* Assets Routes*/}
       <ContentRoute path="/assets/list" component={AssetsList} />
       <ContentRoute path="/assets/new" component={AssetsForm} />
-      <ContentRoute path="/assets/edit/:id" component={AssetsForm} />
+      <ContentRoute path="/assets/:id/edit" component={AssetsForm} />
+      <ContentRoute path="/assets/:id" component={AssetsForm} />
 
       { /* Routes Routes*/}
       <ContentRoute path="/routes/list" component={RoutesList} />
