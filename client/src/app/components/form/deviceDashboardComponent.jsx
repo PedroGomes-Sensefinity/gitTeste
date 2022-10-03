@@ -3,7 +3,7 @@ import '../../utils/yup-validations';
 import BlockUi from "react-block-ui";
 import {injectIntl} from 'react-intl';
 import {BsBatteryFull, BsClock, BsFillCloudArrowUpFill} from "react-icons/bs";
-import {MdBatterySaver, MdOutlineWarningAmber, MdPower, MdWifiTethering} from "react-icons/md";
+import {MdBatterySaver, MdOutlineWarningAmber, MdPower, MdWifiTethering, MdLocationOn} from "react-icons/md";
 import PositionMap from "../position-map/positionMap";
 import apiService from "../../services/apiService";
 import deviceService from "../../services/deviceService";
@@ -32,6 +32,7 @@ class DeviceDashboardComponent extends React.Component {
             pendingConfigMessages: [],
             loading: false,
             blocking: false,
+            style: {"display":"inline-block","font-size": "0.875em","font-weight": "normal"}
         };
     }
 
@@ -110,6 +111,8 @@ class DeviceDashboardComponent extends React.Component {
     isEqualObject = (obj1, obj2) => {
         return JSON.stringify(obj1) === JSON.stringify(obj2);
     };
+
+    
 
     render() {
         return (
@@ -237,10 +240,14 @@ class DeviceDashboardComponent extends React.Component {
                     <div className='col-xl-10 col-lg-10'>
                         <div className='card card-custom'>
                             <div className='card-header'>
-                                <div className='card-title'>
-                                    <h3 className="card-label">
-                                        Last position
-                                    </h3>
+                                <div className='card-title' style={this.state.style}>
+                                        <h3 className="card-label" style={this.state.pStyle}>
+                                            Last Position
+                                        </h3>
+                                        <MdLocationOn /> Last Coordinates:  Lat:{this.state.device.latitude} Long:{this.state.device.longitude}
+                                        <br></br>
+                                    <BsClock /> Timestamp:  {this.state.device.position_timestamp}
+                                
                                 </div>
                             </div>
                             <div className='card-body'>
