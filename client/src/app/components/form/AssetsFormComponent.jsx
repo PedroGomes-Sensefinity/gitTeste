@@ -23,20 +23,42 @@ class AssetsFormComponent extends React.Component {
             devices: [],
             loading: false,
             blocking: false,
+            ruleTypeOptions: [
+                {id: 1, name: "No Types"},
+            ],
+            asset_type_id: 1,
+            weight: 0.0,
         };
     }
-
-    componentDidMount() {}
+    
 
     initialValues = {
         id: '',
         label: '',
         description: '',
+        asset_type_id: 1,
         devices: [],
+        weight: 0.0,
+        type: [],
     };
 
+    componentDidMount() {
+        apiService.getByEndpoint('asset-types').then((response) => {
+            let ruleTypeOptions = []
+            response.asset_types.forEach(function(assetType) {
+                ruleTypeOptions.push({id: assetType.id, name: assetType.label})
+            })
+            this.state.ruleTypeOptions = ruleTypeOptions
+            this.setState({ruleTypeOptions: ruleTypeOptions})
+        });
+    }
+
+
+
+
     validationSchema = Yup.object().shape({
-        label: Yup.string().required('Label is required')
+        label: Yup.string().required('Label is required'),
+        asset_type_id: Yup.string().required('Type is required'),
     });
 
     useStyles = makeStyles((theme) => ({
@@ -89,10 +111,15 @@ class AssetsFormComponent extends React.Component {
         return (
             <BlockUi tag='div' blocking={this.state.blocking}>
             <Formik
+
                 enableReinitialize
                 initialValues={this.initialValues}
                 validationSchema={this.validationSchema}
                 onSubmit={(values, { setFieldValue, setSubmitting, resetForm }) => {
+                    values.asset_type_id = Number(values.asset_type_id)
+                    if(values.asset_type_id === 0){
+                        values.asset_type_id = 1
+                    }
                     this.save(values, {
                         setFieldValue,
                         setSubmitting,
@@ -113,7 +140,6 @@ class AssetsFormComponent extends React.Component {
                     const classes = this.useStyles();
 
                     useEffect(() => {
-                        console.log(this.state.isAddMode, this.state.id);
                         if (!this.state.isAddMode && this.state.id !== 'new') {
                             apiService
                             .getById('asset', this.state.id)
@@ -126,6 +152,8 @@ class AssetsFormComponent extends React.Component {
                                 setFieldValue('id', item.id);
                                 setFieldValue('label', item.label);
                                 setFieldValue('description', item.description);
+                                setFieldValue('weight', item.weight);
+                                setFieldValue('asset_type_id', item.asset_type_id + "");
                             });
                         }
                     }, []);
@@ -143,6 +171,9 @@ class AssetsFormComponent extends React.Component {
                                     </h3>
                                     <span className='text-muted font-weight-bold font-size-sm mt-1'>
                                         Change general configurations about board family
+                                    </span>
+                                    <span className='text-muted font-weight-bold font-size-sm mt-1'>
+                                        <label className="required">&nbsp;</label> All fields marked with asterisks are required
                                     </span>
                                 </div>
                                 <div className='card-toolbar'>
@@ -172,7 +203,7 @@ class AssetsFormComponent extends React.Component {
                                     <div className='form-group row'>
 
                                         <div className='col-xl-6 col-lg-6'>
-                                            <label>Label</label>
+                                            <label className={`required`}>Label</label>
                                             <Field
                                                 as="input"
                                                 className={`form-control form-control-lg form-control-solid ${getInputClasses(
@@ -191,7 +222,7 @@ class AssetsFormComponent extends React.Component {
                                             <label>Description</label>
                                             <Field
                                                 as="textarea"
-                                                rows='7'
+                                                rows='3'
                                                 className={`form-control form-control-lg form-control-solid ${getInputClasses(
                                                     {errors, touched},
                                                     'description'
@@ -201,6 +232,49 @@ class AssetsFormComponent extends React.Component {
                                                 {...getFieldProps(
                                                     'description'
                                                 )}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className='form-group row'>
+
+                                        <div className='col-xl-6 col-lg-6'>
+                                            <label>Weight</label>
+                                            <Field
+                                                type={"number"} 
+                                                as="input"
+                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                        {errors, touched},
+                                                        'label'
+                                                    )}`}
+                                                name='name'
+                                                placeholder='Set the asset Weight'
+                                                {...getFieldProps('weight')}
+                                            />
+                                        </div>
+
+
+                                        <div className='col-xl-3 col-lg-3'>
+                                            <label className={`required`}>Type</label>
+                                            <Field
+                                                type={"number"} 
+                                                as="select"
+                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                    {errors, touched},
+                                                    'asset_type_id'
+                                                )}`}
+                                                name='asset_type_id'
+                                                placeholder=''
+                                                {...getFieldProps('asset_type_id')}
+                                            >
+                                                <option key='' value=''></option>
+                                                {this.state.ruleTypeOptions.map((e) => {
+                                                    return (<option key={e.id} value={e.id}>{e.name}</option>);
+                                                })}
+                                            </Field>
+                                            <ErrorMessage
+                                                name='asset_type_id'
+                                                component='div'
+                                                className='invalid-feedback'
                                             />
                                         </div>
                                     </div>
