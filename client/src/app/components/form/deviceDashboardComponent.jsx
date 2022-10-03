@@ -32,7 +32,7 @@ class DeviceDashboardComponent extends React.Component {
             pendingConfigMessages: [],
             loading: false,
             blocking: false,
-            style: {"display":"inline-block","font-size": "0.875em","font-weight": "normal"}
+            style: {"display":"inline-block","fontSize": "0.875em","fontWeight": "normal"}
         };
     }
 
@@ -103,9 +103,12 @@ class DeviceDashboardComponent extends React.Component {
             this.setState({last_alarm_id: values.last_alarm_id});
         }
 
-        if ('last_position' in values && JSON.stringify(values.last_position) !== '{}') {
-            this.setState({last_position: values.last_position});
+        if (this.state.device.latitude !== undefined && this.state.device.latitude !== 0
+            && this.state.device.longitude !== undefined && this.state.device.longitude !== 0) {
+            let latLong = {"lat":this.state.device.latitude, "lon":this.state.device.longitude}
+            this.setState({last_position: latLong});
         }
+        
     }
 
     isEqualObject = (obj1, obj2) => {
