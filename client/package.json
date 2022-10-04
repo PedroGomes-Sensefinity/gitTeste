@@ -42,6 +42,7 @@
     "@material-ui/pickers": "3.2.10",
     "@material-ui/styles": "^4.9.14",
     "@reduxjs/toolkit": "1.3.6",
+    "@rjsf/core": "^4.2.3",
     "@tanem/svg-injector": "8.0.50",
     "@turf/turf": "^6.5.0",
     "apexcharts": "3.19.2",

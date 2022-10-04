@@ -36,7 +36,6 @@ class PositionMap extends React.Component {
             attribution: 'Data © <a href="http://osm.org/copyright">OpenStreetMap</a>',
             maxZoom: 25
         }).addTo(map);
-
         if (typeof position !== "undefined" && JSON.stringify(position) !== '{}') {
             this.drawPosition(position);
         } else {
