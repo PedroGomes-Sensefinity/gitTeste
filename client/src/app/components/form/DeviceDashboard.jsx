@@ -28,8 +28,10 @@ function DeviceDashboard(props) {
             const device = allResponses[0].devices[0]
             let dashboard = allResponses[1]
             const pendingConfigMessages = allResponses[2]
-        
-            
+            dashboard.last_position = {}
+            if (device.position_timestamp === "0001-01-01 00:00:00 +0000 UTC"){
+                device.position_timestamp = "N/A"
+            }
             if (device.latitude !== undefined && device.latitude !== 0
                 && device.longitude !== undefined && device.longitude !== 0) {
                     let latLong = {"lat":device.latitude, "lon":device.longitude}
@@ -172,7 +174,7 @@ function DeviceDashboard(props) {
                     <div className='col-xl-10 col-lg-10'>
                         <div className='card card-custom'>
                             <div className='card-header'>
-                                <div className='card-title' style={style}>
+                                <div className='card-title' style={style} >
                                         <h3 className="card-label">
                                             Last Position
                                         </h3>

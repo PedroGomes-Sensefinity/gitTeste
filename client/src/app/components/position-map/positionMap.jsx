@@ -37,6 +37,7 @@ class PositionMap extends React.Component {
             maxZoom: 25
         }).addTo(map);
         if (typeof position !== "undefined" && JSON.stringify(position) !== '{}') {
+            console.log(position)
             this.drawPosition(position);
         } else {
             if ("geolocation" in navigator) {
