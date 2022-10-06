@@ -9,8 +9,6 @@ export default function DeviceSelector({assetId}) {
     const [devices, setDevices] = useState([])
     const [deviceId, setDeviceId] = useState("")
     const [isLoading, setLoading] = useState(true)
-
-    const classes = useStyles()
     // we use this hook so it doesn't show the splash screen
     const history = useHistory()
 

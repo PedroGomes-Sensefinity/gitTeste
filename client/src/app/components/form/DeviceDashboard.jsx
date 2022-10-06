@@ -17,17 +17,26 @@ function DeviceDashboard(props) {
     const [dashboard, setDashboard] = useState({});
     const [pendingConfigMessages, setPendingConfigMessages] = useState(0)
 
+    const style = { "display": "inline-block", "fontSize": "0.875em", "fontWeight": "normal" }
+
     function initDashboard() {
         Promise.all([
             apiService.getById('device', props.id),
             deviceService.dashboard(props.id),
             deviceService.getPendingConfig(props.id)
         ]).then(allResponses => {
-            const device = allResponses[0]
-            const dashboard = allResponses[1]
+            const device = allResponses[0].devices[0]
+            let dashboard = allResponses[1]
             const pendingConfigMessages = allResponses[2]
+        
             
-            setDevice(device.devices[0])
+            if (device.latitude !== undefined && device.latitude !== 0
+                && device.longitude !== undefined && device.longitude !== 0) {
+                    let latLong = {"lat":device.latitude, "lon":device.longitude}
+                    dashboard.last_position = latLong
+                }
+            
+            setDevice(device)
             setDashboard(dashboard)
             setPendingConfigMessages(pendingConfigMessages.length)
             setBlocking(false);
@@ -63,7 +72,7 @@ function DeviceDashboard(props) {
                             </div>
                             <div className='card-body'>
                                 <ul style={{'listStyle': 'none'}}>
-                                    <li><BsClock /> Timestamp: {dashboard.last_communication_timestamp}</li>
+                                    <li><BsClock /> Timestamp: {utils.either(dashboard.last_communication_timestamp, 'N/A')}</li>
                                     <li><BsFillCloudArrowUpFill /> Timeserver: {utils.either(dashboard.last_communication_timeserver, 'N/A')}</li>
                                 </ul>
                             </div>
@@ -151,7 +160,7 @@ function DeviceDashboard(props) {
                             </div>
                             <div className='card-body'>
                                 <ul style={{'listStyle': 'none'}}>
-                                    <li><MdOutlineWarningAmber /> ID: {dashboard.last_alarm_id}</li>
+                                    <li><MdOutlineWarningAmber /> ID: {utils.either(dashboard.last_alarm_id, 'N/A')}</li>
                                     <li><BsClock /> Timestamp: {utils.either(dashboard.last_alarm_timestamp, 'N/A')}</li>
                                 </ul>
                             </div>
@@ -163,13 +172,13 @@ function DeviceDashboard(props) {
                     <div className='col-xl-10 col-lg-10'>
                         <div className='card card-custom'>
                             <div className='card-header'>
-                                <div className='card-title' style={this.state.style}>
-                                        <h3 className="card-label" style={this.state.pStyle}>
+                                <div className='card-title' style={style}>
+                                        <h3 className="card-label">
                                             Last Position
                                         </h3>
-                                        <MdLocationOn /> Last Coordinates:  Lat:{this.state.device.latitude} Long:{this.state.device.longitude}
+                                        <MdLocationOn /> Last Coordinates:  Lat:{device.latitude} Long:{device.longitude}
                                         <br></br>
-                                    <BsClock /> Timestamp:  {this.state.device.position_timestamp}
+                                    <BsClock /> Timestamp:  {device.position_timestamp}
                                 
                                 </div>
                             </div>
