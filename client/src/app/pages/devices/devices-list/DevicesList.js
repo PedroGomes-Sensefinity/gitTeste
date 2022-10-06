@@ -6,6 +6,7 @@ import { Card, CardContent, Button } from '@material-ui/core';
 
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
+import DetailsIcon from '@material-ui/icons/Details';
 import TableGrid from '../../../components/table-grid/table-grid.component';
 
 import PermissionGate from "../../../modules/Permission/permissionGate";
@@ -66,21 +67,27 @@ export function DevicesList() {
                             New device
                         </Button>
                     </Link>
-                    <TableGrid
-                        actions={[
-                            {
-                                icon: EditIcon,
-                                tooltip: 'Edit device',
-                                onClick: (event, rowData) => {
-                                    history.push(`/devices/edit/${rowData.id}`);
+                        <TableGrid
+                            actions={[
+                                {
+                                    icon: EditIcon,
+                                    tooltip: 'Edit device',
+                                    onClick: (event, rowData) => {
+                                        history.push(`/devices/edit/${rowData.id}`);
+                                    },
+                                },{
+                                    icon: DetailsIcon,
+                                    tooltip: 'Inspect device',
+                                    onClick: (event, rowData) => {
+                                        history.push(`/devices/${rowData.id}`);
+                                    },
                                 },
-                            },
-                        ]}
-                        title=''
-                        columns={columns}
-                        endpoint={'device'}
-                        dataField='devices'
-                    />
+                            ]}
+                            title=''
+                            columns={columns}
+                            endpoint={'device'}
+                            dataField='devices'
+                        />
                 </CardContent>
             </Card>
         </PermissionGate>

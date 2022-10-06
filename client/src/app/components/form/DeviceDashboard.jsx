@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import '../../utils/yup-validations';
 import BlockUi from "react-block-ui";
 import {injectIntl} from 'react-intl';
@@ -7,125 +7,45 @@ import {MdBatterySaver, MdOutlineWarningAmber, MdPower, MdWifiTethering, MdLocat
 import PositionMap from "../position-map/positionMap";
 import apiService from "../../services/apiService";
 import deviceService from "../../services/deviceService";
+import utils from "../../utils/utils";
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
 
-class DeviceDashboardComponent extends React.Component {
-    constructor(props) {
-        super(props);
+function DeviceDashboard(props) {
+    
+    const [blocking, setBlocking] = useState(true);
+    const [device, setDevice] = useState({});
+    const [dashboard, setDashboard] = useState({});
+    const [pendingConfigMessages, setPendingConfigMessages] = useState(0)
 
-        this.state = {
-            intl: props.intl,
-            id: props.entity,
-            device: {},
-            last_communication_timestamp: '',
-            last_communication_timeserver: '',
-            last_gateway_used: '',
-            last_power_on_off_timestamp: '',
-            last_power_on_off_value: '',
-            last_battery_voltage_timestamp: '',
-            last_battery_voltage_value: '',
-            last_power_saving_mode_timestamp: '',
-            last_power_saving_mode_value: '',
-            last_position: {},
-            last_alarm_timestamp: '',
-            last_alarm_id: '',
-            pendingConfigMessages: [],
-            loading: false,
-            blocking: false,
-            style: {"display":"inline-block","fontSize": "0.875em","fontWeight": "normal"}
-        };
-    }
-
-    componentDidMount() {
-        this.initDashboard();
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        if (!this.isEqualObject(this.props, prevProps)) {
-            this.setState({id: this.props.entity})
-            this.initDashboard();
-        }
-    }
-
-    componentWillUnmount() {
-    }
-
-    initDashboard() {
-        this.setState({blocking: true});
-
+    function initDashboard() {
         Promise.all([
-            apiService.getById('device', this.state.id),
-            deviceService.dashboard(this.state.id),
-            deviceService.getPendingConfig(this.state.id)
+            apiService.getById('device', props.id),
+            deviceService.dashboard(props.id),
+            deviceService.getPendingConfig(props.id)
         ]).then(allResponses => {
-            const device = allResponses[0];
-            const dashboard = allResponses[1];
-            const pendingConfigMessages = allResponses[2];
-
-            this.setState({device: device.devices[0]});
-            this.setState({pendingConfigMessages: pendingConfigMessages.length});
-            this.setDashboardValues(dashboard);
-
-            this.setState({blocking: false});
+            const device = allResponses[0]
+            const dashboard = allResponses[1]
+            const pendingConfigMessages = allResponses[2]
+            
+            setDevice(device.devices[0])
+            setDashboard(dashboard)
+            setPendingConfigMessages(pendingConfigMessages.length)
+            setBlocking(false);
         });
     }
 
-    setDashboardValues(values) {
-        if ('last_communication_timestamp' in values && values.last_communication_timestamp !== '') {
-            this.setState({last_communication_timestamp: values.last_communication_timestamp});
-        }
-
-        if ('last_communication_timeserver' in values && values.last_communication_timeserver !== '') {
-            this.setState({last_communication_timeserver: values.last_communication_timeserver});
-        }
-
-        if ('last_gateway_used' in values && values.last_gateway_used !== '') {
-            this.setState({last_gateway_used: values.last_gateway_used});
-        }
-
-        if ('last_power_on_off_timestamp' in values && values.last_power_on_off_timestamp !== '') {
-            this.setState({last_power_on_off_timestamp: values.last_power_on_off_timestamp});
-            this.setState({last_power_on_off_value: values.last_power_on_off_value});
-        }
-
-        if ('last_battery_voltage_timestamp' in values && values.last_battery_voltage_timestamp !== '') {
-            this.setState({last_battery_voltage_timestamp: values.last_battery_voltage_timestamp});
-            this.setState({last_battery_voltage_value: `${values.last_battery_voltage_value}%`});
-        }
-
-        if ('last_power_saving_mode_timestamp' in values && values.last_power_saving_mode_timestamp !== '') {
-            this.setState({last_power_saving_mode_timestamp: values.last_power_saving_mode_timestamp});
-            this.setState({last_power_saving_mode_value: values.last_power_saving_mode_value});
-        }
-
-        if ('last_alarm_timestamp' in values && values.last_alarm_timestamp !== '') {
-            this.setState({last_alarm_timestamp: values.last_alarm_timestamp});
-            this.setState({last_alarm_id: values.last_alarm_id});
-        }
-
-        if (this.state.device.latitude !== undefined && this.state.device.latitude !== 0
-            && this.state.device.longitude !== undefined && this.state.device.longitude !== 0) {
-            let latLong = {"lat":this.state.device.latitude, "lon":this.state.device.longitude}
-            this.setState({last_position: latLong});
-        }
-        
-    }
-
-    isEqualObject = (obj1, obj2) => {
-        return JSON.stringify(obj1) === JSON.stringify(obj2);
-    };
-
+    useEffect(()=> {
+        initDashboard();
+    },[])
     
-
-    render() {
-        return (
-            <BlockUi tag='div' blocking={this.state.blocking}>
+    return (
+            <BlockUi tag='div' blocking={blocking}>
                 <form className='card card-custom'>
                     <div className={`card-header py-3`}>
                         <div className='card-title align-items-start flex-column'>
                             <h3 className='card-label font-weight-bolder text-dark'>
-                                Device {this.state.device.id}
-                                <small> {this.state.device.label}</small>
+                                Device {device.id}
+                                <small> {device.label}</small>
                             </h3>
                         </div>
                     </div>
@@ -143,8 +63,8 @@ class DeviceDashboardComponent extends React.Component {
                             </div>
                             <div className='card-body'>
                                 <ul style={{'listStyle': 'none'}}>
-                                    <li><BsClock /> Timestamp: {this.state.last_communication_timestamp}</li>
-                                    <li><BsFillCloudArrowUpFill /> Timeserver: {this.state.last_communication_timeserver}</li>
+                                    <li><BsClock /> Timestamp: {dashboard.last_communication_timestamp}</li>
+                                    <li><BsFillCloudArrowUpFill /> Timeserver: {utils.either(dashboard.last_communication_timeserver, 'N/A')}</li>
                                 </ul>
                             </div>
                         </div>
@@ -160,8 +80,8 @@ class DeviceDashboardComponent extends React.Component {
                             </div>
                             <div className='card-body'>
                                 <ul style={{'listStyle': 'none'}}>
-                                    <li><BsBatteryFull /> Battery: {this.state.last_battery_voltage_value}</li>
-                                    <li><BsClock /> Timestamp: {this.state.last_battery_voltage_timestamp}</li>
+                                    <li><BsBatteryFull /> Battery: {dashboard.last_battery_voltage_value}</li>
+                                    <li><BsClock /> Timestamp: {utils.either(dashboard.last_battery_voltage_timestamp, 'N/A')}</li>
                                 </ul>
                             </div>
                         </div>
@@ -177,8 +97,8 @@ class DeviceDashboardComponent extends React.Component {
                             </div>
                             <div className='card-body'>
                                 <ul style={{'listStyle': 'none'}}>
-                                    <li><MdPower /> On/Off: {this.state.last_power_on_off_value}</li>
-                                    <li><BsClock /> Timestamp: {this.state.last_power_on_off_timestamp}</li>
+                                    <li><MdPower /> On/Off: {dashboard.last_power_on_off_value}</li>
+                                    <li><BsClock /> Timestamp: {utils.either(dashboard.last_power_on_off_timestamp, 'N/A')}</li>
                                 </ul>
                             </div>
                         </div>
@@ -197,8 +117,8 @@ class DeviceDashboardComponent extends React.Component {
                             </div>
                             <div className='card-body'>
                                 <ul style={{'listStyle': 'none'}}>
-                                    <li><MdBatterySaver /> Value: {this.state.last_power_saving_mode_value}</li>
-                                    <li><BsClock /> Timestamp: {this.state.last_power_saving_mode_timestamp}</li>
+                                    <li><MdBatterySaver /> Value: {dashboard.last_power_saving_mode_value}</li>
+                                    <li><BsClock /> Timestamp: {utils.either(dashboard.last_power_saving_mode_timestamp, 'N/A')}</li>
                                 </ul>
                             </div>
                         </div>
@@ -214,7 +134,7 @@ class DeviceDashboardComponent extends React.Component {
                             </div>
                             <div className='card-body'>
                                 <ul style={{'listStyle': 'none'}}>
-                                    <li><MdWifiTethering /> {this.state.last_gateway_used}</li>
+                                    <li><MdWifiTethering /> {utils.either(dashboard.last_gateway_used,'N/A')}</li>
                                     <li style={{visibility: 'hidden'}}><MdWifiTethering /></li>
                                 </ul>
                             </div>
@@ -231,8 +151,8 @@ class DeviceDashboardComponent extends React.Component {
                             </div>
                             <div className='card-body'>
                                 <ul style={{'listStyle': 'none'}}>
-                                    <li><MdOutlineWarningAmber /> ID: {this.state.last_alarm_id}</li>
-                                    <li><BsClock /> Timestamp: {this.state.last_alarm_timestamp}</li>
+                                    <li><MdOutlineWarningAmber /> ID: {dashboard.last_alarm_id}</li>
+                                    <li><BsClock /> Timestamp: {utils.either(dashboard.last_alarm_timestamp, 'N/A')}</li>
                                 </ul>
                             </div>
                         </div>
@@ -254,7 +174,7 @@ class DeviceDashboardComponent extends React.Component {
                                 </div>
                             </div>
                             <div className='card-body'>
-                                <PositionMap position={this.state.last_position} />
+                                <PositionMap position={dashboard.last_position} />
                             </div>
                         </div>
                     </div>
@@ -264,7 +184,7 @@ class DeviceDashboardComponent extends React.Component {
                                 <div className="d-flex align-items-center py-lg-0 py-2">
                                     <div className="d-flex flex-column text-right">
                                         <span className="text-dark-75 font-weight-bolder font-size-h4">
-                                            {this.state.pendingConfigMessages}
+                                            {pendingConfigMessages}
                                         </span>
                                         <span className="text-muted font-size-sm font-weight-bolder">
                                             <OverlayTrigger
@@ -272,7 +192,7 @@ class DeviceDashboardComponent extends React.Component {
                                                 placement={'top'}
                                                 overlay={
                                                     <Tooltip id={`tooltip-top`}>
-                                                        {this.state.intl.formatMessage({id: 'DEVICE.QTT_PENDING_MESSAGES'})}
+                                                        {props.intl.formatMessage({id: 'DEVICE.QTT_PENDING_MESSAGES'})}
                                                     </Tooltip>
                                                 }
                                             >
@@ -285,9 +205,7 @@ class DeviceDashboardComponent extends React.Component {
                         </div>
                     </div>
                 </div>
-            </BlockUi>
-        );
-    }
+            </BlockUi>)
 }
 
-export default injectIntl(DeviceDashboardComponent);
+export default injectIntl(DeviceDashboard);
