@@ -56,7 +56,7 @@ export function AssetsList() {
                     icon: EditIcon,
                     tooltip: 'Edit asset',
                     onClick: (_, rowData) => {
-                        history.push(`/assets/${rowData.id}/edit`);
+                        history.push(`/assets/${rowData.id}#edit`);
                     },
                 },
             )
