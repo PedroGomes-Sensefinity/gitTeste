@@ -55,74 +55,73 @@ export default function BasePage() {
         <ContentRoute path="/dashboard" component={Dashboard} />
 
         { /* Devices Routes*/ }
-        <ContentRoute path="/devices/list" component={DevicesList} />
-        <ContentRoute path="/devices/new" component={Device} />
         <ContentRoute path="/devices/edit/:id" component={Device} />
-        <ContentRoute path="/devices/:id" component={Device} />
         <ContentRoute path="/devices/provision" component={DevicesProvision} />
         <ContentRoute path="/devices/upload" component={DevicesUpload} />
+        <ContentRoute path="/devices/list" component={DevicesList} />
+        <ContentRoute path="/devices/new" component={Device} />
+        <ContentRoute path="/devices/:id" component={Device} />
 
         { /* Board families Routes*/ }
+        <ContentRoute path="/board-families/edit/:id" component={BoardFamiliesForm} />
         <ContentRoute path="/board-families/list" component={BoardFamiliesList} />
         <ContentRoute path="/board-families/new" component={BoardFamiliesForm} />
-        <ContentRoute path="/board-families/edit/:id" component={BoardFamiliesForm} />
 
         { /* Groups Routes*/}
+        <ContentRoute path="/groups/edit/:id" component={GroupsForm} />
         <ContentRoute path="/groups/list" component={GroupsList} />
         <ContentRoute path="/groups/new" component={GroupsForm} />
-        <ContentRoute path="/groups/edit/:id" component={GroupsForm} />
 
         { /* Thresholds Routes*/}
+        <ContentRoute path="/thresholds/edit/:id" component={ThresholdsForm} />
         <ContentRoute path="/thresholds/list" component={ThresholdsList} />
         <ContentRoute path="/thresholds/new" component={ThresholdsForm} />
-        <ContentRoute path="/thresholds/edit/:id" component={ThresholdsForm} />
 
         { /* Tenants Routes*/}
+        <ContentRoute path="/tenants/edit/:id" component={TenantsForm} />
         <ContentRoute path="/tenants/list" component={TenantsList} />
         <ContentRoute path="/tenants/new" component={TenantsForm} />
-        <ContentRoute path="/tenants/edit/:id" component={TenantsForm} />
 
         { /* Profiles Routes*/}
+        <ContentRoute path="/profiles/edit/:id" component={ProfilesForm} />
         <ContentRoute path="/profiles/list" component={ProfilesList} />
         <ContentRoute path="/profiles/new" component={ProfilesForm} />
-        <ContentRoute path="/profiles/edit/:id" component={ProfilesForm} />
 
       { /* Assets Routes*/}
       <ContentRoute path="/assets/list" component={AssetsList} />
       <ContentRoute path="/assets/new" component={CreateAsset} />
-      <ContentRoute path="/assets/:id/edit" component={AssetsForm} />
       <ContentRoute path="/assets/:id" component={AssetsForm} />
 
       { /* Routes Routes*/}
+      <ContentRoute path="/routes/edit/:id" component={RoutesForm} />
       <ContentRoute path="/routes/list" component={RoutesList} />
       <ContentRoute path="/routes/new" component={RoutesForm} />
-      <ContentRoute path="/routes/edit/:id" component={RoutesForm} />
       <ContentRoute path="/routes/completion" component={RouteCompletion} />
 
         { /* Users Routes*/}
+        <ContentRoute path="/users/edit/:id" component={UsersForm} />
         <ContentRoute path="/users/list" component={UsersList} />
         <ContentRoute path="/users/new" component={UsersForm} />
-        <ContentRoute path="/users/edit/:id" component={UsersForm} />
 
         { /* Tenants (as companies Routes*/}
+        <ContentRoute path="/tenants-new/edit/:id" component={TenantsNewForm} />
         <ContentRoute path="/tenants-new/list" component={TenantsNewList} />
         <ContentRoute path="/tenants-new/new" component={TenantsNewForm} />
-        <ContentRoute path="/tenants-new/edit/:id" component={TenantsNewForm} />
 
         { /* Alarms Routes*/}
+        <ContentRoute path="/alarms/edit/:id" component={AlarmsForm} />
         <ContentRoute path="/alarms/list" component={AlarmsList} />
         <ContentRoute path="/alarms/new" component={AlarmsForm} />
-        <ContentRoute path="/alarms/edit/:id" component={AlarmsForm} />
 
         { /* NotificationTemplates Routes*/}
+        <ContentRoute path="/notification-templates/edit/:id" component={NotificationTemplatesForm} />
         <ContentRoute path="/notification-templates/list" component={NotificationTemplatesList} />
         <ContentRoute path="/notification-templates/new" component={NotificationTemplatesForm} />
-        <ContentRoute path="/notification-templates/edit/:id" component={NotificationTemplatesForm} />
 
         { /* Floor Maps Routes*/}
+        <ContentRoute path="/floor-maps/edit/:id" component={FloorMapsForm} />
         <ContentRoute path="/floor-maps/list" component={FloorMapsList} />
         <ContentRoute path="/floor-maps/new" component={FloorMapsForm} />
-        <ContentRoute path="/floor-maps/edit/:id" component={FloorMapsForm} />
         
         { /* Fallback Error Routes */}
         <ContentRoute path="/not-found" component={ResourceNotFound} />

@@ -1,59 +1,112 @@
-import React, {useEffect,useState} from 'react';
-
-import {Paper, Tab, Tabs} from "@material-ui/core";
-import {TabContainer} from "react-bootstrap";
-
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import { Paper, Tab, Tabs } from "@material-ui/core";
+import { TabContainer } from "react-bootstrap";
+import { useHistory } from "react-router-dom";
 import AssetDevicesComponent from "../../../components/form/AssetDevicesComponent";
 import AssetsFormComponent from "../../../components/form/AssetsFormComponent";
 import DeviceSelector from "./DeviceSelector";
-
 import AssetFormExtraFields from "../../../components/form/AssetFormExtraFields";
-
 import apiService from '../../../services/apiService';
+import BlockUi from "react-block-ui";
 
-export function AssetsForm({match}) {
-    const {id} = match.params;
-    const [value, setValue] = useState(0);
+
+export function AssetsForm({match, location}) {
+    const {id: assetId} = match.params;
+    const baseURL = location.pathname
+    const [assetInfo, setAssetInfo] = useState(undefined)
+    const [isLoading, setLoading] = useState(true)
     const [hasMetadataSchema, setMetadataSchema] = useState(false)
-
+    // we use this hook so it doesn't show the splash screen
+    const history = useHistory()
+    
     function handleChange(event, newValue) {
         setValue(newValue);
+        updateLink(newValue)
     }
-
-    function renderSwitch(value) {
-        switch (value ) {
+    
+    const updateLink = (value) => {
+        switch (value) {
             case 0:
-                return <DeviceSelector assetId={id}/>
-            case 1: 
-                return <AssetsFormComponent id={id} />
-            case 2: 
-                return <AssetDevicesComponent id={id} />
-            case 3:
-                return <AssetFormExtraFields id={id}/>
+                history.push(`${baseURL}`)
+                return 
+            case 1:
+                history.push(`${baseURL}#edit`)
+                return 
+            case 2:
+                history.push(`${baseURL}#devices`)
+                return
+            case 3: 
+                history.push(`${baseURL}#extra-fields`)
+                return
         }
     }
+            
+    const initialValue = useMemo(() => {
+        switch(location.hash) {
+            case '': return 0
+            case '#edit': return 1
+            case '#devices': return 2
+            case '#extra-fields': return 3
+        }
+    }, [location.hash])
+    
+    const [value, setValue] = useState(initialValue);
+    const componentToBeRendered = useMemo(() => {
+        if(isLoading) {
+            return <></>
+        }
+        switch (value) {
+            case 0:
+                return <DeviceSelector asset={assetInfo}/>
+            case 1: 
+                return <AssetsFormComponent id={assetId} asset={assetInfo}/>
+            case 2: 
+                return <AssetDevicesComponent id={assetId} />
+            case 3:
+                return <AssetFormExtraFields id={assetId}/>
+        }
+    } , [value, assetInfo, isLoading]);
+
     useEffect(() => {
-        let endpoint = "asset/" + id + "/asset-type"
-        apiService.getByEndpoint(endpoint).then((response) => {
-          if(response.asset_type.metadataschema != undefined && response.asset_type.metadataschema != "{}"){
-                setMetadataSchema(true)
-          }
-      });
-      }, []); 
+        setLoading(true)
+        apiService.getById(`asset/`, assetId ).then((results) => {
+            const asset = results.assets[0]
+            setAssetInfo(asset)
+            setLoading(false)
+        }).catch(err => {
+            console.log(err)
+            if(err.status === 404) {
+                history.push('/not-found')
+            }
+        })
+    },[assetId])
+
+    useEffect(() => {
+        apiService.getByEndpoint("asset/" + assetId + "/asset-type").then((response) => {
+            if(response.asset_type === undefined) {
+                setMetadataSchema(false)
+            } else {
+                if(response.asset_type.metadataschema != undefined && response.asset_type.metadataschema != "{}"){
+                    setMetadataSchema(true)
+                }
+            }
+        });
+      }, []);
 
     return <div>
             <Paper square>
                 <Tabs value={value} indicatorColor="primary" textColor="primary" onChange={handleChange}>
                     <Tab label="Dashboard" />
                     <Tab label="Asset Info"/>
-                    <Tab label="Devices" disabled={typeof id === 'undefined'} />
-                    <Tab label="Extra Fields" disabled={typeof id === 'undefined' || hasMetadataSchema === false} />
+                    <Tab label="Devices" disabled={typeof assetId === 'undefined'} />
+                    <Tab label="Extra Fields" disabled={typeof assetId === 'undefined' || hasMetadataSchema === false} />
                 </Tabs>
             </Paper>
-            
-            <TabContainer>
-                {renderSwitch(value)}
-            </TabContainer>
+            <BlockUi tag='div' blocking={isLoading}> 
+                <TabContainer>
+                    {componentToBeRendered}
+                </TabContainer>
+            </BlockUi>
         </div>
 }
         
