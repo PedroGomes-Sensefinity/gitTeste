@@ -5,7 +5,7 @@ import DeviceThresholdComponent from "../../../components/form/deviceThresholdCo
 import {Paper, Tab, Tabs} from "@material-ui/core";
 import {TabContainer} from "react-bootstrap";
 import PermissionGate from "../../../modules/Permission/permissionGate";
-import DeviceDashboardComponent from "../../../components/form/deviceDashboardComponent";
+import DeviceDashboard from "../../../components/form/DeviceDashboard";
 
 export function Device({history, match}) {
     const {id} = match.params;
@@ -28,8 +28,9 @@ export function Device({history, match}) {
                         <Tab label="Config Message" disabled={typeof id === 'undefined'}/>
                     </Tabs>
                 </Paper>
-                { (typeof id !== 'undefined') ? <TabContainer>
-                    {value === 0 && <DeviceDashboardComponent entity={id} />}
+                { (typeof id !== 'undefined') ?
+                <TabContainer>
+                    {value === 0 && <DeviceDashboard id={id} />}
                 </TabContainer> : null }
 
                 <TabContainer>

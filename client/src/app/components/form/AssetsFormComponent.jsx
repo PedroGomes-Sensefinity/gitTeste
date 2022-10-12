@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ErrorMessage, Field, Formik} from 'formik';
 import * as Yup from 'yup';
 import {Link} from 'react-router-dom';
@@ -12,78 +12,59 @@ import { injectIntl } from 'react-intl';
 import apiService from '../../services/apiService';
 import assetsService from "../../services/assetsService";
 
-class AssetsFormComponent extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            intl: props.intl,
-            id: props.id,
-            isAddMode: !props.id,
-            selectedDevice: 0,
-            devices: [],
-            loading: false,
-            blocking: false,
-            ruleTypeOptions: [
-                {id: 1, name: "No Types"},
-            ],
-            asset_type_id: 1,
-            weight: 0.0,
-        };
+const useStyles = makeStyles((theme) => ({
+    headerMarginTop: {
+        marginTop: theme.spacing(5),
     }
+}));
+
+function AssetsFormComponentFunctional (props) {
+
+    const [ruleTypeOptions, setRuleTypeOptions]  = useState([
+        {id: 1, name: "No Types"},
+    ])
+    const isAddMode = !props.id
+    const [blocking, setBlocking] = useState(false)
     
+    const initialValues = props.asset
 
-    initialValues = {
-        id: '',
-        label: '',
-        description: '',
-        asset_type_id: 1,
-        devices: [],
-        weight: 0.0,
-        type: [],
-    };
-
-    componentDidMount() {
+    useEffect(() => {
         apiService.getByEndpoint('asset-types').then((response) => {
             let ruleTypeOptions = []
-            response.asset_types.forEach(function(assetType) {
-                ruleTypeOptions.push({id: assetType.id, name: assetType.label})
-            })
-            this.state.ruleTypeOptions = ruleTypeOptions
-            this.setState({ruleTypeOptions: ruleTypeOptions})
+            if(response.asset_types !== undefined) {
+               response.asset_types.forEach(function(assetType) {
+                    ruleTypeOptions.push({id: assetType.id, name: assetType.label})
+                })
+            }
+            setRuleTypeOptions(ruleTypeOptions)
         });
-    }
 
+    }, [])
 
-
-
-    validationSchema = Yup.object().shape({
+    const validationSchema = Yup.object().shape({
         label: Yup.string().required('Label is required'),
         asset_type_id: Yup.string().required('Type is required'),
     });
 
-    useStyles = makeStyles((theme) => ({
-        headerMarginTop: {
-            marginTop: theme.spacing(5),
-        }
-    }));
+    const classes = useStyles();
 
-    save = (fields, { setFieldValue, setSubmitting, resetForm }) => {
-        this.setState({blocking: true});
+    const save = (fields, { setFieldValue, setSubmitting, _ }) => {
+        setBlocking(true);
         setSubmitting(true);
 
-        let method = (this.state.isAddMode) ? 'save' : 'update';
-        let msgSuccess = (this.state.isAddMode)
-            ? this.state.intl.formatMessage({id: 'ASSETS.CREATED'})
-            : this.state.intl.formatMessage({id: 'ASSETS.UPDATED'});
+        let method = (isAddMode) ? 'save' : 'update';
+        let msgSuccess = (isAddMode)
+            ? props.intl.formatMessage({id: 'ASSETS.CREATED'})
+            : props.intl.formatMessage({id: 'ASSETS.UPDATED'});
 
         assetsService[method](fields)
             .then((response) => {
                 toaster.notify('success', msgSuccess);
                 setSubmitting(false);
 
-                this.setState({blocking: false});
+                setBlocking(false);
 
-                if (this.state.isAddMode) {
+                if (isAddMode) {
                     setFieldValue('label', '', false);
                     setFieldValue('description', '', false);
                     setFieldValue('devices', [], false);
@@ -91,36 +72,18 @@ class AssetsFormComponent extends React.Component {
             });
     };
 
-    onChangeDevice = (opt, setFieldValue) => {
-
-        if (opt.length > 0) {
-            this.setState({ devices: this.state.devices.append(opt[0].id)});
-            setFieldValue('devices', this.state.devices.append(opt[0].id));
-        }
-    };
-    handleSearchDevice = (query) => {
-        this.setState({loading: true});
-
-        apiService.getByText('device', query, 100, 0).then((response) => {
-            this.setState({ devices: response.devices });
-            this.setState({ loading: false });
-        });
-    };
-
-    render() {
-        return (
-            <BlockUi tag='div' blocking={this.state.blocking}>
+    return (
+            <BlockUi tag='div' blocking={blocking}>
             <Formik
-
                 enableReinitialize
-                initialValues={this.initialValues}
-                validationSchema={this.validationSchema}
+                initialValues={initialValues}
+                validationSchema={validationSchema}
                 onSubmit={(values, { setFieldValue, setSubmitting, resetForm }) => {
                     values.asset_type_id = Number(values.asset_type_id)
                     if(values.asset_type_id === 0){
                         values.asset_type_id = 1
                     }
-                    this.save(values, {
+                    save(values, {
                         setFieldValue,
                         setSubmitting,
                         resetForm,
@@ -133,33 +96,10 @@ class AssetsFormComponent extends React.Component {
                     errors,
                     touched,
                     isSubmitting,
-                    setFieldValue,
+                    _,
                     handleSubmit,
-                    values
-                }) => {
-                    const classes = this.useStyles();
-
-                    useEffect(() => {
-                        if (!this.state.isAddMode && this.state.id !== 'new') {
-                            apiService
-                            .getById('asset', this.state.id)
-                            .then((response) => {
-                                let item = [];
-                                if(response.assets !== undefined && response.assets.length > 0) {
-                                    item = response.assets[0];
-                                }
-
-                                setFieldValue('id', item.id);
-                                setFieldValue('label', item.label);
-                                setFieldValue('description', item.description);
-                                setFieldValue('weight', item.weight);
-                                setFieldValue('asset_type_id', item.asset_type_id + "");
-                            });
-                        }
-                    }, []);
-
-                    return (
-                        <form
+                    __
+                }) => <form
                             className='card card-custom'
                             onSubmit={handleSubmit}>
                             {/* begin::Header */}
@@ -267,7 +207,7 @@ class AssetsFormComponent extends React.Component {
                                                 {...getFieldProps('asset_type_id')}
                                             >
                                                 <option key='' value=''></option>
-                                                {this.state.ruleTypeOptions.map((e) => {
+                                                {ruleTypeOptions.map((e) => {
                                                     return (<option key={e.id} value={e.id}>{e.name}</option>);
                                                 })}
                                             </Field>
@@ -282,12 +222,10 @@ class AssetsFormComponent extends React.Component {
                             </div>
                             {/* end::Form */}
                         </form>
-                    );
-                }}
+                }
             </Formik>
             </BlockUi>
         );
-    }
 }
 
-export default injectIntl(AssetsFormComponent);
+export default injectIntl(AssetsFormComponentFunctional);
