@@ -4,16 +4,12 @@ const permissionService = {
     hasPermission: function (slug) {
         return new Promise(function (resolve, reject) {
             axios.get(`${process.env.REACT_APP_REST_API_URL}permission/check/${slug}`)
-                .then((response) => response.data)
-                .then((responseData) => {
-                    var result = [];
-
-                    if (responseData.code === 200) {
-                        result = responseData.data;
-                    }
-                    resolve(result);
+                .then(response => {
+                    //only possible when request is successfull
+                    resolve(response.data)
                 })
-                .catch(function (err) {
+                .catch((err) => {
+                    //triggered on 4XX status code
                     reject(err.response.data);
                 });
         });

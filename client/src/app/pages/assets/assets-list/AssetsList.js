@@ -1,13 +1,12 @@
-import React, {useEffect} from 'react';
+import { Button, Card, CardContent } from '@material-ui/core';
+import React from 'react';
 
-import history from '../../../history';
-import {Button, Card, CardContent} from '@material-ui/core';
-
-import EditIcon from '@material-ui/icons/Edit';
-import TableGrid from '../../../components/table-grid/table-grid.component';
-import {Link} from "react-router-dom";
+import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
-import {makeStyles} from "@material-ui/core/styles";
+import DetailsIcon from '@material-ui/icons/Details';
+import EditIcon from '@material-ui/icons/Edit';
+import { useHistory } from 'react-router-dom';
+import TableGrid from '../../../components/table-grid/table-grid.component';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -17,7 +16,9 @@ const useStyles = makeStyles((theme) => ({
         marginRight: theme.spacing(1),
     }
 }));
+
 export function AssetsList() {
+    const history = useHistory()
     const classes = useStyles();
 
     const columns = [
@@ -30,33 +31,30 @@ export function AssetsList() {
             title: 'Description',
         },
     ];
-
-    useEffect(() => {
-
-    }, []);
-
-    return (
-        <Card>
-            <CardContent>
-                <Link to='/assets/new'>
-                    <Button
-                        variant='contained'
-                        color='secondary'
-                        className={classes.button}>
-                        <AddIcon className={classes.leftIcon} />
-                        New Asset
-                    </Button>
-                </Link>
+        return <Card>
+            <CardContent>  
+                <Button
+                    variant='contained'
+                    color='secondary'
+                    onClick={() => history.push('/assets/new')}
+                    className={classes.button}>
+                    <AddIcon className={classes.leftIcon} />
+                    New Asset
+                </Button>
                 <TableGrid
-                    actions={[
-                        {
-                            icon: EditIcon,
-                            tooltip: 'Edit asset',
-                            onClick: (event, rowData) => {
-                                history.push(`/assets/edit/${rowData.id}`);
-                            },
+                    actions={[{
+                        icon: DetailsIcon,
+                        tooltip: 'Inspect device',
+                        onClick: (_, rowData) => {
+                            history.push(`/assets/${rowData.id}`);
                         },
-                    ]}
+                    },{
+                        icon: EditIcon,
+                        tooltip: 'Edit asset',
+                        onClick: (_, rowData) => {
+                            history.push(`/assets/${rowData.id}#edit`);
+                        },
+                        }]}
                     title=''
                     columns={columns}
                     endpoint={'asset'}
@@ -64,5 +62,4 @@ export function AssetsList() {
                 />
             </CardContent>
         </Card>
-    );
 }
