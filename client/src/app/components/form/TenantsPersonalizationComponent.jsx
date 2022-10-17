@@ -140,7 +140,6 @@ class TenantsPersonalizationComponent extends React.Component {
                                     .then((response) => {
                                         if ('tenants_new' in response && response.tenants_new.length === 1) {
                                             let color = "";
-                                            console.log(response.tenants_new[0].color)
                                             if (typeof response.tenants_new[0].color !== "undefined") {
                                                 color = { hex: response.tenants_new[0].color };
                                             }

@@ -13,7 +13,6 @@ const boardFamilyTemplatesService = {
                     resolve(result);
                 })
                 .catch(function (err) {
-                    console.log(err);
                     reject(Error("Something went wrong on save board family... "));
                 });
         });

@@ -33,6 +33,8 @@ import {FloorMapsForm} from "./pages/floor-maps/form/FloorMapsForm";
 import {RoutesList} from "./pages/routes/routes-list/RoutesList";
 import {RoutesForm} from "./pages/routes/routes-form/RoutesForm";
 import { RouteCompletion } from "./pages/routes/routes-list/RouteCompletion";
+import { GeofencesForm } from "./pages/geofences/geofences-form/GeofencesForm";
+import { GeofencesList } from "./pages/geofences/geofences-list/GeofencesList";
 import ResourceNotFound from "./modules/Permission/resourceNotFound";
 
 /*const UserProfilepage = lazy(() =>
@@ -97,6 +99,11 @@ export default function BasePage() {
       <ContentRoute path="/routes/list" component={RoutesList} />
       <ContentRoute path="/routes/new" component={RoutesForm} />
       <ContentRoute path="/routes/completion" component={RouteCompletion} />
+
+      { /* Geofences Routes*/}
+      <ContentRoute path="/geofences/edit/:id" component={GeofencesForm} />
+      <ContentRoute path="/geofences/list" component={GeofencesList} />
+      <ContentRoute path="/geofences/new" component={GeofencesForm} />
 
         { /* Users Routes*/}
         <ContentRoute path="/users/edit/:id" component={UsersForm} />
