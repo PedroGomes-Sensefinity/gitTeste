@@ -97,7 +97,6 @@ class TenantFormComponent extends React.Component {
 
     saveTenant = (fields, { setStatus, setSubmitting, resetForm }) => {
         fields.containers = [{ id : fields.group_id }]
-        console.log(fields)
         this.setState({blocking: true});
         let method = (this.state.isAddMode) ? 'save' : 'update';
         let msgSuccess = (this.state.isAddMode)
@@ -123,7 +122,6 @@ class TenantFormComponent extends React.Component {
     handleSearchGroup = (query) => {
         this.setState({loading: true});
         apiService.getByText('group', query, 100, 0).then((response) => {
-            console.log(response)
             this.setState({ groups: this.getGroups(response.groups) });
             this.setState({loading: false});
         });
