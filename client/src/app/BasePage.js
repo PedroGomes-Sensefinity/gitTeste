@@ -33,11 +33,9 @@ import {FloorMapsForm} from "./pages/floor-maps/form/FloorMapsForm";
 import {RoutesList} from "./pages/routes/routes-list/RoutesList";
 import {RoutesForm} from "./pages/routes/routes-form/RoutesForm";
 import { RouteCompletion } from "./pages/routes/routes-list/RouteCompletion";
-<<<<<<< client/src/app/BasePage.js
 import { GeofencesForm } from "./pages/geofences/geofences-form/GeofencesForm";
 import { GeofencesList } from "./pages/geofences/geofences-list/GeofencesList";
-=======
->>>>>>> client/src/app/BasePage.js
+
 import ResourceNotFound from "./modules/Permission/resourceNotFound";
 
 /*const UserProfilepage = lazy(() =>
