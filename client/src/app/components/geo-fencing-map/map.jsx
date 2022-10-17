@@ -174,7 +174,6 @@ class Map extends React.Component {
                 name: layer._tooltip._content,
                 geoJSON: geojson,
                 radius: radius,
-                alert: "out",
             };
 
             shapes.push(newShape);

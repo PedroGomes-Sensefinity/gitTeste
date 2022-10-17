@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const boardFamiliesService = {
+const geofenceService = {
     save: function (formData) {
         return new Promise(function (resolve, reject) {
-            axios.post(`${process.env.REACT_APP_REST_API_URL}board_families/`, formData)
+            axios.post(`${process.env.REACT_APP_REST_API_URL}geofence/`, formData)
                 .then((response) => response.data)
                 .then((responseData) => {
                     let result = [];
@@ -13,13 +13,13 @@ const boardFamiliesService = {
                     resolve(result);
                 })
                 .catch(function (err) {
-                    reject(Error("Something went wrong on save board family... "));
+                    reject(err.response.data);
                 });
         });
     },
     update: function (formData) {
         return new Promise(function (resolve, reject) {
-            axios.put(`${process.env.REACT_APP_REST_API_URL}board_families/${formData.id}`, formData)
+            axios.put(`${process.env.REACT_APP_REST_API_URL}geofence/`, formData)
                 .then((response) => response.data)
                 .then((responseData) => {
                     let result = [];
@@ -29,10 +29,10 @@ const boardFamiliesService = {
                     resolve(result);
                 })
                 .catch(function (err) {
-                    reject(Error("Something went wrong on update board family... "));
+                    reject(err.response.data);
                 });
         });
     },
 }
 
-export default boardFamiliesService;
+export default geofenceService;

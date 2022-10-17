@@ -44,7 +44,6 @@ class ThresholdActionComponent extends React.Component {
         this.setState({loading: true});
 
         apiService.getByText('notificationstemplate', query, 100, 0).then((response) => {
-            console.log(response);
             const data = (typeof response.notifications_templates !== undefined && Array.isArray(response.notifications_templates))
                 ? this.filterOptionsBySelected(response.notifications_templates)
                 : [];
@@ -62,7 +61,6 @@ class ThresholdActionComponent extends React.Component {
 
     onChange = (opt) => {
         const selectedIds = opt.map((t) => t.id);
-        console.log(selectedIds, opt);
         this.setState({selected: opt});
         this.setState({selectedIds: selectedIds});
     };

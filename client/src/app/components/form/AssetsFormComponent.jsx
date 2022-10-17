@@ -26,7 +26,9 @@ function AssetsFormComponentFunctional (props) {
     const isAddMode = !props.id
     const [blocking, setBlocking] = useState(false)
     
-    const initialValues = props.asset
+    const initialValues = props.asset || {id: '',label: '',description: '',asset_type_id: 1,devices: [],weight: 0.0,type: [],}
+
+    
 
     useEffect(() => {
         apiService.getByEndpoint('asset-types').then((response) => {

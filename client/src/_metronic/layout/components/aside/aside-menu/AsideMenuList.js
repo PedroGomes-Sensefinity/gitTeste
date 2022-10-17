@@ -26,7 +26,7 @@ export function AsideMenuList({ layoutProps }) {
           >
               <NavLink className="menu-link" to="/dashboard">
                   <span className="svg-icon menu-icon">
-                    <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Layers.svg")} />
+                    <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Display1.svg")} />
                   </span>
                   <span className="menu-text">Dashboard</span>
               </NavLink>
@@ -191,7 +191,7 @@ export function AsideMenuList({ layoutProps }) {
         >
           <NavLink className="menu-link menu-toggle" to="/devices">
             <span className="svg-icon menu-icon">
-              <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Router2.svg")} />
+              <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/CPU1.svg")} />
             </span>
             <span className="menu-text">Devices</span>
           </NavLink>
@@ -307,7 +307,7 @@ export function AsideMenuList({ layoutProps }) {
           >
               <NavLink className="menu-link menu-toggle" to="/routes">
             <span className="svg-icon menu-icon">
-              <SVG src={toAbsoluteUrl("/media/svg/icons/Communication/Group.svg")} />
+              <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Select.svg")} />
             </span>
                   <span className="menu-text">Routes</span>
               </NavLink>
@@ -350,6 +350,43 @@ export function AsideMenuList({ layoutProps }) {
                   </ul>
               </div>
           </li>
+          {/*begin::1 Level*/}
+          <li
+              className={`menu-item ${getMenuItemActive("/routes", true)}`}
+              aria-haspopup="true"
+          >
+              <NavLink className="menu-link menu-toggle" to="/routes">
+            <span className="svg-icon menu-icon">
+              <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Select.svg")} />
+            </span>
+                  <span className="menu-text">Geofences</span>
+              </NavLink>
+              <div className="menu-submenu">
+                  <i className="menu-arrow" />
+                  <ul className="menu-subnav">
+                      <li className="menu-item menu-item-parent" aria-haspopup="true">
+                <span className="menu-link">
+                  <span className="menu-text">Geofences</span>
+                </span>
+                      </li>
+                      {/*begin::2 Level*/}
+                      <li
+                          className={`menu-item ${getMenuItemActive(
+                              "/routes/list"
+                          )}`}
+                          aria-haspopup="true"
+                      >
+                          <NavLink className="menu-link" to="/geofences/list">
+                              <i className="menu-bullet menu-bullet-dot">
+                                  <span />
+                              </i>
+                              <span className="menu-text">Geofences List</span>
+                          </NavLink>
+                      </li>
+                      {/*end::2 Level*/}
+                  </ul>
+              </div>
+          </li>
         {/*begin::1 Level*/}
         <li
           className={`menu-item ${getMenuItemActive("/thresholds/list", false)}`}
@@ -357,7 +394,7 @@ export function AsideMenuList({ layoutProps }) {
         >
           <NavLink className="menu-link" to="/thresholds/list">
             <span className="svg-icon menu-icon">
-              <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Layers.svg")} />
+              <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Diagnostics.svg")} />
             </span>
             <span className="menu-text">Thresholds</span>
           </NavLink>
@@ -371,7 +408,7 @@ export function AsideMenuList({ layoutProps }) {
         >
           <NavLink className="menu-link" to="/alarms/list">
             <span className="svg-icon menu-icon">
-              <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Layers.svg")} />
+              <SVG src={toAbsoluteUrl("/media/svg/icons/Code/Warning-1-circle.svg")} />
             </span>
             <span className="menu-text">Alarms</span>
           </NavLink>
@@ -385,7 +422,7 @@ export function AsideMenuList({ layoutProps }) {
         >
           <NavLink className="menu-link" to="/notification-templates/list">
             <span className="svg-icon menu-icon">
-              <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Layers.svg")} />
+              <SVG src={toAbsoluteUrl("/media/svg/icons/Files/File.svg")} />
             </span>
             <span className="menu-text">Notification templates</span>
           </NavLink>
@@ -397,7 +434,7 @@ export function AsideMenuList({ layoutProps }) {
           >
               <NavLink className="menu-link" to="/floor-maps/list">
             <span className="svg-icon menu-icon">
-              <SVG src={toAbsoluteUrl("/media/svg/icons/Map/Marker1.svg")}/>
+              <SVG src={toAbsoluteUrl("/media/svg/icons/Home/Home.svg")}/>
             </span>
                   <span className="menu-text">Floor Maps</span>
               </NavLink>
