@@ -170,7 +170,6 @@ const apiService = {
             })
                 .then((response) => resolve(response.data.data))
                 .catch(function (err) {
-                    console.log(err);
                     reject(Error("Something went wrong on upload image... "));
                 });
         });
