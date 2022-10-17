@@ -187,8 +187,23 @@ function GeofencingComponent (props) {
             .then((response) => {
                 toaster.notify('success', "Success Geofences!");
                 setSubmitting(false);
-
                 setBlocking(false);
+
+                switch (fields["alert_mode"]){
+                    case "None":
+                        fields["alert_mode"] = "1"
+                        break;
+                    case "In":
+                        fields["alert_mode"] = "2"
+                        break;
+                    case "Out":
+                        fields["alert_mode"] = "3"
+                        break;
+                    case "In/Out":
+                        fields["alert_mode"] = "4"
+                        break;
+                }
+                setFieldValue('alert_mode', fields["alert_mode"], false);
 
                 if (isAddMode) {
                     setFieldValue('label', '', false);
