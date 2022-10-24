@@ -19,7 +19,6 @@ export function AsideMenuList({ layoutProps }) {
     <>
       {/* begin::Menu Nav */}
       <ul className={`menu-nav ${layoutProps.ulClasses}`}>
-<<<<<<< client/src/_metronic/layout/components/aside/aside-menu/AsideMenuList.js
         {/*begin::1 Level*/}
         <li
           className={`menu-item ${getMenuItemActive("/dashboard", false)}`}
@@ -33,21 +32,7 @@ export function AsideMenuList({ layoutProps }) {
           </NavLink>
         </li>
         {/*end::1 Level*/}
-=======
-          {/*begin::1 Level*/}
-          <li
-              className={`menu-item ${getMenuItemActive("/dashboard", false)}`}
-              aria-haspopup="true"
-          >
-              <NavLink className="menu-link" to="/dashboard">
-                  <span className="svg-icon menu-icon">
-                    <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Display1.svg")} />
-                  </span>
-                  <span className="menu-text">Dashboard</span>
-              </NavLink>
-          </li>
-          {/*end::1 Level*/}
->>>>>>> client/src/_metronic/layout/components/aside/aside-menu/AsideMenuList.js
+
 
         {/*begin::1 Level*/}
         <li
@@ -219,52 +204,6 @@ export function AsideMenuList({ layoutProps }) {
                 <span className="menu-link">
                   <span className="menu-text">Routes</span>
                 </span>
-<<<<<<< client/src/_metronic/layout/components/aside/aside-menu/AsideMenuList.js
-              </li>
-              {/*begin::2 Level*/}
-              <li
-                className={`menu-item ${getMenuItemActive(
-                  "/routes/list"
-                )}`}
-                aria-haspopup="true"
-              >
-                <NavLink className="menu-link" to="/routes/list">
-                  <i className="menu-bullet menu-bullet-dot">
-                    <span />
-                  </i>
-                  <span className="menu-text">Route List</span>
-                </NavLink>
-              </li>
-              <li
-                className={`menu-item ${getMenuItemActive(
-                  "/routes/completion"
-                )}`}
-                aria-haspopup="true"
-              >
-                <NavLink className="menu-link" to="/routes/completion">
-                  <i className="menu-bullet menu-bullet-dot">
-                    <span />
-                  </i>
-                  <span className="menu-text">Route Completion</span>
-                </NavLink>
-              </li>
-              {/*end::2 Level*/}
-            </ul>
-          </div>
-        </li>
-        {/*begin::1 Level*/}
-        <li
-          className={`menu-item ${getMenuItemActive("/geofences", true)}`}
-          aria-haspopup="true"
-        >
-          <NavLink className="menu-link menu-toggle" to="/geofences/list">
-            <span className="svg-icon menu-icon">
-              <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Select.svg")} />
-            </span>
-            <span className="menu-text">Geofences</span>
-          </NavLink>
-        </li>
-=======
                       </li>
                       {/*begin::2 Level*/}
                       <li
@@ -334,7 +273,6 @@ export function AsideMenuList({ layoutProps }) {
                   </ul>
               </div>
           </li>
->>>>>>> client/src/_metronic/layout/components/aside/aside-menu/AsideMenuList.js
         {/*begin::1 Level*/}
         <li
           className={`menu-item ${getMenuItemActive("/thresholds/list", false)}`}
@@ -382,11 +320,7 @@ export function AsideMenuList({ layoutProps }) {
         >
           <NavLink className="menu-link" to="/floor-maps/list">
             <span className="svg-icon menu-icon">
-<<<<<<< client/src/_metronic/layout/components/aside/aside-menu/AsideMenuList.js
-              <SVG src={toAbsoluteUrl("/media/svg/icons/Home/Home.svg")} />
-=======
               <SVG src={toAbsoluteUrl("/media/svg/icons/Home/Home.svg")}/>
->>>>>>> client/src/_metronic/layout/components/aside/aside-menu/AsideMenuList.js
             </span>
             <span className="menu-text">Floor Maps</span>
           </NavLink>
