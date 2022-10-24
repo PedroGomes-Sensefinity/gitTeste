@@ -17,9 +17,6 @@ export function ThresholdsForm({match}) {
         setValue(newValue);
     }
 
-    function hasGeofencing() {
-        return (thresholdType === 'geofences');
-    }
 
     useEffect(() => {
         if (typeof id !== 'undefined') {
@@ -37,7 +34,6 @@ export function ThresholdsForm({match}) {
             <Paper square>
                 <Tabs value={value} indicatorColor="primary" textColor="primary" onChange={handleChange}>
                     <Tab label="Threshold Info"/>
-                    <Tab label="Geofencing" disabled={typeof id === 'undefined' && !hasGeofencing()} />
                     <Tab label="Action" disabled={typeof id === 'undefined'} />
                     <Tab label="Devices" disabled={typeof id === 'undefined'} />
                     <Tab label="Groups" disabled={typeof id === 'undefined'} />
@@ -47,16 +43,13 @@ export function ThresholdsForm({match}) {
                 {value === 0 && <ThresholdFormComponent id={id} />}
             </TabContainer>
             <TabContainer>
-                {value === 1 && <ThresholdGeofencingComponent id={id} />}
+                {value === 1 && <ThresholdActionComponent id={id} />}
             </TabContainer>
             <TabContainer>
-                {value === 2 && <ThresholdActionComponent id={id} />}
+                {value === 2 && <ThresholdDevicesComponent id={id} />}
             </TabContainer>
             <TabContainer>
-                {value === 3 && <ThresholdDevicesComponent id={id} />}
-            </TabContainer>
-            <TabContainer>
-                {value === 4 && <ThresholdGroupsComponent id={id} />}
+                {value === 3 && <ThresholdGroupsComponent id={id} />}
             </TabContainer>
         </div>
     );
