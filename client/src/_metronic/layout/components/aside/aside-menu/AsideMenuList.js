@@ -21,6 +21,7 @@ export function AsideMenuList({ layoutProps }) {
       <ul className={`menu-nav ${layoutProps.ulClasses}`}>
         {/*begin::1 Level*/}
         <li
+<<<<<<< client/src/_metronic/layout/components/aside/aside-menu/AsideMenuList.js
               className={`menu-item ${getMenuItemActive("/dashboard", false)}`}
               aria-haspopup="true"
           >
@@ -32,6 +33,18 @@ export function AsideMenuList({ layoutProps }) {
               </NavLink>
           </li>
 
+=======
+          className={`menu-item ${getMenuItemActive("/dashboard", false)}`}
+          aria-haspopup="true"
+        >
+          <NavLink className="menu-link" to="/dashboard">
+            <span className="svg-icon menu-icon">
+              <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Display1.svg")} />
+            </span>
+            <span className="menu-text">Dashboard</span>
+          </NavLink>
+        </li>
+>>>>>>> client/src/_metronic/layout/components/aside/aside-menu/AsideMenuList.js
         {/*end::1 Level*/}
 
 
