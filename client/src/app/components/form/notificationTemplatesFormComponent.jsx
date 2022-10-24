@@ -438,21 +438,22 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                                     'label'
                                                 )}`}
                                                 name='label'
-                                                placeholder='Set the Group Label'
+                                                placeholder='Set the Template Label'
                                             />
-                                        </div>
-                                    </div>
-                                    <div className='col-xl-12 col-lg-12'>
-                                        <div className='alert alert-primary'>
-                                            <span>
-                                                Available variables: %timestamp% %device_group% %device_id%
-                                                %device_label% %measurement_type% %measurement_value% %threshold_name%
-                                                %threshold_id%
-                                            </span>
                                         </div>
                                     </div>
                                     {(values.type === 'sms') &&
                                     <div className={'form-group row'}>
+                                    <div className='col-xl-12 col-lg-12'>
+                                        <div className='alert alert-secondary'>
+                                            <div className=''>
+                                            <span>
+                                                <b>Time variables</b>: %timestamp%  <b>Device variables</b>: %device_group% %device_id%
+                                                %device_label% <b>Measurements variables</b>: %measurement_type% %measurement_value% <b>Threshold variables</b>: %threshold_name% %threshold_id% <b>Asset variables</b>: %asset_id% %asset_label% <b>Geofences variables</b>: %geofence_id% %geofence_label% %alert_status%
+                                            </span>
+                                            </div>
+                                        </div>
+                                    </div>
                                         <div className='col-xl-4 col-lg-4'>
                                             <label>Contact Name</label>
                                             <Field
@@ -584,6 +585,16 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                     }
                                     {(values.type === 'email') &&
                                     <div className={'form-group row '}>
+                                    <div className='col-xl-12 col-lg-12'>
+                                        <div className='alert alert-secondary'>
+                                            <div className=''>
+                                            <span>
+                                                <b>Time variables</b>: %timestamp%  <b>Device variables</b>: %device_group% %device_id%
+                                                %device_label% <b>Measurements variables</b>: %measurement_type% %measurement_value% <b>Threshold variables</b>: %threshold_name% %threshold_id% <b>Asset variables</b>: %asset_id% %asset_label% <b>Geofences variables</b>: %geofence_id% %geofence_label% %alert_status%
+                                            </span>
+                                            </div>
+                                        </div>
+                                    </div>
                                         <div className='col-xl-4 col-lg-4'>
                                             <label>Contact Name</label>
                                             <Field
