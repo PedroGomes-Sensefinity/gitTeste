@@ -21,6 +21,19 @@ export function AsideMenuList({ layoutProps }) {
       <ul className={`menu-nav ${layoutProps.ulClasses}`}>
         {/*begin::1 Level*/}
         <li
+<<<<<<< client/src/_metronic/layout/components/aside/aside-menu/AsideMenuList.js
+              className={`menu-item ${getMenuItemActive("/dashboard", false)}`}
+              aria-haspopup="true"
+          >
+              <NavLink className="menu-link" to="/dashboard">
+                  <span className="svg-icon menu-icon">
+                    <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Display1.svg")} />
+                  </span>
+                  <span className="menu-text">Dashboard</span>
+              </NavLink>
+          </li>
+
+=======
           className={`menu-item ${getMenuItemActive("/dashboard", false)}`}
           aria-haspopup="true"
         >
@@ -31,6 +44,7 @@ export function AsideMenuList({ layoutProps }) {
             <span className="menu-text">Dashboard</span>
           </NavLink>
         </li>
+>>>>>>> client/src/_metronic/layout/components/aside/aside-menu/AsideMenuList.js
         {/*end::1 Level*/}
 
 
@@ -238,10 +252,10 @@ export function AsideMenuList({ layoutProps }) {
           </li>
           {/*begin::1 Level*/}
           <li
-              className={`menu-item ${getMenuItemActive("/routes", true)}`}
+              className={`menu-item ${getMenuItemActive("/geofences", true)}`}
               aria-haspopup="true"
           >
-              <NavLink className="menu-link menu-toggle" to="/routes">
+              <NavLink className="menu-link menu-toggle" to="/geofences">
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Select.svg")} />
             </span>
@@ -258,7 +272,7 @@ export function AsideMenuList({ layoutProps }) {
                       {/*begin::2 Level*/}
                       <li
                           className={`menu-item ${getMenuItemActive(
-                              "/routes/list"
+                              "/geofences/list"
                           )}`}
                           aria-haspopup="true"
                       >
