@@ -65,9 +65,9 @@ const assetsService = {
                 });
         });
     },
-    deleteAssetDevice: function (formData) {
+    deleteAssetDevice: function (id, formData) {
         return new Promise(function (resolve, reject) {
-            axios.post(`${process.env.REACT_APP_REST_API_URL}assetdevice`, formData)
+            axios.post(`${process.env.REACT_APP_REST_API_URL}asset/${id}/device`, formData)
                 .then((response) => response.data)
                 .then((responseData) => {
                     let result = [];

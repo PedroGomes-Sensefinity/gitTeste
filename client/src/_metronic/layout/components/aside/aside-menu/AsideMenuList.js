@@ -21,19 +21,17 @@ export function AsideMenuList({ layoutProps }) {
       <ul className={`menu-nav ${layoutProps.ulClasses}`}>
         {/*begin::1 Level*/}
         <li
-          className={`menu-item ${getMenuItemActive("/dashboard", false)}`}
-          aria-haspopup="true"
-        >
-          <NavLink className="menu-link" to="/dashboard">
-            <span className="svg-icon menu-icon">
-              <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Display1.svg")} />
-            </span>
-            <span className="menu-text">Dashboard</span>
-          </NavLink>
-        </li>
+              className={`menu-item ${getMenuItemActive("/dashboard", false)}`}
+              aria-haspopup="true"
+          >
+              <NavLink className="menu-link" to="/dashboard">
+                  <span className="svg-icon menu-icon">
+                    <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Display1.svg")} />
+                  </span>
+                  <span className="menu-text">Dashboard</span>
+              </NavLink>
+          </li>
         {/*end::1 Level*/}
-
-
         {/*begin::1 Level*/}
         <li
           className={`menu-item ${getMenuItemActive("/tenants-new", false)}`}
