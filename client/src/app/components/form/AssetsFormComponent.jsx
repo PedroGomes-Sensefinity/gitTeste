@@ -11,6 +11,7 @@ import toaster from '../../utils/toaster';
 import { injectIntl } from 'react-intl';
 import apiService from '../../services/apiService';
 import assetsService from "../../services/assetsService";
+import {AsyncTypeahead, Typeahead} from 'react-bootstrap-typeahead';
 
 const useStyles = makeStyles((theme) => ({
     headerMarginTop: {
@@ -21,10 +22,15 @@ const useStyles = makeStyles((theme) => ({
 function AssetsFormComponentFunctional (props) {
 
     const [ruleTypeOptions, setRuleTypeOptions]  = useState([
-        {id: 1, name: "No Types"},
+        {id: 1, name: "No Types", type: "NA"},
     ])
     const isAddMode = !props.id
     const [blocking, setBlocking] = useState(false)
+    const [loading, setLoading] = useState(false)
+
+    const [thresholds,setThresholds] = useState([])
+    const [selectedThresholds,setSelectedThresholds] = useState([])
+    const [selectedThresholdsId, setSelectedThresholdsId] = useState([])
     
     const initialValues = props.asset || {id: '',label: '',description: '',asset_type_id: 1,devices: [],weight: 0.0,type: [],}
 
@@ -35,13 +41,111 @@ function AssetsFormComponentFunctional (props) {
             let ruleTypeOptions = []
             if(response.asset_types !== undefined) {
                response.asset_types.forEach(function(assetType) {
-                    ruleTypeOptions.push({id: assetType.id, name: assetType.label})
+                    ruleTypeOptions.push({id: assetType.id, name: assetType.label, type: assetType.type})
                 })
             }
             setRuleTypeOptions(ruleTypeOptions)
         });
 
+        if(props.asset !== undefined ){
+            const endpoint = "asset/" + props.asset.id  + "/thresholds"
+            apiService.getByEndpoint(endpoint).then((response) => {
+
+                setSelectedThresholds(response.thresholds)
+                const ids = selectedThresholdsId
+                if(response.thresholds !== undefined && response.thresholds !== []){
+                    response.thresholds.forEach(function(threshold) {
+                        ids.push(threshold.id)
+                    })
+                    setSelectedThresholdsId(ids)
+                }
+            });
+        }
+
     }, [])
+
+    const onChangeThreshold = (opt) => {
+        let selectedIds = [];
+
+        if (opt.length > 0) {
+            selectedIds = opt.map((t) => t.id);
+        }
+        setSelectedThresholdsId(selectedIds)
+        setSelectedThresholds(opt)
+    };
+
+    const handleSearchThreshold = (query) => {
+        setLoading(true)
+
+        apiService.getByText('threshold', query, 100, 0).then((response) => {
+            const thresholds = (typeof response.thresholds !== undefined && Array.isArray(response.thresholds))
+                ? filterThresholdSelected(response.thresholds)
+                : [];
+
+            setThresholds(thresholds)
+            setLoading(false) 
+        });
+    };
+
+    const filterThresholdSelected = (options) => {
+        let data = [];
+        options.map((t) => {
+            if(!Array.from(selectedThresholdsId).includes(t.id)) {
+                data.push({
+                    id: t.id,
+                    label: t.name
+                });
+            }
+        });
+        return data;
+    }
+
+    const filterBy = () => true;
+
+
+    const onlyLetters =  (str) => {
+        return /^[a-zA-Z]+$/.test(str);
+    }
+
+    const validateLabel = (value) => {
+        let error;
+        let type;
+
+        ruleTypeOptions.forEach(function(options) {
+            if(options["id"] == initialValues.asset_type_id){
+                type = options["type"]
+            }
+        })
+        if(type === "Container"){
+            if(value.length != 13){
+                error = "Invalid Label - Size Incorrect (e.g: AAAA111111-22)"
+                return error
+            }
+            let string4 = value.substring(0, 4)
+            if(!onlyLetters(string4)){
+                error = "Invalid Label - Please enter only letters for Owner Code and Product Group Code (e.g: AAAA111111-22)"
+                return error
+            }
+            let string6 = value.substring(5, 10)
+            let isnum = /^\d+$/.test(string6);
+            if(!isnum){
+                error = "Invalid Label - Please enter only numbers on Serial Number (e.g: AAAA111111-22)"
+                return error
+            }
+            let string2 = value.substring(11, 14)
+            let isnum2 = /^\d+$/.test(string2);
+            if(!isnum2){
+                error = "Invalid Label - Please enter only numbers on Check Digits (e.g: AAAA111111-22)"
+                return error
+            }
+            let stringSpecialChar = value.substring(10, 11)
+            if(stringSpecialChar !== "-"){
+                error = "Invalid Label - Special character must be \"-\" (e.g: AAAA111111-22)"
+                return error
+            }
+        }
+        return error
+    };
 
     const validationSchema = Yup.object().shape({
         label: Yup.string().required('Label is required'),
@@ -54,11 +158,13 @@ function AssetsFormComponentFunctional (props) {
         setBlocking(true);
         setSubmitting(true);
 
+
         let method = (isAddMode) ? 'save' : 'update';
         let msgSuccess = (isAddMode)
             ? props.intl.formatMessage({id: 'ASSETS.CREATED'})
             : props.intl.formatMessage({id: 'ASSETS.UPDATED'});
-
+        
+        fields["threshold_ids"] = selectedThresholdsId
         assetsService[method](fields)
             .then((response) => {
                 toaster.notify('success', msgSuccess);
@@ -144,58 +250,7 @@ function AssetsFormComponentFunctional (props) {
                                 <div className='card-body'>
                                     <div className='form-group row'>
 
-                                        <div className='col-xl-6 col-lg-6'>
-                                            <label className={`required`}>Label</label>
-                                            <Field
-                                                as="input"
-                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                        {errors, touched},
-                                                        'label'
-                                                    )}`}
-                                                name='name'
-                                                placeholder='Set the asset label'
-                                                {...getFieldProps('label')}
-                                            />
-                                            <ErrorMessage name="label" component="div" className="invalid-feedback" />
-                                        </div>
-
-
-                                        <div className='col-xl-6 col-lg-6'>
-                                            <label>Description</label>
-                                            <Field
-                                                as="textarea"
-                                                rows='3'
-                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                    {errors, touched},
-                                                    'description'
-                                                )}`}
-                                                name='description'
-                                                placeholder='Set the description'
-                                                {...getFieldProps(
-                                                    'description'
-                                                )}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className='form-group row'>
-
-                                        <div className='col-xl-6 col-lg-6'>
-                                            <label>Weight</label>
-                                            <Field
-                                                type={"number"} 
-                                                as="input"
-                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                        {errors, touched},
-                                                        'label'
-                                                    )}`}
-                                                name='name'
-                                                placeholder='Set the asset Weight'
-                                                {...getFieldProps('weight')}
-                                            />
-                                        </div>
-
-
-                                        <div className='col-xl-3 col-lg-3'>
+                                    <div className='col-xl-6 col-lg-6'>
                                             <label className={`required`}>Type</label>
                                             <Field
                                                 type={"number"} 
@@ -219,6 +274,88 @@ function AssetsFormComponentFunctional (props) {
                                                 className='invalid-feedback'
                                             />
                                         </div>
+
+                                        <div className='col-xl-6 col-lg-6'>
+                                            <label className={`required`}>Label</label>
+                                            <Field
+                                                validate = {validateLabel}
+                                                as="input"
+                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                        {errors, touched},
+                                                        'label'
+                                                    )}`}
+                                                name='label'
+                                                placeholder='Set the asset label'
+                                                {...getFieldProps('label')}
+                                            />
+                                            <ErrorMessage name="label" component="div" className="invalid-feedback" />
+                                        </div>
+
+                                    </div>
+                                    <div className='form-group row'>
+
+                                        <div className='col-xl-6 col-lg-6'>
+                                            <label>Weight</label>
+                                            <Field
+                                                type={"number"} 
+                                                as="input"
+                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                        {errors, touched},
+                                                        'label'
+                                                    )}`}
+                                                name='weight'
+                                                placeholder='Set the asset Weight'
+                                                {...getFieldProps('weight')}
+                                            />
+                                            <ErrorMessage
+                                                name='weight'
+                                                component='div'
+                                                className='invalid-feedback'
+                                            />
+                                        </div>
+
+
+
+                                        <div className='col-xl-6 col-lg-6'>
+                                            <label>Description</label>
+                                            <Field
+                                                as="textarea"
+                                                rows='3'
+                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                    {errors, touched},
+                                                    'description'
+                                                )}`}
+                                                name='description'
+                                                placeholder='Set the description'
+                                                {...getFieldProps(
+                                                    'description'
+                                                )}
+                                            />
+                                        </div>
+
+
+                                    </div>
+                                    <div className='form-group row'>
+
+                                    <div className='col-xl-12 col-lg-12'>
+                                    <label>Threshold</label>
+                                            <div>
+                                            <AsyncTypeahead
+                                                id='typeahead-threshold'
+                                                labelKey='label'
+                                                size="lg"
+                                                multiple
+                                                onChange={onChangeThreshold}
+                                                options={thresholds}
+                                                placeholder=''
+                                                selected={selectedThresholds}
+                                                onSearch={handleSearchThreshold}
+                                                isLoading={loading}
+                                                filterBy={filterBy}
+                                                useCache={false}
+                                            />
+                                            </div>  
+                                    </div>
                                     </div>
                                 </div>
                             </div>
