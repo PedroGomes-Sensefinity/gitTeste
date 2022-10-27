@@ -11,6 +11,7 @@ import DeleteIcon from '@material-ui/icons/Clear';
 import deviceService from "../../services/deviceService";
 import assetsService from "../../services/assetsService";
 import toaster from '../../utils/toaster';
+import AlertDialog from "../../utils/AlertDialog/alertDialog"
 
 class AssetDevicesComponent extends React.Component {
     constructor(props) {
@@ -36,9 +37,12 @@ class AssetDevicesComponent extends React.Component {
         this.setState({loading: true});
         apiService.getById('asset', this.state.id).then((response) => {
             this.setState({asset: response.assets[0]});
-            this.setState({devices: response.assets[0].devices});
+            if(response.assets[0].devices !== undefined){
+                this.setState({devices: response.assets[0].devices});
+            }
             this.setState({loading: false});
         });
+        console.log(this.state.devices)
     }
 
     filterDevicesSelected = (options) => {
@@ -141,8 +145,8 @@ class AssetDevicesComponent extends React.Component {
                                     useCache={false}
                                 />
                             </div>
-                            <div className='col-xl-6 col-lg-6'>
-                                <button
+                            <div className='col-xl-6 col-lg-6' >
+                                {this.state.devices?.length === 0  && <button
                                     type='button'
                                     className='btn btn-success mr-2 mt-8'
                                     onClick={this.addDevices}
@@ -150,7 +154,8 @@ class AssetDevicesComponent extends React.Component {
                                 >
                                     <DoneIcon/>
                                     Add devices
-                                </button>
+                                </button>}
+                                {this.state.devices?.length !== 0 && <AlertDialog len={this.state.selectedDevicesId.length} buttonTitle="Add devices" title= "Warning - Device on Asset" content="Are you sure you want to add more than one Device to an Asset?" onYes={this.addDevices}></AlertDialog>}
                             </div>
                         </div>
                         <TableGrid
@@ -160,10 +165,11 @@ class AssetDevicesComponent extends React.Component {
                                     tooltip: 'Remove device from asset',
                                     onClick: (event, rowData) => {
                                         let devices = [{id: rowData.id}];
-                                        assetsService.deleteAssetDevice({devices: devices}).then((response) => {
+                                        assetsService.deleteAssetDevice(this.state.id, {devices: devices}).then((response) => {
                                             this.initGridDevices();
                                             this.setState({selectedDevicesId: []});
                                             this.setState({selectedDevices: []});
+                                            this.setState({devices: []});
                                             this.setState({loading: false});
                                             toaster.notify('success', this.state.intl.formatMessage({id: 'ASSET_DEVICE.REMOVED'}));
                                         });
