@@ -1,9 +1,8 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 
 import { Card, CardContent } from '@material-ui/core';
 import moment from 'moment';
 import Form from 'react-bootstrap/Form';
-import history from '../../../history';
 import notificationService from "../../../services/notificationService";
 
 import { useLang } from '../../../../_metronic/i18n/Metronici18n';
@@ -15,23 +14,6 @@ export function AlarmsList() {
     const [statusDateStart, setStatusDateStart] = React.useState('-');
     const [statusDateEnd, setStatusDateEnd] = React.useState('-');
     const locale = useLang();
-    const { permissions } = usePermissions()
-
-    const actions = useMemo(() => {
-        const acts = []
-        if (permissions.canEditNotificationTemplates) {
-            acts.push({
-                icon: EditIcon,
-                tooltip: 'Edit notification template',
-                onClick: (_event, rowData) => {
-                    history.push(
-                        `/notification-templates/edit/${rowData.id}`
-                    );
-                }
-            })
-        }
-        return acts
-    }, [permissions])
 
     const timefilterOptions = [
         {
