@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export function TenantsNewList() {
+export function TenantsList() {
     const classes = useStyles();
     const history = useHistory()
     const { permissions } = usePermissions()

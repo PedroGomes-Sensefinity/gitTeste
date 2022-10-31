@@ -4,7 +4,7 @@ import {Paper, Tab, Tabs} from "@material-ui/core";
 import {TabContainer} from "react-bootstrap";
 import TenantsPersonalizationComponent from "../../../components/form/TenantsPersonalizationComponent";
 
-export function TenantsNewForm({match}) {
+export function TenantsForm({match}) {
     const {id} = match.params;
     const [value, setValue] = React.useState(0);
 
