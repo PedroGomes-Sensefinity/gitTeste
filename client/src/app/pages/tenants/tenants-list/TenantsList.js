@@ -32,6 +32,7 @@ export function TenantsList() {
                 },
             })
         }
+        return acts
     }, [permissions])
 
     const columns = [

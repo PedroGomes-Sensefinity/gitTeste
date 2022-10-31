@@ -25,7 +25,7 @@ export function FloorMapsList() {
     const actions = useMemo(() => {
         const acts = []
         if (permissions.canEditFloorMaps) {
-            return acts.push({
+            acts.push({
                 icon: EditIcon,
                 tooltip: 'Edit Floor Map',
                 onClick: (_event, rowData) => {

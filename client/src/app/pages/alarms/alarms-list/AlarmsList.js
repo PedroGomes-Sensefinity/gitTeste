@@ -6,10 +6,8 @@ import Form from 'react-bootstrap/Form';
 import history from '../../../history';
 import notificationService from "../../../services/notificationService";
 
-import EditIcon from '@material-ui/icons/Edit';
 import { useLang } from '../../../../_metronic/i18n/Metronici18n';
 import TableGrid from '../../../components/table-grid/table-grid.component';
-import { usePermissions } from '../../../modules/Permission/PermissionsProvider';
 
 export function AlarmsList() {
     const [, setTimefilter] = React.useState();
@@ -148,7 +146,7 @@ export function AlarmsList() {
                     </div>
                 </div>
                 <TableGrid
-                    actions={actions}
+                    actions={[]}
                     title=''
                     columns={columns}
                     data={data}
