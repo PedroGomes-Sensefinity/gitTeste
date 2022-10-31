@@ -34,6 +34,7 @@ export function RoutesList() {
                 },
             })
         }
+        return acts
     }, [permissions])
 
     const columns = [

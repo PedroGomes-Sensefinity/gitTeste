@@ -30,15 +30,17 @@ export function GroupsList() {
     const { permissions } = usePermissions()
 
     const actions = useMemo(() => {
+        const acts = []
         if (permissions.canEditGroups) {
-            return [{
+            acts.push({
                 icon: EditIcon,
                 tooltip: 'Edit group',
                 onClick: (event, rowData) => {
                     history.push(`/groups/edit/${rowData.id}`);
                 },
-            }]
+            })
         }
+        return acts
     }, [permissions])
 
     const columns = [

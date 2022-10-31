@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, { useMemo } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Card, CardContent, Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
@@ -33,6 +33,7 @@ export function NotificationTemplatesList() {
                 },
             })
         }
+        return acts
     }, [permissions])
 
 
