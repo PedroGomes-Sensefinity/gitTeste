@@ -1,21 +1,39 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
-import moment from 'moment';
-import history from '../../../history';
 import { Card, CardContent } from '@material-ui/core';
+import moment from 'moment';
 import Form from 'react-bootstrap/Form';
+import history from '../../../history';
 import notificationService from "../../../services/notificationService";
 
 import EditIcon from '@material-ui/icons/Edit';
-import TableGrid from '../../../components/table-grid/table-grid.component';
 import { useLang } from '../../../../_metronic/i18n/Metronici18n';
+import TableGrid from '../../../components/table-grid/table-grid.component';
+import { usePermissions } from '../../../modules/Permission/PermissionsProvider';
 
 export function AlarmsList() {
-    const [timefilter, setTimefilter] = React.useState();
+    const [, setTimefilter] = React.useState();
     const [data, setData] = React.useState([]);
     const [statusDateStart, setStatusDateStart] = React.useState('-');
     const [statusDateEnd, setStatusDateEnd] = React.useState('-');
     const locale = useLang();
+    const { permissions } = usePermissions()
+
+    const actions = useMemo(() => {
+        const acts = []
+        if (permissions.canEditNotificationTemplates) {
+            acts.push({
+                icon: EditIcon,
+                tooltip: 'Edit notification template',
+                onClick: (_event, rowData) => {
+                    history.push(
+                        `/notification-templates/edit/${rowData.id}`
+                    );
+                }
+            })
+        }
+        return acts
+    }, [permissions])
 
     const timefilterOptions = [
         {
@@ -40,7 +58,7 @@ export function AlarmsList() {
             field: 'timestamp',
             title: 'Time',
             type: 'datetime',
-            dateSetting: {locale: locale},
+            dateSetting: { locale: locale },
         },
         {
             field: 'device',
@@ -60,7 +78,7 @@ export function AlarmsList() {
         let dateStart = '';
         let dateEnd = moment.utc();
 
-        switch(event.target.value) {
+        switch (event.target.value) {
             default:
                 dateStart = moment().subtract(1, "days").utc();
                 break;
@@ -86,9 +104,9 @@ export function AlarmsList() {
     const getData = () => {
         notificationService.get('alarm', 'created', statusDateStart, statusDateEnd, 999999, 0/* getOffset(page, rowsPage) */)
             .then((result) => {
-                if (result.length != 0) {
+                if (result.length !== 0) {
                     result.alarms.forEach(alarm => {
-                        switch(alarm.type) {
+                        switch (alarm.type) {
                             case 'temperaturedegree':
                                 alarm.type = "Temperature";
                                 break;
@@ -130,17 +148,7 @@ export function AlarmsList() {
                     </div>
                 </div>
                 <TableGrid
-                    actions={[
-                        {
-                            icon: EditIcon,
-                            tooltip: 'Edit notification template',
-                            onClick: (event, rowData) => {
-                                history.push(
-                                    `/notification-templates/edit/${rowData.id}`
-                                );
-                            },
-                        },
-                    ]}
+                    actions={actions}
                     title=''
                     columns={columns}
                     data={data}

@@ -23,13 +23,12 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import * as ace from 'brace';
 import 'brace/mode/json';
 import 'brace/theme/monokai';
-
-import AceEditor from "react-ace";
-
 import "brace/mode/json";
 import "brace/theme/dreamweaver";
 import "brace/snippets/json";
 import "brace/ext/language_tools";
+
+import AceEditor from "react-ace";
 import DeleteIcon from "@material-ui/icons/Delete";
 import {Table} from "react-bootstrap";
 import notificationService from "../../services/notificationService";

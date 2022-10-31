@@ -126,7 +126,7 @@ class RouteMap extends React.Component {
         let coordinatesLine2 = [];
 
         // Calculate offset based on size number
-        lineCoordinates.map((value, i) => {
+        lineCoordinates.forEach((value, i) => {
             let distance = sizes[i];
             let offsetLine1 = turf.lineOffset(line, distance, {units: 'meters'});
             let offsetLine2 = turf.lineOffset(line, -distance, {units: 'meters'});
@@ -151,7 +151,7 @@ class RouteMap extends React.Component {
         let leafletGeojson = L.geoJson(geojsonGeneratedGeofence, conf);
         let geofenceSizes = [];
 
-        lineCoordinates.map(() => {
+        lineCoordinates.forEach(() => {
             geofenceSizes.push(this.state.sizeMeters);
         });
 
@@ -162,7 +162,7 @@ class RouteMap extends React.Component {
 
     generateMarkers(coordinates) {
         if (Array.isArray(coordinates)) {
-            coordinates.map((c, i) => {
+            coordinates.forEach((c, i) => {
                 var numberMarker = L.ExtraMarkers.icon({
                     icon: 'fa-number',
                     markerColorsubl: '#6b1d5c',

@@ -1,13 +1,14 @@
-import React, {useEffect} from 'react';
+import React, { useEffect, useMemo } from 'react';
 
-import history from '../../../history';
-import {Button, Card, CardContent} from '@material-ui/core';
+import { Button, Card, CardContent } from '@material-ui/core';
 
-import EditIcon from '@material-ui/icons/Edit';
-import TableGrid from '../../../components/table-grid/table-grid.component';
-import {Link} from "react-router-dom";
+import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
-import {makeStyles} from "@material-ui/core/styles";
+import EditIcon from '@material-ui/icons/Edit';
+import { useHistory } from 'react-router-dom';
+import TableGrid from '../../../components/table-grid/table-grid.component';
+import { usePermissions } from '../../../modules/Permission/PermissionsProvider';
+
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -19,6 +20,21 @@ const useStyles = makeStyles((theme) => ({
 }));
 export function RoutesList() {
     const classes = useStyles();
+    const history = useHistory()
+    const { permissions } = usePermissions()
+
+    const actions = useMemo(() => {
+        const acts = []
+        if (permissions.canEditRoutes) {
+            acts.push({
+                icon: EditIcon,
+                tooltip: 'Edit route',
+                onClick: (_event, rowData) => {
+                    history.push(`/routes/edit/${rowData.id}`);
+                },
+            })
+        }
+    }, [permissions])
 
     const columns = [
         {
@@ -38,25 +54,19 @@ export function RoutesList() {
     return (
         <Card>
             <CardContent>
-                <Link to='/routes/new'>
+                {permissions.canCreateRoutes ?
                     <Button
                         variant='contained'
                         color='secondary'
-                        className={classes.button}>
+                        className={classes.button}
+                        onClick={() => {
+                            history.push('/routes/new')
+                        }}>
                         <AddIcon className={classes.leftIcon} />
                         New Route
-                    </Button>
-                </Link>
+                    </Button> : <></>}
                 <TableGrid
-                    actions={[
-                        {
-                            icon: EditIcon,
-                            tooltip: 'Edit route',
-                            onClick: (event, rowData) => {
-                                history.push(`/routes/edit/${rowData.id}`);
-                            },
-                        },
-                    ]}
+                    actions={actions}
                     title=''
                     columns={columns}
                     endpoint={'route'}

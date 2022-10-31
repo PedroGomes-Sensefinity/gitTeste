@@ -1,18 +1,13 @@
-import React from 'react';
+import { Button, Card, CardContent } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import history from '../../../history';
-import { makeStyles } from '@material-ui/core/styles';
-import { Card, CardContent, Button } from '@material-ui/core';
-
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
-import DetailsIcon from '@material-ui/icons/Details';
-
-import {MdSpaceDashboard} from "react-icons/md";
-
+import { MdSpaceDashboard } from "react-icons/md";
 import TableGrid from '../../../components/table-grid/table-grid.component';
-
-import PermissionGate from "../../../modules/Permission/permissionGate";
+import { usePermissions } from '../../../modules/Permission/PermissionsProvider';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -24,8 +19,31 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export function DevicesList() {
+
+    console.log('entered device list')
     const classes = useStyles();
 
+    const { permissions } = usePermissions()
+
+    const actions = useMemo(() => {
+        const acts = [{
+            icon: MdSpaceDashboard,
+            tooltip: 'Inspect device',
+            onClick: (_event, rowData) => {
+                history.push(`/devices/${rowData.id}`);
+            },
+        }]
+        if (permissions.canEditAssets) {
+            acts.push({
+                icon: EditIcon,
+                tooltip: 'Edit device',
+                onClick: (_event, rowData) => {
+                    history.push(`/devices/edit/${rowData.id}`);
+                },
+            })
+        }
+        return acts
+    }, [permissions])
     const columns = [
         {
             field: 'id',
@@ -58,41 +76,26 @@ export function DevicesList() {
     ];
 
     return (
-        <PermissionGate permission={'device_view'}>
-            <Card>
-                <CardContent>
-                    <Link to='/devices/new'>
-                        <Button
-                            variant='contained'
-                            color='secondary'
-                            className={classes.button}>
-                            <AddIcon className={classes.leftIcon} />
-                            New device
-                        </Button>
-                    </Link>
-                        <TableGrid
-                            actions={[
-                                {
-                                    icon: MdSpaceDashboard,
-                                    tooltip: 'Inspect device',
-                                    onClick: (event, rowData) => {
-                                        history.push(`/devices/${rowData.id}`);
-                                    },
-                                },{
-                                    icon: EditIcon,
-                                    tooltip: 'Edit device',
-                                    onClick: (event, rowData) => {
-                                        history.push(`/devices/edit/${rowData.id}`);
-                                    },
-                                }   
-                            ]}
-                            title=''
-                            columns={columns}
-                            endpoint={'device'}
-                            dataField='devices'
-                        />
-                </CardContent>
-            </Card>
-        </PermissionGate>
+        <Card>
+            <CardContent>
+                {permissions.canCreateDevices ? 
+                <Link to='/devices/new'>
+                    <Button
+                        variant='contained'
+                        color='secondary'
+                        className={classes.button}>
+                        <AddIcon className={classes.leftIcon} />
+                        New device
+                    </Button>
+                </Link>: <></>}
+                <TableGrid
+                    actions={actions}
+                    title=''
+                    columns={columns}
+                    endpoint={'device'}
+                    dataField='devices'
+                />
+            </CardContent>
+        </Card>
     );
 }

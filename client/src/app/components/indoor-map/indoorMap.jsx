@@ -58,7 +58,7 @@ class IndoorMap extends React.Component {
         }
 
         if (typeof this.props.anchors !== 'undefined' && this.props.anchors.length > 0) {
-            this.props.anchors.map(a => {
+            this.props.anchors.forEach(a => {
                 L.marker([a.lat, a.lon], {icon: L.icon.glyph({ prefix: 'fa', glyph: 'broadcast-tower' }) })
                     .addTo(map);
             });
