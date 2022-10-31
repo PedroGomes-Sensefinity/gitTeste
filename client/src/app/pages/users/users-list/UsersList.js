@@ -1,12 +1,10 @@
-import React, { useMemo, useState } from 'react';
-
 import { Button, Card, CardContent } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import history from '../../../history';
-
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import ChangePasswordIcon from '@material-ui/icons/VpnKey';
+import React, { useMemo, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import ChangePasswordFormComponent from "../../../components/form/changePasswordFormComponent";
 import GenericModalComponent from '../../../components/modal/genericModalComponent';
 import TableGrid from '../../../components/table-grid/table-grid.component';
@@ -33,6 +31,7 @@ export function UsersList() {
     const [show, setShow] = useState(false);
     const [userId, setUserId] = useState(0);
     const [userUsername, setUserUsername] = useState('');
+    const history = useHistory()
 
     const { permissions } = usePermissions()
 

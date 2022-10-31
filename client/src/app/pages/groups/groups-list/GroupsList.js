@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 
-import { Link, useHistory } from 'react-router-dom';
+import { Button, Card, CardContent } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { Card, CardContent, Button } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
@@ -30,15 +30,17 @@ export function GroupsList() {
     const { permissions } = usePermissions()
 
     const actions = useMemo(() => {
+        const acts = []
         if (permissions.canEditGroups) {
-            return [{
+            acts.push({
                 icon: EditIcon,
                 tooltip: 'Edit group',
                 onClick: (event, rowData) => {
                     history.push(`/groups/edit/${rowData.id}`);
                 },
-            }]
+            })
         }
+        return acts
     }, [permissions])
 
     const columns = [

@@ -1,11 +1,10 @@
 import { Button, Card, CardContent } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import React, { useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import history from '../../../history';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
+import React, { useMemo } from 'react';
 import { MdSpaceDashboard } from "react-icons/md";
+import { Link, useHistory } from 'react-router-dom';
 import TableGrid from '../../../components/table-grid/table-grid.component';
 import { usePermissions } from '../../../modules/Permission/PermissionsProvider';
 
@@ -19,9 +18,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export function DevicesList() {
-
-    console.log('entered device list')
     const classes = useStyles();
+    const history = useHistory()
 
     const { permissions } = usePermissions()
 
