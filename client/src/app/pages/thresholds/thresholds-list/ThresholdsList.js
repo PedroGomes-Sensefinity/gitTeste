@@ -1,6 +1,6 @@
 import { Button, Card, CardContent } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import apiService from '../../../services/apiService';
 import AddIcon from '@material-ui/icons/Add';
@@ -25,11 +25,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export function ThresholdsList() {
-    const [data, setData] = React.useState([]);
+    const [data, setData] = useState([]);
     const classes = useStyles();
     const history = useHistory()
 
     const { permissions } = usePermissions()
+
+    console.log(permissions)
 
     const actions = useMemo(() => {
         const acts = []
@@ -37,7 +39,7 @@ export function ThresholdsList() {
             acts.push({
                 icon: EditIcon,
                 tooltip: 'Edit threshold',
-                onClick: (event, rowData) => {
+                onClick: (_event, rowData) => {
                     history.push(`/thresholds/${rowData.id}/edit`);
                 },
             })
@@ -61,7 +63,7 @@ export function ThresholdsList() {
     }, []);
 
     const getData = () => {
-        new Promise((resolve, reject) => {
+        new Promise((resolve, _reject) => {
             let method = 'get';
             let params = ['threshold', 999999, 0];
 
@@ -74,34 +76,34 @@ export function ThresholdsList() {
                     });
                 });
         })
-        .then((result) => {
-            if(result.data != undefined){
-                if (result.length != 0) {
-                    result.data.forEach(threshold => {
-                        const rule = JSON.parse(threshold['rule']);
-                        switch(rule['type']) {
-                            case 'temperaturedegree':
-                            case 'temperature':
-                                threshold['type'] = "Temperature";
-                                break;
-                            case 'geofences':
-                            case 'geofence':
-                                threshold['type'] = "Geo-fences";
-                                break;
-                            case 'humidityrelative':
-                                threshold['type'] = "Humidity";
-                                break;
-                            case 'buttonpressed':
-                                threshold['type'] = "Button pressed"
-                                break;
-                            default:
-                                console.log("Error: Unidentified threshold type.")
-                        }
-                    })
+            .then((result) => {
+                if (result.data != undefined) {
+                    if (result.length != 0) {
+                        result.data.forEach(threshold => {
+                            const rule = JSON.parse(threshold['rule']);
+                            switch (rule['type']) {
+                                case 'temperaturedegree':
+                                case 'temperature':
+                                    threshold['type'] = "Temperature";
+                                    break;
+                                case 'geofences':
+                                case 'geofence':
+                                    threshold['type'] = "Geo-fences";
+                                    break;
+                                case 'humidityrelative':
+                                    threshold['type'] = "Humidity";
+                                    break;
+                                case 'buttonpressed':
+                                    threshold['type'] = "Button pressed"
+                                    break;
+                                default:
+                                    console.log("Error: Unidentified threshold type.")
+                            }
+                        })
+                    }
                 }
-            }
-            setData(result.data);
-        });
+                setData(result.data);
+            });
     }
 
 

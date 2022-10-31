@@ -20,7 +20,9 @@ function PermissionsProvider({ children }) {
                     prev[perm.slug] = true
                     return prev
                 }, {});
-                setPermissions(Permissions(perms))
+                const newPerms = Permissions(perms)
+                console.log(JSON.stringify(newPerms))
+                setPermissions(newPerms)
             }).catch(() => { 
                 setPermissions({})
             })

@@ -53,7 +53,7 @@ export default function BasePage() {
       <Switch>
         {
           /* Redirect from root URL to /dashboard. */
-          <Redirect exact from="/" to="/dashboard" />
+          <Redirect exact from="/" to="/dashboard/default" />
         }
         {permissions.canViewContainerDashboard && [
           <ContentRoute key="/dashboard/containers" path="/dashboard/containers" component={ContainersDashboard} />
@@ -72,9 +72,9 @@ export default function BasePage() {
 
         { /* Board families Routes*/}
         {permissions.canViewBoardFamilies && [
-          <ContentRoute path="/board-families/edit/:id" component={BoardFamiliesForm} />,
-          <ContentRoute path="/board-families/list" component={BoardFamiliesList} />,
-          <ContentRoute path="/board-families/new" component={BoardFamiliesForm} />]
+          <ContentRoute key="/board-families/edit/:id" path="/board-families/edit/:id" component={BoardFamiliesForm} />,
+          <ContentRoute key="/board-families/list" path="/board-families/list" component={BoardFamiliesList} />,
+          <ContentRoute key="/board-families/new" path="/board-families/new" component={BoardFamiliesForm} />]
         }
 
         { /* Groups Routes*/}

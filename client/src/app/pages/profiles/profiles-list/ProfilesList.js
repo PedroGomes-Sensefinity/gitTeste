@@ -35,6 +35,7 @@ export function ProfilesList() {
                 },
             })
         }
+        return acts
     }, [permissions])
 
     const columns = [
