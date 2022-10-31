@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { Paper, Tab, Tabs } from "@material-ui/core";
+import React, { useEffect, useMemo, useState } from 'react';
+import BlockUi from "react-block-ui";
 import { TabContainer } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import AssetDevicesComponent from "../../../components/form/AssetDevicesComponent";
-import AssetsFormComponent from "../../../components/form/AssetsFormComponent";
-import DeviceSelector from "./DeviceSelector";
 import AssetFormExtraFields from "../../../components/form/AssetFormExtraFields";
+import AssetsFormComponent from "../../../components/form/AssetsFormComponent";
 import apiService from '../../../services/apiService';
-import BlockUi from "react-block-ui";
+import DeviceSelector from "./DeviceSelector";
 
 
 export function AssetsForm({match, location}) {
@@ -86,7 +86,7 @@ export function AssetsForm({match, location}) {
             if(response.asset_type === undefined) {
                 setMetadataSchema(false)
             } else {
-                if(response.asset_type.metadataschema != undefined && response.asset_type.metadataschema != "{}"){
+                if(response.asset_type.metadataschema !== undefined && response.asset_type.metadataschema !== "{}"){
                     setMetadataSchema(true)
                 }
             }

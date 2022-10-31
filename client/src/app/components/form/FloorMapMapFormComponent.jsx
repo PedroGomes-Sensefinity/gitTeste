@@ -173,7 +173,7 @@ class FloorMapMapFormComponent extends React.Component {
                                 this.setState({blocking: false});
                             });
                         }
-                    }, []);
+                    }, [setFieldValue]);
 
                     return (
                         <form

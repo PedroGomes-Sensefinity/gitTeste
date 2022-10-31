@@ -16,7 +16,7 @@ export default function AssetFormExtraFields(props) {
     useEffect(() => {
       let endpoint = "asset/" + id + "/asset-type"
       apiService.getByEndpoint(endpoint).then((response) => {
-        if(response.asset_type.metadataschema != undefined && response.asset_type.metadataschema != "{}"){
+        if(response.asset_type.metadataschema !== undefined && response.asset_type.metadataschema !== "{}"){
             let jsonObj = JSON.parse(response.asset_type.metadataschema);
             schemaDefault.title = jsonObj.title
             schemaDefault.properties = jsonObj.properties

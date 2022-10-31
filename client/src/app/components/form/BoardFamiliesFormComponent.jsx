@@ -108,7 +108,7 @@ class BoardFamiliesFormComponent extends React.Component {
                                 setFieldValue('force_board_id', item.force_board_id, false);
                             });
                         }
-                    }, []);
+                    }, [setFieldValue]);
 
                     return (
                         <form

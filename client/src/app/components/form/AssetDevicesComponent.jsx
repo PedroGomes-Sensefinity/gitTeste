@@ -47,7 +47,7 @@ class AssetDevicesComponent extends React.Component {
 
     filterDevicesSelected = (options) => {
         let data = [];
-        options.map((t) => {
+        options.forEach((t) => {
             if(!this.state.selectedDevicesId.includes(t.id)) {
                 data.push({
                     id: t.id,

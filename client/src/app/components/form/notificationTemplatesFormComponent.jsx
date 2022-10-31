@@ -23,13 +23,12 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import * as ace from 'brace';
 import 'brace/mode/json';
 import 'brace/theme/monokai';
-
-import AceEditor from "react-ace";
-
 import "brace/mode/json";
 import "brace/theme/dreamweaver";
 import "brace/snippets/json";
 import "brace/ext/language_tools";
+
+import AceEditor from "react-ace";
 import DeleteIcon from "@material-ui/icons/Delete";
 import {Table} from "react-bootstrap";
 import notificationService from "../../services/notificationService";
@@ -463,7 +462,7 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                                     'smsName'
                                                 )}`}
                                                 name='smsName'
-                                                placeholder='Enter the notification message'
+                                                placeholder='Enter the Contact Name'
                                             />
                                             <ErrorMessage
                                                 name='smsName'
@@ -480,7 +479,7 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                                     'smsNumber'
                                                 )}`}
                                                 name='smsNumber'
-                                                placeholder=''
+                                                placeholder='351XXXXXXXXX'
                                             />
                                             <ErrorMessage
                                                 name='smsNumber'

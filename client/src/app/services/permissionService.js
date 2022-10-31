@@ -13,6 +13,18 @@ const permissionService = {
                     reject(err.response.data);
                 });
         });
+    },
+    getUserPermissions: function () {
+        return new Promise((resolve, reject) => {
+            axios.get(`${process.env.REACT_APP_REST_API_URL}permissions`)
+                .then(response => {
+                    //only possible when request is successfull)
+                    resolve(response.data.data.permissions)
+                }).catch((err) => {
+                    //triggered on 4XX status code
+                    reject(err.response.data);
+                })
+        })
     }
 }
 

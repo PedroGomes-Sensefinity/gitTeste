@@ -23,13 +23,13 @@ class TableGrid extends React.Component {
     componentDidMount() {
     }
     componentDidUpdate(prevProps) {
-        if(typeof this.props.data !== "undefined" && prevProps.data !== this.props.data) {
-            this.setState({data: this.props.data});
+        if (typeof this.props.data !== "undefined" && prevProps.data !== this.props.data) {
+            this.setState({ data: this.props.data });
             //this.tableRef.current.onQueryChange();
         }
     }
 
-    getSortedData = (changedColumn, order) => {};
+    getSortedData = (changedColumn, order) => { };
 
     changePage = (page) => {
         //this.props.onChangePage(page);
@@ -44,12 +44,12 @@ class TableGrid extends React.Component {
             pageSize: this.state.rowsPerPage,
             pageSizeOptions: [10, 50, 100],
             exportButton: true,
-            onOrderChange: (rderedColumnId, orderDirection) => {},
-            onSearchChange: (search) => {},
+            onOrderChange: (rderedColumnId, orderDirection) => { },
+            onSearchChange: (search) => { },
             sorting: false
         };
 
-        if(!this.state.remote) {
+        if (!this.state.remote) {
             return (
                 <MaterialTable
                     tableRef={this.tableRef}
@@ -77,29 +77,29 @@ class TableGrid extends React.Component {
                             const page = query.page;
                             let method = 'get';
                             let params = [this.props.endpoint, pageSize, page * pageSize];
-                            
-                            if(query.search !== "") {
+
+                            if (query.search !== "") {
                                 method = 'getByText'
                                 params = [this.props.endpoint, query.search, pageSize, page * pageSize]
                             }
-                            if(this.state.date !== undefined) {
-                                if(this.state.date.start !== "0" && query.search === ""){
+                            if (this.state.date !== undefined) {
+                                if (this.state.date.start !== "0" && query.search === "") {
                                     method = 'getByTimestamp'
-                                    params = [this.props.endpoint ,this.state.date.start, this.state.date.end, pageSize, page * pageSize]
-                                }else{
+                                    params = [this.props.endpoint, this.state.date.start, this.state.date.end, pageSize, page * pageSize]
+                                } else {
                                     method = 'getByTimestampSearch'
-                                    params = [this.props.endpoint,query.search ,this.state.date.start, this.state.date.end, pageSize, page * pageSize]
+                                    params = [this.props.endpoint, query.search, this.state.date.start, this.state.date.end, pageSize, page * pageSize]
                                 }
                             }
-                            
+
                             apiService[method](...params)
-                            .then((result) => {
-                                resolve({
-                                    data: (result[this.props.dataField]) !== undefined && (result[this.props.dataField]).length > 0 ? result[this.props.dataField] : [] ,
-                                    page: page,
-                                    totalCount: result.total,
+                                .then((result) => {
+                                    resolve({
+                                        data: (result[this.props.dataField]) !== undefined && (result[this.props.dataField]).length > 0 ? result[this.props.dataField] : [],
+                                        page: page,
+                                        totalCount: result.total || 0,
+                                    });
                                 });
-                            });
                         })
                     }
                     isLoading={this.state.isLoading}

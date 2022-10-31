@@ -119,7 +119,7 @@ const apiService = {
         return new Promise(function(resolve, reject) {
             axios
                 .get(`${process.env.REACT_APP_REST_API_URL}${endpoint}/${id}`)
-                .then(function(response){
+                .then((response) => {
                     if (response.status !== 200) {
                         return [];
                     }
