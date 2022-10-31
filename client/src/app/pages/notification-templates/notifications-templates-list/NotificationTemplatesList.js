@@ -1,13 +1,11 @@
-import React from 'react';
-
-import { Link } from 'react-router-dom';
-import history from '../../../history';
+import React, {useMemo} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Card, CardContent, Button } from '@material-ui/core';
-
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import TableGrid from '../../../components/table-grid/table-grid.component';
+import { useHistory } from 'react-router-dom';
+import { usePermissions } from '../../../modules/Permission/PermissionsProvider';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -20,6 +18,23 @@ const useStyles = makeStyles((theme) => ({
 
 export function NotificationTemplatesList() {
     const classes = useStyles();
+    const history = useHistory()
+
+    const { permissions } = usePermissions()
+
+    const actions = useMemo(() => {
+        const acts = []
+        if (permissions.canEditNotificationTemplates) {
+            acts.push({
+                icon: EditIcon,
+                tooltip: 'Edit notification template',
+                onClick: (_event, rowData) => {
+                    history.push(`/notification-templates/edit/${rowData.id}`);
+                },
+            })
+        }
+    }, [permissions])
+
 
     const columns = [
         {
@@ -35,25 +50,19 @@ export function NotificationTemplatesList() {
     return (
         <Card>
             <CardContent>
-                <Link to='/notification-templates/new'>
+                {permissions.canCreateNotificationTemplates ?
                     <Button
                         variant='contained'
                         color='secondary'
-                        className={classes.button}>
+                        className={classes.button}
+                        onClick={() => {
+                            history.push('/notification-templates/new')
+                        }}>
                         <AddIcon className={classes.leftIcon} />
                         New Notification Template
-                    </Button>
-                </Link>
+                    </Button> : <></>}
                 <TableGrid
-                    actions={[
-                        {
-                            icon: EditIcon,
-                            tooltip: 'Edit notification template',
-                            onClick: (event, rowData) => {
-                                history.push(`/notification-templates/edit/${rowData.id}`);
-                            },
-                        },
-                    ]}
+                    actions={actions}
                     title=''
                     columns={columns}
                     endpoint={'notificationstemplate'}

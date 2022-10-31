@@ -1,201 +1,166 @@
-import React, {useEffect} from 'react';
-import {Formik} from 'formik';
-import * as Yup from 'yup';
-import {makeStyles} from '@material-ui/styles';
-import thresholdService from '../../services/thresholdService';
-import apiService from '../../services/apiService';
-import {AsyncTypeahead} from 'react-bootstrap-typeahead';
 import DoneIcon from '@material-ui/icons/Done';
-import '../../utils/yup-validations';
+import { makeStyles } from '@material-ui/styles';
+import { Formik } from 'formik';
+import React, { useCallback, useState } from 'react';
 import BlockUi from "react-block-ui";
-import {injectIntl} from 'react-intl';
+import { AsyncTypeahead } from 'react-bootstrap-typeahead';
+import { injectIntl } from 'react-intl';
+import * as Yup from 'yup';
+import apiService from '../../services/apiService';
+import thresholdService from '../../services/thresholdService';
 import toaster from '../../utils/toaster';
+import '../../utils/yup-validations';
 
-class ThresholdActionComponent extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            intl: props.intl,
-            id: props.id,
-            threshold: {},
-            options: [],
-            selected: [],
-            selectedIds: [],
-            loading: false,
-            blocking: false,
-        };
+const useStyles = makeStyles((theme) => ({
+    headerMarginTop: {
+        marginTop: theme.spacing(5),
     }
+}));
 
-    componentDidMount() {}
+function ThresholdActionComponent(props) {
 
-    initialValues = {
+    const threshold = props.threshold
+    const onThresholdChange = props.onChange
+    const [options, setOptions] = useState([]);
+    const [selectedIds, setSelectedIds] = useState(threshold.rule.what.map(r => r.id) || []);
+    const [selected, setSelected] = useState(threshold.rule.what);
+    const [loading, setLoading] = useState(false);
+    const [blocking, setBlocking] = useState(false);
+    const initialValues = {
         action: '',
     };
+    const classes = useStyles()
 
-    validationSchema = Yup.object().shape({});
-
-    useStyles = makeStyles((theme) => ({
-        headerMarginTop: {
-            marginTop: theme.spacing(5),
-        }
-    }));
-
-    handleSearch = (query) => {
-        this.setState({loading: true});
-
+    const handleSearch = (query) => {
+        setLoading(true)
         apiService.getByText('notificationstemplate', query, 100, 0).then((response) => {
             const data = (typeof response.notifications_templates !== undefined && Array.isArray(response.notifications_templates))
-                ? this.filterOptionsBySelected(response.notifications_templates)
+                ? filterOptionsBySelected(response.notifications_templates)
                 : [];
-
-            this.setState({ options: data });
-            this.setState({ loading: false });
+            setOptions(data)
+            setLoading(false)
+        }).catch(err => {
+            setOptions([])
+            setLoading(false)
         });
     };
 
-    filterOptionsBySelected = (opt) => {
+    const validationSchema = Yup.object().shape({});
+
+    const filterOptionsBySelected = (opt) => {
         return opt.filter(o => {
-            return !this.state.selectedIds.includes(o.id);
+            return !selectedIds.includes(o.id);
         });
     }
 
-    onChange = (opt) => {
-        const selectedIds = opt.map((t) => t.id);
-        this.setState({selected: opt});
-        this.setState({selectedIds: selectedIds});
+    const onChange = (opt) => {
+        const tmpSelectedIds = opt.map((t) => t.id);
+        setSelected(opt);
+        setSelectedIds(tmpSelectedIds);
     };
 
-    save = () => {
-        this.setState({blocking: true});
+    const save = useCallback(() => {
+        setBlocking(true)
+        // this ugly mess of a code is brought to you by Javascript :D (and its inability to copy objects by value)
+        const tempThreshold = JSON.parse(JSON.stringify(threshold))
 
-        let threshold = this.state.threshold;
-        let rule = JSON.parse(threshold.rule);
-
-        rule['what'] = [];
-
-        this.state.selected.map(s => {
-            rule.what.push({
+        let rule = tempThreshold.rule
+        rule['what'] = selected.slice().map(s => {
+            return {
                 id: s.id,
                 type: s.type,
                 label: s.label,
-            });
-            return null;
-        });
-
-        threshold.rule = JSON.stringify(rule);
+            }
+        })
         
-        thresholdService.update(threshold)
+        tempThreshold.rule = JSON.stringify(rule);
+        thresholdService.update(tempThreshold)
             .then(() => {
-                toaster.notify('success', this.state.intl.formatMessage({id: 'THRESHOLD.ACTION_SAVED'}));
-                this.setState({blocking: false});
+                toaster.notify('success', props.intl.formatMessage({ id: 'THRESHOLD.ACTION_SAVED' }));
+                tempThreshold.rule = rule
+                onThresholdChange(tempThreshold)
+                setBlocking(false)
             });
-    };
+    }, [selected]);
 
-    filterBy = () => true;
+    const filterBy = () => true;
 
-    render() {
-        return (
-            <BlockUi tag='div' blocking={this.state.blocking}>
-            <Formik
-                enableReinitialize
-                initialValues={this.initialValues}
-                validationSchema={this.validationSchema}
-                onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
-                    this.save();
-                }}
-                >
-                {({
-                    isValid,
-                    getFieldProps,
-                    errors,
-                    touched,
-                    isSubmitting,
-                    setFieldValue,
-                    handleSubmit,
-                    values
-                }) => {
-                    const classes = this.useStyles();
+    return <BlockUi tag='div' blocking={blocking}>
+        <Formik
+            enableReinitialize
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={() => {
+                save();
+            }}
+        >
+            {({
+                _,
+                __,
+                ___,
+                ____,
+                isSubmitting,
+                _____,
+                handleSubmit,
+                ______
+            }) => <form
+                className='card card-custom'
+                onSubmit={handleSubmit}>
+                    {/* begin::Header */}
+                    <div
+                        className={`card-header py-3 ` + classes.headerMarginTop}>
+                        <div className='card-title align-items-start flex-column'>
+                            <h3 className='card-label font-weight-bolder text-dark'>
+                                Threshold actions
+                            </h3>
+                            <span className='text-muted font-weight-bold font-size-sm mt-1'>
+                                Change actions of your threshold
+                            </span>
+                        </div>
+                        <div className='card-toolbar'>
+                            <button
+                                type='submit'
+                                className='btn btn-success mr-2'
+                                disabled={isSubmitting}>
+                                <DoneIcon />
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                    {/* end::Header */}
 
-                    useEffect(() => {
-                        if (!this.state.isAddMode && this.state.id !== 'new') {
-                            apiService
-                            .getById('threshold', this.state.id)
-                            .then((response) => {
-                                const threshold = response.thresholds[0];
-                                const rule = JSON.parse(threshold.rule);
-                                this.setState({threshold: threshold});
-
-                                if(typeof rule.what !== "undefined" && Array.isArray(rule.what)) {
-                                    const actionsId = rule.what.map(function (r) { return r.id });
-                                    this.setState({selected: rule.what});
-                                    this.setState({selectedIds: actionsId});
-                                }
-                            });
-                        }
-                    }, []);
-
-                    return (
-                        <form
-                            className='card card-custom'
-                            onSubmit={handleSubmit}>
-                            {/* begin::Header */}
-                            <div
-                                className={`card-header py-3 `+ classes.headerMarginTop}>
-                                <div className='card-title align-items-start flex-column'>
-                                    <h3 className='card-label font-weight-bolder text-dark'>
-                                        Threshold actions
-                                    </h3>
-                                    <span className='text-muted font-weight-bold font-size-sm mt-1'>
-                                        Change actions of your threshold
-                                    </span>
-                                </div>
-                                <div className='card-toolbar'>
-                                    <button
-                                        type='submit'
-                                        className='btn btn-success mr-2'
-                                        disabled={isSubmitting}>
-                                        <DoneIcon />
-                                        Save
-                                    </button>
-                                </div>
-                            </div>
-                            {/* end::Header */}
-
-                            {/* begin::Form */}
-                            <div className='form'>
-                                <div className='card-body'>
-                                    <div className='form-group row'>
-                                        <div className='col-xl-6 col-lg-6'>
-                                            <label>Actions</label>
-                                            <div>
-                                            <AsyncTypeahead
-                                                id='typeahead-threshold-actions'
-                                                labelKey='label'
-                                                size="lg"
-                                                multiple
-                                                onChange={this.onChange}
-                                                options={this.state.options}
-                                                clearButton={true}
-                                                placeholder=''
-                                                selected={this.state.selected}
-                                                onSearch={this.handleSearch}
-                                                isLoading={this.state.loading}
-                                                filterBy={this.filterBy}
-                                                useCache={false}
-                                            />
-                                            </div>
-                                        </div>
+                    {/* begin::Form */}
+                    <div className='form'>
+                        <div className='card-body'>
+                            <div className='form-group row'>
+                                <div className='col-xl-6 col-lg-6'>
+                                    <label>Actions</label>
+                                    <div>
+                                        <AsyncTypeahead
+                                            id='typeahead-threshold-actions'
+                                            labelKey='label'
+                                            size="lg"
+                                            multiple
+                                            onChange={onChange}
+                                            options={options}
+                                            clearButton={true}
+                                            placeholder=''
+                                            selected={selected}
+                                            onSearch={handleSearch}
+                                            isLoading={loading}
+                                            filterBy={filterBy}
+                                            useCache={false}
+                                        />
                                     </div>
                                 </div>
                             </div>
-                            {/* end::Form */}
-                        </form>
-                    );
-                }}
-            </Formik>
-            </BlockUi>
-        );
-    }
+                        </div>
+                    </div>
+                    {/* end::Form */}
+                </form>
+            }
+        </Formik>
+    </BlockUi>
 }
 
 export default injectIntl(ThresholdActionComponent);

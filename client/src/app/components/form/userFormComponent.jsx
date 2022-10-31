@@ -167,7 +167,7 @@ class UserFormComponent extends React.Component {
                                 }
                             });
                         }
-                    }, []);
+                    }, [setFieldValue]);
 
                     return (
                         <form

@@ -1,42 +1,41 @@
-    import React, { Suspense } from "react";
+import React, { Suspense } from "react";
 import { Redirect, Switch } from "react-router-dom";
-import { LayoutSplashScreen, ContentRoute } from "../_metronic/layout";
+import { ContentRoute, LayoutSplashScreen } from "../_metronic/layout";
 
-import { Dashboard } from "./pages/dashboard/Dashboard";
+import { usePermissions } from "./modules/Permission/PermissionsProvider";
+import { AlarmsForm } from "./pages/alarms/alarms-form/AlarmsForm";
+import { AlarmsList } from "./pages/alarms/alarms-list/AlarmsList";
+import { AssetsForm } from "./pages/assets/assets-form/AssetsForm";
+import { CreateAsset } from "./pages/assets/assets-form/CreateAsset";
+import { AssetsList } from "./pages/assets/assets-list/AssetsList";
+import { BoardFamiliesForm } from "./pages/board-families/form/BoardFamiliesForm";
+import { BoardFamiliesList } from "./pages/board-families/list/BoardFamiliesList";
+import { Dashboard } from "./pages/dashboards/Dashboard";
+import { ContainersDashboard } from "./pages/dashboards/ContainersDashboard";
 import { Device } from "./pages/devices/device/Device";
 import { DevicesList } from "./pages/devices/devices-list/DevicesList";
 import { DevicesProvision } from "./pages/devices/devices-provision/DevicesProvision";
 import { DevicesUpload } from "./pages/devices/devices-upload/DevicesUpload";
-import { GroupsList } from "./pages/groups/groups-list/GroupsList";
+import { FloorMapsForm } from "./pages/floor-maps/form/FloorMapsForm";
+import { FloorMapsList } from "./pages/floor-maps/list/FloorMapsList";
+import { GeofencesForm } from "./pages/geofences/geofences-form/GeofencesForm";
 import { GroupsForm } from "./pages/groups/groups-form/GroupsForm";
+import { GroupsList } from "./pages/groups/groups-list/GroupsList";
 import { NotificationTemplatesForm } from "./pages/notification-templates/notifications-templates-form/NotificationTemplatesForm";
 import { NotificationTemplatesList } from "./pages/notification-templates/notifications-templates-list/NotificationTemplatesList";
-import { AlarmsList } from "./pages/alarms/alarms-list/AlarmsList";
-import { AlarmsForm } from "./pages/alarms/alarms-form/AlarmsForm";
-import { ThresholdsList } from "./pages/thresholds/thresholds-list/ThresholdsList";
-import { ThresholdsForm } from "./pages/thresholds/thresholds-form/ThresholdsForm";
-import {TenantsList} from "./pages/tenants/tenants-list/TenantsList";
-import {TenantsForm} from "./pages/tenants/tenants-form/TenantsForm";
-import { BoardFamiliesList } from "./pages/board-families/list/BoardFamiliesList";
-import { BoardFamiliesForm } from "./pages/board-families/form/BoardFamiliesForm";
-import {ProfilesForm} from "./pages/profiles/profiles-form/ProfilesForm";
+import { ProfilesForm } from "./pages/profiles/profiles-form/ProfilesForm";
 import { ProfilesList } from "./pages/profiles/profiles-list/ProfilesList";
-import { AssetsList } from "./pages/assets/assets-list/AssetsList";
-import { AssetsForm } from "./pages/assets/assets-form/AssetsForm";
-import { CreateAsset } from "./pages/assets/assets-form/CreateAsset";
-import {UsersList} from "./pages/users/users-list/UsersList";
-import {UsersForm} from "./pages/users/users-form/UsersForm";
-import {TenantsNewList} from "./pages/tenants.new/tenants-list/TenantsList";
-import {TenantsNewForm} from "./pages/tenants.new/tenants-form/TenantsForm";
-import {FloorMapsList} from "./pages/floor-maps/list/FloorMapsList";
-import {FloorMapsForm} from "./pages/floor-maps/form/FloorMapsForm";
-import {RoutesList} from "./pages/routes/routes-list/RoutesList";
-import {RoutesForm} from "./pages/routes/routes-form/RoutesForm";
+import { RoutesForm } from "./pages/routes/routes-form/RoutesForm";
 import { RouteCompletion } from "./pages/routes/routes-list/RouteCompletion";
-import { GeofencesForm } from "./pages/geofences/geofences-form/GeofencesForm";
+import { RoutesList } from "./pages/routes/routes-list/RoutesList";
+import { TenantsNewForm } from "./pages/tenants.new/tenants-form/TenantsForm";
+import { TenantsNewList } from "./pages/tenants.new/tenants-list/TenantsList";
+import { ThresholdsForm } from "./pages/thresholds/thresholds-form/ThresholdsForm";
+import { ThresholdsList } from "./pages/thresholds/thresholds-list/ThresholdsList";
+import { UsersForm } from "./pages/users/users-form/UsersForm";
+import { UsersList } from "./pages/users/users-list/UsersList";
 import { GeofencesList } from "./pages/geofences/geofences-list/GeofencesList";
-
-import ResourceNotFound from "./modules/Permission/resourceNotFound";
+import { CreateThreshold } from "./pages/thresholds/thresholds-form/CreateThreshold";
 
 /*const UserProfilepage = lazy(() =>
   import("./modules/UserProfile/UserProfilePage")
@@ -48,6 +47,7 @@ export default function BasePage() {
   // }, []) // [] - is required if you need only one call
   // https://reactjs.org/docs/hooks-reference.html#useeffect
 
+  const { permissions } = usePermissions()
   return (
     <Suspense fallback={<LayoutSplashScreen />}>
       <Switch>
@@ -55,86 +55,104 @@ export default function BasePage() {
           /* Redirect from root URL to /dashboard. */
           <Redirect exact from="/" to="/dashboard" />
         }
-        <ContentRoute path="/dashboard" component={Dashboard} />
+        {permissions.canViewContainerDashboard && [
+          <ContentRoute key="/dashboard/containers" path="/dashboard/containers" component={ContainersDashboard} />
+        ]}
+        <ContentRoute path="/dashboard/default" component={Dashboard} />
 
-        { /* Devices Routes*/ }
-        <ContentRoute path="/devices/edit/:id" component={Device} />
-        <ContentRoute path="/devices/provision" component={DevicesProvision} />
-        <ContentRoute path="/devices/upload" component={DevicesUpload} />
-        <ContentRoute path="/devices/list" component={DevicesList} />
-        <ContentRoute path="/devices/new" component={Device} />
-        <ContentRoute path="/devices/:id" component={Device} />
+        { /* Devices Routes*/}
+        {permissions.canViewDevices && [
+          <ContentRoute key="/devices/edit/:id" path="/devices/edit/:id" component={Device} />,
+          <ContentRoute key="/devices/provision" path="/devices/provision" component={DevicesProvision} />,
+          <ContentRoute key="/devices/upload" path="/devices/upload" component={DevicesUpload} />,
+          <ContentRoute key="/devices/new" path="/devices/new" component={Device} />,
+          <ContentRoute key="/devices/list" path="/devices/list" component={DevicesList} />,
+          <ContentRoute key="/devices/:id" path="/devices/:id" component={Device} />
+        ]}
 
-        { /* Board families Routes*/ }
-        <ContentRoute path="/board-families/edit/:id" component={BoardFamiliesForm} />
-        <ContentRoute path="/board-families/list" component={BoardFamiliesList} />
-        <ContentRoute path="/board-families/new" component={BoardFamiliesForm} />
+        { /* Board families Routes*/}
+        {permissions.canViewBoardFamilies && [
+          <ContentRoute path="/board-families/edit/:id" component={BoardFamiliesForm} />,
+          <ContentRoute path="/board-families/list" component={BoardFamiliesList} />,
+          <ContentRoute path="/board-families/new" component={BoardFamiliesForm} />]
+        }
 
         { /* Groups Routes*/}
-        <ContentRoute path="/groups/edit/:id" component={GroupsForm} />
-        <ContentRoute path="/groups/list" component={GroupsList} />
-        <ContentRoute path="/groups/new" component={GroupsForm} />
+        {permissions.canViewGroups &&
+          [<ContentRoute key="/groups/edit/:id" path="/groups/edit/:id" component={GroupsForm} />,
+          <ContentRoute key="/groups/list" path="/groups/list" component={GroupsList} />,
+          <ContentRoute key="/groups/new" path="/groups/new" component={GroupsForm} />
+          ]}
 
         { /* Thresholds Routes*/}
-        <ContentRoute path="/thresholds/edit/:id" component={ThresholdsForm} />
-        <ContentRoute path="/thresholds/list" component={ThresholdsList} />
-        <ContentRoute path="/thresholds/new" component={ThresholdsForm} />
-
-        { /* Tenants Routes*/}
-        <ContentRoute path="/tenants/edit/:id" component={TenantsForm} />
-        <ContentRoute path="/tenants/list" component={TenantsList} />
-        <ContentRoute path="/tenants/new" component={TenantsForm} />
+        {permissions.canViewThresholds && [
+          <ContentRoute key="/thresholds/new" path="/thresholds/new" component={CreateThreshold} />,
+          <ContentRoute key="/thresholds/list" path="/thresholds/list" component={ThresholdsList} />,
+          <ContentRoute key="/thresholds/:id/edit" path="/thresholds/:id/edit" component={ThresholdsForm} />
+        ]}
 
         { /* Profiles Routes*/}
-        <ContentRoute path="/profiles/edit/:id" component={ProfilesForm} />
-        <ContentRoute path="/profiles/list" component={ProfilesList} />
-        <ContentRoute path="/profiles/new" component={ProfilesForm} />
+        {permissions.canViewProfiles &&
+          [
+            <ContentRoute key="/profiles/edit/:id" path="/profiles/edit/:id" component={ProfilesForm} />,
+            <ContentRoute key="/profiles/list" path="/profiles/list" component={ProfilesList} />,
+            <ContentRoute key="/profiles/new" path="/profiles/new" component={ProfilesForm} />
+          ]}
 
-      { /* Assets Routes*/}
-      <ContentRoute path="/assets/list" component={AssetsList} />
-      <ContentRoute path="/assets/new" component={CreateAsset} />
-      <ContentRoute path="/assets/:id" component={AssetsForm} />
+        { /* Assets Routes*/}
+        {permissions.canViewAssets &&
+          [<ContentRoute key="/assets/list" path="/assets/list" component={AssetsList} />,
+          <ContentRoute key="/assets/new" path="/assets/new" component={CreateAsset} />,
+          <ContentRoute key="/assets/:id" path="/assets/:id" component={AssetsForm} />
+          ]
+        }
+        { /* Routes Routes*/}
+        {permissions.canViewRoutes && [
+          <ContentRoute key="/routes/edit/:id" path="/routes/edit/:id" component={RoutesForm} />,
+          <ContentRoute key="/routes/list" path="/routes/list" component={RoutesList} />,
+          <ContentRoute key="/routes/new" path="/routes/new" component={RoutesForm} />,
+          <ContentRoute key="/routes/completion" path="/routes/completion" component={RouteCompletion} />]
+        }
 
-      { /* Routes Routes*/}
-      <ContentRoute path="/routes/edit/:id" component={RoutesForm} />
-      <ContentRoute path="/routes/list" component={RoutesList} />
-      <ContentRoute path="/routes/new" component={RoutesForm} />
-      <ContentRoute path="/routes/completion" component={RouteCompletion} />
-
-      { /* Geofences Routes*/}
-      <ContentRoute path="/geofences/edit/:id" component={GeofencesForm} />
-      <ContentRoute path="/geofences/list" component={GeofencesList} />
-      <ContentRoute path="/geofences/new" component={GeofencesForm} />
+        { /* Geofences Routes*/}
+        {permissions.canViewGeofences && [
+          <ContentRoute key="/geofences/edit/:id" path="/geofences/edit/:id" component={GeofencesForm} />,
+          <ContentRoute key="/geofences/list" path="/geofences/list" component={GeofencesList} />,
+          <ContentRoute key="/geofences/new" path="/geofences/new" component={GeofencesForm} />]
+        }
 
         { /* Users Routes*/}
-        <ContentRoute path="/users/edit/:id" component={UsersForm} />
-        <ContentRoute path="/users/list" component={UsersList} />
-        <ContentRoute path="/users/new" component={UsersForm} />
-
+        {permissions.canViewUsers && [
+          <ContentRoute key="/users/edit/:id" path="/users/edit/:id" component={UsersForm} />,
+          <ContentRoute key="/users/list" path="/users/list" component={UsersList} />,
+          <ContentRoute key="/users/new" path="/users/new" component={UsersForm} />
+        ]}
         { /* Tenants (as companies Routes*/}
-        <ContentRoute path="/tenants-new/edit/:id" component={TenantsNewForm} />
-        <ContentRoute path="/tenants-new/list" component={TenantsNewList} />
-        <ContentRoute path="/tenants-new/new" component={TenantsNewForm} />
-
+        {permissions.canViewTenants && [
+          <ContentRoute key="/tenants/edit/:id" path="/tenants/edit/:id" component={TenantsNewForm} />,
+          <ContentRoute key="/tenants/list" path="/tenants/list" component={TenantsNewList} />,
+          <ContentRoute key="/tenants/new" path="/tenants/new" component={TenantsNewForm} />
+        ]}
         { /* Alarms Routes*/}
-        <ContentRoute path="/alarms/edit/:id" component={AlarmsForm} />
-        <ContentRoute path="/alarms/list" component={AlarmsList} />
-        <ContentRoute path="/alarms/new" component={AlarmsForm} />
-
+        {permissions.canViewAlarms && [
+          <ContentRoute key="/alarms/edit/:id" path="/alarms/edit/:id" component={AlarmsForm} />,
+          <ContentRoute key="/alarms/list" path="/alarms/list" component={AlarmsList} />,
+          <ContentRoute key="/alarms/new" path="/alarms/new" component={AlarmsForm} />]
+        }
         { /* NotificationTemplates Routes*/}
-        <ContentRoute path="/notification-templates/edit/:id" component={NotificationTemplatesForm} />
-        <ContentRoute path="/notification-templates/list" component={NotificationTemplatesList} />
-        <ContentRoute path="/notification-templates/new" component={NotificationTemplatesForm} />
-
+        {permissions.canViewNotificationTemplates && [
+          <ContentRoute key="/notification-templates/edit/:id" path="/notification-templates/edit/:id" component={NotificationTemplatesForm} />,
+          <ContentRoute key="/notification-templates/list" path="/notification-templates/list" component={NotificationTemplatesList} />,
+          <ContentRoute key="/notification-templates/new" path="/notification-templates/new" component={NotificationTemplatesForm} />
+        ]}
         { /* Floor Maps Routes*/}
-        <ContentRoute path="/floor-maps/edit/:id" component={FloorMapsForm} />
-        <ContentRoute path="/floor-maps/list" component={FloorMapsList} />
-        <ContentRoute path="/floor-maps/new" component={FloorMapsForm} />
-        
-        { /* Fallback Error Routes */}
-        <ContentRoute path="/not-found" component={ResourceNotFound} />
+        {permissions.canViewFloorMaps && [
+          <ContentRoute key="/floor-maps/edit/:id" path="/floor-maps/edit/:id" component={FloorMapsForm} />,
+          <ContentRoute key="/floor-maps/list" path="/floor-maps/list" component={FloorMapsList} />,
+          <ContentRoute key="/floor-maps/new" path="/floor-maps/new" component={FloorMapsForm} />
+        ]}
 
-        <Redirect to="error/error-v1" />
+        <Redirect to="/error/error-v1" />
       </Switch>
     </Suspense>
   );

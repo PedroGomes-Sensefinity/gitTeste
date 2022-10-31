@@ -152,7 +152,7 @@ class TenantsFormComponent extends React.Component {
                                         }
                                     });
                             }
-                        }, []);
+                        }, [setFieldValue]);
 
                         return (
                             <form
@@ -182,7 +182,7 @@ class TenantsFormComponent extends React.Component {
                                             {isSubmitting}
                                         </button>
                                         <Link
-                                            to='/tenants-new/list'
+                                            to='/tenants/list'
                                             className='btn btn-secondary'>
                                             Back to list
                                         </Link>

@@ -115,7 +115,7 @@ class FloorMapFormComponent extends React.Component {
                                 setFieldValue('description', res.description, false);
                             });
                         }
-                    }, []);
+                    }, [setFieldValue]);
 
                     return (
                         <form

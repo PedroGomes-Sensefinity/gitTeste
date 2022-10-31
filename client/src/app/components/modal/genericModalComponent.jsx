@@ -1,8 +1,7 @@
 import React from 'react';
 
 import Modal from "react-bootstrap/cjs/Modal";
-import {Button} from "react-bootstrap";
-import {injectIntl} from "react-intl";
+import { injectIntl } from "react-intl";
 
 
 class GenericModalComponent extends React.Component {
