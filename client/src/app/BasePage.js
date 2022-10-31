@@ -28,8 +28,8 @@ import { ProfilesList } from "./pages/profiles/profiles-list/ProfilesList";
 import { RoutesForm } from "./pages/routes/routes-form/RoutesForm";
 import { RouteCompletion } from "./pages/routes/routes-list/RouteCompletion";
 import { RoutesList } from "./pages/routes/routes-list/RoutesList";
-import { TenantsNewForm } from "./pages/tenants.new/tenants-form/TenantsForm";
-import { TenantsNewList } from "./pages/tenants.new/tenants-list/TenantsList";
+import { TenantsForm } from "./pages/tenants.new/tenants-form/TenantsForm";
+import { TenantsList } from "./pages/tenants.new/tenants-list/TenantsList";
 import { ThresholdsForm } from "./pages/thresholds/thresholds-form/ThresholdsForm";
 import { ThresholdsList } from "./pages/thresholds/thresholds-list/ThresholdsList";
 import { UsersForm } from "./pages/users/users-form/UsersForm";
@@ -129,9 +129,9 @@ export default function BasePage() {
         ]}
         { /* Tenants (as companies Routes*/}
         {permissions.canViewTenants && [
-          <ContentRoute key="/tenants/edit/:id" path="/tenants/edit/:id" component={TenantsNewForm} />,
-          <ContentRoute key="/tenants/list" path="/tenants/list" component={TenantsNewList} />,
-          <ContentRoute key="/tenants/new" path="/tenants/new" component={TenantsNewForm} />
+          <ContentRoute key="/tenants/edit/:id" path="/tenants/edit/:id" component={TenantsForm} />,
+          <ContentRoute key="/tenants/list" path="/tenants/list" component={TenantsList} />,
+          <ContentRoute key="/tenants/new" path="/tenants/new" component={TenantsForm} />
         ]}
         { /* Alarms Routes*/}
         {permissions.canViewAlarms && [
