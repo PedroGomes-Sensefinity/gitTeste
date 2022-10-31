@@ -75,7 +75,7 @@ export function ThresholdsList() {
                 });
         })
         .then((result) => {
-            if(result.data != undefined){
+            if(result.data !== undefined){
                 if (result.length != 0) {
                     result.data.forEach(threshold => {
                         const rule = JSON.parse(threshold['rule']);
@@ -99,8 +99,8 @@ export function ThresholdsList() {
                         }
                     })
                 }
+                setData(result.data);
             }
-            setData(result.data);
         });
     }
 
