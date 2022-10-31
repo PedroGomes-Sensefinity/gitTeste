@@ -97,9 +97,8 @@ export function ThresholdsList() {
                         }
                     })
                 }
-            }
-            setData(result.data);
-        });
+                setData(result.data);
+            });
     }
 
 
