@@ -1,17 +1,17 @@
-import React, {useEffect, useState} from 'react';
-import {ErrorMessage, Field, Formik} from 'formik';
-import * as Yup from 'yup';
-import {Link} from 'react-router-dom';
-import {makeStyles} from '@material-ui/styles';
 import DoneIcon from '@material-ui/icons/Done';
-import {getInputClasses} from '../../utils/formik';
-import '../../utils/yup-validations';
+import { makeStyles } from '@material-ui/styles';
+import { ErrorMessage, Field, Formik } from 'formik';
+import React, { useEffect, useState } from 'react';
 import BlockUi from "react-block-ui";
-import toaster from '../../utils/toaster';
+import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { injectIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
+import * as Yup from 'yup';
 import apiService from '../../services/apiService';
 import assetsService from "../../services/assetsService";
-import {AsyncTypeahead, Typeahead} from 'react-bootstrap-typeahead';
+import { getInputClasses } from '../../utils/formik';
+import toaster from '../../utils/toaster';
+import '../../utils/yup-validations';
 
 const useStyles = makeStyles((theme) => ({
     headerMarginTop: {
@@ -112,12 +112,12 @@ function AssetsFormComponentFunctional (props) {
         let type;
 
         ruleTypeOptions.forEach(function(options) {
-            if(options["id"] == initialValues.asset_type_id){
+            if(options["id"] === initialValues.asset_type_id){
                 type = options["type"]
             }
         })
         if(type === "Container"){
-            if(value.length != 13){
+            if(value.length !== 13){
                 error = "Invalid Label - Size Incorrect (e.g: AAAA111111-22)"
                 return error
             }

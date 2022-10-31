@@ -1,12 +1,11 @@
 import React, { useMemo } from 'react';
 
-import { Link } from 'react-router-dom';
-import history from '../../../history';
+import { Button, Card, CardContent } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { Card, CardContent, Button } from '@material-ui/core';
 
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
+import { useHistory } from 'react-router-dom';
 import TableGrid from '../../../components/table-grid/table-grid.component';
 import { usePermissions } from '../../../modules/Permission/PermissionsProvider';
 
@@ -27,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 
 export function BoardFamiliesList() {
     const classes = useStyles();
+    const history = useHistory()
 
     const columns = [
         {
@@ -44,7 +44,7 @@ export function BoardFamiliesList() {
                 {
                     icon: EditIcon,
                     tooltip: 'Edit board family',
-                    onClick: (event, rowData) => {
+                    onClick: (_event, rowData) => {
                         history.push(`/board-families/edit/${rowData.id}`);
                     },
                 })

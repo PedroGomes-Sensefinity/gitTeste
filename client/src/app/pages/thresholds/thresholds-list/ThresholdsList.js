@@ -73,30 +73,29 @@ export function ThresholdsList() {
                     });
                 });
         }).then((result) => {
-                if (result.data != undefined) {
-                    if (result.length != 0) {
-                        result.data.forEach(threshold => {
-                            const rule = JSON.parse(threshold['rule']);
-                            switch (rule['type']) {
-                                case 'temperaturedegree':
-                                case 'temperature':
-                                    threshold['type'] = "Temperature";
-                                    break;
-                                case 'geofences':
-                                case 'geofence':
-                                    threshold['type'] = "Geo-fences";
-                                    break;
-                                case 'humidityrelative':
-                                    threshold['type'] = "Humidity";
-                                    break;
-                                case 'buttonpressed':
-                                    threshold['type'] = "Button pressed"
-                                    break;
-                                default:
-                                    console.log("Error: Unidentified threshold type.")
-                            }
-                        })
-                    }
+            if (result.data !== undefined) {
+                if (result.length !== 0) {
+                    result.data.forEach(threshold => {
+                        const rule = JSON.parse(threshold['rule']);
+                        switch (rule['type']) {
+                            case 'temperaturedegree':
+                            case 'temperature':
+                                threshold['type'] = "Temperature";
+                                break;
+                            case 'geofences':
+                            case 'geofence':
+                                threshold['type'] = "Geo-fences";
+                                break;
+                            case 'humidityrelative':
+                                threshold['type'] = "Humidity";
+                                break;
+                            case 'buttonpressed':
+                                threshold['type'] = "Button pressed"
+                                break;
+                            default:
+                                console.log("Error: Unidentified threshold type.")
+                        }
+                    })
                 }
                 setData(result.data);
             });
