@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
-import { Link } from 'react-router-dom';
-import history from '../../../history';
+import { Link, useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { Card, CardContent, Button } from '@material-ui/core';
 
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import TableGrid from '../../../components/table-grid/table-grid.component';
+import { usePermissions } from '../../../modules/Permission/PermissionsProvider';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -25,7 +25,21 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export function GroupsList() {
+    const history = useHistory()
     const classes = useStyles();
+    const { permissions } = usePermissions()
+
+    const actions = useMemo(() => {
+        if (permissions.canEditGroups) {
+            return [{
+                icon: EditIcon,
+                tooltip: 'Edit group',
+                onClick: (event, rowData) => {
+                    history.push(`/groups/edit/${rowData.id}`);
+                },
+            }]
+        }
+    }, [permissions])
 
     const columns = [
         {
@@ -45,25 +59,19 @@ export function GroupsList() {
     return (
         <Card>
             <CardContent>
-                <Link to='/groups/new'>
+                {permissions.canCreateGroups ?
                     <Button
                         variant='contained'
                         color='secondary'
-                        className={classes.button}>
+                        className={classes.button}
+                        onClick={() => {
+                            history.push('/groups/new')
+                        }}>
                         <AddIcon className={classes.leftIcon} />
                         New group
-                    </Button>
-                </Link>
+                    </Button> : <></>}
                 <TableGrid
-                    actions={[
-                        {
-                            icon: EditIcon,
-                            tooltip: 'Edit group',
-                            onClick: (event, rowData) => {
-                                history.push(`/groups/edit/${rowData.id}`);
-                            },
-                        },
-                    ]}
+                    actions={actions}
                     title=''
                     columns={columns}
                     endpoint={'group'}

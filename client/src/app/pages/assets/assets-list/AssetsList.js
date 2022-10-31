@@ -1,5 +1,5 @@
 import { Button, Card, CardContent } from '@material-ui/core';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
@@ -7,6 +7,7 @@ import DetailsIcon from '@material-ui/icons/Details';
 import EditIcon from '@material-ui/icons/Edit';
 import { useHistory } from 'react-router-dom';
 import TableGrid from '../../../components/table-grid/table-grid.component';
+import { usePermissions } from '../../../modules/Permission/PermissionsProvider';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -20,6 +21,28 @@ const useStyles = makeStyles((theme) => ({
 export function AssetsList() {
     const history = useHistory()
     const classes = useStyles();
+    const { permissions } = usePermissions()
+
+    const actions = useMemo(() => {
+        const acts = [{
+            icon: DetailsIcon,
+            tooltip: 'Inspect asset',
+            onClick: (_, rowData) => {
+                history.push(`/assets/${rowData.id}`);
+            },
+        }]
+        if (permissions.canEditAssets) {
+            acts.push({
+                icon: EditIcon,
+                tooltip: 'Edit asset',
+                onClick: (_, rowData) => {
+                    history.push(`/assets/${rowData.id}#edit`);
+                },
+            })
+        }
+        return acts
+    }, [permissions])
+
 
     const columns = [
         {
@@ -31,8 +54,10 @@ export function AssetsList() {
             title: 'Description',
         },
     ];
-        return <Card>
-            <CardContent>  
+
+    return <Card>
+        <CardContent>
+            {permissions.canCreateAssets ?
                 <Button
                     variant='contained'
                     color='secondary'
@@ -40,26 +65,14 @@ export function AssetsList() {
                     className={classes.button}>
                     <AddIcon className={classes.leftIcon} />
                     New Asset
-                </Button>
-                <TableGrid
-                    actions={[{
-                        icon: DetailsIcon,
-                        tooltip: 'Inspect device',
-                        onClick: (_, rowData) => {
-                            history.push(`/assets/${rowData.id}`);
-                        },
-                    },{
-                        icon: EditIcon,
-                        tooltip: 'Edit asset',
-                        onClick: (_, rowData) => {
-                            history.push(`/assets/${rowData.id}#edit`);
-                        },
-                        }]}
-                    title=''
-                    columns={columns}
-                    endpoint={'asset'}
-                    dataField='assets'
-                />
-            </CardContent>
-        </Card>
+                </Button> : <></>}
+            <TableGrid
+                actions={actions}
+                title=''
+                columns={columns}
+                endpoint={'asset'}
+                dataField='assets'
+            />
+        </CardContent>
+    </Card>
 }

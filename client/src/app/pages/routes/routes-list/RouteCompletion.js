@@ -1,38 +1,19 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 
-import {Button, Card, CardContent} from '@material-ui/core';
-
-import TableGrid from '../../../components/table-grid/table-grid.component';
-import {makeStyles} from "@material-ui/core/styles";
-import { MenuItem, InputBase, Menu, Divider } from "@material-ui/core";
-import CheckIcon from "@material-ui/icons/Check";
-import SearchIcon from "@material-ui/icons/Search";
-import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
-
+import { Card, CardContent } from '@material-ui/core';
 import moment from 'moment';
 import Form from 'react-bootstrap/Form';
-import apiService from '../../../services/apiService'
+import TableGrid from '../../../components/table-grid/table-grid.component';
 
-const useStyles = makeStyles((theme) => ({
-    button: {
-        margin: theme.spacing(1),
-    },
-    leftIcon: {
-        marginRight: theme.spacing(1),
-    },
-}));
 export function RouteCompletion() {
-    const classes = useStyles();
     const [timefilter, setTimefilter] = React.useState();
 
     let dateEnd = moment.utc();
     let dateStart = moment().subtract(1, "days").utc();
 
-    const [date, setStatusDate] = React.useState({ start: dateStart.format('YYYY-MM-DDTHH:mm:00.00[Z]'), end: dateEnd.format('YYYY-MM-DDTHH:mm:00.00[Z]')  });
-    
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const [searchText, setSearchText] = React.useState("");
-    const [selection, setSelection] = React.useState("");
+    const [date, setStatusDate] = React.useState({ start: dateStart.format('YYYY-MM-DDTHH:mm:00.00[Z]'), end: dateEnd.format('YYYY-MM-DDTHH:mm:00.00[Z]') });
+
+    const [, setSelection] = React.useState("");
 
 
     const columns = [
@@ -77,7 +58,7 @@ export function RouteCompletion() {
         let dateStart = '';
         let dateEnd = moment.utc();
 
-        switch(event.target.value) {
+        switch (event.target.value) {
             default:
                 dateStart = moment().subtract(1, "days").utc();
                 break;
@@ -99,33 +80,16 @@ export function RouteCompletion() {
         }
         setTimefilter(event.target.value);
 
-        setStatusDate({ start: dateStart.format('YYYY-MM-DDTHH:mm:00.00[Z]'),
-         end: dateEnd.format('YYYY-MM-DDTHH:mm:00.00[Z]') })
+        setStatusDate({
+            start: dateStart.format('YYYY-MM-DDTHH:mm:00.00[Z]'),
+            end: dateEnd.format('YYYY-MM-DDTHH:mm:00.00[Z]')
+        })
 
     }
 
     useEffect(() => {
         setSelection("Find group");
     }, []);
-
-    
-    const handleMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
-      };
-    
-      const handleClose = (e) => {
-        if (e.target.innerText !== selection && e.target.innerText !== "") {
-          setSelection(e.target.innerText);
-        }
-        setSearchText("");
-        setAnchorEl(null);
-      };
-    
-      const handleSearchChange = (e) => {
-        setSearchText(e.target.value);
-      };
-
-      
 
     return (
         <Card>

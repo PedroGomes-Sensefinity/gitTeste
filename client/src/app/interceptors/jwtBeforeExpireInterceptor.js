@@ -1,8 +1,5 @@
 import {
-    getToken,
-    checkJwtIsCloseToExpire,
-    signIn,
-    setToken,
+    checkJwtIsCloseToExpire, getToken, setToken, signIn
 } from '../services/authService';
 
 let isRefreshing = false;

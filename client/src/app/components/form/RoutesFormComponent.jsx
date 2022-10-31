@@ -127,7 +127,7 @@ class RoutesFormComponent extends React.Component {
                                 setFieldValue('description', item.description);
                             });
                         }
-                    }, []);
+                    }, [setFieldValue]);
 
                     return (
                         <form

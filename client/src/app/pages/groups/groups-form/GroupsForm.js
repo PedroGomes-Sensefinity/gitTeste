@@ -1,30 +1,21 @@
+import { Paper, Tab, Tabs } from "@material-ui/core";
 import React from "react";
+import { TabContainer } from "react-bootstrap";
 import GroupsFormComponent from "../../../components/form/groupsFormComponent";
-import {Paper, Tab, Tabs} from "@material-ui/core";
-import {TabContainer} from "react-bootstrap";
 
 export function GroupsForm({match}) {
     const {id} = match.params;
-    const [value, setValue] = React.useState(0);
-
-    function handleChange(event, newValue) {
-        setValue(newValue);
-    }
-
     return (
         <div>
             <Paper square>
-                <Tabs value={value} indicatorColor="primary" textColor="primary" onChange={handleChange}>
+                <Tabs value={0} indicatorColor="primary" textColor="primary">
                     <Tab label="Group Info"/>
                     {/*<Tab label="Devices" disabled={typeof id === 'undefined'}/>*/}
                 </Tabs>
             </Paper>
             <TabContainer>
-                {value === 0 && <GroupsFormComponent id={id} />}
+                <GroupsFormComponent id={id} />
             </TabContainer>
-            {/*<TabContainer>*/}
-            {/*    {value === 1 && <GroupsDevicesComponent id={id} /> }*/}
-            {/*</TabContainer>*/}
         </div>
     );
 }

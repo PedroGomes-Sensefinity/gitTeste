@@ -1,14 +1,13 @@
-import { Button, Card, CardContent, CircularProgress } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import { Button, Card, CardContent } from '@material-ui/core';
+import React, { useMemo } from 'react';
 
 import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
-import DetailsIcon from '@material-ui/icons/Details';
 import EditIcon from '@material-ui/icons/Edit';
 import { useHistory } from 'react-router-dom';
 import TableGrid from '../../../components/table-grid/table-grid.component';
-import PermissionDenied from '../../../modules/Permission/permissionDenied';
-import usePermissions from '../../../utils/customHooks';
+import { usePermissions } from '../../../modules/Permission/PermissionsProvider';
+
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -22,6 +21,22 @@ const useStyles = makeStyles((theme) => ({
 export function GeofencesList() {
     const history = useHistory()
     const classes = useStyles();
+    const { permissions } = usePermissions()
+
+    const actions = useMemo(() => {
+        const acts = []
+        if (permissions.canEditFloorMaps) {
+            return [{
+                icon: EditIcon,
+                tooltip: 'Edit Geofence',
+                onClick: (_event, rowData) => {
+                    history.push(`/geofences/edit/${rowData.id}`);
+                },
+            }]
+        }
+        return acts
+    }, [permissions])
+
     const columns = [
         {
             field: 'label',
@@ -37,9 +52,10 @@ export function GeofencesList() {
         },
     ];
 
- 
-        return <Card>
-            <CardContent>  
+
+    return <Card>
+        <CardContent>
+            {permissions.canCreateGeofences ?
                 <Button
                     variant='contained'
                     color='secondary'
@@ -47,22 +63,14 @@ export function GeofencesList() {
                     className={classes.button}>
                     <AddIcon className={classes.leftIcon} />
                     New Geofence
-                </Button>
-                <TableGrid
-                    actions={[
-                    {
-                            icon: EditIcon,
-                            tooltip: 'Edit Geofence',
-                            onClick: (event, rowData) => {
-                                history.push(`/geofences/edit/${rowData.id}`);
-                            },
-                        }   
-                    ]}
-                    title=''
-                    columns={columns}
-                    endpoint={'geofence'}
-                    dataField='geofences'
-                />
-            </CardContent>
-        </Card>
+                </Button> : <></>}
+            <TableGrid
+                actions={actions}
+                title=''
+                columns={columns}
+                endpoint={'geofence'}
+                dataField='geofences'
+            />
+        </CardContent>
+    </Card>
 }

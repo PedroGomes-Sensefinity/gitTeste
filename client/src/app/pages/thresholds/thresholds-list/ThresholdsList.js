@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import history from '../../../history';
+import { Button, Card, CardContent } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { Card, CardContent, Button } from '@material-ui/core';
-import apiService from '../../../services/apiService'
-
+import React, { useEffect, useMemo } from 'react';
+import { useHistory } from 'react-router-dom';
+import apiService from '../../../services/apiService';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import TableGrid from '../../../components/table-grid/table-grid.component';
+import { usePermissions } from '../../../modules/Permission/PermissionsProvider';
+
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -27,6 +27,23 @@ const useStyles = makeStyles((theme) => ({
 export function ThresholdsList() {
     const [data, setData] = React.useState([]);
     const classes = useStyles();
+    const history = useHistory()
+
+    const { permissions } = usePermissions()
+
+    const actions = useMemo(() => {
+        const acts = []
+        if (permissions.canEditThresholds) {
+            acts.push({
+                icon: EditIcon,
+                tooltip: 'Edit threshold',
+                onClick: (event, rowData) => {
+                    history.push(`/thresholds/${rowData.id}/edit`);
+                },
+            })
+        }
+        return acts
+    }, [permissions])
 
     const columns = [
         {
@@ -49,37 +66,39 @@ export function ThresholdsList() {
             let params = ['threshold', 999999, 0];
 
             apiService[method](...params)
-            .then((result) => {
-                resolve({
-                    data: result['thresholds'],
-                    page: 0,
-                    totalCount: result.total,
+                .then((result) => {
+                    resolve({
+                        data: result['thresholds'],
+                        page: 0,
+                        totalCount: result.total,
+                    });
                 });
-            });
         })
         .then((result) => {
-            if (result.length != 0) {
-                result.data.forEach(threshold => {
-                    const rule = JSON.parse(threshold['rule']);
-                    switch(rule['type']) {
-                        case 'temperaturedegree':
-                        case 'temperature':
-                            threshold['type'] = "Temperature";
-                            break;
-                        case 'geofences':
-                        case 'geofence':
-                            threshold['type'] = "Geo-fences";
-                            break;
-                        case 'humidityrelative':
-                            threshold['type'] = "Humidity";
-                            break;
-                        case 'buttonpressed':
-                            threshold['type'] = "Button pressed"
-                            break;
-                        default:
-                            console.log("Error: Unidentified threshold type.")
-                    }
-                })
+            if(result.data != undefined){
+                if (result.length != 0) {
+                    result.data.forEach(threshold => {
+                        const rule = JSON.parse(threshold['rule']);
+                        switch(rule['type']) {
+                            case 'temperaturedegree':
+                            case 'temperature':
+                                threshold['type'] = "Temperature";
+                                break;
+                            case 'geofences':
+                            case 'geofence':
+                                threshold['type'] = "Geo-fences";
+                                break;
+                            case 'humidityrelative':
+                                threshold['type'] = "Humidity";
+                                break;
+                            case 'buttonpressed':
+                                threshold['type'] = "Button pressed"
+                                break;
+                            default:
+                                console.log("Error: Unidentified threshold type.")
+                        }
+                    })
+                }
             }
             setData(result.data);
         });
@@ -89,28 +108,22 @@ export function ThresholdsList() {
     return (
         <Card>
             <CardContent>
-                <Link to='/thresholds/new'>
+                {permissions.canCreateThresholds ?
                     <Button
                         variant='contained'
                         color='secondary'
-                        className={classes.button}>
+                        className={classes.button}
+                        onClick={() => {
+                            history.push('/thresholds/new')
+                        }}>
                         <AddIcon className={classes.leftIcon} />
                         New threshold
-                    </Button>
-                </Link>
+                    </Button> : <></>}
                 <TableGrid
-                    actions={[
-                        {
-                            icon: EditIcon,
-                            tooltip: 'Edit threshold',
-                            onClick: (event, rowData) => {
-                                history.push(`/thresholds/edit/${rowData.id}`);
-                            },
-                        },
-                    ]}
+                    actions={actions}
                     title=''
                     columns={columns}
-                    data = {data}
+                    data={data}
                 />
             </CardContent>
         </Card>

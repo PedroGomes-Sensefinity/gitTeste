@@ -124,7 +124,7 @@ class ProfilesFormComponent extends React.Component {
                                 }
                             });
                         }
-                    }, []);
+                    }, [setFieldValue]);
 
                     return (
                         <form

@@ -35,7 +35,6 @@ export const UploadComponent = props => {
     const { setFieldValue } = props;
     const {
         acceptedFiles,
-        fileRejections,
         getRootProps,
         getInputProps,
         isDragActive,

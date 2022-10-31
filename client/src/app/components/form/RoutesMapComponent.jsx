@@ -75,7 +75,7 @@ class RoutesMapComponent extends React.Component {
 
     mountGridGeofenceSizes = () => {
         let data = [];
-        this.state.geofenceSizes.map((value, i) => {
+        this.state.geofenceSizes.forEach((value, i) => {
             data.push({
                 point: i+1,
                 size: value,

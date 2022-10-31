@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { Link } from 'react-router-dom';
 import history from '../../../history';
@@ -8,6 +8,7 @@ import { Card, CardContent, Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import TableGrid from '../../../components/table-grid/table-grid.component';
+import { usePermissions } from '../../../modules/Permission/PermissionsProvider';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -34,28 +35,40 @@ export function BoardFamiliesList() {
         }
     ];
 
+    const { permissions } = usePermissions()
+
+    const actions = useMemo(() => {
+        const acts = []
+        if (permissions.canEditBoardFamilies) {
+            acts.push(
+                {
+                    icon: EditIcon,
+                    tooltip: 'Edit board family',
+                    onClick: (event, rowData) => {
+                        history.push(`/board-families/edit/${rowData.id}`);
+                    },
+                })
+        }
+        return acts
+    }, [permissions])
+
     return (
         <Card>
             <CardContent>
-                <Link to='/board-families/new'>
+                {permissions.canCreateBoardFamilies ?
                     <Button
                         variant='contained'
                         color='secondary'
-                        className={classes.button}>
+                        className={classes.button}
+                        onClick={() => {
+                            history.push('/board-families/new')
+                        }}>
                         <AddIcon className={classes.leftIcon} />
                         New board family
-                    </Button>
-                </Link>
+                    </Button> : <></>
+                }
                 <TableGrid
-                    actions={[
-                        {
-                            icon: EditIcon,
-                            tooltip: 'Edit board family',
-                            onClick: (event, rowData) => {
-                                history.push(`/board-families/edit/${rowData.id}`);
-                            },
-                        },
-                    ]}
+                    actions={actions}
                     title=''
                     columns={columns}
                     endpoint={'board_families'}

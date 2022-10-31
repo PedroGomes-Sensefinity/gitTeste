@@ -101,7 +101,7 @@ class DeviceThresholdComponent extends React.Component {
 
     filterThresholdSelected = (options) => {
         let data = [];
-        options.map((t) => {
+        options.forEach((t) => {
             if(!this.state.selectedThresholdsId.includes(t.id)) {
                 data.push({
                     id: t.id,
