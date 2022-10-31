@@ -462,7 +462,7 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                                     'smsName'
                                                 )}`}
                                                 name='smsName'
-                                                placeholder='Enter the notification message'
+                                                placeholder='Enter the Contact Name'
                                             />
                                             <ErrorMessage
                                                 name='smsName'
@@ -479,7 +479,7 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                                     'smsNumber'
                                                 )}`}
                                                 name='smsNumber'
-                                                placeholder=''
+                                                placeholder='351XXXXXXXXX'
                                             />
                                             <ErrorMessage
                                                 name='smsNumber'
