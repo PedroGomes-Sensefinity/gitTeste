@@ -25,6 +25,7 @@ export function AsideMenuList({ layoutProps }) {
       <ul className={`menu-nav ${layoutProps.ulClasses}`}>
         {/*begin::1 Level*/}
         <li
+<<<<<<< client/src/_metronic/layout/components/aside/aside-menu/AsideMenuList.js
           className={`menu-item ${getMenuItemActive("/dashboard", false)}`}
           aria-haspopup="true"
         >
@@ -74,6 +75,19 @@ export function AsideMenuList({ layoutProps }) {
         </li>
         {/*end::1 Level*/}
 
+=======
+              className={`menu-item ${getMenuItemActive("/dashboard", false)}`}
+              aria-haspopup="true"
+          >
+              <NavLink className="menu-link" to="/dashboard">
+                  <span className="svg-icon menu-icon">
+                    <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Display1.svg")} />
+                  </span>
+                  <span className="menu-text">Dashboard</span>
+              </NavLink>
+          </li>
+        {/*end::1 Level*/}
+>>>>>>> client/src/_metronic/layout/components/aside/aside-menu/AsideMenuList.js
         {/*begin::1 Level*/}
         {permissions.canViewTenants &&
           <li
@@ -286,6 +300,7 @@ export function AsideMenuList({ layoutProps }) {
         {/*begin::1 Level*/}
         {permissions.canViewGeofences &&
           <li
+<<<<<<< client/src/_metronic/layout/components/aside/aside-menu/AsideMenuList.js
             className={`menu-item ${getMenuItemActive("/geofences", true)}`}
             aria-haspopup="true"
           >
@@ -295,6 +310,42 @@ export function AsideMenuList({ layoutProps }) {
               </span>
               <span className="menu-text">Geofences</span>
             </NavLink>
+=======
+              className={`menu-item ${getMenuItemActive("/geofences", true)}`}
+              aria-haspopup="true"
+          >
+              <NavLink className="menu-link menu-toggle" to="/geofences">
+            <span className="svg-icon menu-icon">
+              <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Select.svg")} />
+            </span>
+                  <span className="menu-text">Geofences</span>
+              </NavLink>
+              <div className="menu-submenu">
+                  <i className="menu-arrow" />
+                  <ul className="menu-subnav">
+                      <li className="menu-item menu-item-parent" aria-haspopup="true">
+                <span className="menu-link">
+                  <span className="menu-text">Geofences</span>
+                </span>
+                      </li>
+                      {/*begin::2 Level*/}
+                      <li
+                          className={`menu-item ${getMenuItemActive(
+                              "/geofences/list"
+                          )}`}
+                          aria-haspopup="true"
+                      >
+                          <NavLink className="menu-link" to="/geofences/list">
+                              <i className="menu-bullet menu-bullet-dot">
+                                  <span />
+                              </i>
+                              <span className="menu-text">Geofences List</span>
+                          </NavLink>
+                      </li>
+                      {/*end::2 Level*/}
+                  </ul>
+              </div>
+>>>>>>> client/src/_metronic/layout/components/aside/aside-menu/AsideMenuList.js
           </li>
         }
         {/*begin::1 Level*/}
