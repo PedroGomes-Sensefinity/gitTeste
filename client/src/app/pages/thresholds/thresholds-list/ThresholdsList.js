@@ -74,11 +74,12 @@ export function ThresholdsList() {
                     });
                 });
         })
-            .then((result) => {
-                if (result.length !== 0) {
+        .then((result) => {
+            if(result.data != undefined){
+                if (result.length != 0) {
                     result.data.forEach(threshold => {
                         const rule = JSON.parse(threshold['rule']);
-                        switch (rule['type']) {
+                        switch(rule['type']) {
                             case 'temperaturedegree':
                             case 'temperature':
                                 threshold['type'] = "Temperature";
@@ -98,8 +99,9 @@ export function ThresholdsList() {
                         }
                     })
                 }
-                setData(result.data);
-            });
+            }
+            setData(result.data);
+        });
     }
 
 
