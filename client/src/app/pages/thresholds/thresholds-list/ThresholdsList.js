@@ -30,9 +30,6 @@ export function ThresholdsList() {
     const history = useHistory()
 
     const { permissions } = usePermissions()
-
-    console.log(permissions)
-
     const actions = useMemo(() => {
         const acts = []
         if (permissions.canEditThresholds) {
@@ -75,8 +72,7 @@ export function ThresholdsList() {
                         totalCount: result.total,
                     });
                 });
-        })
-            .then((result) => {
+        }).then((result) => {
                 if (result.data != undefined) {
                     if (result.length != 0) {
                         result.data.forEach(threshold => {
