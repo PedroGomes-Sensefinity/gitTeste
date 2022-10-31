@@ -21,7 +21,6 @@ function PermissionsProvider({ children }) {
                     return prev
                 }, {});
                 const newPerms = Permissions(perms)
-                console.log(JSON.stringify(newPerms))
                 setPermissions(newPerms)
             }).catch(() => { 
                 setPermissions({})
