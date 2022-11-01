@@ -24,8 +24,9 @@ const ruleTypeOptions = [
     { id: "humidityrelative", name: "Humidity" },
     { id: "geofences", name: "Geo-fences" },
     { id: "buttonpressed", name: "Button pressed" },
+    { id: "movementstatus", name: "Movement status" },
+    { id: "acceleration", name: "Acceleration" },
 ]
-
 
 function ThresholdFormComponent(props) {
 

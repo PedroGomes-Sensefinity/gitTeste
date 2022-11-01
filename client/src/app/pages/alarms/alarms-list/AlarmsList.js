@@ -99,6 +99,12 @@ export function AlarmsList() {
                             case 'buttonpressed':
                                 alarm.type = "Button pressed"
                                 break;
+                            case 'movementstatus':
+                                alarm.type = "Movement status"
+                                break;
+                            case 'acceleration':
+                                alarm.type = "Acceleration"
+                                break;
                             default:
                                 console.log("Error: Unidentified threshold type.")
                         }
