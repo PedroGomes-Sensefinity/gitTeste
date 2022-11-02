@@ -3,15 +3,16 @@ import { makeStyles } from '@material-ui/styles';
 import { ErrorMessage, Field, Formik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import BlockUi from "react-block-ui";
-import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import apiService from '../../services/apiService';
 import assetsService from "../../services/assetsService";
+import {AsyncTypeahead, Typeahead} from 'react-bootstrap-typeahead';
 import { getInputClasses } from '../../utils/formik';
 import toaster from '../../utils/toaster';
 import '../../utils/yup-validations';
+
 
 const useStyles = makeStyles((theme) => ({
     headerMarginTop: {

@@ -118,6 +118,8 @@ class DeviceFormComponent extends React.Component {
         this.initialValues.imei = device.imei;
         this.initialValues.meta_data = device.meta_data;
         this.initialValues.comments = device.comments;
+        this.initialValues.check_location_sublocation =  device.check_location_sublocation
+        this.initialValues.check_longstanding =  device.check_longstanding
 
         if (device.board_family_id !== '') {
             let selectedBoardFamily = this.getSelectedBoardFamily(device.board_family_id);
@@ -168,6 +170,7 @@ class DeviceFormComponent extends React.Component {
         return devices;
     };
 
+
     getGroups = (records) => {
         let groups = [];
         if (Array.isArray(records)) {
@@ -192,24 +195,23 @@ class DeviceFormComponent extends React.Component {
         let msgSuccess = (this.state.isAddMode)
             ? this.state.intl.formatMessage({id: 'DEVICE.CREATED'})
             : this.state.intl.formatMessage({id: 'DEVICE.UPDATED'});
-
         deviceService[method](fields)
-            .then((response) => {
-                toaster.notify('success', msgSuccess);
+        .then((response) => {
+            toaster.notify('success', msgSuccess);
 
-                if (this.state.isAddMode) {
-                    resetForm(this.initialValues);
-                    this.setState({selectedGroup: []});
-                    this.setState({selectedBoardFamily: []});
-                }
-            })
-            .catch((err) => {
-                toaster.notify('error', err.data.detail);
-            })
-            .finally(() => {
-                this.setState({blocking: false});
-                setSubmitting(false);
-            });
+            if (this.state.isAddMode) {
+                resetForm(this.initialValues);
+                this.setState({selectedGroup: []});
+                this.setState({selectedBoardFamily: []});
+            }
+        })
+        .catch((err) => {
+            toaster.notify('error', err.data.detail);
+        })
+        .finally(() => {
+            this.setState({blocking: false});
+            setSubmitting(false);
+        });
     };
 
     onChangeGroup = (opt, setFieldValue) => {
@@ -500,6 +502,8 @@ class DeviceFormComponent extends React.Component {
                                                 <ErrorMessage name="comments" component="div" className="invalid-feedback" />
                                             </div>
                                         </div>
+                                        
+                                        
                                         <div className='col-xl-6 col-lg-6'>
                                             <label>Metadata</label>
                                             <div>
