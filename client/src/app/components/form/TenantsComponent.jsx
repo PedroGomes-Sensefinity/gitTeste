@@ -47,7 +47,9 @@ class TenantsFormComponent extends React.Component {
         comments:   '',
         color:      '',
         files:      [],
-        attachment: File
+        attachment: File,
+        check_location_sublocation: false,
+        check_longstanding: false,
     };
 
     validationSchema = Yup.object().shape({
@@ -134,7 +136,9 @@ class TenantsFormComponent extends React.Component {
                                             let tenant = response.tenants_new[0];
                                             setFieldValue('id', tenant.id, false);
                                             setFieldValue('name', tenant.name, false);
-
+                                            setFieldValue('check_location_sublocation',tenant.check_location_sublocation,false);
+                                            setFieldValue('check_longstanding',tenant.check_longstanding,false);
+                                            
                                             if (tenant.metadata !== '') {
                                                 const metadata = JSON.parse(tenant.metadata);
                                                 setFieldValue('metadata', metadata, false);
@@ -194,8 +198,8 @@ class TenantsFormComponent extends React.Component {
                                 <div className='form'>
                                     <div className='card-body'>
                                         <div className='form-group row'>
-                                            <div className='col-xl-12 col-lg-12'>
-                                                <label className="required">Tenant name</label>
+                                            <div className='col-xl-6 col-lg-6'>
+                                                <label>Tenant name</label>
                                                 <Field
                                                     as="input"
                                                     className={`form-control form-control-lg form-control-solid ${getInputClasses(
@@ -210,7 +214,31 @@ class TenantsFormComponent extends React.Component {
                                                               className="invalid-feedback"/>
                                             </div>
 
+                                            <div className='col-xl-3 col-lg-3'>
+                                            <div>
+                                                <label>Extra Features</label>
+                                                </div>
+                                                    <div>
+                                                        <Field
+                                                            className="mr-2 leading-tight"
+                                                            type="checkbox"
+                                                            name="check_location_sublocation" 
+                                                        />
+                                                        <label>Location/Sublocation</label>
+                                                    </div>
+                                                    <div>
+                                                        <Field
+                                                            className="mr-2 leading-tight"
+                                                            type="checkbox"
+                                                            name="check_longstanding" 
+                                                        />
+                                                        <label>Long Standing</label>
+                                                    </div>
                                         </div>
+
+                                        </div>
+
+                                        
 
                                         <div className='form-group row'>
                                             <div className='col-xl-4 col-lg-4'>
