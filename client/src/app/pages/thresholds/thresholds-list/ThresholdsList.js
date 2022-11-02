@@ -92,6 +92,12 @@ export function ThresholdsList() {
                             case 'buttonpressed':
                                 threshold['type'] = "Button pressed"
                                 break;
+                            case 'movementstatus':
+                                threshold['type'] = "Movement status"
+                                break;
+                            case 'acceleration':
+                                threshold['type'] = "Acceleration"
+                                break;
                             default:
                                 console.log("Error: Unidentified threshold type.")
                         }
