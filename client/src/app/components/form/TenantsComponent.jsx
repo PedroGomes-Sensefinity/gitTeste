@@ -199,7 +199,7 @@ class TenantsFormComponent extends React.Component {
                                     <div className='card-body'>
                                         <div className='form-group row'>
                                             <div className='col-xl-6 col-lg-6'>
-                                                <label>Tenant name</label>
+                                                <label className="required">Tenant name</label>
                                                 <Field
                                                     as="input"
                                                     className={`form-control form-control-lg form-control-solid ${getInputClasses(
