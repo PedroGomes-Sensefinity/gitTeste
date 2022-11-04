@@ -31,7 +31,7 @@ export function DevicesList() {
                 history.push(`/devices/${rowData.id}`);
             },
         }]
-        if (permissions.canEditAssets) {
+        if (permissions.canEditDevices) {
             acts.push({
                 icon: EditIcon,
                 tooltip: 'Edit device',
