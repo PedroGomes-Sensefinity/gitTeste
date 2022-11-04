@@ -118,30 +118,35 @@ function AssetsFormComponentFunctional (props) {
             }
         })
         if(type === "Container"){
-            if(value.length !== 12){
-                error = "Invalid Label - Size Incorrect (e.g: AAAA111111-2)"
+            if(value.length !== 13){
+                error = "Invalid Label - Size Incorrect (e.g: AAAA 111111-2)"
                 return error
             }
             let string4 = value.substring(0, 4)
             if(!onlyLetters(string4)){
-                error = "Invalid Label - Please enter only letters for Owner Code and Product Group Code (e.g: AAAA111111-2)"
+                error = "Invalid Label - Please enter only letters for Owner Code and Product Group Code (e.g: AAAA 111111-2)"
                 return error
             }
-            let string6 = value.substring(5, 10)
+            let string6 = value.substring(5, 11)
             let isnum = /^\d+$/.test(string6);
             if(!isnum){
-                error = "Invalid Label - Please enter only numbers on Serial Number (e.g: AAAA111111-2)"
+                error = "Invalid Label - Please enter only numbers on Serial Number (e.g: AAAA 111111-2)"
                 return error
             }
-            let string2 = value.substring(11, 13)
+            let string2 = value.substring(12, 14)
             let isnum2 = /^\d+$/.test(string2);
             if(!isnum2){
-                error = "Invalid Label - Please enter only numbers on Check Digits (e.g: AAAA111111-2)"
+                error = "Invalid Label - Please enter only numbers on Check Digits (e.g: AAAA 111111-2)"
                 return error
             }
-            let stringSpecialChar = value.substring(10, 11)
+            let stringSpecialChar = value.substring(11, 12)
             if(stringSpecialChar !== "-"){
-                error = "Invalid Label - Special character must be \"-\" (e.g: AAAA111111-2)"
+                error = "Invalid Label - Special character must be \"-\" (e.g: AAAA 111111-2)"
+                return error
+            }
+            let stringSpace = value.substring(4, 5)
+            if(stringSpace !== " "){
+                error = "Invalid Label - You need to add a Space between Owner Code and Serial Number (e.g: AAAA 111111-2)"
                 return error
             }
         }
