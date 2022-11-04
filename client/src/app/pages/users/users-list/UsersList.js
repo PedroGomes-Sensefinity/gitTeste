@@ -74,7 +74,7 @@ export function UsersList() {
     return (
         <Card>
             <CardContent>
-                {permissions.canCreateUser ?
+                {permissions.canCreateUsers ?
                     <Button
                         variant='contained'
                         color='secondary'

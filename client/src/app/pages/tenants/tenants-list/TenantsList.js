@@ -23,7 +23,7 @@ export function TenantsList() {
 
     const actions = useMemo(() => {
         const acts = []
-        if (permissions.canEditRoutes) {
+        if (permissions.canEditTenants) {
             acts.push({
                 icon: EditIcon,
                 tooltip: 'Edit tenant',

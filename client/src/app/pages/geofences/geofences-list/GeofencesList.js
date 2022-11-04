@@ -25,7 +25,7 @@ export function GeofencesList() {
 
     const actions = useMemo(() => {
         const acts = []
-        if (permissions.canEditFloorMaps) {
+        if (permissions.canEditGeofences) {
             return [{
                 icon: EditIcon,
                 tooltip: 'Edit Geofence',
