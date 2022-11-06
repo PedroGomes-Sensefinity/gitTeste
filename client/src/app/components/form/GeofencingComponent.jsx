@@ -123,14 +123,18 @@ function GeofencingComponent(props) {
         });
     };
 
-    const filterThresholdSelected = (options) => options.map((t) => {
-        if (!Array.from(selectedThresholdsId).includes(t.id)) {
-            return {
-                id: t.id,
-                label: t.name
+    const filterThresholdSelected = (options) => {
+        let data = [];
+        options.map((t) => {
+            if(!Array.from(selectedThresholdsId).includes(t.id)) {
+                data.push({
+                    id: t.id,
+                    label: t.name
+                });
             }
-        }
-    })
+        });
+        return data;
+    }
 
     const columnsGeofences = [
         {
