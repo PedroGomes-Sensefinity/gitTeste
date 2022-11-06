@@ -175,7 +175,7 @@ function DeviceDashboard(props) {
                             <div className='card-header'>
                                 <div className='card-title'>
                                     <h3 className="card-label">
-                                        Location/Sublocation
+                                        Last Location/Sublocation
                                     </h3>
                                 </div>
                             </div>
@@ -192,7 +192,7 @@ function DeviceDashboard(props) {
                             <div className='card-header'>
                                 <div className='card-title'>
                                     <h3 className="card-label">
-                                        Geofence
+                                        Last Geofence
                                     </h3>
                                 </div>
                             </div>
