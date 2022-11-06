@@ -3,12 +3,14 @@ import '../../utils/yup-validations';
 import BlockUi from "react-block-ui";
 import {injectIntl} from 'react-intl';
 import {BsBatteryFull, BsClock, BsFillCloudArrowUpFill} from "react-icons/bs";
-import {MdBatterySaver, MdOutlineWarningAmber, MdPower, MdWifiTethering, MdLocationOn} from "react-icons/md";
+import {MdBatterySaver, MdOutlineWarningAmber, MdPower, MdWifiTethering, MdLocationOn, MdNavigation,MdBorderOuter} from "react-icons/md";
 import PositionMap from "../position-map/positionMap";
 import apiService from "../../services/apiService";
 import deviceService from "../../services/deviceService";
 import utils from "../../utils/utils";
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
+import { usePermissions } from  "../../modules/Permission/PermissionsProvider"
+
 
 function DeviceDashboard(props) {
     
@@ -16,6 +18,8 @@ function DeviceDashboard(props) {
     const [device, setDevice] = useState({});
     const [dashboard, setDashboard] = useState({});
     const [pendingConfigMessages, setPendingConfigMessages] = useState(0)
+
+    const { permissions } = usePermissions()
 
     const style = { "display": "inline-block", "fontSize": "0.875em", "fontWeight": "normal" }
 
@@ -28,15 +32,10 @@ function DeviceDashboard(props) {
             const device = allResponses[0].devices[0]
             let dashboard = allResponses[1]
             const pendingConfigMessages = allResponses[2]
-            dashboard.last_position = {}
+            
             if (device.position_timestamp === "0001-01-01 00:00:00 +0000 UTC"){
                 device.position_timestamp = "N/A"
             }
-            if (device.latitude !== undefined && device.latitude !== 0
-                && device.longitude !== undefined && device.longitude !== 0) {
-                    let latLong = {"lat":device.latitude, "lon":device.longitude}
-                    dashboard.last_position = latLong
-                }
             
             setDevice(device)
             setDashboard(dashboard)
@@ -170,6 +169,60 @@ function DeviceDashboard(props) {
                     </div>
                 </div>
 
+                { permissions.canViewContainerDashboard && <div className='row mt-3'>
+                    <div className='col-xl-4 col-lg-4'>
+                        <div className='card card-custom'>
+                            <div className='card-header'>
+                                <div className='card-title'>
+                                    <h3 className="card-label">
+                                        Location/Sublocation
+                                    </h3>
+                                </div>
+                            </div>
+                            <div className='card-body'>
+                                <ul style={{'listStyle': 'none'}}>
+                                    <li><MdNavigation /> Location: {utils.either(dashboard.last_location, 'In Transit')}</li>
+                                    <li><MdNavigation /> SubLocation: {utils.either(dashboard.last_sublocation, 'In Transit')} ({utils.either(dashboard.last_port_code, 'No Port Code')})</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div className='col-xl-4 col-lg-4'>
+                        <div className='card card-custom'>
+                            <div className='card-header'>
+                                <div className='card-title'>
+                                    <h3 className="card-label">
+                                        Geofence
+                                    </h3>
+                                </div>
+                            </div>
+                            <div className='card-body'>
+                                <ul style={{'listStyle': 'none'}}>
+                                    <li><MdBorderOuter /> Name: {utils.either(dashboard.last_geofence, 'N/A')}</li>
+                                    <li><MdBorderOuter /> Alert Status: {utils.either(dashboard.last_geofence_status, 'N/A')} ({utils.either(dashboard.last_geofence_timestamp, 'N/A')})</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div className='col-xl-4 col-lg-4'>
+                        <div className='card card-custom'>
+                            <div className='card-header'>
+                                <div className='card-title'>
+                                    <h3 className="card-label">
+                                        Long Standing
+                                    </h3>
+                                </div>
+                            </div>
+                            <div className='card-body'>
+                                <ul style={{'listStyle': 'none'}}>
+                                    <li>Days: {utils.either(dashboard.long_standing, '0')}</li>
+                                    <li style={{visibility: 'hidden'}}><MdWifiTethering /></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>}
+
                 <div className='row mt-3'>
                     <div className='col-xl-10 col-lg-10'>
                         <div className='card card-custom'>
@@ -178,7 +231,7 @@ function DeviceDashboard(props) {
                                         <h3 className="card-label">
                                             Last Position
                                         </h3>
-                                        <MdLocationOn /> Last Coordinates:  Lat:{device.latitude} Long:{device.longitude}
+                                        <MdLocationOn /> Last Coordinates:  {JSON.stringify(dashboard.last_position)}
                                         <br></br>
                                     <BsClock /> Timestamp:  {device.position_timestamp}
                                 
@@ -189,7 +242,7 @@ function DeviceDashboard(props) {
                             </div>
                         </div>
                     </div>
-                    <div className='col-xl-2 col-lg-2'>
+                    <div className='col-xl-2 col-lg-2 '>
                         <div className='card card-custom'>
                             <div className='card-body'>
                                 <div className="d-flex align-items-center py-lg-0 py-2">
@@ -215,6 +268,7 @@ function DeviceDashboard(props) {
                             </div>
                         </div>
                     </div>
+                    
                 </div>
             </BlockUi>)
 }
