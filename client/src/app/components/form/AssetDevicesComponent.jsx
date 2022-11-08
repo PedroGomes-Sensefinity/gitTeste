@@ -1,191 +1,134 @@
-import React from 'react';
-import {makeStyles} from '@material-ui/styles';
-import BlockUi from "react-block-ui";
-import {injectIntl} from 'react-intl';
-import TableGrid from '../../components/table-grid/table-grid.component';
-import {Card, CardContent} from "@material-ui/core";
-import apiService from "../../services/apiService";
-import {AsyncTypeahead} from "react-bootstrap-typeahead";
-import DoneIcon from "@material-ui/icons/Done";
+import { Card, CardContent } from "@material-ui/core";
 import DeleteIcon from '@material-ui/icons/Clear';
-import deviceService from "../../services/deviceService";
+import DoneIcon from "@material-ui/icons/Done";
+import React, { useState } from 'react';
+import { AsyncTypeahead } from "react-bootstrap-typeahead";
+import { injectIntl } from 'react-intl';
+import TableGrid from '../../components/table-grid/table-grid.component';
 import assetsService from "../../services/assetsService";
+import deviceService from "../../services/deviceService";
+import AlertDialog from "../../utils/AlertDialog/alertDialog";
 import toaster from '../../utils/toaster';
-import AlertDialog from "../../utils/AlertDialog/alertDialog"
 
-class AssetDevicesComponent extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            intl: props.intl,
-            id: props.id,
-            asset: {},
-            devices: [],
-            devicesSearch: [],
-            selectedDevicesId: [],
-            selectedDevices: [],
-            loading: false,
-            blocking: false,
-        };
-    }
 
-    componentDidMount() {
-        this.initGridDevices();
-    }
+function AssetDevicesComponent({ intl, id: assetId, asset, onAssetChange }) {
+    const [loading, setLoading] = useState(false)
+    const [devices, setDevices] = useState(asset.devices || [])
+    const [devicesSearch, setDevicesSearch] = useState([])
+    const [selectedDevices, setSelectedDevices] = useState([])
+    const selectedDevicesId = selectedDevices.map(device => device.id)
 
-    initGridDevices = () => {
-        this.setState({loading: true});
-        apiService.getById('asset', this.state.id).then((response) => {
-            this.setState({asset: response.assets[0]});
-            if(response.assets[0].devices !== undefined){
-                this.setState({devices: response.assets[0].devices});
-            }
-            this.setState({loading: false});
-        });
-        console.log(this.state.devices)
-    }
-
-    filterDevicesSelected = (options) => {
-        let data = [];
-        options.forEach((t) => {
-            if(!this.state.selectedDevicesId.includes(t.id)) {
-                data.push({
-                    id: t.id,
-                    label: `${t.id} - ${t.label}`
-                });
+    const filterDevicesSelected = (options) => options
+        .filter(t => !selectedDevicesId.includes(t.id))
+        .map((t) => {
+            return {
+                id: t.id,
+                label: `${t.id} - ${t.label}`
             }
         });
-        return data;
-    }
 
-    handleSearchDevice = (query) => {
-        this.setState({loading: true});
 
+    const handleSearchDevice = (query) => {
+        setLoading(true);
         deviceService.getToAsset(query, 100, 0).then((response) => {
-            this.setState({ devicesSearch: [] });
-
-            if (typeof response.devices !== undefined && Array.isArray(response.devices)) {
-                this.setState({ devicesSearch: this.filterDevicesSelected(response.devices) });
-            }
-
-            this.setState({ loading: false });
+            const respDevices = response.devices || []
+            setDevicesSearch(filterDevicesSelected(respDevices))
+            setLoading(false)
         });
     };
 
-    onChangeDevice = (opt) => {
-        let selectedDevicesId = [];
-
-        if (opt.length > 0) {
-            selectedDevicesId = opt.map((t) => t.id);
-        }
-
-        this.setState({ selectedDevicesId: selectedDevicesId});
-        this.setState({ selectedDevices: opt});
+    const onChangeDevice = (opt) => {
+        setSelectedDevices(opt)
     };
 
-    filterBy = () => true;
+    const filterBy = () => true;
 
-    addDevices = () => {
-        let devices = this.state.selectedDevicesId.map((t) => {
-            return {id: t}
-        });
+    const addDevices = () => {
+        let devices = selectedDevices.map((t) => {
+            return { id: t.id }
+        })
 
-        this.setState({ loading: true });
-
-        assetsService.addAssetDevice(this.state.asset.id, {devices: devices}).then((response) => {
-            this.initGridDevices();
-            this.setState({selectedDevicesId: []});
-            this.setState({selectedDevices: []});
-            this.setState({ loading: false });
-            toaster.notify('success', this.state.intl.formatMessage({id: 'ASSET_DEVICE.INCLUDED'}));
+        setLoading(true)
+        assetsService.addAssetDevice(asset.id, { devices: devices }).then((_response) => {
+            setSelectedDevices([])
+            toaster.notify('success', intl.formatMessage({ id: 'ASSET_DEVICE.INCLUDED' }));
+            onAssetChange()
+            setLoading(false)
         });
     }
-
-    useStyles = makeStyles((theme) => ({
-        headerMarginTop: {
-            marginTop: theme.spacing(5),
+    const columns = [
+        {
+            field: 'id',
+            title: 'Serial Number',
+        },
+        {
+            field: 'parent_id',
+            title: 'Parent',
+        },
+        {
+            field: 'label',
+            title: 'Label',
         }
-    }));
+    ];
 
-    render() {
-        const columns = [
-            {
-                field: 'id',
-                title: 'Serial Number',
-            },
-            {
-                field: 'parent_id',
-                title: 'Parent',
-            },
-            {
-                field: 'label',
-                title: 'Label',
-            }
-        ];
-
-        return (
-            <BlockUi tag='div' blocking={this.state.blocking}>
-                <Card>
-                    <CardContent>
-                        <div className='form-group row'>
-                            <div className='col-xl-6 col-lg-6'>
-                                <label>Devices</label>
-                                <AsyncTypeahead
-                                    id='typeahead-devices'
-                                    labelKey='label'
-                                    size="lg"
-                                    multiple
-                                    onChange={this.onChangeDevice}
-                                    options={this.state.devicesSearch}
-                                    placeholder=''
-                                    onSearch={this.handleSearchDevice}
-                                    selected={this.state.selectedDevices}
-                                    isLoading={this.state.loading}
-                                    filterBy={this.filterBy}
-                                    useCache={false}
-                                />
-                            </div>
-                            <div className='col-xl-6 col-lg-6' >
-                                {this.state.devices?.length === 0  && <button
-                                    type='button'
-                                    className='btn btn-success mr-2 mt-8'
-                                    onClick={this.addDevices}
-                                    disabled={this.state.selectedDevicesId.length === 0}
-                                >
-                                    <DoneIcon/>
-                                    Add devices
-                                </button>}
-                                {this.state.devices?.length !== 0 && <AlertDialog len={this.state.selectedDevicesId.length} buttonTitle="Add devices" title= "Warning - Device on Asset" content="Are you sure you want to add more than one Device to an Asset?" onYes={this.addDevices}></AlertDialog>}
-                            </div>
-                        </div>
-                        <TableGrid
-                            actions={[
-                                {
-                                    icon: DeleteIcon,
-                                    tooltip: 'Remove device from asset',
-                                    onClick: (event, rowData) => {
-                                        let devices = [{id: rowData.id}];
-                                        assetsService.deleteAssetDevice(this.state.id, {devices: devices}).then((response) => {
-                                            this.initGridDevices();
-                                            this.setState({selectedDevicesId: []});
-                                            this.setState({selectedDevices: []});
-                                            this.setState({devices: []});
-                                            this.setState({loading: false});
-                                            toaster.notify('success', this.state.intl.formatMessage({id: 'ASSET_DEVICE.REMOVED'}));
-                                        });
-                                    },
-                                },
-                            ]}
-                            title=''
-                            columns={columns}
-                            data={this.state.devices}
-                            isLoading={this.state.loading}
+    return (
+        <Card>
+            <CardContent>
+                <div className='form-group row'>
+                    <div className='col-xl-6 col-lg-6'>
+                        <label>Devices</label>
+                        <AsyncTypeahead
+                            id='typeahead-devices'
+                            labelKey='label'
+                            size="lg"
+                            multiple
+                            onChange={onChangeDevice}
+                            options={devicesSearch}
+                            placeholder=''
+                            onSearch={handleSearchDevice}
+                            selected={selectedDevices}
+                            isLoading={loading}
+                            filterBy={filterBy}
+                            useCache={false}
                         />
-                    </CardContent>
-                </Card>
-            </BlockUi>
-        );
-    }
+                    </div>
+                    <div className='col-xl-6 col-lg-6' >
+                        {devices?.length === 0 && <button
+                            type='button'
+                            className='btn btn-success mr-2 mt-8'
+                            onClick={addDevices}
+                            disabled={selectedDevicesId.length === 0}
+                        >
+                            <DoneIcon />
+                            Add devices
+                        </button>}
+                        {devices?.length !== 0 && <AlertDialog len={devices.length} buttonTitle="Add devices" title="Warning - Device on Asset" content="Are you sure you want to add more than one Device to an Asset?" onYes={addDevices}></AlertDialog>}
+                    </div>
+                </div>
+                <TableGrid
+                    actions={[
+                        {
+                            icon: DeleteIcon,
+                            tooltip: 'Remove device from asset',
+                            onClick: (_event, rowData) => {
+                                let devices = [{ id: rowData.id }];
+                                assetsService.deleteAssetDevice(assetId, { devices: devices }).then(() => {
+                                    setDevices(deviceList => deviceList.filter(dev => dev.id !== rowData.id))
+                                    setLoading(false)
+                                    toaster.notify('success', intl.formatMessage({ id: 'ASSET_DEVICE.REMOVED' }));
+                                    onAssetChange()
+                                });
+                            },
+                        },
+                    ]}
+                    title=''
+                    columns={columns}
+                    data={devices}
+                    isLoading={loading}
+                />
+            </CardContent>
+        </Card>
+    );
 }
 
 export default injectIntl(AssetDevicesComponent);

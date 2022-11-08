@@ -1,10 +1,9 @@
 import { Button, Card, CardContent } from '@material-ui/core';
-import React, { useMemo } from 'react';
-
 import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
-import DetailsIcon from '@material-ui/icons/Details';
 import EditIcon from '@material-ui/icons/Edit';
+import React, { useMemo } from 'react';
+import { MdSpaceDashboard } from "react-icons/md";
 import { useHistory } from 'react-router-dom';
 import TableGrid from '../../../components/table-grid/table-grid.component';
 import { usePermissions } from '../../../modules/Permission/PermissionsProvider';
@@ -25,7 +24,7 @@ export function AssetsList() {
 
     const actions = useMemo(() => {
         const acts = [{
-            icon: DetailsIcon,
+            icon: MdSpaceDashboard,
             tooltip: 'Inspect asset',
             onClick: (_, rowData) => {
                 history.push(`/assets/${rowData.id}`);

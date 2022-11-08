@@ -72,7 +72,7 @@ function ThresholdActionComponent(props) {
                 label: s.label,
             }
         })
-        
+
         tempThreshold.rule = JSON.stringify(rule);
         thresholdService.update(tempThreshold)
             .then(() => {
@@ -95,14 +95,8 @@ function ThresholdActionComponent(props) {
             }}
         >
             {({
-                _,
-                __,
-                ___,
-                ____,
                 isSubmitting,
-                _____,
                 handleSubmit,
-                ______
             }) => <form
                 className='card card-custom'
                 onSubmit={handleSubmit}>

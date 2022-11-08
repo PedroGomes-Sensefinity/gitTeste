@@ -10,103 +10,108 @@ import apiService from '../../../services/apiService';
 import DeviceSelector from "./DeviceSelector";
 
 
-export function AssetsForm({match, location}) {
-    const {id: assetId} = match.params;
+export function AssetsForm({ match, location }) {
+    const { id: assetId } = match.params;
     const baseURL = location.pathname
     const [assetInfo, setAssetInfo] = useState(undefined)
     const [isLoading, setLoading] = useState(true)
     const [hasMetadataSchema, setMetadataSchema] = useState(false)
+    const [refetch, setRefetch] = useState(false)
     // we use this hook so it doesn't show the splash screen
     const history = useHistory()
-    
+
     function handleChange(event, newValue) {
         setValue(newValue);
         updateLink(newValue)
     }
-    
+
+    // Used to trigger a refetch of the asset so it triggers a rerender of the dependent components
+    const onAssetChange = () => {
+        setRefetch(curr => !curr)
+    }
+
     const updateLink = (value) => {
         switch (value) {
             case 0:
                 history.push(`${baseURL}`)
-                return 
+                return
             case 1:
                 history.push(`${baseURL}#edit`)
-                return 
+                return
             case 2:
                 history.push(`${baseURL}#devices`)
                 return
-            case 3: 
+            case 3:
                 history.push(`${baseURL}#extra-fields`)
                 return
         }
     }
-            
+
     const initialValue = useMemo(() => {
-        switch(location.hash) {
+        switch (location.hash) {
             case '': return 0
             case '#edit': return 1
             case '#devices': return 2
             case '#extra-fields': return 3
         }
     }, [location.hash])
-    
+
     const [value, setValue] = useState(initialValue);
     const componentToBeRendered = useMemo(() => {
-        if(isLoading) {
+        if (isLoading) {
             return <></>
         }
         switch (value) {
             case 0:
-                return <DeviceSelector asset={assetInfo}/>
-            case 1: 
-                return <AssetsFormComponent id={assetId} asset={assetInfo}/>
-            case 2: 
-                return <AssetDevicesComponent id={assetId} />
+                return <DeviceSelector asset={assetInfo} />
+            case 1:
+                return <AssetsFormComponent id={assetId} asset={assetInfo} />
+            case 2:
+                return <AssetDevicesComponent id={assetId} asset={assetInfo} onAssetChange={onAssetChange} />
             case 3:
-                return <AssetFormExtraFields id={assetId}/>
+                return <AssetFormExtraFields id={assetId} />
         }
-    } , [value, assetInfo, isLoading]);
+    }, [value, assetInfo, isLoading]);
 
     useEffect(() => {
         setLoading(true)
-        apiService.getById(`asset/`, assetId ).then((results) => {
+        apiService.getById(`asset/`, assetId).then((results) => {
             const asset = results.assets[0]
             setAssetInfo(asset)
             setLoading(false)
         }).catch(err => {
             console.log(err)
-            if(err.status === 404) {
-                history.push('/not-found')
+            if (err.status === 404) {
+                history.push('/error/error-v1')
             }
         })
-    },[assetId])
+    }, [assetId, refetch])
 
     useEffect(() => {
         apiService.getByEndpoint("asset/" + assetId + "/asset-type").then((response) => {
-            if(response.asset_type === undefined) {
+            if (response.asset_type === undefined) {
                 setMetadataSchema(false)
             } else {
-                if(response.asset_type.metadataschema !== undefined && response.asset_type.metadataschema !== "{}"){
+                if (response.asset_type.metadataschema !== undefined && response.asset_type.metadataschema !== "{}") {
                     setMetadataSchema(true)
                 }
             }
         });
-      }, []);
+    }, []);
 
     return <div>
-            <Paper square>
-                <Tabs value={value} indicatorColor="primary" textColor="primary" onChange={handleChange}>
-                    <Tab label="Dashboard" />
-                    <Tab label="Asset Info"/>
-                    <Tab label="Devices" disabled={typeof assetId === 'undefined'} />
-                    <Tab label="Extra Fields" disabled={typeof assetId === 'undefined' || hasMetadataSchema === false} />
-                </Tabs>
-            </Paper>
-            <BlockUi tag='div' blocking={isLoading}> 
-                <TabContainer>
-                    {componentToBeRendered}
-                </TabContainer>
-            </BlockUi>
-        </div>
+        <Paper square>
+            <Tabs value={value} indicatorColor="primary" textColor="primary" onChange={handleChange}>
+                <Tab label="Dashboard" />
+                <Tab label="Asset Info" />
+                <Tab label="Devices" disabled={typeof assetId === 'undefined'} />
+                <Tab label="Extra Fields" disabled={typeof assetId === 'undefined' || hasMetadataSchema === false} />
+            </Tabs>
+        </Paper>
+        <BlockUi tag='div' blocking={isLoading}>
+            <TabContainer>
+                {componentToBeRendered}
+            </TabContainer>
+        </BlockUi>
+    </div>
 }
-        

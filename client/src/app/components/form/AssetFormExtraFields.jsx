@@ -11,6 +11,7 @@ export default function AssetFormExtraFields(props) {
   };
     const id = props.id
     const [schema, setSchema] = useState(schemaDefault);
+    //find another way to do this, so it triggers rerender of Form component with new   
     const [idAsset, setAssetID] = useState(0);
 
     useEffect(() => {

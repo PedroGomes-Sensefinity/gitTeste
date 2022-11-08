@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { SketchPicker } from 'react-color';
 export const ColorPickerComponent = ({label, onChange}) => {
     const [color, setColor] = useState(label);
