@@ -69,6 +69,19 @@ export function AsideMenuList({ layoutProps }) {
                   </NavLink>
                 </li>
                 {/*end::2 Level*/}
+                {/*begin::2 Level*/}
+                <li
+                  className={`menu-item ${getMenuItemActive("/dashboard/general/containers")}`}
+                  aria-haspopup="true"
+                >
+                  <NavLink className="menu-link" to="/dashboard/general/containers">
+                    <i className="menu-bullet menu-bullet-dot">
+                      <span />
+                    </i>
+                    <span className="menu-text">Container Dashboard Kibana</span>
+                  </NavLink>
+                </li>
+                {/*end::2 Level*/}
               </ul>
             </div>}
         </li>
