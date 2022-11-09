@@ -12,6 +12,7 @@ import { BoardFamiliesForm } from "./pages/board-families/form/BoardFamiliesForm
 import { BoardFamiliesList } from "./pages/board-families/list/BoardFamiliesList";
 import { Dashboard } from "./pages/dashboards/Dashboard";
 import { ContainersDashboard } from "./pages/dashboards/ContainersDashboard";
+import { GeneralContainers } from "./pages/dashboards/GeneralContainers";
 import { Device } from "./pages/devices/device/Device";
 import { DevicesList } from "./pages/devices/devices-list/DevicesList";
 import { DevicesProvision } from "./pages/devices/devices-provision/DevicesProvision";
@@ -56,7 +57,8 @@ export default function BasePage() {
           <Redirect exact from="/" to="/dashboard/default" />
         }
         {permissions.canViewContainerDashboard && [
-          <ContentRoute key="/dashboard/containers" path="/dashboard/containers" component={ContainersDashboard} />
+          <ContentRoute key="/dashboard/containers" path="/dashboard/containers" component={ContainersDashboard} />,
+          <ContentRoute key="/dashboard/containers/general" path="/dashboard/general/containers" component={GeneralContainers} />
         ]}
         <ContentRoute path="/dashboard/default" component={Dashboard} />
 
