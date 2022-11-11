@@ -34,6 +34,22 @@ const apiService = {
                 });
         });
     },
+    getByEndpointDashboard: function(endpoint){
+        return new Promise(function(resolve, reject) {
+            axios
+                .get(`${process.env.REACT_APP_REST_API_URL}${endpoint}`)
+                .then(function(response) {
+                    let data = [];
+                    if (response.status === 200) {
+                        resolve(response.data);
+                    }
+                    resolve(data);
+                })
+                .catch(function(err) {
+                    reject(err.response.data);
+                });
+        });
+    },
     getByTimestamp: function(endpoint, dateStart, dateEnd, limit, offset){
         return new Promise(function(resolve, reject) {
             axios
