@@ -98,7 +98,7 @@ export default function NotificationTemplateSmsForm(props) {
             <button
                 className='btn btn-success mr-2'
                 type={'button'}
-                onClick={() => addSmsContact('smsAdded', { name: values.smsName, at: values.smsNumber }, setFieldValue)}
+                onClick={() => addSmsContact({ name: values.smsName, at: values.smsNumber }, setFieldValue)}
             >Add Contact Info</button>
         </div>
     </div>
