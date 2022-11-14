@@ -5,7 +5,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import React, { useMemo } from 'react';
 import { MdSpaceDashboard } from "react-icons/md";
 import { Link, useHistory } from 'react-router-dom';
-import TableGrid from '../../../components/table-grid/table-grid.component';
+import TableGrid from '../../../components/table-grid/TableGrid';
 import { usePermissions } from '../../../modules/Permission/PermissionsProvider';
 
 const useStyles = makeStyles((theme) => ({

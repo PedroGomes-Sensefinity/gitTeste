@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { Card, CardContent } from '@material-ui/core';
 import moment from 'moment';
 import Form from 'react-bootstrap/Form';
-import TableGrid from '../../../components/table-grid/table-grid.component';
+import TableGrid from '../../../components/table-grid/TableGrid';
 
 export function RouteCompletion() {
     const [timefilter, setTimefilter] = React.useState();

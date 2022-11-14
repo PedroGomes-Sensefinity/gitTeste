@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
-import TableGrid from '../../../components/table-grid/table-grid.component';
+import TableGrid from '../../../components/table-grid/TableGrid';
 import { usePermissions } from '../../../modules/Permission/PermissionsProvider';
 
 const useStyles = makeStyles((theme) => ({

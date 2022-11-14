@@ -1,126 +1,111 @@
-import React, {useEffect} from 'react';
-import {Formik} from 'formik';
-import * as Yup from 'yup';
-import {Link} from 'react-router-dom';
-import {makeStyles} from '@material-ui/styles';
-import thresholdService from '../../services/thresholdService';
-import apiService from '../../services/apiService';
 import DoneIcon from '@material-ui/icons/Done';
-import '../../utils/yup-validations';
+import { makeStyles } from '@material-ui/styles';
+import { Formik } from 'formik';
+import React, { useEffect, useState } from 'react';
 import BlockUi from "react-block-ui";
+import { injectIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
+import * as Yup from 'yup';
+import apiService from '../../services/apiService';
+import thresholdService from '../../services/thresholdService';
 import toaster from '../../utils/toaster';
-import {injectIntl} from 'react-intl';
+import '../../utils/yup-validations';
 import Map from "../geo-fencing-map/map";
-import TableGrid from '../table-grid/table-grid.component';
+import TableGrid from '../table-grid/TableGrid';
 
-class ThresholdGeofencingComponent extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            intl: props.intl,
-            id: props.id,
-            threshold: {},
-            geofences: [],
-            loading: false,
-            blocking: false,
-        };
+
+const useStyles = makeStyles((theme) => ({
+    headerMarginTop: {
+        marginTop: theme.spacing(5),
+    }
+}));
+
+function ThresholdGeofencingComponent(props) {
+    const intl = props.intl
+    const thresholdId = props.id
+    const [threshold, setThreshold] = useState({})
+    const [geofences, setGeofences] = useState([])
+    const [blocking, setBlocking] = useState(false)
+    const classes = useStyles();
+
+    const initialValues = {
+        id: thresholdId
     }
 
-    componentDidMount() {
-
-    }
-
-    initialValues = {
-        id: parseInt(this.props.id)
-    };
-
-    validationSchema = Yup.object().shape({});
-
-    useStyles = makeStyles((theme) => ({
-        headerMarginTop: {
-            marginTop: theme.spacing(5),
-        }
-    }));
-
-    save = (fields, { setSubmitting }) => {
-        let threshold = this.state.threshold;
-        let rule = JSON.parse(threshold.rule)
-        rule['geofences'] = this.state.geofences;
-        threshold.rule = JSON.stringify(rule);
-
-        this.setState({blocking: true});
-
-        thresholdService.update(threshold)
+    useEffect(() => {
+        apiService
+            .getById('threshold', thresholdId)
             .then((response) => {
-                toaster.notify('success', this.state.intl.formatMessage({id: 'THRESHOLD.UPDATED'}));
+                const respThresholds = response.thresholds || []
+                if (respThresholds.length > 0) {
+                    const res = respThresholds[0];
+                    const rule = JSON.parse(res.rule);
+
+                    setThreshold(res)
+                    if ("geofences" in rule) {
+                        setGeofences(rule.geofences)
+                    }
+                }
+            });
+    }, []);
+
+    const validationSchema = Yup.object().shape({});
+    const save = (setSubmitting) => {
+        let localThreshold = threshold;
+        let rule = JSON.parse(localThreshold.rule)
+        rule['geofences'] = geofences;
+        localThreshold.rule = JSON.stringify(rule);
+        setBlocking(true)
+        thresholdService.update(localThreshold)
+            .then((_response) => {
+                toaster.notify('success', intl.formatMessage({ id: 'THRESHOLD.UPDATED' }));
 
             }).catch((err) => {
                 toaster.notify('error', err.data.detail);
             })
             .finally(() => {
-                this.setState({blocking: false});
+                setBlocking(false)
                 setSubmitting(false);
             });
     };
 
-    getGeofenceIndexById = (id) => {
-        for (let i = 0; i < this.state.geofences.length; i++) {
-            if (this.state.geofences[i].id === id) {
-                return i;
-            }
+    const getGeofenceIndexById = (id) => {
+        geofences.forEach((elem, idx) => {
+            if (elem.id === id)
+                return idx
+        })
+        return -1
+    };
+
+    const onChangeShape = (shapes) => {
+        setGeofences(shapes)
+    };
+
+    const columnsGeofences = [
+        {
+            field: 'name',
+            title: 'Shape'
+        }, {
+            field: 'alert',
+            title: 'Alert on',
+            lookup: { 'in': 'In', 'out': 'Out' }
         }
-        return -1;
-    };
+    ];
 
-    onChangeShape = (shapes) => {
-        this.setState({ geofences: shapes });
-    };
-
-    render() {
-        const columnsGeofences = [
-            {
-                field: 'name',
-                title: 'Shape'
-            }, {
-                field: 'alert',
-                title: 'Alert on',
-                lookup: { 'in': 'In', 'out': 'Out' }
-            }
-        ];
-
-        return (
-            <BlockUi tag='div' blocking={this.state.blocking}>
+    return (
+        <BlockUi tag='div' blocking={blocking}>
             <Formik
                 enableReinitialize
-                initialValues={this.initialValues}
-                validationSchema={this.validationSchema}
-                onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
-                    this.save(values, {
-                        setSubmitting
-                    });
+                initialValues={initialValues}
+                validationSchema={validationSchema}
+                onSubmit={({ setSubmitting }) => {
+                    save(setSubmitting);
                 }}
-                >
+            >
                 {({
                     isSubmitting,
                     handleSubmit
                 }) => {
-                    const classes = this.useStyles();
-
-                    useEffect(() => {
-                            apiService
-                            .getById('threshold', this.state.id)
-                            .then((response) => {
-                                const res = response.thresholds[0];
-                                const rule = JSON.parse(res.rule);
-
-                                this.setState({threshold: res});
-
-                                if("geofences" in rule) {
-                                    this.setState({geofences: rule.geofences});
-                                }
-                            });
-                    }, []);
-
                     return (
                         <form
                             className='card card-custom'
@@ -135,7 +120,7 @@ class ThresholdGeofencingComponent extends React.Component {
                                     <h3 className='card-label font-weight-bolder text-dark'>
                                         Geofences
                                     </h3>
-                                    {typeof this.state.id !== "undefined" &&
+                                    {typeof id !== "undefined" &&
                                         <span className='text-muted font-weight-bold font-size-sm mt-1'>
                                             Define geofences
                                         </span>
@@ -164,22 +149,22 @@ class ThresholdGeofencingComponent extends React.Component {
                                 <div className='card-body'>
                                     <div className="form-group row">
                                         <div className={`col-xl-6 col-lg-6`}>
-                                            <Map shapes={this.state.geofences} onChangeShape={this.onChangeShape} />
+                                            <Map shapes={geofences} onChangeShape={onChangeShape} />
                                         </div>
                                         <div className={`col-xl-6 col-lg-6`}>
                                             <TableGrid
                                                 title=''
                                                 columns={columnsGeofences}
-                                                data={this.state.geofences}
-                                                style={{height: 500}}
+                                                data={geofences}
+                                                style={{ height: 500 }}
                                                 editable={{
                                                     onRowUpdate: (newData, oldData) =>
                                                         new Promise((resolve, reject) => {
                                                             setTimeout(() => {
-                                                                const dataUpdate = [...this.state.geofences];
-                                                                const index = this.getGeofenceIndexById(oldData.tableData.id);
+                                                                const dataUpdate = [...geofences];
+                                                                const index = getGeofenceIndexById(oldData.tableData.id);
                                                                 dataUpdate[index] = newData;
-                                                                this.onChangeShape(dataUpdate);
+                                                                onChangeShape(dataUpdate);
                                                                 resolve();
                                                             }, 1000)
                                                         })
@@ -194,9 +179,10 @@ class ThresholdGeofencingComponent extends React.Component {
                     );
                 }}
             </Formik>
-            </BlockUi>
-        );
-    }
+        </BlockUi>
+    );
+
 }
+
 
 export default injectIntl(ThresholdGeofencingComponent);

@@ -1,8 +1,8 @@
 import React, {useEffect, useState, useMemo} from "react";
 import ThresholdFormComponent from "../../../components/form/ThresholdFormComponent";
-import ThresholdActionComponent from "../../../components/form/thresholdActionComponent";
-import ThresholdDevicesComponent from "../../../components/form/thresholdDevicesComponent";
-import ThresholdGroupsComponent from "../../../components/form/thresholdGroupsComponent";
+import ThresholdActionComponent from "../../../components/form/ThresholdActionComponent";
+import ThresholdDevicesComponent from "../../../components/form/ThresholdDevicesComponent";
+import ThresholdGroupsComponent from "../../../components/form/ThresholdGroupsComponent";
 import { Paper, Tab, Tabs } from "@material-ui/core";
 import {TabContainer} from "react-bootstrap";
 import apiService from "../../../services/apiService";

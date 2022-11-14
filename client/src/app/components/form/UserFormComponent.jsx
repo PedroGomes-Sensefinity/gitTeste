@@ -1,66 +1,34 @@
-import React, {useEffect} from 'react';
-import {ErrorMessage, Field, Formik} from 'formik';
-import * as Yup from 'yup';
-import {Link} from 'react-router-dom';
-import {makeStyles} from '@material-ui/styles';
-import userService from '../../services/userService';
-import apiService from '../../services/apiService';
 import DoneIcon from '@material-ui/icons/Done';
-import {getInputClasses} from '../../utils/formik';
-import '../../utils/yup-validations';
+import { makeStyles } from '@material-ui/styles';
+import { ErrorMessage, Field, Formik } from 'formik';
+import React, { useEffect, useState } from 'react';
 import BlockUi from "react-block-ui";
-import toaster from '../../utils/toaster';
 import { injectIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
+import * as Yup from 'yup';
+import apiService from '../../services/apiService';
+import userService from '../../services/userService';
+import { getInputClasses } from '../../utils/formik';
+import toaster from '../../utils/toaster';
+import '../../utils/yup-validations';
 
-class UserFormComponent extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            intl: props.intl,
-            id: props.id,
-            isAddMode: !props.id,
-            profiles: [],
-            tenants: [],
-            username: "",
-            password: "",
-            metadata: "",
-            profile_id: 0,
-            loading: false,
-            blocking: false,
-        };
-
+const useStyles = makeStyles((theme) => ({
+    headerMarginTop: {
+        marginTop: theme.spacing(5),
     }
+}));
 
-    componentDidMount() {
-        apiService
-            .get('profile',100, 0)
-            .then((response) => {
-                this.setState({profiles: response.profiles})
-            });
-        apiService
-            .get('tenant_new',100, 0)
-            .then((response) => {
-                this.setState({tenants: response.tenants_new})
-            });
-    }
 
-    initialValues = {
-        id: this.props.id,
-        profileId: '',
-        tenantId: '',
-        name: '',
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        phone: '',
-        address: '',
-        comments: '',
-        metadata: {},
-        profile: {},
-    };
+function UserFormComponent(props) {
+    const intl = props.intl
+    const userId = props.id
+    const isAddMode = !props.id
+    const [userInfo, setUserInfo] = useState({ metadata: {}, profile: {} })
+    const [tenants, setTenants] = useState([])
+    const [profiles, setProfiles] = useState([])
+    const [blocking, setBlocking] = useState(false)
 
-    validationSchema = Yup.object().shape({
+    const validationSchema = Yup.object().shape({
         name: Yup.string().required('Name is required'),
         username: Yup.string().required('Username is required'),
         password: Yup.string().when('id', {
@@ -77,97 +45,115 @@ class UserFormComponent extends React.Component {
         phone: Yup.number(),
     });
 
-    useStyles = makeStyles((theme) => ({
-        headerMarginTop: {
-            marginTop: theme.spacing(5),
-        }
-    }));
-
-    saveUser = (fields, { setStatus, setSubmitting, resetForm }) => {
-        this.setState({blocking: true});
-        let method = (this.state.isAddMode) ? 'save' : 'update';
-        let msgSuccess = (this.state.isAddMode)
-            ? this.state.intl.formatMessage({id: 'USER.CREATED'})
-            : this.state.intl.formatMessage({id: 'USER.UPDATED'});
+    const saveUser = (fields, { setSubmitting, resetForm }) => {
+        setBlocking(true)
+        let method = (isAddMode) ? 'save' : 'update';
+        let msgSuccess = (isAddMode)
+            ? intl.formatMessage({ id: 'USER.CREATED' })
+            : intl.formatMessage({ id: 'USER.UPDATED' });
 
         fields.metadata = JSON.stringify({
-            address : fields.address,
-            phone   : fields.phone,
+            address: fields.address,
+            phone: fields.phone,
             comments: fields.comments,
         });
 
         // Profile Selection
-        const profileArr = this.state.profiles.filter((e) => {
+        const profileArr = profiles.filter((e) => {
             return e.id === parseInt(fields.profileId);
         });
         fields.profile = profileArr[0];
 
         // Tenant Selection
-        const tenantArr = this.state.tenants.filter((e) => {
+        const tenantArr = tenants.filter((e) => {
             return e.id === parseInt(fields.tenantId);
         });
         fields.tenant = tenantArr[0];
 
         userService[method](fields)
-            .then((response) => {
-                toaster.notify('success', msgSuccess);
-                this.setState({blocking: false});
+            .then((_response) => {
                 setSubmitting(false);
-
-                if (this.state.isAddMode) {
-                    resetForm(this.initialValues);
+                setBlocking(false)
+                toaster.notify('success', msgSuccess);
+                if (isAddMode) {
+                    resetForm(initialValues);
                 }
             });
     };
+    useEffect(() => {
+        apiService
+            .get('profile', 100, 0)
+            .then((response) => {
+                const respProfiles = response.profiles || []
+                setProfiles(respProfiles)
+            });
+        apiService
+            .get('tenant_new', 100, 0)
+            .then((response) => {
+                const respTenants = response.tenants_new || []
+                setTenants(respTenants)
+            });
+        if (!isAddMode && userId !== 'new') {
+            apiService
+                .getById('user', userId)
+                .then((response) => {
+                    const res = response.users[0] || {};
+                    const userInfo = {
+                        name: res.name,
+                        username: res.username,
+                        profileId: res.profile.id,
+                        profile: res.profile,
+                        tenantId: res.tenant.id,
+                        email: res.email,
+                        metadata: res.metadata !== '' ? JSON.parse(res.metadata) : {}
+                    }
+                    setUserInfo(userInfo)
+                });
+        }
 
-    render() {
-        return (
-            <BlockUi tag='div' blocking={this.state.blocking}>
+    }, [])
+
+
+    const classes = useStyles();
+
+    const initialValues = {
+        id: userId,
+        profileId: userInfo.profileId || '',
+        tenantId: userInfo.tenantId || '',
+        name: userInfo.name || '',
+        username: userInfo.username || '',
+        email: userInfo.email || '',
+        password: '',
+        confirmPassword: '',
+        phone: userInfo.metadata.phone || '',
+        address: userInfo.metadata.address || '',
+        comments: userInfo.metadata.comments || '',
+        metadata: userInfo.metadata || {},
+        profile: userInfo.profile || {},
+    };
+
+    return (
+        <BlockUi tag='div' blocking={blocking}>
             <Formik
                 enableReinitialize
-                initialValues={this.initialValues}
-                validationSchema={this.validationSchema}
+                initialValues={initialValues}
+                validationSchema={validationSchema}
                 onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
-                    this.saveUser(values, {
+                    saveUser(values, {
                         setStatus,
                         setSubmitting,
                         resetForm,
                     });
                 }}
-                >
+            >
                 {({
                     isValid,
                     getFieldProps,
                     errors,
                     touched,
                     isSubmitting,
-                    setFieldValue,
                     handleSubmit,
-                    handleChange
                 }) => {
-                    const classes = this.useStyles();
-
-                    useEffect(() => {
-                        if (!this.state.isAddMode && this.state.id !== 'new') {
-                            apiService
-                            .getById('user', this.state.id)
-                            .then((response) => {
-                                const res       = response.users[0];
-                                setFieldValue('name', res.name, false);
-                                setFieldValue('username', res.username, false);
-                                setFieldValue('profileId', res.profile.id, false);
-                                setFieldValue('tenantId', res.tenant.id, false);
-                                setFieldValue('email', res.email, false);
-
-                                if (res.metadata !== '') {
-                                    const metadata  = JSON.parse(res.metadata);
-                                    setFieldValue('phone', metadata.phone, false);
-                                    setFieldValue('comments', metadata.comments, false);
-                                    setFieldValue('address', metadata.address, false);
-                                }
-                            });
-                        }
-                    }, [setFieldValue]);
 
                     return (
                         <form
@@ -175,7 +161,7 @@ class UserFormComponent extends React.Component {
                             onSubmit={handleSubmit}>
                             {/* begin::Header */}
                             <div
-                                className={`card-header py-3 `+ classes.headerMarginTop}>
+                                className={`card-header py-3 ` + classes.headerMarginTop}>
                                 <div className='card-title align-items-start flex-column'>
                                     <h3 className='card-label font-weight-bolder text-dark'>
                                         User Information
@@ -215,7 +201,7 @@ class UserFormComponent extends React.Component {
                                                 <Field
                                                     as="input"
                                                     className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                        {errors, touched},
+                                                        { errors, touched },
                                                         'name'
                                                     )}`}
                                                     name='name'
@@ -238,7 +224,7 @@ class UserFormComponent extends React.Component {
                                                 {...getFieldProps('tenantId')}
                                             >
                                                 <option key='' value=''>&nbsp;</option>
-                                                {this.state.tenants.map((e) =>
+                                                {tenants.map((e) =>
                                                     <option value={e.id} key={e.id}>{e.name}</option>
                                                 )}
                                             </Field>
@@ -257,7 +243,7 @@ class UserFormComponent extends React.Component {
                                                 {...getFieldProps('profileId')}
                                             >
                                                 <option key='' value=''>&nbsp;</option>
-                                                {this.state.profiles.map((e) =>
+                                                {profiles.map((e) =>
                                                     <option value={e.id} key={e.id}>{e.name}</option>
                                                 )}
                                             </Field>
@@ -265,69 +251,69 @@ class UserFormComponent extends React.Component {
                                         </div>
                                     </div>
 
-                                    { this.state.isAddMode &&
-                                    <div className='form-group row'>
-                                        <div className='col-xl-4 col-lg-4'>
-                                            <label className={`required`}>Username</label>
-                                            <Field
-                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                    {errors, touched},
-                                                    'username'
-                                                )}`}
-                                                placeholder='Set the username'
-                                                {...getFieldProps('username')}
-                                            />
-                                            <ErrorMessage name="username" component="div" className="invalid-feedback" />
-                                        </div>
+                                    {isAddMode &&
+                                        <div className='form-group row'>
+                                            <div className='col-xl-4 col-lg-4'>
+                                                <label className={`required`}>Username</label>
+                                                <Field
+                                                    className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                        { errors, touched },
+                                                        'username'
+                                                    )}`}
+                                                    placeholder='Set the username'
+                                                    {...getFieldProps('username')}
+                                                />
+                                                <ErrorMessage name="username" component="div" className="invalid-feedback" />
+                                            </div>
 
-                                        <div className='col-xl-4 col-lg-4'>
-                                            <label className={`required`}>Password</label>
-                                            <Field
-                                                as="input"
-                                                type="password"
-                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                    {errors, touched},
-                                                    'password'
-                                                )}`}
-                                                name='password'
-                                                placeholder='Set the password'
-                                                {...getFieldProps('password')}
-                                            />
-                                            <ErrorMessage name="password" component="div" className="invalid-feedback"/>
+                                            <div className='col-xl-4 col-lg-4'>
+                                                <label className={`required`}>Password</label>
+                                                <Field
+                                                    as="input"
+                                                    type="password"
+                                                    className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                        { errors, touched },
+                                                        'password'
+                                                    )}`}
+                                                    name='password'
+                                                    placeholder='Set the password'
+                                                    {...getFieldProps('password')}
+                                                />
+                                                <ErrorMessage name="password" component="div" className="invalid-feedback" />
+                                            </div>
+                                            <div className='col-xl-4 col-lg-4'>
+                                                <label className={`required`}>Repeat Password</label>
+                                                <Field
+                                                    as="input"
+                                                    type="password"
+                                                    className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                        { errors, touched },
+                                                        'confirmPassword'
+                                                    )}`}
+                                                    name='confirmPassword'
+                                                    placeholder='confirm your password'
+                                                    {...getFieldProps('confirmPassword')}
+                                                />
+                                                <ErrorMessage name="confirmPassword" component="div" className="invalid-feedback" />
+                                            </div>
                                         </div>
-                                        <div className='col-xl-4 col-lg-4'>
-                                            <label className={`required`}>Repeat Password</label>
-                                            <Field
-                                                as="input"
-                                                type="password"
-                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                {errors, touched},
-                                                'confirmPassword'
-                                                )}`}
-                                                name='confirmPassword'
-                                                placeholder='confirm your password'
-                                                {...getFieldProps('confirmPassword')}
-                                            />
-                                            <ErrorMessage name="confirmPassword" component="div" className="invalid-feedback" />
-                                        </div>
-                                    </div>
                                     }
 
-                                    {!this.state.isAddMode &&
-                                    <div className='form-group row'>
-                                        <div className='col-xl-12 col-lg-12'>
-                                            <label className={`required`}>Username</label>
-                                            <Field
-                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                    {errors, touched},
-                                                    'username'
-                                                )}`}
-                                                placeholder='Set the username'
-                                                {...getFieldProps('username')}
-                                            />
-                                            <ErrorMessage name="username" component="div" className="invalid-feedback"/>
+                                    {!isAddMode &&
+                                        <div className='form-group row'>
+                                            <div className='col-xl-12 col-lg-12'>
+                                                <label className={`required`}>Username</label>
+                                                <Field
+                                                    className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                        { errors, touched },
+                                                        'username'
+                                                    )}`}
+                                                    placeholder='Set the username'
+                                                    {...getFieldProps('username')}
+                                                />
+                                                <ErrorMessage name="username" component="div" className="invalid-feedback" />
+                                            </div>
                                         </div>
-                                    </div>
                                     }
 
                                     <div className='form-group row'>
@@ -335,7 +321,7 @@ class UserFormComponent extends React.Component {
                                             <label className={`required`}>Email</label>
                                             <Field
                                                 className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                    {errors, touched},
+                                                    { errors, touched },
                                                     'email'
                                                 )}`}
                                                 placeholder='Set the email'
@@ -348,7 +334,7 @@ class UserFormComponent extends React.Component {
                                             <label>Phone number</label>
                                             <Field
                                                 className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                    {errors, touched},
+                                                    { errors, touched },
                                                     'phone'
                                                 )}`}
                                                 placeholder='Set the phone number'
@@ -363,7 +349,7 @@ class UserFormComponent extends React.Component {
                                             <label>Address</label>
                                             <Field
                                                 className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                    {errors, touched},
+                                                    { errors, touched },
                                                     'address'
                                                 )}`}
                                                 placeholder='Set the address'
@@ -382,7 +368,7 @@ class UserFormComponent extends React.Component {
                                                     as="textarea"
                                                     rows='3'
                                                     className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                        {errors, touched},
+                                                        { errors, touched },
                                                         'comments'
                                                     )}`}
                                                     name='comments'
@@ -403,9 +389,8 @@ class UserFormComponent extends React.Component {
                     );
                 }}
             </Formik>
-            </BlockUi>
-        );
-    }
+        </BlockUi>
+    );
 }
 
 export default injectIntl(UserFormComponent);

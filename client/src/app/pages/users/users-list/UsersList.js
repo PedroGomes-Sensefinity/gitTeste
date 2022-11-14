@@ -5,9 +5,9 @@ import EditIcon from '@material-ui/icons/Edit';
 import ChangePasswordIcon from '@material-ui/icons/VpnKey';
 import React, { useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import ChangePasswordFormComponent from "../../../components/form/changePasswordFormComponent";
-import GenericModalComponent from '../../../components/modal/genericModalComponent';
-import TableGrid from '../../../components/table-grid/table-grid.component';
+import ChangePasswordFormComponent from "../../../components/form/ChangePasswordFormComponent";
+import GenericModalComponent from '../../../components/modal/GenericModalComponent';
+import TableGrid from '../../../components/table-grid/TableGrid';
 import { usePermissions } from '../../../modules/Permission/PermissionsProvider';
 
 

@@ -6,7 +6,7 @@ import Form from 'react-bootstrap/Form';
 import notificationService from "../../../services/notificationService";
 
 import { useLang } from '../../../../_metronic/i18n/Metronici18n';
-import TableGrid from '../../../components/table-grid/table-grid.component';
+import TableGrid from '../../../components/table-grid/TableGrid';
 
 export function AlarmsList() {
     const [, setTimefilter] = React.useState();

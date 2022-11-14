@@ -1,7 +1,7 @@
 import DoneIcon from '@material-ui/icons/Done';
 import { makeStyles } from '@material-ui/styles';
 import { ErrorMessage, Field, Formik } from 'formik';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import BlockUi from "react-block-ui";
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { injectIntl } from 'react-intl';
@@ -19,51 +19,58 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-// still unused
-function GroupsFormComponentFunctional(props) {
+
+function GroupsFormComponent(props) {
     const intl = props.intl
-    const id = props.id
+    const groupId = props.id
     const isAddMode = props.id === undefined
 
     const [selectedThresholds, setSelectedThresholds] = useState([])
-    const [selectedGroups, setSelectedGroup] = useState([])
+    const [groupInfo, setGroup] = useState({})
+
+    const [parentGroup, setParentGroup] = useState([])
 
     const [optionGroups, setOptionGroups] = useState([])
     const [optionThresholds, setOptionThresholds] = useState([])
 
     const [blocking, setBlocking] = useState(true)
     const [loading, setLoading] = useState(false)
-
     const classes = useStyles();
 
     useEffect(() => {
-        if (!isAddMode && id !== null) {
+        if (!isAddMode && groupId !== null) {
             apiService
-                .getById('group', id)
+                .getById('group', groupId)
                 .then((response) => {
+                    const repsGroups = response.groups || []
                     let group = {}
-                    if (response.groups !== undefined && response.groups.length > 0) {
-                        group = response.groups[0];
+                    if (repsGroups.length > 0) {
+                        group = repsGroups[0];
                     }
 
-                    let selectedGroup = {
+                    let groupInfo = {
                         id: group.id,
-                        label: makeGroupLabel(group),
+                        label: group.label,
+                    }
+
+                    const parent = {
+                        id: group.parent_id,
                         parentLabel: group.parent_label
                     }
 
-                    let thresholds = []
-                    if (group.thresholds !== undefined) {
+                    let thresholds = group.thresholds || []
+                    if (thresholds.length > 0) {
                         thresholds = group.thresholds[0];
                     }
 
                     var selectedThreshold = []
-                    if (Array.isArray(thresholds) && thresholds.length > 0) {
+                    if (thresholds.length > 0) {
                         selectedThreshold.push({ id: thresholds[0].id, name: thresholds[0].label })
                     }
 
+                    setGroup(groupInfo)
+                    setParentGroup([parent])
                     setSelectedThresholds(selectedThreshold);
-                    setSelectedGroup([selectedGroup])
                     setBlocking(false)
                 });
         }
@@ -73,37 +80,27 @@ function GroupsFormComponentFunctional(props) {
         label: Yup.string().required('Label is required'),
     });
 
-    const initialValues = useMemo(() => {
-        if (selectedGroups.length != 0) {
-            const group = selectedGroups[0]
-            return {
-                id: group.id,
-                parent_id: group.parent_id,
-                parentLabel: group.parent_label || '',
-                thresholds: group.thresholds,
-                label: group.label,
-            };
+    const initialValues = {
+        id: groupId,
+        label: groupInfo.label || '',
+    };
 
-        }
-    }, [selectedGroups]);
 
-    const getGroups = (records) => {
-        let groups = [];
-        if (Array.isArray(records)) {
-            groups = records.map((group) => {
-                // If is edit mode, remove actual group to avoid circular reference
-                const label = makeGroupLabel(group)
-                return { id: group.id, parentLabel: label }
-            })
-        }
-        return groups;
-    }
+
+    const getGroups = (records) => records
+        .filter((group) => group.id != groupId)
+        .map((group) => {
+            // If is edit mode, remove actual group to avoid circular reference
+            const label = makeGroupLabel(group)
+            return { id: group.id, parentLabel: label }
+        })
+
+
 
     const makeGroupLabel = (group) => {
         const parentParent = (group.parent_parent_id !== 0) ? "../" : "";
         const parent = (group.parent_label !== "") ? `${group.parent_label}/` : "";
-        const toReturn = `${parentParent}${parent}${group.label}` 
-        console.log(toReturn)
+        const toReturn = `${parentParent}${parent}${group.label}`
         return toReturn;
     }
 
@@ -115,31 +112,36 @@ function GroupsFormComponentFunctional(props) {
             : intl.formatMessage({ id: 'GROUP.UPDATED' });
 
         fields.thresholds = selectedThresholds
+        if (parentGroup.length > 0) {
+            fields.parent_id = parentGroup[0].id
+        }
 
         groupsService[method](fields)
-            .then((response) => {
+            .then((_response) => {
                 toaster.notify('success', msgSuccess);
                 setBlocking(false);
                 setSubmitting(false);
 
                 if (isAddMode) {
                     resetForm(initialValues);
-                    setSelectedGroup([])
+                    setGroup({})
+                    setParentGroup({})
                     setSelectedThresholds([])
                 }
             });
     };
 
     const onChangeParentGroup = (opt) => {
-        setSelectedGroup(opt)
+        setParentGroup(opt)
     };
 
 
     const handleSearchGroup = (query) => {
         setLoading(true)
-
+        console.log(query)
         apiService.getByText('group', query, 100, 0).then((response) => {
-            setOptionGroups(getGroups(response.groups));
+            const respGroups = response.groups || []
+            setOptionGroups(getGroups(respGroups));
             setLoading(false)
         });
     };
@@ -150,12 +152,9 @@ function GroupsFormComponentFunctional(props) {
 
     const handleSearchThreshold = (query) => {
         setLoading(true)
-
         apiService.getByText('threshold', query, 100, 0).then((response) => {
-            const thresholds = (typeof response.thresholds !== undefined && Array.isArray(response.thresholds))
-                ? filterThresholdSelected(response.thresholds)
-                : [];
-            setOptionThresholds(thresholds)
+            const respThresholds = response.thresholds || []
+            setOptionThresholds(filterThresholdSelected(respThresholds))
             setLoading(false)
         });
     };
@@ -259,9 +258,9 @@ function GroupsFormComponentFunctional(props) {
                                                 size="lg"
                                                 options={optionGroups}
                                                 placeholder=''
-                                                onChange={onChangeParentGroup}
-                                                selected={selectedGroups}
                                                 onSearch={handleSearchGroup}
+                                                onChange={onChangeParentGroup}
+                                                selected={parentGroup}
                                                 isLoading={loading}
                                                 filterBy={filterBy}
                                                 className={getInputClasses({ errors, touched }, 'parent_id')}
@@ -302,4 +301,4 @@ function GroupsFormComponentFunctional(props) {
     );
 }
 
-export default injectIntl(GroupsFormComponentFunctional);
+export default injectIntl(GroupsFormComponent);

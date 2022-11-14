@@ -1,5 +1,5 @@
 import React from "react";
-import NotificationsTemplatesFormComponent from "../../../components/form/notificationTemplatesFormComponent";
+import NotificationsTemplatesFormComponent from "../../../components/form/NotificationTemplatesFormComponent";
                   
 export function NotificationTemplatesForm({match}) {
     const {id} = match.params;

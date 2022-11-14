@@ -1,42 +1,53 @@
-import React, {useEffect} from 'react';
-import {ErrorMessage, Field, Formik} from 'formik';
-import * as Yup from 'yup';
-import {makeStyles} from '@material-ui/styles';
-import floorMapService from '../../services/floorMapService';
-import apiService from '../../services/apiService';
 import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Clear';
 import DoneIcon from '@material-ui/icons/Done';
 import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Clear';
-import {getInputClasses} from '../../utils/formik';
-import '../../utils/yup-validations';
+import { makeStyles } from '@material-ui/styles';
+import { ErrorMessage, Field, Formik } from 'formik';
+import React, { useEffect, useState } from 'react';
 import BlockUi from "react-block-ui";
-import toaster from '../../utils/toaster';
-import {injectIntl} from 'react-intl';
+import Table from 'react-bootstrap/Table';
+import { injectIntl } from 'react-intl';
 import NumberFormat from 'react-number-format';
-import Table from 'react-bootstrap/Table'
+import * as Yup from 'yup';
+import apiService from '../../services/apiService';
+import floorMapService from '../../services/floorMapService';
+import { getInputClasses } from '../../utils/formik';
+import toaster from '../../utils/toaster';
+import '../../utils/yup-validations';
 
-class FloorMapAnchorsFormComponent extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            intl: props.intl,
-            id: props.id,
-            floormap: {},
-            listAnchors: [],
-            update: false,
-            loading: false,
-            blocking: false,
-        };
+const useStyles = makeStyles((theme) => ({
+    headerMarginTop: {
+        marginTop: theme.spacing(5),
     }
+}));
+function FloorMapAnchorsFormComponent(props) {
+    const intl = props.intl
+    const floorMapId = props.id
+    const isAddMode = !props.id
+    const [floormap, setFloorMap] = useState({})
+    const [listAnchors, setListAnchors] = useState([])
+    const [blocking, setBlocking] = useState(false)
+    const classes = useStyles()
 
-    useStyles = makeStyles((theme) => ({
-        headerMarginTop: {
-            marginTop: theme.spacing(5),
+
+
+    useEffect(() => {
+        if (!isAddMode && floorMapId !== 'new') {
+            apiService
+                .getById('floormaps', floorMapId)
+                .then((response) => {
+                    const respFloorMap = response.floormaps || []
+                    if (respFloorMap.length > 0) {
+                        const res = response.floormaps[0];
+                        init(res);
+                        setFloorMap(res)
+                    }
+                });
         }
-    }));
+    }, []);
 
-    initialValues = {
+    const initialValues = {
         label: '',
         description: '',
         x: '',
@@ -44,7 +55,7 @@ class FloorMapAnchorsFormComponent extends React.Component {
         z: '',
     };
 
-    validationSchema = Yup.object().shape({
+    const validationSchema = Yup.object().shape({
         label: Yup.string().max(50).required('Label is required'),
         description: Yup.string().max(100),
         x: Yup.number().required('X is required'),
@@ -52,35 +63,31 @@ class FloorMapAnchorsFormComponent extends React.Component {
         z: Yup.number().required('Z is required'),
     });
 
-    componentDidMount() {
+    const save = () => {
+        setBlocking(true)
+        let metadata = JSON.parse(floormap.metadata);
+        metadata.anchors = listAnchors;
+        floormap.metadata = JSON.stringify(metadata);
 
-    }
-
-    init = () => {
-        const metadata = JSON.parse(this.state.floormap.metadata);
-
-        if ('anchors' in metadata) {
-            this.setState({listAnchors: metadata.anchors});
-        }
-    }
-
-    save = () => {
-        this.setState({blocking: true});
-
-        let metadata = JSON.parse(this.state.floormap.metadata);
-        metadata.anchors = this.state.listAnchors;
-        this.state.floormap.metadata = JSON.stringify(metadata);
-
-        floorMapService.update(this.state.floormap)
-            .then((r) => {
-                toaster.notify('success', this.state.intl.formatMessage({id: 'FLOORMAP.UPDATED'}));
-                this.setState({blocking: false});
+        floorMapService.update(floormap)
+            .then((_r) => {
+                toaster.notify('success', intl.formatMessage({ id: 'FLOORMAP.UPDATED' }));
+                setBlocking(false)
             });
     };
 
-    addAnchor = (values) => {
-        const anchors = this.state.listAnchors;
-        const coordinates = this.getCoordinatesFromXYZ(values);
+    const init = (floormap) => {
+        const metadata = JSON.parse(floormap.metadata);
+
+        if ('anchors' in metadata) {
+            setListAnchors(metadata.anchors)
+        }
+    }
+
+    const addAnchor = (values) => {
+        // deep copy 
+        const anchors = listAnchors.map(anchor => { return { ...anchor } });
+        const coordinates = getCoordinatesFromXYZ(values);
         const newAnchor = {
             label: values.label,
             description: values.description,
@@ -91,31 +98,31 @@ class FloorMapAnchorsFormComponent extends React.Component {
             lon: coordinates.lon,
         };
         anchors.push(newAnchor);
-        this.setState({listAnchors: anchors});
+        setListAnchors(anchors)
     };
 
-    updateAnchor = (values) => {
+    const updateAnchor = (values) => {
         const index = values.index;
-        const coordinates = this.getCoordinatesFromXYZ(values);
-        const anchor = this.state.listAnchors[index];
+        const coordinates = getCoordinatesFromXYZ(values);
 
-        anchor.label =  values.label;
-        anchor.description =  values.description;
-        anchor.x =  parseFloat(values.x);
-        anchor.y =  parseFloat(values.y);
-        anchor.z =  parseFloat(values.z);
-        anchor.lat =  coordinates.lat;
-        anchor.lon =  coordinates.lon;
+        // deep clone array
+        const funcLocalAnchors = listAnchors.map(anchor => { return { ...anchor } });
+        const anchor = funcLocalAnchors[index];
 
-        const anchors = this.state.listAnchors;
-        anchors[index] = anchor;
-        this.setState({listAnchors: anchors});
+        anchor.label = values.label;
+        anchor.description = values.description;
+        anchor.x = parseFloat(values.x);
+        anchor.y = parseFloat(values.y);
+        anchor.z = parseFloat(values.z);
+        anchor.lat = coordinates.lat;
+        anchor.lon = coordinates.lon;
+
+        funcLocalAnchors[index] = anchor
+        setListAnchors(funcLocalAnchors)
     };
 
-    fillAnchor = (index, {setFieldValue}) => {
-        this.setState({update: true});
-        const anchor = this.state.listAnchors[index];
-
+    const fillAnchor = (index, { setFieldValue }) => {
+        const anchor = listAnchors[index]
         if (typeof anchor !== "undefined") {
             setFieldValue('label', anchor.label, false);
             setFieldValue('description', anchor.description, false);
@@ -126,37 +133,36 @@ class FloorMapAnchorsFormComponent extends React.Component {
         }
     }
 
-    deleteAnchor = (index) => {
-        const anchors = this.state.listAnchors;
+    const deleteAnchor = (index) => {
+        const anchors = listAnchors.map(anchor => { return { ...anchor } });
         if (typeof anchors[index] !== "undefined") {
             anchors.splice(index, 1);
-            this.setState({listAnchors: anchors});
+            setListAnchors(anchors)
         }
     }
 
-    getCoordinatesFromXYZ = (values) => {
+    const getCoordinatesFromXYZ = (_values) => {
         return {
             lat: 38.7744549,
             lon: -9.3319229
         }
     }
 
-    render() {
-        return (
-            <BlockUi tag='div' blocking={this.state.blocking}>
+    return (
+        <BlockUi tag='div' blocking={blocking}>
             <Formik
                 enableReinitialize
-                initialValues={this.initialValues}
-                validationSchema={this.validationSchema}
-                onSubmit={(values, { setStatus, setSubmitting, resetForm, setFieldValue }) => {
+                initialValues={initialValues}
+                validationSchema={validationSchema}
+                onSubmit={(values, { resetForm }) => {
                     if ('index' in values) {
-                        this.updateAnchor(values)
+                        updateAnchor(values)
                     } else {
-                        this.addAnchor(values);
+                        addAnchor(values);
                     }
-                    resetForm(this.initialValues);
+                    resetForm(initialValues);
                 }}
-                >
+            >
                 {({
                     isValid,
                     getFieldProps,
@@ -167,27 +173,13 @@ class FloorMapAnchorsFormComponent extends React.Component {
                     values,
                     resetForm
                 }) => {
-                    const classes = this.useStyles();
-
-                    useEffect(() => {
-                        if (!this.state.isAddMode && this.state.id !== 'new') {
-                            apiService
-                            .getById('floormaps', this.state.id)
-                            .then((response) => {
-                                const res = response.floormaps[0];
-                                this.setState({floormap: res})
-                                this.init();
-                            });
-                        }
-                    }, []);
-
                     return (
                         <form
                             className='card card-custom'
                             onSubmit={handleSubmit}>
                             {/* begin::Header */}
                             <div
-                                className={`card-header py-3 `+ classes.headerMarginTop}>
+                                className={`card-header py-3 ` + classes.headerMarginTop}>
                                 <div className='card-title align-items-start flex-column'>
                                     <h3 className='card-label font-weight-bolder text-dark'>
                                         Anchors
@@ -200,7 +192,7 @@ class FloorMapAnchorsFormComponent extends React.Component {
                                     <button
                                         type='button'
                                         className='btn btn-success mr-2'
-                                        onClick={() => this.save()}
+                                        onClick={() => save()}
                                     >
                                         <DoneIcon /> Save
                                     </button>
@@ -218,7 +210,7 @@ class FloorMapAnchorsFormComponent extends React.Component {
                                                 <Field
                                                     as="input"
                                                     className={`form-control form-control-lg form-control-solid required ${getInputClasses(
-                                                        {errors, touched},
+                                                        { errors, touched },
                                                         'label'
                                                     )}`}
                                                     name='label'
@@ -234,7 +226,7 @@ class FloorMapAnchorsFormComponent extends React.Component {
                                                 <Field
                                                     as="input"
                                                     className={`form-control form-control-lg form-control-solid required ${getInputClasses(
-                                                        {errors, touched},
+                                                        { errors, touched },
                                                         'description'
                                                     )}`}
                                                     name='description'
@@ -249,7 +241,7 @@ class FloorMapAnchorsFormComponent extends React.Component {
                                             <NumberFormat
                                                 name='x'
                                                 className={`form-control form-control-lg form-control-solid required ${getInputClasses(
-                                                    {errors, touched}, 'x')}`}
+                                                    { errors, touched }, 'x')}`}
                                                 thousandSeparator={false}
                                                 inputMode="numeric"
                                                 allowLeadingZeros={true}
@@ -257,14 +249,14 @@ class FloorMapAnchorsFormComponent extends React.Component {
                                                 decimalScale={3}
                                                 {...getFieldProps('x')}
                                             />
-                                            <ErrorMessage name="x" component="div" className="invalid-feedback"/>
+                                            <ErrorMessage name="x" component="div" className="invalid-feedback" />
                                         </div>
                                         <div className='col-xl-2 col-lg-2'>
                                             <label className={`required`}>Y</label>
                                             <NumberFormat
                                                 name="y"
                                                 className={`form-control form-control-lg form-control-solid required ${getInputClasses(
-                                                    {errors, touched}, 'y')}`}
+                                                    { errors, touched }, 'y')}`}
                                                 thousandSeparator={false}
                                                 inputMode="numeric"
                                                 allowLeadingZeros={true}
@@ -272,14 +264,14 @@ class FloorMapAnchorsFormComponent extends React.Component {
                                                 placeholder={'ddd.mmm'}
                                                 {...getFieldProps('y')}
                                             />
-                                            <ErrorMessage name="y" component="div" className="invalid-feedback"/>
+                                            <ErrorMessage name="y" component="div" className="invalid-feedback" />
                                         </div>
                                         <div className='col-xl-2 col-lg-2'>
                                             <label className={`required`}>Z</label>
                                             <NumberFormat
                                                 name="z"
                                                 className={`form-control form-control-lg form-control-solid required ${getInputClasses(
-                                                    {errors, touched}, 'z')}`}
+                                                    { errors, touched }, 'z')}`}
                                                 thousandSeparator={false}
                                                 inputMode="numeric"
                                                 placeholder={'ddd.mmm'}
@@ -287,70 +279,70 @@ class FloorMapAnchorsFormComponent extends React.Component {
                                                 decimalScale={3}
                                                 {...getFieldProps('z')}
                                             />
-                                            <ErrorMessage name="z" component="div" className="invalid-feedback"/>
+                                            <ErrorMessage name="z" component="div" className="invalid-feedback" />
                                         </div>
                                         <div className='col-xl-2 col-lg-2'>
                                             <button
                                                 type='submit'
                                                 className='btn btn-sm btn-success mr-2 mt-8'
                                                 disabled={touched && !isValid}>
-                                                { values.index === undefined && <span><AddIcon /> Add</span>}
-                                                { values.index !== undefined && <span><DoneIcon /> Save</span>}
+                                                {values.index === undefined && <span><AddIcon /> Add</span>}
+                                                {values.index !== undefined && <span><DoneIcon /> Save</span>}
                                             </button>
-                                            { values.index !== undefined && <button
+                                            {values.index !== undefined && <button
                                                 type='button'
                                                 className='btn btn-sm btn-warning mr-2 mt-8'
-                                                onClick={() => resetForm(this.initialValues)}
+                                                onClick={() => resetForm(initialValues)}
                                             >
                                                 <DeleteIcon /> Cancel
                                             </button>}
                                         </div>
                                         <div className="col-xs-12 col-lg-12">
-                                            {this.state.listAnchors.length > 0 &&
-                                            <Table responsive>
-                                                <thead>
-                                                <tr>
-                                                    <th/>
-                                                    <th>Anchor Label</th>
-                                                    <th>Description</th>
-                                                    <th>X</th>
-                                                    <th>Y</th>
-                                                    <th>Z</th>
-                                                    <th>Coordinates</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                { this.state.listAnchors.map((value, index) => (
-                                                    <tr key={index}>
-                                                        <td>
-                                                            <button
-                                                                type='button'
-                                                                className='btn btn-sm btn-success'
-                                                                onClick={() => this.fillAnchor(index, {setFieldValue})}
-                                                            >
-                                                                <EditIcon/> Edit
-                                                            </button>
-                                                            <button
-                                                                type='button'
-                                                                className='btn btn-sm btn-danger ml-1'
-                                                                onClick={() => this.deleteAnchor(index)}
-                                                            >
-                                                                <DeleteIcon/> Delete
-                                                            </button>
-                                                        </td>
-                                                        <td>{value.label}</td>
-                                                        <td>{value.description}</td>
-                                                        <td>{value.x}</td>
-                                                        <td>{value.y}</td>
-                                                        <td>{value.z}</td>
-                                                        <td>
-                                                            Lat: {value.lat}<br/>
-                                                            Lon: {value.lon}
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                                </tbody>
-                                            </Table>
+                                            {listAnchors.length > 0 &&
+                                                <Table responsive>
+                                                    <thead>
+                                                        <tr>
+                                                            <th />
+                                                            <th>Anchor Label</th>
+                                                            <th>Description</th>
+                                                            <th>X</th>
+                                                            <th>Y</th>
+                                                            <th>Z</th>
+                                                            <th>Coordinates</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {listAnchors.map((value, index) => (
+                                                            <tr key={index}>
+                                                                <td>
+                                                                    <button
+                                                                        type='button'
+                                                                        className='btn btn-sm btn-success'
+                                                                        onClick={() => fillAnchor(index, { setFieldValue })}
+                                                                    >
+                                                                        <EditIcon /> Edit
+                                                                    </button>
+                                                                    <button
+                                                                        type='button'
+                                                                        className='btn btn-sm btn-danger ml-1'
+                                                                        onClick={() => deleteAnchor(index)}
+                                                                    >
+                                                                        <DeleteIcon /> Delete
+                                                                    </button>
+                                                                </td>
+                                                                <td>{value.label}</td>
+                                                                <td>{value.description}</td>
+                                                                <td>{value.x}</td>
+                                                                <td>{value.y}</td>
+                                                                <td>{value.z}</td>
+                                                                <td>
+                                                                    Lat: {value.lat}<br />
+                                                                    Lon: {value.lon}
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </Table>
                                             }
                                         </div>
                                     </div>
@@ -361,9 +353,8 @@ class FloorMapAnchorsFormComponent extends React.Component {
                     );
                 }}
             </Formik>
-            </BlockUi>
-        );
-    }
+        </BlockUi>)
 }
+
 
 export default injectIntl(FloorMapAnchorsFormComponent);

@@ -1,152 +1,143 @@
-import React, {useEffect} from 'react';
-import {Formik} from 'formik';
-import * as Yup from 'yup';
-import {Link} from 'react-router-dom';
-import {makeStyles} from '@material-ui/styles';
 import DoneIcon from '@material-ui/icons/Done';
-import '../../utils/yup-validations';
+import { makeStyles } from '@material-ui/styles';
+import { Formik } from 'formik';
+import React, { useEffect, useState } from 'react';
 import BlockUi from "react-block-ui";
-import toaster from '../../utils/toaster';
 import { injectIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
+import * as Yup from 'yup';
 import apiService from '../../services/apiService';
 import routesService from "../../services/routesService";
-import RouteMap from "../route-map/routeMap";
-import TableGrid from "../table-grid/table-grid.component";
+import toaster from '../../utils/toaster';
 import '../../utils/utils';
+import '../../utils/yup-validations';
+import RouteMap from "../route-map/routeMap";
+import TableGrid from "../table-grid/TableGrid";
 
-class RoutesMapComponent extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            intl: props.intl,
-            id: props.id,
-            route: {},
-            geofence: {},
-            geofenceSizes: [],
-            gridDataGeofencesSizes: [],
-            entity: {},
-            loading: false,
-            blocking: false,
-            clearRoute: false,
-        };
+const useStyles = makeStyles((theme) => ({
+    headerMarginTop: {
+        marginTop: theme.spacing(5),
     }
+}));
 
-    componentDidMount() {}
+function RoutesMapComponent(props) {
+    const intl = props.intl
+    const routeId = props.id
+    const [route, setRoute] = useState({})
+    const [entity, setEntity] = useState({})
+    const [geofence, setGeofence] = useState({})
+    const [geofenceSizes, setGeofenceSizes] = useState([])
+    const [blocking, setBlocking] = useState(false)
+    const [gridDataGeofencesSizes, setGridDataGeofencesSizes] = useState([])
 
-    initialValues = {
-        id: parseInt(this.props.id)
+    const classes = useStyles();
+
+    useEffect(() => {
+        apiService
+            .getById('route', routeId)
+            .then((response) => {
+                const respRoute = response.routes || []
+
+                if (respRoute.length > 0) {
+                    console.log(respRoute)
+                    const entity = respRoute[0];
+                    entity.metadata = JSON.parse(entity.metadata);
+                    setEntity(entity)
+
+                    if ("route" in entity.metadata) {
+                        setRoute(entity.metadata.route);
+                    }
+
+                    if ("geofence" in entity.metadata) {
+                        setGeofence(entity.metadata.geofence)
+                    }
+
+                    if ("geofenceSizes" in entity.metadata) {
+                        setGeofenceSizes(entity.metadata.geofenceSizes)
+                    }
+                }
+            });
+    }, []);
+
+    const initialValues = {
+        id: parseInt(props.id)
     };
 
-    validationSchema = Yup.object().shape({});
+    const validationSchema = Yup.object().shape({});
 
-    useStyles = makeStyles((theme) => ({
-        headerMarginTop: {
-            marginTop: theme.spacing(5),
-        }
-    }));
+    const save = (setSubmitting) => {
+        let newRoute = entity;
+        newRoute.metadata.route = route;
+        newRoute.metadata.geofence = geofence;
+        newRoute.metadata.geofenceSizes = geofenceSizes;
+        newRoute.metadata = JSON.stringify(newRoute.metadata);
+        console.log(`on Save`)
+        console.log(newRoute)
 
-    save = (fields, { setSubmitting }) => {
-        let route = this.state.entity;
-        route.metadata.route = this.state.route;
-        route.metadata.geofence = this.state.geofence;
-        route.metadata.geofenceSizes = this.state.geofenceSizes;
-        route.metadata = JSON.stringify(route.metadata);
-
-        this.setState({blocking: true});
-
-        routesService.update(route)
-            .then((response) => {
-                toaster.notify('success', this.state.intl.formatMessage({id: 'ROUTES.UPDATED'}));
+        setBlocking(true)
+        routesService.update(newRoute)
+            .then((_response) => {
+                toaster.notify('success', intl.formatMessage({ id: 'ROUTES.UPDATED' }));
 
             }).catch((err) => {
-                toaster.notify('error', err.data.detail);
+                // toaster.notify('error', err.data);
             })
             .finally(() => {
-                this.setState({blocking: false});
+                setBlocking(false)
                 setSubmitting(false);
             });
     };
 
-    onChangeRoute = (route) => {
-        this.setState({ route: route.route });
-        this.setState({ geofence: route.geofence });
-        this.setState({ geofenceSizes: route.geofenceSizes });
+    const onChangeRoute = (route) => {
+        console.log(route)
+        setRoute(route.route)
+        setGeofence(route.geofence)
+        setGeofenceSizes(route.geofenceSizes)
     };
 
-    mountGridGeofenceSizes = () => {
-        let data = [];
-        this.state.geofenceSizes.forEach((value, i) => {
-            data.push({
-                point: i+1,
+    useEffect(() => {
+        let data = geofenceSizes.map((value, i) => {
+            return {
+                point: i + 1,
                 size: value,
-            });
+            };
         });
-        this.setState({gridDataGeofencesSizes: data});
+        setGridDataGeofencesSizes(data)
+    }, [geofenceSizes])
+
+    const onChangePointSize = (data, index) => {
+        let newGridData = gridDataGeofencesSizes.map(i => i);
+        newGridData[index] = data;
+        let sizes = newGridData.map((item) => item.size);
+        setGridDataGeofencesSizes(newGridData)
+        setGeofenceSizes(sizes)
     }
 
-    async onChangePointSize (data, index) {
-        let gridDataGeofencesSizes = this.state.gridDataGeofencesSizes;
-        gridDataGeofencesSizes[index] = data;
-        let sizes = gridDataGeofencesSizes.map((item) => item.size);
+    const columns = [
+        {
+            field: 'point',
+            title: 'Point',
+            editable: 'never'
+        }, {
+            field: 'size',
+            title: 'Size (meters)',
+        }
+    ];
 
-        await this.setState({ gridDataGeofencesSizes: gridDataGeofencesSizes });
-        await this.setState({ geofenceSizes: sizes });
-    }
-
-    render() {
-        const columns = [
-            {
-                field: 'point',
-                title: 'Point',
-                editable: 'never'
-            }, {
-                field: 'size',
-                title: 'Size (meters)',
-            }
-        ];
-
-        return (
-            <BlockUi tag='div' blocking={this.state.blocking}>
+    return (
+        <BlockUi tag='div' blocking={blocking}>
             <Formik
                 enableReinitialize
-                initialValues={this.initialValues}
-                validationSchema={this.validationSchema}
-                onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
-                    this.save(values, {
-                        setSubmitting
-                    });
+                initialValues={initialValues}
+                validationSchema={validationSchema}
+                onSubmit={({ setSubmitting }) => {
+                    save(setSubmitting);
                 }}
-                >
+            >
                 {({
                     isSubmitting,
                     handleSubmit
                 }) => {
-                    const classes = this.useStyles();
-
-                    useEffect(() => {
-                            apiService
-                            .getById('route', this.state.id)
-                            .then((response) => {
-                                const entity = response.routes[0];
-                                entity.metadata = JSON.parse(entity.metadata);
-                                this.setState({entity: entity});
-
-                                if("route" in entity.metadata) {
-                                    this.setState({route: entity.metadata.route});
-                                }
-
-                                if("geofence" in entity.metadata) {
-                                    this.setState({geofence: entity.metadata.geofence});
-                                }
-
-                                if("geofenceSizes" in entity.metadata) {
-                                    this.setState({geofenceSizes: entity.metadata.geofenceSizes});
-                                }
-
-                                this.mountGridGeofenceSizes();
-                            });
-                    }, []);
-
                     return (
                         <form
                             className='card card-custom'
@@ -161,7 +152,7 @@ class RoutesMapComponent extends React.Component {
                                     <h3 className='card-label font-weight-bolder text-dark'>
                                         Route map
                                     </h3>
-                                    {typeof this.state.id !== "undefined" &&
+                                    {typeof id !== "undefined" &&
                                         <span className='text-muted font-weight-bold font-size-sm mt-1'>
                                             Draw route
                                         </span>
@@ -191,25 +182,25 @@ class RoutesMapComponent extends React.Component {
                                     <div className="form-group row">
                                         <div className={`col-xl-9 col-lg-9`}>
                                             <RouteMap
-                                                route={this.state.route}
-                                                geofenceSizes={this.state.geofenceSizes}
+                                                route={route}
+                                                geofenceSizes={geofenceSizes}
                                                 showGeofencing={true}
-                                                onChangeRoute={this.onChangeRoute} />
+                                                onChangeRoute={onChangeRoute} />
                                         </div>
                                         <div className={`col-xl-3 col-lg-3`}>
                                             <TableGrid
                                                 title=''
                                                 columns={columns}
-                                                data={this.state.gridDataGeofencesSizes}
-                                                style={{height: 500}}
+                                                data={gridDataGeofencesSizes}
+                                                style={{ height: 500 }}
                                                 editable={{
                                                     onRowUpdate: (newData, oldData) =>
                                                         new Promise((resolve, reject) => {
                                                             //setTimeout(() => {
-                                                                newData.size = parseFloat(newData.size);
-                                                                const index = oldData.tableData.id;
-                                                                this.onChangePointSize(newData, index);
-                                                                resolve();
+                                                            newData.size = parseFloat(newData.size);
+                                                            const index = oldData.tableData.id;
+                                                            onChangePointSize(newData, index);
+                                                            resolve();
                                                             //}, 1000)
                                                         })
                                                 }}
@@ -223,9 +214,8 @@ class RoutesMapComponent extends React.Component {
                     );
                 }}
             </Formik>
-            </BlockUi>
-        );
-    }
+        </BlockUi>
+    );
 }
 
 export default injectIntl(RoutesMapComponent);

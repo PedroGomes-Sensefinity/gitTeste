@@ -1,72 +1,91 @@
-import React, {useEffect} from "react";
-import apiService from "../../services/apiService";
 import DoneIcon from "@material-ui/icons/Done";
-import {Link} from "react-router-dom";
-import {UploadComponent} from "./UploadComponent";
-import {ColorPickerComponent} from "./ColorPickeComponentr";
-import * as Yup from "yup";
+import { makeStyles } from "@material-ui/styles";
+import { ErrorMessage, Formik } from 'formik';
+import React, { useEffect, useState } from "react";
 import BlockUi from "react-block-ui";
-import {ErrorMessage, Formik} from 'formik';
-import {injectIntl} from "react-intl";
-import {makeStyles} from "@material-ui/styles";
+import { injectIntl } from "react-intl";
+import { Link } from "react-router-dom";
+import * as Yup from "yup";
+import apiService from "../../services/apiService";
 import tenantsService from "../../services/tenantsService";
+import { getInputClasses } from "../../utils/formik";
 import toaster from "../../utils/toaster";
-import {getInputClasses} from "../../utils/formik";
+import { ColorPickerComponent } from "./ColorPickerComponent";
+import { UploadComponent } from "./UploadComponent";
 
-class TenantsPersonalizationComponent extends React.Component {
-    constructor(props) {
-        super(props);
+const FILE_SIZE = 20 * 1024; // 2 MB
+const SUPPORTED_FORMATS = [
+    "image/jpg",
+    "image/jpeg",
+    "image/gif",
+    "image/svg",
+    "image/png"
+];
 
-        this.state = {
-            intl: props.intl,
-            id: props.id,
-            isAddMode: !props.id,
-            loading: false,
-            blocking: false,
-            logoUrl: '',
-        };
+const useStyles = makeStyles((theme) => ({
+    headerMarginTop: {
+        marginTop: theme.spacing(5),
+        centerimage: {}
     }
+}));
 
-    FILE_SIZE = 20 * 1024; // 2 MB
-    SUPPORTED_FORMATS = [
-        "image/jpg",
-        "image/jpeg",
-        "image/gif",
-        "image/svg",
-        "image/png"
-    ];
+function TenantsPersonalizationComponent(props) {
+    const intl = props.intl
+    const tenantId = props.id
+    const isAddMode = !tenantId || tenantId === 'new'
+    const [blocking, setBlocking] = useState(false)
+    const [logoUrl, setLogoUrl] = useState('')
+    const [color, setColor] = useState({})
 
-    useStyles = makeStyles((theme) => ({
-        headerMarginTop: {
-            marginTop: theme.spacing(5),
-            centerimage: {}
+    const classes = useStyles();
+    useEffect(() => {
+        if (!isAddMode) {
+            apiService
+                .getById('tenant_new', tenantId)
+                .then((response) => {
+                    const tenantResp = response.tenants_new || []
+                    if (tenantResp.length === 1) {
+                        let color = "";
+                        if (typeof tenantResp[0].color !== "undefined") {
+                            color = { hex: response.tenants_new[0].color };
+                        }
+
+                        // setFieldValue('color', color);
+                        setColor(color)
+
+                        const attachment = tenantResp[0].attachment;
+                        if (attachment !== undefined) {
+                            setLogoUrl(`${attachment.url}`)
+                        }
+                    }
+                });
         }
-    }));
+    }, []);
 
-    initialValues = {
-        id:    this.props.id,
+    const initialValues = {
+        id: props.id,
         color: '',
         files: [],
-        file:  File
+        file: File
     };
 
-    validationSchema = Yup.object().shape({
+    const validationSchema = Yup.object().shape({
         color: Yup.string().required('A color is required'),
         file: Yup.mixed().required("A file is required")
             .test(
                 "fileSize",
                 "File too large",
-                value => value && value.size <= this.FILE_SIZE
+                value => value && value.size <= FILE_SIZE
             )
             .test(
                 "fileFormat",
                 "Unsupported Format",
-                value => value &&  this.SUPPORTED_FORMATS.includes(value.type)
+                value => value && SUPPORTED_FORMATS.includes(value.type)
             ),
     });
 
-    upload = (fields, { setSubmitting }) => {
-        this.setState({blocking: true});
+    const upload = (fields, { setSubmitting }) => {
+        setBlocking(true)
         setSubmitting(true);
 
         let data = new FormData();
@@ -78,175 +97,147 @@ class TenantsPersonalizationComponent extends React.Component {
                     id: 0
                 },
                 color: fields.color
-            })
-            .then((res) => {
+            }).then((res) => {
                 toaster.notify('success', msgSuccess);
-                this.setState({blocking: false});
+                setBlocking(false)
             });
 
-            this.setState({blocking: false});
+            setBlocking(false)
             setSubmitting(false);
-            return;
+            return
         }
 
         data.append('file', fields.files[0])
 
-        let msgSuccess = this.state.intl.formatMessage({id: 'TENANT.UPLOAD'})
+        let msgSuccess = intl.formatMessage({ id: 'TENANT.UPLOAD' })
         tenantsService.upload(data)
             .then((response) => {
-                this.setState({logoUrl: `${response.detail}`})
+                setLogoUrl(response.detail)
                 tenantsService.tenantAttachment({
                     id: parseInt(fields.id),
                     attachment: {
                         id: parseInt(response.id)
                     },
                     color: fields.color
-                })
-                .then((res) => {
-                        toaster.notify('success', msgSuccess);
-                        this.setState({blocking: false});
+                }).then((_res) => {
+                    toaster.notify('success', msgSuccess);
+                    setBlocking(false);
                 });
             });
 
-        this.setState({blocking: false});
+        setBlocking(false)
         setSubmitting(false);
     }
 
-    render() {
-        return (
-            <BlockUi tag='div' blocking={this.state.blocking}>
-                <Formik
-                    enableReinitialize
-                    initialValues={this.initialValues}
-                    onSubmit={(values, { setSubmitting}) => {
-                        this.upload(values, {
-                            setSubmitting,
-                        });
-                    }}
-                >
-                    {({
-                          isValid,
-                          errors,
-                          touched,
-                          isSubmitting,
-                          setFieldValue,
-                          handleSubmit
-                      }) => {
-                        const classes = this.useStyles();
-                        useEffect(() => {
-                            if (!this.state.isAddMode && this.state.id !== 'new') {
-                                apiService
-                                    .getById('tenant_new', this.state.id)
-                                    .then((response) => {
-                                        if ('tenants_new' in response && response.tenants_new.length === 1) {
-                                            let color = "";
-                                            if (typeof response.tenants_new[0].color !== "undefined") {
-                                                color = { hex: response.tenants_new[0].color };
-                                            }
-
-                                            // setFieldValue('color', color);
-                                            this.setState(
-                                                { 'color' : color }
-                                            );
-
-                                            const attachment = response.tenants_new[0].attachment;
-                                            if (attachment !== undefined) {
-                                                this.setState({logoUrl: `${attachment.url}`});
-                                            }
-                                        }
-                                    });
-                            }
-                        }, []);
-                        return (
-                            <form
-                                className='card card-custom'
-                                onSubmit={handleSubmit}>
-                                {/* begin::Header */}
-                                <div
-                                    className={`card-header py-3 ` + classes.headerMarginTop}>
-                                    <div className='card-title align-items-start flex-column'>
-                                        <h3 className='card-label font-weight-bolder text-dark'>
-                                            Tenant Personalization
-                                        </h3>
-                                        <span className='text-muted font-weight-bold font-size-sm mt-1'>
-                                            Change the logo and primary color of your Sensefinity platform
-                                        </span>
-                                    </div>
-                                    <div className='card-toolbar'>
-                                        <button
-                                            type='submit'
-                                            className='btn btn-success mr-2'
-                                            disabled={
-                                                isSubmitting ||
-                                                (touched && !isValid)
-                                            }>
-                                            <DoneIcon/>
-                                            Save Changes
-                                            {isSubmitting}
-                                        </button>
-                                        <Link
-                                            to='/tenants/list'
-                                            className='btn btn-secondary'>
-                                            Back to list
-                                        </Link>
-                                    </div>
+    return (
+        <BlockUi tag='div' blocking={blocking}>
+            <Formik
+                enableReinitialize
+                initialValues={initialValues}
+                onSubmit={(values, { setSubmitting }) => {
+                    upload(values, {
+                        setSubmitting,
+                    });
+                }}
+            >
+                {({
+                    isValid,
+                    errors,
+                    touched,
+                    isSubmitting,
+                    setFieldValue,
+                    handleSubmit
+                }) => {
+                    return (
+                        <form
+                            className='card card-custom'
+                            onSubmit={handleSubmit}>
+                            {/* begin::Header */}
+                            <div
+                                className={`card-header py-3 ` + classes.headerMarginTop}>
+                                <div className='card-title align-items-start flex-column'>
+                                    <h3 className='card-label font-weight-bolder text-dark'>
+                                        Tenant Personalization
+                                    </h3>
+                                    <span className='text-muted font-weight-bold font-size-sm mt-1'>
+                                        Change the logo and primary color of your Sensefinity platform
+                                    </span>
                                 </div>
-                                {/* end::Header */}
+                                <div className='card-toolbar'>
+                                    <button
+                                        type='submit'
+                                        className='btn btn-success mr-2'
+                                        disabled={
+                                            isSubmitting ||
+                                            (touched && !isValid)
+                                        }>
+                                        <DoneIcon />
+                                        Save Changes
+                                        {isSubmitting}
+                                    </button>
+                                    <Link
+                                        to='/tenants/list'
+                                        className='btn btn-secondary'>
+                                        Back to list
+                                    </Link>
+                                </div>
+                            </div>
+                            {/* end::Header */}
 
-                                {/* begin::Form */}
-                                <div className='form'>
-                                    <div className='card-body'>
-                                        <div className='form-group row'>
-                                            <div className='col-xl-4 col-lg-4'>
-                                                <label>Select your logo</label>
-                                                <UploadComponent className={`${getInputClasses(
-                                                        {errors, touched},
-                                                        'file'
-                                                    )}`}
-                                                    setFieldValue={setFieldValue}
-                                                />
-                                                <p>Upload an image of max 200x100px so that it displays correctly. The image will be showed after new login.</p>
-                                                <ErrorMessage name="file" component="div"
-                                                              className="invalid-feedback" />
-                                            </div>
-                                            <div className='col-xl-4 col-lg-4'>
-                                                {this.state.logoUrl !== '' &&
+                            {/* begin::Form */}
+                            <div className='form'>
+                                <div className='card-body'>
+                                    <div className='form-group row'>
+                                        <div className='col-xl-4 col-lg-4'>
+                                            <label>Select your logo</label>
+                                            <UploadComponent className={`${getInputClasses(
+                                                { errors, touched },
+                                                'file'
+                                            )}`}
+                                                setFieldValue={setFieldValue}
+                                            />
+                                            <p>Upload an image of max 200x100px so that it displays correctly. The image will be showed after new login.</p>
+                                            <ErrorMessage name="file" component="div"
+                                                className="invalid-feedback" />
+                                        </div>
+                                        <div className='col-xl-4 col-lg-4'>
+                                            {logoUrl !== '' &&
                                                 <div className={'text-center'}>
                                                     <img
-                                                        src={this.state.logoUrl}
+                                                        src={logoUrl}
                                                         title={'Logo'}
                                                         alt={'Logo'}
                                                         width={'200px'}
                                                     />
                                                 </div>
-                                                } &nbsp;
-                                            </div>
-                                            <div className='col-xl-4 col-lg-4'>
-                                                <div>
-                                                    <label>Color picker</label>
-                                                    <ColorPickerComponent
-                                                        label={this.state.color}
-                                                        className={`${getInputClasses(
-                                                            {errors, touched},
-                                                            'color'
-                                                        )}`}
-                                                        onChange={color => {
-                                                            setFieldValue('color', color)
-                                                        }}
-                                                    />
-                                                    <ErrorMessage name="color" component="div"
-                                                                  className="invalid-feedback"/>
-                                                </div>
+                                            } &nbsp;
+                                        </div>
+                                        <div className='col-xl-4 col-lg-4'>
+                                            <div>
+                                                <label>Color picker</label>
+                                                <ColorPickerComponent
+                                                    label={color}
+                                                    className={`${getInputClasses(
+                                                        { errors, touched },
+                                                        'color'
+                                                    )}`}
+                                                    onChange={color => {
+                                                        setFieldValue('color', color)
+                                                    }}
+                                                />
+                                                <ErrorMessage name="color" component="div"
+                                                    className="invalid-feedback" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </form>
-                        );
-                    }}
-                </Formik>
-            </BlockUi>
-        );
-    }
+                            </div>
+                        </form>
+                    );
+                }}
+            </Formik>
+        </BlockUi>
+    );
 }
+
 export default injectIntl(TenantsPersonalizationComponent);
