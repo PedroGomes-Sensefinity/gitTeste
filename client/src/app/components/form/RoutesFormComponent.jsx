@@ -1,67 +1,71 @@
-import React, {useEffect} from 'react';
-import {ErrorMessage, Field, Formik} from 'formik';
-import * as Yup from 'yup';
-import {Link} from 'react-router-dom';
-import {makeStyles} from '@material-ui/styles';
 import DoneIcon from '@material-ui/icons/Done';
-import {getInputClasses} from '../../utils/formik';
-import '../../utils/yup-validations';
+import { makeStyles } from '@material-ui/styles';
+import { ErrorMessage, Field, Formik } from 'formik';
+import React, { useEffect, useState } from 'react';
 import BlockUi from "react-block-ui";
-import toaster from '../../utils/toaster';
 import { injectIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
+import * as Yup from 'yup';
 import apiService from '../../services/apiService';
 import routesService from "../../services/routesService";
+import { getInputClasses } from '../../utils/formik';
+import toaster from '../../utils/toaster';
+import '../../utils/yup-validations';
 
-class RoutesFormComponent extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            intl: props.intl,
-            id: props.id,
-            isAddMode: !props.id,
-            selectedDevice: 0,
-            devices: [],
-            loading: false,
-            blocking: false,
-        };
+const useStyles = makeStyles((theme) => ({
+    headerMarginTop: {
+        marginTop: theme.spacing(5),
     }
+}));
 
-    componentDidMount() {}
+function RoutesFormComponent(props) {
+    const intl = props.intl
+    const routeId = props.id
+    const isAddMode = !routeId
+    const [route, setRoute] = useState({})
+    const [blocking, setBlocking] = useState(false)
+    const classes = useStyles();
 
-    initialValues = {
-        id: '',
-        label: '',
-        description: '',
+    useEffect(() => {
+        if (!isAddMode && routeId !== 'new') {
+            apiService
+                .getById('route', routeId)
+                .then((response) => {
+                    const resRoutes = response.routes || []
+                    if (resRoutes.length > 0) {
+                        setRoute(resRoutes[0])
+                    }
+                });
+        }
+    }, []);
+
+
+    const initialValues = {
+        id: routeId || '',
+        label: route.label || '',
+        description: route.description || '',
         devices: [],
     };
 
-    validationSchema = Yup.object().shape({
+    const validationSchema = Yup.object().shape({
         label: Yup.string().required('Label is required')
     });
 
-    useStyles = makeStyles((theme) => ({
-        headerMarginTop: {
-            marginTop: theme.spacing(5),
-        }
-    }));
-
-    save = (fields, { setFieldValue, setSubmitting, resetForm }) => {
-        this.setState({blocking: true});
+    const save = (fields, { setFieldValue, setSubmitting }) => {
+        setBlocking(true)
         setSubmitting(true);
 
-        let method = (this.state.isAddMode) ? 'save' : 'update';
-        let msgSuccess = (this.state.isAddMode)
-            ? this.state.intl.formatMessage({id: 'ROUTES.CREATED'})
-            : this.state.intl.formatMessage({id: 'ROUTES.UPDATED'});
+        let method = (isAddMode) ? 'save' : 'update';
+        let msgSuccess = (isAddMode)
+            ? intl.formatMessage({ id: 'ROUTES.CREATED' })
+            : intl.formatMessage({ id: 'ROUTES.UPDATED' });
 
         routesService[method](fields)
-            .then((response) => {
+            .then((_response) => {
                 toaster.notify('success', msgSuccess);
                 setSubmitting(false);
-
-                this.setState({blocking: false});
-
-                if (this.state.isAddMode) {
+                setBlocking(false)
+                if (isAddMode) {
                     setFieldValue('label', '', false);
                     setFieldValue('description', '', false);
                     setFieldValue('devices', [], false);
@@ -69,73 +73,35 @@ class RoutesFormComponent extends React.Component {
             });
     };
 
-    onChangeDevice = (opt, setFieldValue) => {
-
-        if (opt.length > 0) {
-            this.setState({ devices: this.state.devices.append(opt[0].id)});
-            setFieldValue('devices', this.state.devices.append(opt[0].id));
-        }
-    };
-    handleSearchDevice = (query) => {
-        this.setState({loading: true});
-
-        apiService.getByText('device', query, 100, 0).then((response) => {
-            this.setState({ devices: response.devices });
-            this.setState({ loading: false });
-        });
-    };
-
-    render() {
-        return (
-            <BlockUi tag='div' blocking={this.state.blocking}>
+    return (
+        <BlockUi tag='div' blocking={blocking}>
             <Formik
                 enableReinitialize
-                initialValues={this.initialValues}
-                validationSchema={this.validationSchema}
+                initialValues={initialValues}
+                validationSchema={validationSchema}
                 onSubmit={(values, { setFieldValue, setSubmitting, resetForm }) => {
-                    this.save(values, {
+                    save(values, {
                         setFieldValue,
                         setSubmitting,
                         resetForm,
                     });
                 }}
-                >
+            >
                 {({
                     isValid,
                     getFieldProps,
                     errors,
                     touched,
                     isSubmitting,
-                    setFieldValue,
                     handleSubmit,
-                    values
                 }) => {
-                    const classes = this.useStyles();
-
-                    useEffect(() => {
-                        if (!this.state.isAddMode && this.state.id !== 'new') {
-                            apiService
-                            .getById('route', this.state.id)
-                            .then((response) => {
-                                let item = [];
-                                if(response.routes !== undefined && response.routes.length > 0) {
-                                    item = response.routes[0];
-                                }
-
-                                setFieldValue('id', item.id);
-                                setFieldValue('label', item.label);
-                                setFieldValue('description', item.description);
-                            });
-                        }
-                    }, [setFieldValue]);
-
                     return (
                         <form
                             className='card card-custom'
                             onSubmit={handleSubmit}>
                             {/* begin::Header */}
                             <div
-                                className={`card-header py-3 `+ classes.headerMarginTop}>
+                                className={`card-header py-3 ` + classes.headerMarginTop}>
                                 <div className='card-title align-items-start flex-column'>
                                     <h3 className='card-label font-weight-bolder text-dark'>
                                         Route Information
@@ -175,9 +141,9 @@ class RoutesFormComponent extends React.Component {
                                             <Field
                                                 as="input"
                                                 className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                        {errors, touched},
-                                                        'label'
-                                                    )}`}
+                                                    { errors, touched },
+                                                    'label'
+                                                )}`}
                                                 name='name'
                                                 placeholder='Set the route label'
                                                 {...getFieldProps('label')}
@@ -192,7 +158,7 @@ class RoutesFormComponent extends React.Component {
                                                 as="textarea"
                                                 rows='7'
                                                 className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                    {errors, touched},
+                                                    { errors, touched },
                                                     'description'
                                                 )}`}
                                                 name='description'
@@ -210,9 +176,9 @@ class RoutesFormComponent extends React.Component {
                     );
                 }}
             </Formik>
-            </BlockUi>
-        );
-    }
+        </BlockUi>
+    );
+
 }
 
 export default injectIntl(RoutesFormComponent);

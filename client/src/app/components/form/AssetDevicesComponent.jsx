@@ -4,7 +4,7 @@ import DoneIcon from "@material-ui/icons/Done";
 import React, { useState } from 'react';
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import { injectIntl } from 'react-intl';
-import TableGrid from '../../components/table-grid/table-grid.component';
+import TableGrid from '../../components/table-grid/TableGrid';
 import assetsService from "../../services/assetsService";
 import deviceService from "../../services/deviceService";
 import AlertDialog from "../../utils/AlertDialog/alertDialog";

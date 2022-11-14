@@ -1,5 +1,5 @@
 import React from "react";
-import UserFormComponent from "../../../components/form/userFormComponent";
+import UserFormComponent from "../../../components/form/UserFormComponent";
 import PermissionGate from "../../../modules/Permission/permissionGate";
 
 export function UsersForm({match}) {

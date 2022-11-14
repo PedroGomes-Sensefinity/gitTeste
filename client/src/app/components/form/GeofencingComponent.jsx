@@ -13,7 +13,7 @@ import { getInputClasses } from '../../utils/formik';
 import toaster from '../../utils/toaster';
 import '../../utils/yup-validations';
 import Map from "../geo-fencing-map/map";
-import TableGrid from '../table-grid/table-grid.component';
+import TableGrid from '../table-grid/TableGrid';
 
 const useStyles = makeStyles((theme) => ({
     headerMarginTop: {
