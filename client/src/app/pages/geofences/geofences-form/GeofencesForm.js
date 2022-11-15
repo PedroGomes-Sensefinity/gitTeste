@@ -2,8 +2,8 @@ import React from 'react';
 import GeofencingComponent from '../../../components/form/GeofencingComponent';
 
 
-export function GeofencesForm({history, match}) {
-    const {id} = match.params;
+export function GeofencesForm({ match }) {
+    const { id } = match.params;
 
     return (
         <div>
