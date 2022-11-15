@@ -1,135 +1,104 @@
-import React from "react";
-import ReactDOM from "react-dom";
 import * as L from "leaflet";
 import "leaflet-draw";
 import "leaflet/dist/leaflet.css";
+import React, { useEffect, useRef } from "react";
+import utils from '../../utils/utils';
 import "./map.css";
+// using this guide https://cherniavskii.com/using-leaflet-in-react-apps-with-react-hooks/
+function Map(props) {
+    const map = useRef(null);
+    const drawnItems = useRef(null);
+    const shapes = props.shapes
 
-class Map extends React.Component {
-    map = null;
-    drawnItems = null;
+    useEffect(() => {
+        if (map.current === null) {
+            map.current = L.map('map', {
+                minZoom: 2,
+                layers: [
+                    L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                        attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+                    }),
+                ],
+            });
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            shapes: props.shapes || [],
-            prevShapes: props.shapes ? this.copyObject(props.shapes) : [],
-        };
-    }
-
-    componentDidMount() {
-        this.initMap(this.state.shapes);
-    }
-
-    initMap(shapesToDraw) {
-        if (this.map) {
-            this.map.off("click", this.onMapClick);
-            this.map.remove();
-            this.map = null;
+            map.current.on(L.Draw.Event.CREATED, onAddLayer);
+            map.current.on(L.Draw.Event.DELETED, onDeleteLayer);
         }
 
-        var map = (this.map = L.map(ReactDOM.findDOMNode(this), {
-            minZoom: 2,
-            maxZoom: 20,
-            layers: [
-                L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                    attribution:
-                        '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-                }),
-            ],
-        }));
+        if (drawnItems.current === null) {
+            drawnItems.current = new L.FeatureGroup();
+            map.current.addLayer(drawnItems.current);
 
-        var drawnItems = (this.drawnItems = new L.FeatureGroup());
-        map.addLayer(drawnItems);
-        var drawControl = new L.Control.Draw({
-            edit: {
-                featureGroup: drawnItems,
-                edit: false,
-            },
-            draw: {
-                polyline: false,
-                marker: false,
-                circlemarker: false,
-                circle: true,
-                polygon: {
-                    allowIntersection: false,
-                    showArea: true,
+            var drawControl = new L.Control.Draw({
+                edit: {
+                    featureGroup: drawnItems.current,
+                    edit: false,
                 },
-            }
-        });
-        map.addControl(drawControl);
+                draw: {
+                    polyline: false,
+                    marker: false,
+                    circlemarker: false,
+                    circle: true,
+                    polygon: {
+                        allowIntersection: false,
+                        showArea: true,
+                    },
+                }
+            });
+            map.current.addControl(drawControl);
+        }
 
-        map.on(L.Draw.Event.CREATED, this.onAddLayer);
-        map.on(L.Draw.Event.EDITED, this.onEditLayer);
-        map.on(L.Draw.Event.DELETED, this.onDeleteLayer);
-        map.on("click", this.onMapClick);
-
-        map.setView([38.7242, -9.1389], 13);
-
-        if (shapesToDraw.length > 0) {
-            this.drawLayers(shapesToDraw);
-            this.setMapView();
+        if (shapes.length > 0) {
+            removeAllLayers()
+            drawLayers(shapes);
+            setMapView();
         } else {
-            this.setMapView();
+            map.current.setView([38.7242, -9.1389], 10);
+            setMapView();
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(function (location) {
                     var latlng = new L.LatLng(location.coords.latitude, location.coords.longitude);
 
-                    if(latlng.toBounds(0).isValid()) {
-                        map.setView(latlng);
+                    if (latlng.toBounds(0).isValid()) {
+                        map.current.setView(latlng);
                     }
                 });
             }
         }
-    }
 
-    componentDidUpdate() {
-        // Verify if shapes sent are diferent than initialized map
-        if (!this.isEqualObject(this.state.prevShapes, this.props.shapes)) {
-            // update shapes
-            this.setState({shapes: this.props.shapes});
-            this.setState({prevShapes: this.props.shapes});
-
-            this.removeAllLayers();
-            this.drawLayers(this.props.shapes);
+        return () => {
+            if (!map.current) return;
+            map.current.remove();
+            map.current = null;
         }
+    }, []);
+
+    useEffect(() => {
+        removeAllLayers()
+        drawLayers();
+        setMapView();
+    }, [shapes]);
+
+    const removeAllLayers = () => {
+        if (drawnItems.current !== null)
+            drawnItems.current.clearLayers()
     }
 
-    componentWillUnmount() {
-        if (!this.map) return;
-        this.map.off("click", this.onMapClick);
-        this.map.remove();
-        this.map = null;
-    }
-
-    onMapClick = () => {};
-
-    onAddLayer = (e) => {
+    const onAddLayer = (e) => {
         var layer = e.layer;
-        var layerNum = this.drawnItems.getLayers().length + 1;
+        var layerNum = drawnItems.current.getLayers().length + 1;
         var name = `Shape ${layerNum}`;
 
         layer.bindTooltip(name, { permanent: true, interactive: false });
-        this.drawnItems.addLayer(layer);
-
-        this.updateShapes();
+        drawnItems.current.addLayer(layer);
+        updateShapes();
     };
 
-    onEditLayer = (e) => {
+    const onDeleteLayer = (e) => {
+        updateShapes();
     };
 
-    onDeleteLayer = (e) => {
-        this.updateShapes();
-    };
-
-    removeAllLayers = () => {
-        this.drawnItems.clearLayers();
-    }
-
-    drawLayers = (shapes) => {
-        let drawnItems = this.drawnItems;
-
+    const drawLayers = () => {
         shapes.forEach((s) => {
             let conf = {};
             // Circle shape
@@ -140,27 +109,41 @@ class Map extends React.Component {
                     }
                 };
             }
-
             var geojsonLayer = L.geoJson(s.geoJSON, conf);
-            geojsonLayer.eachLayer(function (l) {
+            geojsonLayer.eachLayer((l) => {
                 l.bindTooltip(s.name, { permanent: true, interactive: false });
-                drawnItems.addLayer(l);
+                drawnItems.current.addLayer(l);
             });
         });
-    }
+    };
 
-    setMapView = () => {
-        let bounds = this.drawnItems.getBounds();
+    const setMapView = () => {
+        if (shapes.length !== 0) {
+            const { minLat, minLong, maxLat, maxLong } = shapes.map(s => utils.getMaxMinCoordinatesInterval(s.geoJSON.geometry.coordinates))
+                .reduce((prev, curr) => {
+                    return {
+                        minLat: Math.min(prev.minLat, curr.minLat),
+                        maxLat: Math.max(prev.maxLat, curr.maxLat),
+                        minLong: Math.min(prev.minLong, curr.minLong),
+                        maxLong: Math.max(prev.maxLong, curr.maxLong),
+                    }
+                });
+            const x = minLong + (maxLong - minLong) / 2
+            const y = minLat + (maxLat - minLat) / 2
+            map.current = map.current.flyTo(L.latLng(x, y), map.current.getZoom())
+        } else {
+            let bounds = drawnItems.current.getBounds();
 
-        if (bounds.isValid()) {
-            this.map.fitBounds(this.drawnItems.getBounds());
+            if (bounds.isValid()) {
+                map.current.fitBounds(drawnItems.current.getBounds());
+            }
         }
-    }
+    };
 
-    updateShapes = () => {
+
+    const updateShapes = () => {
         let shapes = [];
-
-        this.drawnItems.eachLayer((layer) => {
+        drawnItems.current.eachLayer((layer) => {
             let geojson = layer.toGeoJSON();
             let radius = "_mRadius" in layer ? layer._mRadius : null;
 
@@ -178,22 +161,10 @@ class Map extends React.Component {
 
             shapes.push(newShape);
         });
-
-        this.setState({ shapes: shapes });
-        this.props.onChangeShape(shapes);
+        props.onChangeShape(shapes);
     };
 
-    copyObject = (obj) => {
-        return JSON.parse(JSON.stringify(obj));
-    };
-
-    isEqualObject = (obj1, obj2) => {
-        return JSON.stringify(obj1) === JSON.stringify(obj2);
-    };
-
-    render() {
-        return <div className="map" />;
-    }
-}
+    return <div className="map" id="map" />;
+};
 
 export default Map;

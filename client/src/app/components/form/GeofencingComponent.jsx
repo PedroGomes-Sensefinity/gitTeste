@@ -1,7 +1,7 @@
 import DoneIcon from '@material-ui/icons/Done';
 import { makeStyles } from '@material-ui/styles';
 import { ErrorMessage, Field, Formik } from 'formik';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import BlockUi from "react-block-ui";
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { injectIntl } from 'react-intl';
@@ -24,15 +24,15 @@ const useStyles = makeStyles((theme) => ({
 function GeofencingComponent(props) {
     const id = props.id;
     const isAddMode = !id
+    const classes = useStyles();
     const [blocking, setBlocking] = useState(false)
     const [geofences, setGeofences] = useState([])
     const [thresholds, setThresholds] = useState([])
     const [selectedThresholds, setSelectedThresholds] = useState([])
-    const [selectedThresholdsId, setSelectedThresholdsId] = useState([])
+    const selectedThresholdsId = selectedThresholds.map(t => t.id)
     const [loading, setLoading] = useState(false)
 
     const [initialValues, setInitialValues] = useState({ id: '', label: '', description: '', alert_mode: '1', })
-
 
     useEffect(() => {
         //Edit Case
@@ -58,7 +58,7 @@ function GeofencingComponent(props) {
                 const shapes = JSON.parse(geofence.metadata)
                 const geofencesArr = []
                 // Shapes Data
-                Object.keys(shapes).forEach(function (key) {
+                Object.keys(shapes).forEach((key) => {
                     geofencesArr.push(JSON.parse(shapes[key]))
                 })
                 setGeofences(geofencesArr)
@@ -67,12 +67,10 @@ function GeofencingComponent(props) {
                 apiService.getByEndpoint(endpoint).then((response) => {
                     setSelectedThresholds(response.thresholds)
                     const ids = selectedThresholdsId
-                    if (response.thresholds !== undefined && response.thresholds !== []) {
-                        response.thresholds.forEach(function (threshold) {
-                            ids.push(threshold.id)
-                        })
-                        setSelectedThresholdsId(ids)
-                    }
+                    const respThresholds = response.thresholds || []
+                    respThresholds.forEach((threshold) => {
+                        ids.push(threshold.id)
+                    })
                 });
             });
         }
@@ -85,14 +83,14 @@ function GeofencingComponent(props) {
         { id: 4, name: "In/Out" },
     ]
 
-    const getGeofenceIndexById = (id) => {
+    const getGeofenceIndexById = useCallback((id) => {
         for (let i = 0; i < geofences.length; i++) {
             if (geofences[i].id === id) {
                 return i;
             }
         }
         return -1;
-    };
+    }, [geofences])
 
     const onChangeShape = (shapes) => {
         setGeofences(shapes)
@@ -101,12 +99,6 @@ function GeofencingComponent(props) {
     const filterBy = () => true;
 
     const onChangeThreshold = (opt) => {
-        let selectedIds = [];
-
-        if (opt.length > 0) {
-            selectedIds = opt.map((t) => t.id);
-        }
-        setSelectedThresholdsId(selectedIds)
         setSelectedThresholds(opt)
     };
 
@@ -114,27 +106,20 @@ function GeofencingComponent(props) {
         setLoading(true)
 
         apiService.getByText('threshold', query, 100, 0).then((response) => {
-            const thresholds = (typeof response.thresholds !== undefined && Array.isArray(response.thresholds))
-                ? filterThresholdSelected(response.thresholds)
-                : [];
-
-            setThresholds(thresholds)
+            const respThresholds = response.thresholds || []
+            setThresholds(filterThresholdSelected(respThresholds))
             setLoading(false)
         });
     };
 
-    const filterThresholdSelected = (options) => {
-        let data = [];
-        options.map((t) => {
-            if(!Array.from(selectedThresholdsId).includes(t.id)) {
-                data.push({
-                    id: t.id,
-                    label: t.name
-                });
+    const filterThresholdSelected = (options) => options
+        .filter(t => selectedThresholdsId.includes(t.id))
+        .map(t => {
+            return {
+                id: t.id,
+                label: t.name
             }
-        });
-        return data;
-    }
+        })
 
     const columnsGeofences = [
         {
@@ -149,17 +134,15 @@ function GeofencingComponent(props) {
         alert_mode: Yup.string().required('AlertMode is required'),
     });
 
-    const classes = useStyles();
-
-    const save = (fields, { setFieldValue, setSubmitting, _ }) => {
+    const save = (fields, { setFieldValue, setSubmitting }) => {
         if (geofences.length === 0) {
             toaster.notify('error', "Geofence needs at least 1 Shape!");
             setBlocking(false);
             setSubmitting(false);
             return
         }
-        setBlocking(false);
-        setSubmitting(false);
+        setBlocking(true);
+        setSubmitting(true);
         switch (fields["alert_mode"]) {
             case "1":
                 fields["alert_mode"] = "None"
@@ -183,7 +166,7 @@ function GeofencingComponent(props) {
         const endpoint = isAddMode ? "save" : "update"
         console.log(endpoint)
         geofenceService[endpoint](fields)
-            .then((response) => {
+            .then((_response) => {
                 toaster.notify('success', "Success Geofences!");
                 setSubmitting(false);
                 setBlocking(false);
@@ -211,9 +194,9 @@ function GeofencingComponent(props) {
                     setGeofences([])
                     setThresholds([])
                     setSelectedThresholds([])
-                    setSelectedThresholdsId([])
-
                 }
+                setBlocking(false);
+                setSubmitting(false);
             });
     };
 
@@ -237,9 +220,7 @@ function GeofencingComponent(props) {
                     errors,
                     touched,
                     isSubmitting,
-                    _,
                     handleSubmit,
-                    __
                 }) => <form
                     className='card card-custom'
                     onSubmit={handleSubmit}>
@@ -353,7 +334,6 @@ function GeofencingComponent(props) {
                                             placeholder=''
                                             {...getFieldProps('alert_mode')}
                                         >
-                                            <option key='' value=''></option>
                                             {options.map((e) => {
                                                 return (<option key={e.id} value={e.id}>{e.name}</option>);
                                             })}
@@ -373,6 +353,7 @@ function GeofencingComponent(props) {
                         <div className='form'>
                             <div className='card-body'>
                                 <div className="form-group row">
+                                    {/*begin:: Map */}
                                     <div className={`col-xl-6 col-lg-6`}>
                                         <Map shapes={geofences} onChangeShape={onChangeShape} />
                                     </div>
@@ -384,7 +365,7 @@ function GeofencingComponent(props) {
                                             style={{ height: 500 }}
                                             editable={{
                                                 onRowUpdate: (newData, oldData) =>
-                                                    new Promise((resolve, reject) => {
+                                                    new Promise((resolve, _reject) => {
                                                         setTimeout(() => {
                                                             const dataUpdate = [...geofences];
                                                             const index = getGeofenceIndexById(oldData.tableData.id);
