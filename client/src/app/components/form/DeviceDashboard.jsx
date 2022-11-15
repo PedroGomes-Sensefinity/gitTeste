@@ -44,7 +44,6 @@ function DeviceDashboard(props) {
             setPendingConfigMessages(pendingConfigMessages.length)
             setBlocking(false);
             if(dashboard.last_position.lat !== undefined && dashboard.last_position.lon !== undefined){
-                console.log(dashboard.last_position)
                 geoCoding.get(dashboard.last_position.lat,dashboard.last_position.lon).then( response => {
                     setGeoCodingText(response.data.display_name)
                 });
