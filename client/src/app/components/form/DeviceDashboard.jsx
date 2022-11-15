@@ -6,6 +6,7 @@ import {BsBatteryFull, BsClock, BsFillCloudArrowUpFill} from "react-icons/bs";
 import {MdBatterySaver, MdOutlineWarningAmber, MdPower, MdWifiTethering, MdLocationOn, MdNavigation,MdBorderOuter} from "react-icons/md";
 import PositionMap from "../position-map/positionMap";
 import apiService from "../../services/apiService";
+import geoCoding from "../../services/geocoding";
 import deviceService from "../../services/deviceService";
 import utils from "../../utils/utils";
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
@@ -18,10 +19,11 @@ function DeviceDashboard(props) {
     const [device, setDevice] = useState({});
     const [dashboard, setDashboard] = useState({});
     const [pendingConfigMessages, setPendingConfigMessages] = useState(0)
+    const [geoCodingText, setGeoCodingText] = useState("")
 
     const { permissions } = usePermissions()
 
-    const style = { "display": "inline-block", "fontSize": "0.875em", "fontWeight": "normal" }
+    const style = { "display": "inline-block", "fontSize": "1em", "fontWeight": "normal" }
 
     function initDashboard() {
         Promise.all([
@@ -41,6 +43,13 @@ function DeviceDashboard(props) {
             setDashboard(dashboard)
             setPendingConfigMessages(pendingConfigMessages.length)
             setBlocking(false);
+            if(dashboard.last_position.lat !== undefined && dashboard.last_position.lon !== undefined){
+                console.log(dashboard.last_position)
+                geoCoding.get(dashboard.last_position.lat,dashboard.last_position.lon).then( response => {
+                    console.log(response)
+                    setGeoCodingText(response.data.display_name)
+                });
+            }
         });
     }
 
@@ -67,7 +76,7 @@ function DeviceDashboard(props) {
                             <div className='card-header'>
                                 <div className='card-title'>
                                     <h3 className="card-label">
-                                        Last communication
+                                        Last Communication
                                     </h3>
                                 </div>
                             </div>
@@ -79,7 +88,7 @@ function DeviceDashboard(props) {
                             </div>
                         </div>
                     </div>
-                    <div className='col-xl-4 col-lg-4'>
+                    {permissions.canViewDeviceDashboardExtras && <div className='col-xl-4 col-lg-4'>
                         <div className='card card-custom'>
                             <div className='card-header'>
                                 <div className='card-title'>
@@ -95,8 +104,8 @@ function DeviceDashboard(props) {
                                 </ul>
                             </div>
                         </div>
-                    </div>
-                    <div className='col-xl-4 col-lg-4'>
+                    </div>}
+                    {permissions.canViewDeviceDashboardExtras && <div className='col-xl-4 col-lg-4'>
                         <div className='card card-custom'>
                             <div className='card-header'>
                                 <div className='card-title'>
@@ -112,10 +121,10 @@ function DeviceDashboard(props) {
                                 </ul>
                             </div>
                         </div>
-                    </div>
+                    </div>}
                 </div>
 
-                <div className='row mt-3'>
+                {permissions.canViewDeviceDashboardExtras && <div className='row mt-3'>
                     <div className='col-xl-4 col-lg-4'>
                         <div className='card card-custom'>
                             <div className='card-header'>
@@ -168,7 +177,7 @@ function DeviceDashboard(props) {
                         </div>
                     </div>
                 </div>
-
+                }
                 { permissions.canViewContainerDashboard && <div className='row mt-3'>
                     <div className='col-xl-4 col-lg-4'>
                         <div className='card card-custom'>
@@ -227,14 +236,15 @@ function DeviceDashboard(props) {
                     <div className='col-xl-10 col-lg-10'>
                         <div className='card card-custom'>
                             <div className='card-header'>
-                                <div className='card-title' style={style} >
+                                <div  style={style} className="card-title font-size-sm " >
                                         <h3 className="card-label">
                                             Last Position
                                         </h3>
-                                        <MdLocationOn /> Last Coordinates:  {JSON.stringify(dashboard.last_position)}
+                                        <MdLocationOn /> Position: {utils.either(geoCodingText, 'Not possible to convert geographic coordinates to address!')}
                                         <br></br>
-                                    <BsClock /> Timestamp:  {device.position_timestamp}
-                                
+                                        <MdLocationOn /> Coordinates: {JSON.stringify(dashboard.last_position)}
+                                        <br></br>
+                                    <BsClock /> Timestamp:  {device.position_timestamp}                                
                                 </div>
                             </div>
                             <div className='card-body'>
@@ -268,7 +278,6 @@ function DeviceDashboard(props) {
                             </div>
                         </div>
                     </div>
-                    
                 </div>
             </BlockUi>)
 }

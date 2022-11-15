@@ -118,7 +118,8 @@ function Permissions(permsObj) {
         canCreateFloorMaps: permsObj['floormap_create'] || defaultValue,
         canEditFloorMaps: permsObj['floormap_edit'] || defaultValue,
     
-        canViewContainerDashboard: permsObj['dashboard_containers'] || defaultValue
+        canViewContainerDashboard: permsObj['dashboard_containers'] || defaultValue,
+        canViewDeviceDashboardExtras: permsObj['device_dashboard_extras'] || defaultValue
     }
 }
 

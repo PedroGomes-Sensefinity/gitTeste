@@ -24,6 +24,8 @@ var allowedOrigins = [process.env.SERVICE_REST_ALLOW_CORS_ORIGIN];
 
 app.use(cors());
 
+
+
 // Return of logo image specific for current infrastructure
 app.get('/api/logo.png', (req, res) => {
 
@@ -48,6 +50,38 @@ app.get('/api/logo.ico', (req, res) => {
     'Content-Length': img.length
   });
   res.end(img);
+
+});
+
+// Georeverse
+app.all('/api/georeverse/*', (req, res) => {
+
+  const pathUrl = req.url.replace('/api/georeverse/','');
+
+  console.log("processing : " + pathUrl);
+
+  let axioData = {
+    method: req.method,
+    url: "https://nominatim.openstreetmap.org/reverse?format=jsonv2&" + pathUrl
+  }
+
+  axios(axioData)
+  .then(function (response) {
+    res.set('Content-Type', 'application/json');
+    res.status(response.status);
+    res.send(response.data);
+  })
+  .catch(function (error) {
+    console.log(error);
+    if (error.response) {
+        res.set('Content-Type', 'application/json')
+          .status(error.response.status)
+          .send(error.response.data)
+          .end();
+    } else {
+      res.status(500).end();
+    }
+  });
 
 });
 
