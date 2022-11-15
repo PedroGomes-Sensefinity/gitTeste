@@ -84,7 +84,6 @@ export function ContainersDashboard() {
             const data60_90_R = []
             const  data90_R = []
             for (const longStanding of response) {
-                console.log(longStanding)
                 ports_R.push(longStanding.port_code)
                 data15_R.push(longStanding.interval_count.less15)
                 data15_30_R.push(longStanding.interval_count.interval15_30)
