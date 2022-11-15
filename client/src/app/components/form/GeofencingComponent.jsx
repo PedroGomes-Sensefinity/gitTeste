@@ -113,7 +113,7 @@ function GeofencingComponent(props) {
     };
 
     const filterThresholdSelected = (options) => options
-        .filter(t => selectedThresholdsId.includes(t.id))
+        .filter(t => !selectedThresholdsId.includes(t.id))
         .map(t => {
             return {
                 id: t.id,
