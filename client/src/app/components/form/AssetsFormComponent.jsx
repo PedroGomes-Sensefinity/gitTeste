@@ -180,6 +180,11 @@ function AssetsFormComponent(props) {
                     setFieldValue('description', '', false);
                     setFieldValue('devices', [], false);
                 }
+            
+            }).catch((err) => {
+                toaster.notify('error', err.data.detail);
+                setSubmitting(false);
+                setBlocking(false);
             });
     };
 
