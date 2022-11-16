@@ -9,7 +9,6 @@ import DeviceThresholdComponent from "../../../components/form/DeviceThresholdCo
 import PermissionGate from "../../../modules/Permission/permissionGate";
 
 export function Device({ history, match }) {
-    console.log('Entered device page')
     const { id } = match.params;
     const [value, setValue] = React.useState(0);
 
