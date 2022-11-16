@@ -37,6 +37,7 @@ import { UsersForm } from "./pages/users/users-form/UsersForm";
 import { UsersList } from "./pages/users/users-list/UsersList";
 import { GeofencesList } from "./pages/geofences/geofences-list/GeofencesList";
 import { CreateThreshold } from "./pages/thresholds/thresholds-form/CreateThreshold";
+import { News } from "./pages/news/News";
 
 /*const UserProfilepage = lazy(() =>
   import("./modules/UserProfile/UserProfilePage")
@@ -153,7 +154,8 @@ export default function BasePage() {
           <ContentRoute key="/floor-maps/list" path="/floor-maps/list" component={FloorMapsList} />,
           <ContentRoute key="/floor-maps/new" path="/floor-maps/new" component={FloorMapsForm} />
         ]}
-
+            { /* what's new Page*/}
+            <ContentRoute key="/whatsnew" path="/whatsnew" component={News} />
         <Redirect to="/error/error-v1" />
       </Switch>
     </Suspense>
