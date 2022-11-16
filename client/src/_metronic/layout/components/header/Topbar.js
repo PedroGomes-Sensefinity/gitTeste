@@ -70,7 +70,7 @@ export function Topbar() {
         </OverlayTrigger>
       )} */}
 
-      {layoutProps.viewLanguagesDisplay && <LanguageSelectorDropdown />}
+      {/*layoutProps.viewLanguagesDisplay && <LanguageSelectorDropdown />*/}
 
       {layoutProps.viewUserDisplay && <QuickUserToggler />}
     </div>
