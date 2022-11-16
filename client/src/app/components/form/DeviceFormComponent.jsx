@@ -70,8 +70,6 @@ function DeviceFormComponent(props) {
         check_longstanding: device.check_longstanding || false
     };
 
-    console.log(initialValues)
-
     useEffect(() => {
         setBlocking(true)
 
