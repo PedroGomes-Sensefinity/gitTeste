@@ -84,8 +84,6 @@ function DeviceFormComponent(props) {
 
             setBoardFamilies(respBoardFamilies);
             setTenant(respTenant);
-            setBlocking(false)
-
             if (!isAddMode && deviceId !== 'new') {
                 apiService.getById('device', deviceId).then((response) => {
                     const respDevices = response.devices || []
@@ -93,8 +91,11 @@ function DeviceFormComponent(props) {
                         const device = respDevices[0];
                         // initForm(device, {setFieldValue});
                         setDevice(device)
+                        setBlocking(false)
                     }
                 });
+            } else {
+                setBlocking(false)
             }
         });
     }, [])
