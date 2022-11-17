@@ -34,6 +34,7 @@ import "ace-builds/src-noconflict/theme-github";
 import { Table } from "react-bootstrap";
 import notificationService from "../../services/notificationService";
 import permissionService from '../../services/permissionService';
+import { usePermissions } from '../../modules/Permission/PermissionsProvider';
 
 class NotificationsTemplatesFormComponent extends React.Component {
     constructor(props) {
@@ -326,6 +327,7 @@ class NotificationsTemplatesFormComponent extends React.Component {
                         values,
                         setFieldValue
                     }) => {
+                        const {permissions} = usePermissions()
                         const classes = this.useStyles();
 
                         useEffect(() => {
@@ -424,10 +426,10 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                                     placeholder='Select the type of this alarm'
                                                 >
                                                     <option key='0' value=''>&nbsp;</option>
-                                                    {permissionService.canOptionAlarmEditNotificationTemplates && <option key='alarm' value='alarm'>Alarm</option>}
-                                                    {permissionService.canOptionEmailNotificationTemplates && <option key='email' value='email'>Email</option>}
-                                                    {permissionService.canOptionSMSEditNotificationTemplates && <option key='sms' value='sms'>SMS</option>}
-                                                    {permissionService.canOptionWebhookEditNotificationTemplates && <option key='webhook' value='webhook'>Webhook</option>}
+                                                    {permissions.canOptionAlarmEditNotificationTemplates && <option key='alarm' value='alarm'>Alarm</option>}
+                                                    {permissions.canOptionEmailNotificationTemplates && <option key='email' value='email'>Email</option>}
+                                                    {permissions.canOptionSMSEditNotificationTemplates && <option key='sms' value='sms'>SMS</option>}
+                                                    {permissions.canOptionWebhookEditNotificationTemplates && <option key='webhook' value='webhook'>Webhook</option>}
                                                 </Field>
                                             </div>
 
