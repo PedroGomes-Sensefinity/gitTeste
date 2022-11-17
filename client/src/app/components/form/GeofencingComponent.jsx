@@ -65,12 +65,8 @@ function GeofencingComponent(props) {
                 // Add threshold to Geofence Data
                 const endpoint = "geofence/" + id + "/thresholds"
                 apiService.getByEndpoint(endpoint).then((response) => {
-                    setSelectedThresholds(response.thresholds)
-                    const ids = selectedThresholdsId
                     const respThresholds = response.thresholds || []
-                    respThresholds.forEach((threshold) => {
-                        ids.push(threshold.id)
-                    })
+                    setSelectedThresholds(respThresholds)
                 });
             });
         }
