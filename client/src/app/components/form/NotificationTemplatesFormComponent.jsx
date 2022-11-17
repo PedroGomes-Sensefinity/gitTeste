@@ -343,42 +343,6 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                             this.setTargets(template.targets_list, 'smsAdded');
                                             setFieldValue('sms', template.body, false);
                                         }
-                                    >
-                                        <DoneIcon />
-                                        Save Changes
-                                        {isSubmitting}
-                                    </button>
-                                    <Link
-                                        to='/notification-templates/list'
-                                        className='btn btn-secondary'>
-                                        Back to list
-                                    </Link>
-                                </div>
-                            </div>
-                            {/* end::Header */}
-
-                            {/* begin::Form */}
-                            <div className='form'>
-                                <div className='card-body'>
-                                    <div className='form-group row'>
-                                        <div className='col-xl-4 col-lg-4'>
-                                            <label>Type</label>
-                                            <Field
-                                                component="select"
-                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                    { errors, touched },
-                                                    'type'
-                                                )}`}
-                                                name='type'
-                                                placeholder='Select the type of this alarm'
-                                            >
-                                                <option key='0' value=''>&nbsp;</option>
-                                                {permissionService.canOptionAlarmEditNotificationTemplates && <option key='alarm' value='alarm'>Alarm</option>}
-                                                {permissionService.canOptionEmailNotificationTemplates && <option key='email' value='email'>Email</option>}
-                                                {permissionService.canOptionSMSEditNotificationTemplates && <option key='sms' value='sms'>SMS</option>}
-                                                {permissionService.canOptionWebhookEditNotificationTemplates && <option key='webhook' value='webhook'>Webhook</option>}
-                                            </Field>
-                                        </div>
 
                                         if (notification.type === 'email') {
                                             setFieldValue('emailSubject', template.subject, false);
@@ -405,7 +369,7 @@ class NotificationsTemplatesFormComponent extends React.Component {
                         useEffect(() => {
                             this.setState({ type: values.type });
                         }, [values.type]);
-
+                        
                         return (
                             <form
                                 className='card card-custom'
@@ -442,6 +406,7 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                     </div>
                                 </div>
                                 {/* end::Header */}
+                                {/* end::Header */}
 
                                 {/* begin::Form */}
                                 <div className='form'>
@@ -459,12 +424,13 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                                     placeholder='Select the type of this alarm'
                                                 >
                                                     <option key='0' value=''>&nbsp;</option>
-                                                    <option key='alarm' value='alarm'>Alarm</option>
-                                                    <option key='email' value='email'>Email</option>
-                                                    <option key='sms' value='sms'>SMS</option>
-                                                    <option key='webhook' value='webhook'>Webhook</option>
+                                                    {permissionService.canOptionAlarmEditNotificationTemplates && <option key='alarm' value='alarm'>Alarm</option>}
+                                                    {permissionService.canOptionEmailNotificationTemplates && <option key='email' value='email'>Email</option>}
+                                                    {permissionService.canOptionSMSEditNotificationTemplates && <option key='sms' value='sms'>SMS</option>}
+                                                    {permissionService.canOptionWebhookEditNotificationTemplates && <option key='webhook' value='webhook'>Webhook</option>}
                                                 </Field>
                                             </div>
+
 
                                             <div className='col-xl-8 col-lg-8'>
                                                 <label>Template Label</label>
