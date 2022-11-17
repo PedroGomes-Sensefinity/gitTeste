@@ -1,11 +1,12 @@
 /* eslint-disable jsx-a11y/role-supports-aria-props */
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
-import React from "react";
+import React, {useEffect} from "react";
 import SVG from "react-inlinesvg";
 import { useLocation } from "react-router";
 import { NavLink } from "react-router-dom";
 import { usePermissions } from "../../../../../app/modules/Permission/PermissionsProvider";
 import { checkIsActive, toAbsoluteUrl } from "../../../../_helpers";
+import ReactGA from 'react-ga';
 
 export function AsideMenuList({ layoutProps }) {
 
@@ -18,6 +19,10 @@ export function AsideMenuList({ layoutProps }) {
       "menu-item-active"} menu-item-open menu-item-not-hightlighted`
       : "";
   };
+
+  useEffect(() => {
+    ReactGA.pageview(window.location.pathname + window.location.search);
+  });
 
   return (
     <>

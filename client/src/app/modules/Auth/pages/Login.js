@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ReactGA from 'react-ga';
 import { Link } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -71,6 +72,8 @@ function Login(props) {
         validationSchema: LoginSchema,
         onSubmit: (values, { setStatus, setSubmitting }) => {
             enableLoading();
+            ReactGA.event({category: "Button",action: "Login " + values.email.replace("@","_")})
+            
             setTimeout(() => {
                 login(values.email, values.password)
                     .then((response) => response.data)

@@ -1,6 +1,7 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { Redirect, Switch } from "react-router-dom";
 import { ContentRoute, LayoutSplashScreen } from "../_metronic/layout";
+
 
 import { usePermissions } from "./modules/Permission/PermissionsProvider";
 import { AlarmsForm } from "./pages/alarms/alarms-form/AlarmsForm";
@@ -43,11 +44,14 @@ import { News } from "./pages/news/News";
   import("./modules/UserProfile/UserProfilePage")
 );*/
 
+
 export default function BasePage() {
   // useEffect(() => {
   //   console.log('Base page');
   // }, []) // [] - is required if you need only one call
   // https://reactjs.org/docs/hooks-reference.html#useeffect
+
+
 
   const { permissions } = usePermissions()
   return (
