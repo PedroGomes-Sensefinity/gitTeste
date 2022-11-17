@@ -113,6 +113,12 @@ function Permissions(permsObj) {
         canCreateNotificationTemplates: permsObj['notification_template_create'] || defaultValue,
         canEditNotificationTemplates: permsObj['notification_template_edit'] || defaultValue,
 
+        canOptionEmailNotificationTemplates: permsObj['notification_template_email'] || defaultValue,
+        canOptionSMSEditNotificationTemplates: permsObj['notification_template_sms'] || defaultValue,
+        canOptionWebhookEditNotificationTemplates: permsObj['notification_template_webhook'] || defaultValue,
+        canOptionAlarmEditNotificationTemplates: permsObj['notification_template_alarm'] || defaultValue,
+
+
         // FloorMap related operations permissions
         canViewFloorMaps: permsObj['floormap_view'] || defaultValue,
         canCreateFloorMaps: permsObj['floormap_create'] || defaultValue,

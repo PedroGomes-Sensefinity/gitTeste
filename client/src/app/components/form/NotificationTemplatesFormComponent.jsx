@@ -30,6 +30,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import AceEditor from "react-ace";
 import { Table } from "react-bootstrap";
 import notificationService from "../../services/notificationService";
+import permissionService from '../../services/permissionService';
 
 class NotificationsTemplatesFormComponent extends React.Component {
     constructor(props) {
@@ -419,10 +420,10 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                                 placeholder='Select the type of this alarm'
                                             >
                                                 <option key='0' value=''>&nbsp;</option>
-                                                <option key='alarm' value='alarm'>Alarm</option>
-                                                <option key='email' value='email'>Email</option>
-                                                <option key='sms' value='sms'>SMS</option>
-                                                <option key='webhook' value='webhook'>Webhook</option>
+                                                {permissionService.canOptionAlarmEditNotificationTemplates && <option key='alarm' value='alarm'>Alarm</option>}
+                                                {permissionService.canOptionEmailNotificationTemplates && <option key='email' value='email'>Email</option>}
+                                                {permissionService.canOptionSMSEditNotificationTemplates && <option key='sms' value='sms'>SMS</option>}
+                                                {permissionService.canOptionWebhookEditNotificationTemplates && <option key='webhook' value='webhook'>Webhook</option>}
                                             </Field>
                                         </div>
 
