@@ -1,7 +1,7 @@
 import DoneIcon from '@material-ui/icons/Done';
 import { makeStyles } from '@material-ui/styles';
 import { ErrorMessage, Field, Formik } from 'formik';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import BlockUi from "react-block-ui";
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { injectIntl } from 'react-intl';
@@ -22,8 +22,18 @@ function ProfilesFormComponent(props) {
     const intl = props.intl
     const profileId = props.id
     const isAddMode = !props.id
-    const [profile, setProfile] = useState({})
-    const permissions = profile.permissions || []
+    const [profile, setProfile] = useState({
+        permissions: []
+    })
+
+    //each permission should have id and slug properties
+    {/*
+        {
+            "id":0
+            "slug": "some_permission"
+        }
+    */ }
+    const permissions = useMemo(() => profile.permissions || [], [profile])
     const [optionsPermissions, setPermissionOptions] = useState([])
     const [blocking, setBlocking] = useState(false)
     const classes = useStyles();
@@ -34,13 +44,15 @@ function ProfilesFormComponent(props) {
             setPermissionOptions(response.permissions || [])
         });
         if (!isAddMode && profileId !== 'new') {
+            setBlocking(true)
             apiService
                 .getById('profile', profileId)
                 .then((response) => {
                     const respProf = response.profiles || []
                     if (respProf.length > 0) {
-                        setProfile(respProf[0])
+                        setProfile((prev) => ({ ...prev, ...respProf[0] }))
                     }
+                    setBlocking(false)
                 });
         }
     }, [])
@@ -77,13 +89,10 @@ function ProfilesFormComponent(props) {
             });
     };
 
-    const onChangePermissions = (opt, setFieldValue) => {
-        setFieldValue('permissions', []);
-
-        if (opt.length > 0) {
-            setFieldValue('permissions', opt);
-        }
-        setPermissionOptions(opt)
+    const onChangePermissions = (opt) => {
+        setProfile(prev => {
+            return ({ ...prev, permissions: opt })
+        })
     };
 
     return (
@@ -106,7 +115,6 @@ function ProfilesFormComponent(props) {
                     errors,
                     touched,
                     isSubmitting,
-                    setFieldValue,
                     handleSubmit
                 }) => {
                     return (
@@ -168,11 +176,11 @@ function ProfilesFormComponent(props) {
                                             <Typeahead
                                                 multiple
                                                 id='typeahead-permissions'
+                                                //name of the prop from the type of object stored in "permissions" object
                                                 labelKey="slug"
                                                 size="lg"
-                                                onChange={data => onChangePermissions(data, setFieldValue)}
+                                                onChange={data => onChangePermissions(data)}
                                                 options={optionsPermissions}
-                                                clearButton={true}
                                                 placeholder=''
                                                 selected={permissions}
                                                 class={getInputClasses({ errors, touched }, 'permissions')}
