@@ -91,6 +91,7 @@
     "react-dom": "^18.2.0",
     "react-draft-wysiwyg": "^1.14.7",
     "react-draggable": "4.4.2",
+    "react-ga": "^3.3.1",
     "react-icons": "^4.3.1",
     "react-inlinesvg": "1.2.0",
     "react-intl": "3.6.2",

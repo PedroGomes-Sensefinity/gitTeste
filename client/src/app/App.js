@@ -3,6 +3,7 @@
  * */
 
 import React from "react";
+import ReactGA from 'react-ga';
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { PersistGate } from "redux-persist/integration/react";
@@ -14,7 +15,15 @@ import { I18nProvider } from "../_metronic/i18n";
 import { LayoutSplashScreen, MaterialThemeProvider } from "../_metronic/layout";
 import 'react-block-ui/style.css';
 
+
+
+
 export default function App({ store, persistor, basename }) {
+  /* Track website data if on prod */
+  if(window.location.hostname !== "localhost" ){
+      const trackingId = "UA-43625140-3";
+      ReactGA.initialize(trackingId);
+  }
   return (
     /* Provide Redux store */
     <Provider store={store}>
