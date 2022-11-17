@@ -11,9 +11,10 @@ import { CreateAsset } from "./pages/assets/assets-form/CreateAsset";
 import { AssetsList } from "./pages/assets/assets-list/AssetsList";
 import { BoardFamiliesForm } from "./pages/board-families/form/BoardFamiliesForm";
 import { BoardFamiliesList } from "./pages/board-families/list/BoardFamiliesList";
-import { Dashboard } from "./pages/dashboards/Dashboard";
 import { ContainersDashboard } from "./pages/dashboards/ContainersDashboard";
+import { Dashboard } from "./pages/dashboards/Dashboard";
 import { GeneralContainers } from "./pages/dashboards/GeneralContainers";
+import { CreateDevice } from "./pages/devices/device/CreateDevice";
 import { Device } from "./pages/devices/device/Device";
 import { DevicesList } from "./pages/devices/devices-list/DevicesList";
 import { DevicesProvision } from "./pages/devices/devices-provision/DevicesProvision";
@@ -21,8 +22,10 @@ import { DevicesUpload } from "./pages/devices/devices-upload/DevicesUpload";
 import { FloorMapsForm } from "./pages/floor-maps/form/FloorMapsForm";
 import { FloorMapsList } from "./pages/floor-maps/list/FloorMapsList";
 import { GeofencesForm } from "./pages/geofences/geofences-form/GeofencesForm";
+import { GeofencesList } from "./pages/geofences/geofences-list/GeofencesList";
 import { GroupsForm } from "./pages/groups/groups-form/GroupsForm";
 import { GroupsList } from "./pages/groups/groups-list/GroupsList";
+import { News } from "./pages/news/News";
 import { NotificationTemplatesForm } from "./pages/notification-templates/notifications-templates-form/NotificationTemplatesForm";
 import { NotificationTemplatesList } from "./pages/notification-templates/notifications-templates-list/NotificationTemplatesList";
 import { ProfilesForm } from "./pages/profiles/profiles-form/ProfilesForm";
@@ -32,13 +35,11 @@ import { RouteCompletion } from "./pages/routes/routes-list/RouteCompletion";
 import { RoutesList } from "./pages/routes/routes-list/RoutesList";
 import { TenantsForm } from "./pages/tenants/tenants-form/TenantsForm";
 import { TenantsList } from "./pages/tenants/tenants-list/TenantsList";
+import { CreateThreshold } from "./pages/thresholds/thresholds-form/CreateThreshold";
 import { ThresholdsForm } from "./pages/thresholds/thresholds-form/ThresholdsForm";
 import { ThresholdsList } from "./pages/thresholds/thresholds-list/ThresholdsList";
 import { UsersForm } from "./pages/users/users-form/UsersForm";
 import { UsersList } from "./pages/users/users-list/UsersList";
-import { GeofencesList } from "./pages/geofences/geofences-list/GeofencesList";
-import { CreateThreshold } from "./pages/thresholds/thresholds-form/CreateThreshold";
-import { News } from "./pages/news/News";
 
 /*const UserProfilepage = lazy(() =>
   import("./modules/UserProfile/UserProfilePage")
@@ -72,7 +73,7 @@ export default function BasePage() {
           <ContentRoute key="/devices/edit/:id" path="/devices/edit/:id" component={Device} />,
           <ContentRoute key="/devices/provision" path="/devices/provision" component={DevicesProvision} />,
           <ContentRoute key="/devices/upload" path="/devices/upload" component={DevicesUpload} />,
-          <ContentRoute key="/devices/new" path="/devices/new" component={Device} />,
+          <ContentRoute key="/devices/new" path="/devices/new" component={CreateDevice} />,
           <ContentRoute key="/devices/list" path="/devices/list" component={DevicesList} />,
           <ContentRoute key="/devices/:id" path="/devices/:id" component={Device} />
         ]}
@@ -158,8 +159,8 @@ export default function BasePage() {
           <ContentRoute key="/floor-maps/list" path="/floor-maps/list" component={FloorMapsList} />,
           <ContentRoute key="/floor-maps/new" path="/floor-maps/new" component={FloorMapsForm} />
         ]}
-            { /* what's new Page*/}
-            <ContentRoute key="/whatsnew" path="/whatsnew" component={News} />
+        { /* what's new Page*/}
+        <ContentRoute key="/whatsnew" path="/whatsnew" component={News} />
         <Redirect to="/error/error-v1" />
       </Switch>
     </Suspense>

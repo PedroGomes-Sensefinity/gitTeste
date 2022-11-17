@@ -30,6 +30,7 @@ import 'brace/theme/monokai';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 import AceEditor from "react-ace";
+import * as  ace from 'brace';
 import notificationService from "../../services/notificationService";
 
 const useStyles = makeStyles((theme) => ({

@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 function GroupsFormComponent(props) {
     const intl = props.intl
     const groupId = props.id
-    const isAddMode = props.id === undefined
+    const isAddMode = props.id === undefined || props.id === 'new'
 
     const [selectedThresholds, setSelectedThresholds] = useState([])
     const [groupInfo, setGroup] = useState({})
@@ -33,7 +33,7 @@ function GroupsFormComponent(props) {
     const [optionGroups, setOptionGroups] = useState([])
     const [optionThresholds, setOptionThresholds] = useState([])
 
-    const [blocking, setBlocking] = useState(true)
+    const [blocking, setBlocking] = useState(false)
     const [loading, setLoading] = useState(false)
     const classes = useStyles();
 

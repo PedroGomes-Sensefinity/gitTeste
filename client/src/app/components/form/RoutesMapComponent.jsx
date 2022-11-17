@@ -130,7 +130,7 @@ function RoutesMapComponent(props) {
                 enableReinitialize
                 initialValues={initialValues}
                 validationSchema={validationSchema}
-                onSubmit={({ setSubmitting }) => {
+                onSubmit={(_values, { setSubmitting }) => {
                     save(setSubmitting);
                 }}
             >
