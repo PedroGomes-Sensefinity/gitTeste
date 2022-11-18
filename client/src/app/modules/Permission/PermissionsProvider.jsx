@@ -125,7 +125,12 @@ function Permissions(permsObj) {
         canEditFloorMaps: permsObj['floormap_edit'] || defaultValue,
     
         canViewContainerDashboard: permsObj['dashboard_containers'] || defaultValue,
-        canViewDeviceDashboardExtras: permsObj['device_dashboard_extras'] || defaultValue
+        canViewDeviceDashboardExtras: permsObj['device_dashboard_extras'] || defaultValue,
+
+        // Location (and sublocations) related operations permissions
+        canViewLocations: permsObj['locations_view'] || defaultValue,
+        canCreateLocations: permsObj['locations_create'] || defaultValue,
+        canEditLocations: permsObj['locations_edit'] || defaultValue,
     }
 }
 

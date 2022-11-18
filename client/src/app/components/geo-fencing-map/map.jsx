@@ -9,6 +9,7 @@ function Map(props) {
     const map = useRef(null);
     const drawnItems = useRef(null);
     const shapes = props.shapes
+    const zoom = props.zoom ? props.zoom : 10
 
     useEffect(() => {
         if (map.current === null) {
@@ -53,7 +54,7 @@ function Map(props) {
             drawLayers(shapes);
             setMapView();
         } else {
-            map.current.setView([38.7242, -9.1389], 10);
+            map.current.setView([38.7242, -9.1389], zoom);
             setMapView();
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(function (location) {

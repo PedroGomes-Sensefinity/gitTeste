@@ -22,7 +22,6 @@ import { DevicesUpload } from "./pages/devices/devices-upload/DevicesUpload";
 import { FloorMapsForm } from "./pages/floor-maps/form/FloorMapsForm";
 import { FloorMapsList } from "./pages/floor-maps/list/FloorMapsList";
 import { GeofencesForm } from "./pages/geofences/geofences-form/GeofencesForm";
-import { GeofencesList } from "./pages/geofences/geofences-list/GeofencesList";
 import { GroupsForm } from "./pages/groups/groups-form/GroupsForm";
 import { GroupsList } from "./pages/groups/groups-list/GroupsList";
 import { News } from "./pages/news/News";
@@ -35,11 +34,17 @@ import { RouteCompletion } from "./pages/routes/routes-list/RouteCompletion";
 import { RoutesList } from "./pages/routes/routes-list/RoutesList";
 import { TenantsForm } from "./pages/tenants/tenants-form/TenantsForm";
 import { TenantsList } from "./pages/tenants/tenants-list/TenantsList";
-import { CreateThreshold } from "./pages/thresholds/thresholds-form/CreateThreshold";
 import { ThresholdsForm } from "./pages/thresholds/thresholds-form/ThresholdsForm";
 import { ThresholdsList } from "./pages/thresholds/thresholds-list/ThresholdsList";
 import { UsersForm } from "./pages/users/users-form/UsersForm";
 import { UsersList } from "./pages/users/users-list/UsersList";
+import { GeofencesList } from "./pages/geofences/geofences-list/GeofencesList";
+import { CreateThreshold } from "./pages/thresholds/thresholds-form/CreateThreshold";
+import { News } from "./pages/news/News";
+import { LocationsList } from "./pages/locations/locations-list/LocationsList";
+import { LocationsForm } from "./pages/locations/locations-form/LocationsForm";
+import { SubLocationsList } from "./pages/locations/sublocations-list/SublocationsList";
+import { SubLocationsForm } from "./pages/locations/sublocation-form/SubLocationsForm";
 import { Impacts } from "./pages/impacts/Impacts";
 
 
@@ -161,11 +166,24 @@ export default function BasePage() {
           <ContentRoute key="/floor-maps/list" path="/floor-maps/list" component={FloorMapsList} />,
           <ContentRoute key="/floor-maps/new" path="/floor-maps/new" component={FloorMapsForm} />
         ]}
-
-          <ContentRoute key="/impacts" path="/impacts" component={Impacts} />,
-
+        { /* Locations Routes*/}
+        {permissions.canViewLocations && [
+          <ContentRoute key="/locations/edit/:id" path="/locations/edit/:id" component={LocationsForm} />,
+          <ContentRoute key="/locations/list" path="/locations/list" component={LocationsList} />,
+          <ContentRoute key="/locations/new" path="/locations/new" component={LocationsForm} />
+        ]}
+        { /* Sublocations Routes*/}
+        {permissions.canViewLocations && [          
+          <ContentRoute key="/sublocations/edit/:id" path="/sublocations/edit/:id" component={SubLocationsForm} />,
+          <ContentRoute key="/sublocations/list" path="/sublocations/list" component={SubLocationsList} />,
+          <ContentRoute key="/sublocations/new" path="/sublocations/new" component={SubLocationsForm} />
+        ]}
         { /* what's new Page*/}
         <ContentRoute key="/whatsnew" path="/whatsnew" component={News} />
+
+        <ContentRoute key="/impacts" path="/impacts" component={Impacts} />,
+
+
         <Redirect to="/error/error-v1" />
       </Switch>
     </Suspense>
