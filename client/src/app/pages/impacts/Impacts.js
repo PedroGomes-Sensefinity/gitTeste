@@ -41,7 +41,7 @@ export function Impacts() {
             <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
             <pointLight position={[10, 10, 10]} />
             <primitive object={Line(linePos.x,linePos.y,linePos.z, "#DD1C1C")} />
-            <primitive object={new THREE.AxesHelper(2)} />
+            <primitive object={new THREE.AxesHelper(1)} />
             <Suspense fallback={null}>
                 <Container position={[0.25, -1.85, -3]} />
             </Suspense>
