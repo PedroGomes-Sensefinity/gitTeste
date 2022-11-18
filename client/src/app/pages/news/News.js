@@ -7,6 +7,8 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 const versions = [
+    {versionNumber: "V.0.0.3", date: "19/11/2022" ,changes: 
+    ["3D Support for Containers Visualization - BETA Version"]},
     {versionNumber: "V.0.0.2", date: "16/11/2022" ,changes: 
     ["1. Launch of the Page: \"What's New\" - Here you can check the latest news from the Sensefinity Web application! "]},
     {versionNumber: "V.0.0.1", date: "15/11/2022", changes: 
