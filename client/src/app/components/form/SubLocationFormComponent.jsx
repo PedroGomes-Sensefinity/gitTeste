@@ -196,7 +196,7 @@ function SubLocationFormComponent(props) {
                                         <label className={`required`}>Name</label>
                                         <Field
                                             as="input"
-                                            disabled={permissions.canEditLocations}
+                                            disabled={!permissions.canEditLocations}
                                             className={`form-control form-control-lg form-control-solid ${getInputClasses(
                                                 { errors, touched },
                                                 'name'
@@ -212,7 +212,7 @@ function SubLocationFormComponent(props) {
                                         <label>Port Code</label>
                                         <Field
                                             as="input"
-                                            disabled={permissions.canEditLocations}
+                                            disabled={!permissions.canEditLocations}
                                             className={`form-control form-control-lg form-control-solid ${getInputClasses(
                                                 { errors, touched },
                                                 'port_code'
@@ -231,7 +231,7 @@ function SubLocationFormComponent(props) {
                                             <label className={`required`}>Location</label>
                                             <Field
                                                 type={"number"}
-                                                disabled={permissions.canEditLocations}
+                                                disabled={!permissions.canEditLocations}
                                                 as="select"
                                                 className={`form-control form-control-lg form-control-solid ${getInputClasses(
                                                     { errors, touched },

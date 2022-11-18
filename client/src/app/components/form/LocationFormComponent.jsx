@@ -178,7 +178,7 @@ function LocationFormComponent(props) {
                                         <label className={`required`}>Name</label>
                                         <Field
                                             as="input"
-                                            disabled={permissions.canEditLocations}
+                                            disabled={!permissions.canEditLocations}
                                             className={`form-control form-control-lg form-control-solid ${getInputClasses(
                                                 { errors, touched },
                                                 'name'
