@@ -4,11 +4,11 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import ChangePasswordIcon from '@material-ui/icons/VpnKey';
 import React, { useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import ChangePasswordFormComponent from "../../../components/form/ChangePasswordFormComponent";
 import GenericModalComponent from '../../../components/modal/GenericModalComponent';
 import TableGrid from '../../../components/table-grid/TableGrid';
-import { usePermissions } from '../../../modules/Permission/PermissionsProvider';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -33,8 +33,8 @@ export function UsersList() {
     const [userUsername, setUserUsername] = useState('');
     const history = useHistory()
 
-    const { permissions } = usePermissions()
-
+    const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
+    
     const actions = useMemo(() => {
         const acts = []
         if (permissions.canEditUsers) {

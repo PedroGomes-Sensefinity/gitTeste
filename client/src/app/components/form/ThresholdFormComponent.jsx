@@ -40,8 +40,6 @@ function ThresholdFormComponent(props) {
     const minLimit = 0
     const maxLimit = 100
 
-    console.log(threshold)
-
     const ruleCurrentSymbol = ''
     const ruleWhenCronsOptions = [
         { id: "* * * * *", name: "Daily" },

@@ -39,7 +39,6 @@ function RoutesMapComponent(props) {
                 const respRoute = response.routes || []
 
                 if (respRoute.length > 0) {
-                    console.log(respRoute)
                     const entity = respRoute[0];
                     entity.metadata = JSON.parse(entity.metadata);
                     setEntity(entity)
@@ -71,8 +70,6 @@ function RoutesMapComponent(props) {
         newRoute.metadata.geofence = geofence;
         newRoute.metadata.geofenceSizes = geofenceSizes;
         newRoute.metadata = JSON.stringify(newRoute.metadata);
-        console.log(`on Save`)
-        console.log(newRoute)
 
         setBlocking(true)
         routesService.update(newRoute)
@@ -89,7 +86,6 @@ function RoutesMapComponent(props) {
     };
 
     const onChangeRoute = (route) => {
-        console.log(route)
         setRoute(route.route)
         setGeofence(route.geofence)
         setGeofenceSizes(route.geofenceSizes)

@@ -3,17 +3,16 @@
  * */
 
 import React from "react";
+import 'react-block-ui/style.css';
 import ReactGA from 'react-ga';
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
-import { PersistGate } from "redux-persist/integration/react";
-import { AuthInit } from "./modules/Auth";
-import { PermissionsProvider } from "./modules/Permission/PermissionsProvider"
-import { Routes } from "../app/Routes";
 import { ToastContainer } from 'react-toastify';
+import { PersistGate } from "redux-persist/integration/react";
+import { Routes } from "../app/Routes";
 import { I18nProvider } from "../_metronic/i18n";
 import { LayoutSplashScreen, MaterialThemeProvider } from "../_metronic/layout";
-import 'react-block-ui/style.css';
+import { AuthInit } from "./modules/Auth";
 
 
 
@@ -39,9 +38,7 @@ export default function App({ store, persistor, basename }) {
               <I18nProvider>
                 {/* Render routes with provided `Layout`. */}
                 <AuthInit>
-                  <PermissionsProvider>
                     <Routes />
-                  </PermissionsProvider>
                 </AuthInit>
               </I18nProvider>
               <ToastContainer />

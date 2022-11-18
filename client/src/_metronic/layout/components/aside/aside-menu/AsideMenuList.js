@@ -1,17 +1,16 @@
 /* eslint-disable jsx-a11y/role-supports-aria-props */
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import SVG from "react-inlinesvg";
 import { useLocation } from "react-router";
 import { NavLink } from "react-router-dom";
-import { usePermissions } from "../../../../../app/modules/Permission/PermissionsProvider";
+import { useSelector } from "react-redux";
 import { checkIsActive, toAbsoluteUrl } from "../../../../_helpers";
 import ReactGA from 'react-ga';
 
 export function AsideMenuList({ layoutProps }) {
 
-  const { permissions } = usePermissions()
-
+  const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
   const location = useLocation();
   const getMenuItemActive = (url, hasSubmenu = false) => {
     return checkIsActive(location, url)

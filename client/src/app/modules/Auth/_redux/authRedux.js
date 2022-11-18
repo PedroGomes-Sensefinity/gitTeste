@@ -1,13 +1,15 @@
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { put, takeLatest } from "redux-saga/effects";
-import { getUserByToken } from "./authService";
+import { call, put, takeLatest } from "redux-saga/effects";
 import { getUser, logout } from '../../../services/authService';
+import permissionService, { Permissions } from "../../../services/permissionService";
+import { getUserByToken } from "./authService";
 
 export const actionTypes = {
   Login: "[Login] Action",
   Logout: "[Logout] Action",
   Register: "[Register] Action",
+  SetPermissions: "permissions/set",
   UserRequested: "[Request User] Action",
   UserLoaded: "[Load User] Auth API",
   SetUser: "[Set User] Action",
@@ -16,6 +18,7 @@ export const actionTypes = {
 const initialAuthState = {
   user: undefined,
   authToken: undefined,
+  permissions: {}
 };
 
 export const reducer = persistReducer(
@@ -24,7 +27,6 @@ export const reducer = persistReducer(
     switch (action.type) {
       case actionTypes.Login: {
         const { authToken } = action.payload;
-
         return { authToken, user: undefined };
       }
 
@@ -33,6 +35,10 @@ export const reducer = persistReducer(
 
         return { authToken, user: undefined };
       }
+      case actionTypes.SetPermissions: {
+        const { permissions } = action.payload
+        return { ...state, permissions }
+      }
 
       case actionTypes.Logout: {
         logout();
@@ -40,7 +46,7 @@ export const reducer = persistReducer(
       }
 
       case actionTypes.UserLoaded: {
-        const user = getUser(); 
+        const user = getUser();
         return { ...state, user };
       }
 
@@ -61,6 +67,7 @@ export const actions = {
     type: actionTypes.Register,
     payload: { authToken },
   }),
+  userPermissions: (permissions) => ({ type: actionTypes.SetPermissions, payload: { permissions } }),
   logout: () => ({ type: actionTypes.Logout }),
   requestUser: (user) => ({
     type: actionTypes.UserRequested,
@@ -72,16 +79,30 @@ export const actions = {
 
 export function* saga() {
   yield takeLatest(actionTypes.Login, function* loginSaga() {
+    console.log('on login saga')
     yield put(actions.requestUser());
   });
 
   yield takeLatest(actionTypes.Register, function* registerSaga() {
+    console.log('on user register')
     yield put(actions.requestUser());
   });
 
   yield takeLatest(actionTypes.UserRequested, function* userRequested() {
+    console.log('on user requested')
     const { data: user } = yield getUserByToken();
-
+    const permissions = yield call(permissionService.getUserPermissions)
+    yield put(actions.userPermissions(permissions))
     yield put(actions.fulfillUser(user));
+  });
+
+  yield takeLatest(actionTypes.UserLoaded, function* UserLoaded() {
+    try {
+      const permArray = yield call(permissionService.getUserPermissions)
+      const permissions = Permissions(permArray)
+      yield put(actions.userPermissions(permissions))
+    } catch (e) {
+      yield put(actions.userPermissions({}))
+    }
   });
 }
