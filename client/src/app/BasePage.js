@@ -40,7 +40,6 @@ import { UsersForm } from "./pages/users/users-form/UsersForm";
 import { UsersList } from "./pages/users/users-list/UsersList";
 import { GeofencesList } from "./pages/geofences/geofences-list/GeofencesList";
 import { CreateThreshold } from "./pages/thresholds/thresholds-form/CreateThreshold";
-import { News } from "./pages/news/News";
 import { LocationsList } from "./pages/locations/locations-list/LocationsList";
 import { LocationsForm } from "./pages/locations/locations-form/LocationsForm";
 import { SubLocationsList } from "./pages/locations/sublocations-list/SublocationsList";

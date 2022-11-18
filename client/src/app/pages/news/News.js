@@ -7,6 +7,8 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 const versions = [
+    {versionNumber: "V.0.0.4", date: "18/11/2022" ,changes: 
+    ["Update for all users with access to Locations and Sublocations - Now you will be able to see all your Locations and Sublocations. Go check it out!"]},
     {versionNumber: "V.0.0.3", date: "18/11/2022" ,changes: 
     ["3D Support for Containers Visualization - BETA Version"]},
     {versionNumber: "V.0.0.2", date: "16/11/2022" ,changes: 
