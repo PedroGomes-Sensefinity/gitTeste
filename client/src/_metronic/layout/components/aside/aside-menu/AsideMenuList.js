@@ -251,7 +251,7 @@ export function AsideMenuList({ layoutProps }) {
         {/*begin::1 Level*/}
         {permissions.canViewLocations &&
           <li
-            className={`menu-item ${getMenuItemActive("/locations", true)}`}
+            className={`menu-item ${getMenuItemActive("/locations", true) || getMenuItemActive("/sublocations", true)}`}
             aria-haspopup="true"
           >
             <NavLink className="menu-link menu-toggle" to="/locations">
