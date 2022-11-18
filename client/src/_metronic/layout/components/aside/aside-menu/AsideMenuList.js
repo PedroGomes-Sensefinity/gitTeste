@@ -153,57 +153,6 @@ export function AsideMenuList({ layoutProps }) {
           </li>
         }
         {/*begin::1 Level*/}
-        {permissions.canViewLocations &&
-          <li
-            className={`menu-item ${getMenuItemActive("/locations", true)}`}
-            aria-haspopup="true"
-          >
-            <NavLink className="menu-link menu-toggle" to="/locations">
-              <span className="svg-icon menu-icon">
-                <SVG src={toAbsoluteUrl("/media/svg/icons/Map/Compass.svg")} />
-              </span>
-              <span className="menu-text">Locations</span>
-            </NavLink>
-            <div className="menu-submenu">
-              <i className="menu-arrow" />
-              <ul className="menu-subnav">
-                <li className="menu-item menu-item-parent" aria-haspopup="true">
-                  <span className="menu-link">
-                    <span className="menu-text">Locations</span>
-                  </span>
-                </li>
-                {/*begin::2 Level*/}
-                <li
-                  className={`menu-item ${getMenuItemActive("/locations/list")}`}
-                  aria-haspopup="true"
-                >
-                  <NavLink className="menu-link" to="/locations/list">
-                    <i className="menu-bullet menu-bullet-dot">
-                      <span />
-                    </i>
-                    <span className="menu-text">Locations</span>
-                  </NavLink>
-                </li>
-                {/*end::2 Level*/}
-                {/*begin::2 Level*/}
-                <li
-                  className={`menu-item ${getMenuItemActive("/sublocations/list")}`}
-                  aria-haspopup="true"
-                >
-                  <NavLink className="menu-link" to="/sublocations/list">
-                    <i className="menu-bullet menu-bullet-dot">
-                      <span />
-                    </i>
-                    <span className="menu-text">Sublocations</span>
-                  </NavLink>
-                </li>
-                {/*end::2 Level*/}
-              </ul>
-            </div>
-          </li>
-        }
-        {/*end::1 Level*/}
-        {/*begin::1 Level*/}
         {permissions.canViewDevices &&
           <li
             className={`menu-item ${getMenuItemActive("/devices", true)}`}
@@ -296,6 +245,57 @@ export function AsideMenuList({ layoutProps }) {
               </span>
               <span className="menu-text">Groups</span>
             </NavLink>
+          </li>
+        }
+        {/*end::1 Level*/}
+        {/*begin::1 Level*/}
+        {permissions.canViewLocations &&
+          <li
+            className={`menu-item ${getMenuItemActive("/locations", true)}`}
+            aria-haspopup="true"
+          >
+            <NavLink className="menu-link menu-toggle" to="/locations">
+              <span className="svg-icon menu-icon">
+                <SVG src={toAbsoluteUrl("/media/svg/icons/Map/Compass.svg")} />
+              </span>
+              <span className="menu-text">Locations</span>
+            </NavLink>
+            <div className="menu-submenu">
+              <i className="menu-arrow" />
+              <ul className="menu-subnav">
+                <li className="menu-item menu-item-parent" aria-haspopup="true">
+                  <span className="menu-link">
+                    <span className="menu-text">Locations</span>
+                  </span>
+                </li>
+                {/*begin::2 Level*/}
+                <li
+                  className={`menu-item ${getMenuItemActive("/locations/list")}`}
+                  aria-haspopup="true"
+                >
+                  <NavLink className="menu-link" to="/locations/list">
+                    <i className="menu-bullet menu-bullet-dot">
+                      <span />
+                    </i>
+                    <span className="menu-text">Locations</span>
+                  </NavLink>
+                </li>
+                {/*end::2 Level*/}
+                {/*begin::2 Level*/}
+                <li
+                  className={`menu-item ${getMenuItemActive("/sublocations/list")}`}
+                  aria-haspopup="true"
+                >
+                  <NavLink className="menu-link" to="/sublocations/list">
+                    <i className="menu-bullet menu-bullet-dot">
+                      <span />
+                    </i>
+                    <span className="menu-text">Sublocations</span>
+                  </NavLink>
+                </li>
+                {/*end::2 Level*/}
+              </ul>
+            </div>
           </li>
         }
         {/*end::1 Level*/}
