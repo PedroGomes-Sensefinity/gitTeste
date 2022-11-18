@@ -13,8 +13,7 @@ import toaster from '../../utils/toaster';
 import '../../utils/yup-validations';
 import Map from "../geo-fencing-map/map";
 import TableGrid from '../table-grid/TableGrid';
-import { usePermissions } from '../../modules/Permission/PermissionsProvider';
-
+import {useSelector} from 'react-redux'
 const useStyles = makeStyles((theme) => ({
     headerMarginTop: {
         marginTop: theme.spacing(5),
@@ -26,7 +25,7 @@ function SubLocationFormComponent(props) {
     const id = props.id;
     const isAddMode = !id
     const classes = useStyles();
-    const { permissions } = usePermissions()
+    const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
     const [blocking, setBlocking] = useState(false)
     const [geofences, setGeofences] = useState([])
     const [locationsOptions, setLocationsOptions] = useState([
@@ -197,6 +196,7 @@ function SubLocationFormComponent(props) {
                                         <label className={`required`}>Name</label>
                                         <Field
                                             as="input"
+                                            disabled={permissions.canEditLocations}
                                             className={`form-control form-control-lg form-control-solid ${getInputClasses(
                                                 { errors, touched },
                                                 'name'
@@ -212,6 +212,7 @@ function SubLocationFormComponent(props) {
                                         <label>Port Code</label>
                                         <Field
                                             as="input"
+                                            disabled={permissions.canEditLocations}
                                             className={`form-control form-control-lg form-control-solid ${getInputClasses(
                                                 { errors, touched },
                                                 'port_code'
@@ -230,6 +231,7 @@ function SubLocationFormComponent(props) {
                                             <label className={`required`}>Location</label>
                                             <Field
                                                 type={"number"}
+                                                disabled={permissions.canEditLocations}
                                                 as="select"
                                                 className={`form-control form-control-lg form-control-solid ${getInputClasses(
                                                     { errors, touched },

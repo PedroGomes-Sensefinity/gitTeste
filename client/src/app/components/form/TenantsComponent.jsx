@@ -66,8 +66,6 @@ function TenantsFormComponent(props) {
         check_longstanding: tenant.check_longstanding || false,
     };
 
-    console.log(initialValues)
-
     const validationSchema = Yup.object().shape({
         name: Yup.string().required('Tenant name is required'),
         address: Yup.string().required('Address is required'),
@@ -99,7 +97,6 @@ function TenantsFormComponent(props) {
             ? intl.formatMessage({ id: 'TENANT.CREATED' })
             : intl.formatMessage({ id: 'TENANT.UPDATED' });
 
-        console.log(fields)
         tenantsService[method](fields, fields.id)
             .then((_response) => {
                 toaster.notify('success', msgSuccess);

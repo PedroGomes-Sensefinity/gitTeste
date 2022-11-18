@@ -6,7 +6,6 @@ import React, { useMemo } from 'react';
 import { MdSpaceDashboard } from "react-icons/md";
 import { useHistory } from 'react-router-dom';
 import TableGridV2 from '../../../components/table-grid/TableGridV2';
-import { usePermissions } from '../../../modules/Permission/PermissionsProvider';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -20,15 +19,15 @@ const useStyles = makeStyles((theme) => ({
 export function LocationsList() {
     const history = useHistory()
     const classes = useStyles();
-    const { permissions } = usePermissions()
+    const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
 
     const actions = useMemo(() => {
         const acts = []
         acts.push({
-            icon: EditIcon,
-            tooltip: 'View or Edit Location',
+            icon: permissions.canEditLocations ? EditIcon : MdSpaceDashboard,
+            tooltip: permissions.canEditLocations ? 'Edit Location' : 'View Location',
             onClick: (_, rowData) => {
-               history.push(`/locations/edit/${rowData.id}`);
+                history.push(`/locations/edit/${rowData.id}`);
             },
         })
         return acts

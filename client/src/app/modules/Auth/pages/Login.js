@@ -1,14 +1,14 @@
+import { useFormik } from 'formik';
 import React, { useState } from 'react';
 import ReactGA from 'react-ga';
-import { Link } from 'react-router-dom';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import * as Yup from 'yup';
 import { toAbsoluteUrl } from '../../../../_metronic/_helpers';
-import toaster from '../../../utils/toaster';
-import { login, setToken, setUser, setTenantLogo } from '../../../services/authService';
 import history from '../../../history';
+import { login, setTenantLogo, setToken, setUser } from '../../../services/authService';
+import toaster from '../../../utils/toaster';
 
 /*
   INTL (i18n) docs:

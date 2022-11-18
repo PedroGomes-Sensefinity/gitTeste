@@ -1,9 +1,7 @@
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense } from "react";
+import { useSelector } from "react-redux";
 import { Redirect, Switch } from "react-router-dom";
 import { ContentRoute, LayoutSplashScreen } from "../_metronic/layout";
-
-
-import { usePermissions } from "./modules/Permission/PermissionsProvider";
 import { AlarmsForm } from "./pages/alarms/alarms-form/AlarmsForm";
 import { AlarmsList } from "./pages/alarms/alarms-list/AlarmsList";
 import { AssetsForm } from "./pages/assets/assets-form/AssetsForm";
@@ -60,7 +58,7 @@ export default function BasePage() {
 
 
 
-  const { permissions } = usePermissions()
+  const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
   return (
     <Suspense fallback={<LayoutSplashScreen />}>
       <Switch>

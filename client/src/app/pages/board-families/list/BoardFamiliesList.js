@@ -7,7 +7,7 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import { useHistory } from 'react-router-dom';
 import TableGrid from '../../../components/table-grid/TableGrid';
-import { usePermissions } from '../../../modules/Permission/PermissionsProvider';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -35,7 +35,7 @@ export function BoardFamiliesList() {
         }
     ];
 
-    const { permissions } = usePermissions()
+    const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
 
     const actions = useMemo(() => {
         const acts = []

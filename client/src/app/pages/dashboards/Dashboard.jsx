@@ -1,13 +1,12 @@
+import { Button } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import React, { useEffect, useState } from 'react';
 import SVG from "react-inlinesvg";
+import { useHistory } from 'react-router-dom';
 import { toAbsoluteUrl } from '../../../_metronic/_helpers';
 import apiService from '../../services/apiService';
-import { usePermissions } from '../../modules/Permission/PermissionsProvider';
 import notificationService from '../../services/notificationService';
-import { Button } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import { makeStyles } from '@material-ui/core/styles';
-import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -26,8 +25,7 @@ export function Dashboard() {
     const [groups, setGroups] = useState(0);
     const [thresholds, setThresholds] = useState(0);
     const [alarms, setAlarms] = useState(0);
-
-    const { permissions } = usePermissions()
+    const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
 
     useEffect(() => {
         apiService.count('device').then((r) => { if ("affected" in r) setDevices(r.affected) });

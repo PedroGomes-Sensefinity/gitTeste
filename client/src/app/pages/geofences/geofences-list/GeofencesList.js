@@ -4,9 +4,9 @@ import React, { useMemo } from 'react';
 import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from '@material-ui/icons/Edit';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import TableGrid from '../../../components/table-grid/TableGrid';
-import { usePermissions } from '../../../modules/Permission/PermissionsProvider';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 export function GeofencesList() {
     const history = useHistory()
     const classes = useStyles();
-    const { permissions } = usePermissions()
+    const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
 
     const actions = useMemo(() => {
         const acts = []

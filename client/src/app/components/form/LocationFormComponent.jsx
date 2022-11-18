@@ -13,8 +13,7 @@ import toaster from '../../utils/toaster';
 import '../../utils/yup-validations';
 import Map from "../geo-fencing-map/map";
 import TableGrid from '../table-grid/TableGrid';
-import { usePermissions } from '../../modules/Permission/PermissionsProvider';
-
+import { useSelector } from 'react-redux'
 const useStyles = makeStyles((theme) => ({
     headerMarginTop: {
         marginTop: theme.spacing(5),
@@ -28,7 +27,7 @@ function LocationFormComponent(props) {
     const classes = useStyles();
     const [blocking, setBlocking] = useState(false)
     const [geofences, setGeofences] = useState([])
-    const { permissions } = usePermissions()
+    const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
 
     const [initialValues, setInitialValues] = useState({ id: '', name: '' })
 
@@ -37,9 +36,9 @@ function LocationFormComponent(props) {
         if (typeof id !== 'undefined' && id !== 0) {
             //Get Geofence Data
             apiServiceV2.get("v2/locations/" + id).then((response) => {
-                setInitialValues({ id: response.location.id, name: response.location.name})
+                setInitialValues({ id: response.location.id, name: response.location.name })
                 const geofencesArr = []
-                if(response.location.geofence !== undefined && response.location.geofence !== "{}"){
+                if (response.location.geofence !== undefined && response.location.geofence !== "{}") {
                     geofencesArr.push(JSON.parse(response.location.geofence))
                     setGeofences(geofencesArr)
                 }
@@ -79,7 +78,7 @@ function LocationFormComponent(props) {
             setSubmitting(false);
             return
         }
-        if (geofences.length  > 1) {
+        if (geofences.length > 1) {
             toaster.notify('error', "Location must only have 1 Shape!");
             setBlocking(false);
             setSubmitting(false);
@@ -90,12 +89,12 @@ function LocationFormComponent(props) {
         const endpoint = isAddMode ? "save" : "update"
         console.log(endpoint)
         fields["geofence"] = JSON.stringify(geofences[0])
-        if(fields["id"] === ""){
+        if (fields["id"] === "") {
             fields["id"] = 0
-        }else{
+        } else {
             fields["id"] = parseInt(fields["id"])
         }
-        locationService[endpoint](id,fields)
+        locationService[endpoint](id, fields)
             .then((_response) => {
                 toaster.notify('success', "Success Locations!");
                 setSubmitting(false);
@@ -150,7 +149,7 @@ function LocationFormComponent(props) {
                                 </span>
                             </div>
                             <div className='card-toolbar'>
-                                {permissions.canEditLocations &&<button
+                                {permissions.canEditLocations && <button
                                     type='submit'
                                     className='btn btn-success mr-2'
                                     disabled={
@@ -179,6 +178,7 @@ function LocationFormComponent(props) {
                                         <label className={`required`}>Name</label>
                                         <Field
                                             as="input"
+                                            disabled={permissions.canEditLocations}
                                             className={`form-control form-control-lg form-control-solid ${getInputClasses(
                                                 { errors, touched },
                                                 'name'

@@ -33,8 +33,7 @@ import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/theme-github";
 import { Table } from "react-bootstrap";
 import notificationService from "../../services/notificationService";
-import permissionService from '../../services/permissionService';
-import { usePermissions } from '../../modules/Permission/PermissionsProvider';
+import { useSelector } from 'react-redux';
 
 class NotificationsTemplatesFormComponent extends React.Component {
     constructor(props) {
@@ -327,7 +326,7 @@ class NotificationsTemplatesFormComponent extends React.Component {
                         values,
                         setFieldValue
                     }) => {
-                        const {permissions} = usePermissions()
+                        const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
                         const classes = this.useStyles();
 
                         useEffect(() => {

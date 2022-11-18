@@ -138,7 +138,6 @@ function GroupsFormComponent(props) {
 
     const handleSearchGroup = (query) => {
         setLoading(true)
-        console.log(query)
         apiService.getByText('group', query, 100, 0).then((response) => {
             const respGroups = response.groups || []
             setOptionGroups(getGroups(respGroups));

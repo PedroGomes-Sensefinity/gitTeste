@@ -3,10 +3,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from '@material-ui/icons/Edit';
 import React, { useMemo } from 'react';
-import { MdSpaceDashboard } from "react-icons/md";
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import TableGridV2 from '../../../components/table-grid/TableGridV2';
-import { usePermissions } from '../../../modules/Permission/PermissionsProvider';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -20,19 +19,20 @@ const useStyles = makeStyles((theme) => ({
 export function SubLocationsList() {
     const history = useHistory()
     const classes = useStyles();
-    const { permissions } = usePermissions()
+    const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
+
 
     const actions = useMemo(() => {
         const acts = []
-        
+
         acts.push({
-            icon: EditIcon,
-            tooltip: 'View or Edit SubLocation',
+            icon: permissions.canEditLocations ? EditIcon : MdSpaceDashboard,
+            tooltip: permissions.canEditLocations ? 'Edit Sublocation' : 'View Sublocation',
             onClick: (_, rowData) => {
                 history.push(`/sublocations/edit/${rowData.id}`);
             },
         })
-        
+
         return acts
     }, [permissions])
 
