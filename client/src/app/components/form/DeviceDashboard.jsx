@@ -4,7 +4,7 @@ import BlockUi from "react-block-ui";
 import { injectIntl } from 'react-intl';
 import { BsBatteryFull, BsClock, BsFillCloudArrowUpFill } from "react-icons/bs";
 import { MdBatterySaver, MdOutlineWarningAmber, MdPower, MdWifiTethering, MdLocationOn, MdNavigation, MdBorderOuter } from "react-icons/md";
-import PositionMap from "../position-map/positionMap";
+import GeoPointMap from "../geo-point-map/GeoPointMap";
 import apiService from "../../services/apiService";
 import geoCoding from "../../services/geocoding";
 import deviceService from "../../services/deviceService";
@@ -245,7 +245,7 @@ function DeviceDashboard(props) {
                             </div>
                         </div>
                         <div className='card-body'>
-                            <PositionMap position={dashboard.last_position} />
+                            <GeoPointMap position={dashboard.last_position} />
                         </div>
                     </div>
                 </div>

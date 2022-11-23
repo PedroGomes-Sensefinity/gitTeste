@@ -181,7 +181,7 @@ export default function BasePage() {
         <ContentRoute key="/impacts" path="/impacts" component={Impacts} />,
 
 
-        <Redirect to="/error/error-v1" />
+
       </Switch>
     </Suspense>
   );
