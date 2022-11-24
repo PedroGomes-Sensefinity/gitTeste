@@ -26,9 +26,8 @@ function DeviceDashboard(props) {
     const [dashboard, setDashboard] = useState({});
     const [pendingConfigMessages, setPendingConfigMessages] = useState(0);
     const [geoCodingText, setGeoCodingText] = useState("");
-    const [shapes, setShapes] = useState([])
+    const [shapes, setShapes] = useState([]);
     const drawnItems = null;
-
 
     const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }));
 
@@ -48,15 +47,16 @@ function DeviceDashboard(props) {
                 device.position_timestamp = "N/A";
             }
 
-            const shapes = JSON.parse(dashboard.last_geofence_json);
-            const geofencesArr = [];
-            Object.keys(shapes).forEach(key => {
-                geofencesArr.push(JSON.parse(shapes[key]));
-            });
-            setShapes([...geofencesArr])
+            if (dashboard.last_geofence_json != undefined) {
+                const shapes = JSON.parse(dashboard.last_geofence_json);
+                const geofencesArr = [];
+                Object.keys(shapes).forEach(key => {
+                    geofencesArr.push(JSON.parse(shapes[key]));
+                });
+                setShapes([...geofencesArr]);
+            }
 
             setDevice(device);
-            console.log(dashboard)
             setDashboard(dashboard);
             setPendingConfigMessages(pendingConfigMessages.length);
             setBlocking(false);
