@@ -9,6 +9,9 @@ variables:
 services:
   - docker:19.03.5-dind
 
+before_script:
+  - until docker info; do sleep 1; done
+
 stages:
   - build
   - deploy
