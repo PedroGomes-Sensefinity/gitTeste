@@ -1,22 +1,35 @@
 import { Card, CardContent } from "@material-ui/core";
 import DeleteIcon from '@material-ui/icons/Clear';
 import DoneIcon from "@material-ui/icons/Done";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import { injectIntl } from 'react-intl';
 import TableGrid from '../../components/table-grid/TableGrid';
-import assetsService from "../../services/assetsService";
+import apiService from "../../services/apiService";
 import deviceService from "../../services/deviceService";
 import AlertDialog from "../../utils/AlertDialog/alertDialog";
 import toaster from '../../utils/toaster';
+import assetsServiceV2 from "../../services/v2/assetsServiceV2";
 
 
 function AssetDevicesComponent({ intl, id: assetId, asset, onAssetChange }) {
     const [loading, setLoading] = useState(false)
-    const [devices, setDevices] = useState(asset.devices || [])
+    const [devices, setDevices] = useState([])
     const [devicesSearch, setDevicesSearch] = useState([])
     const [selectedDevices, setSelectedDevices] = useState([])
     const selectedDevicesId = selectedDevices.map(device => device.id)
+
+    useEffect(() => {
+        if (asset.devices_ids !== undefined) {
+            asset.devices_ids.forEach(id=>{
+                apiService.getById("device", id).then(response =>{
+                    const newDevices = devices
+                    newDevices.push(response.devices[0])
+                    setDevices([...newDevices])
+                })
+            })
+        }
+    },[]);
 
     const filterDevicesSelected = (options) => options
         .filter(t => !selectedDevicesId.includes(t.id))
@@ -47,14 +60,14 @@ function AssetDevicesComponent({ intl, id: assetId, asset, onAssetChange }) {
         let devices = selectedDevices.map((t) => {
             return { id: t.id }
         })
-
+        const id = devices[0].id
         setLoading(true)
-        assetsService.addAssetDevice(asset.id, { devices: devices }).then((_response) => {
+        assetsServiceV2.addDeviceToAsset(id, asset.id).then((response) =>{
             setSelectedDevices([])
             toaster.notify('success', intl.formatMessage({ id: 'ASSET_DEVICE.INCLUDED' }));
             onAssetChange()
             setLoading(false)
-        });
+        })
     }
     const columns = [
         {
@@ -81,7 +94,6 @@ function AssetDevicesComponent({ intl, id: assetId, asset, onAssetChange }) {
                             id='typeahead-devices'
                             labelKey='label'
                             size="lg"
-                            multiple
                             onChange={onChangeDevice}
                             options={devicesSearch}
                             placeholder=''
@@ -100,9 +112,9 @@ function AssetDevicesComponent({ intl, id: assetId, asset, onAssetChange }) {
                             disabled={selectedDevicesId.length === 0}
                         >
                             <DoneIcon />
-                            Add devices
+                            Add device
                         </button>}
-                        {devices?.length !== 0 && <AlertDialog len={devices.length} buttonTitle="Add devices" title="Warning - Device on Asset" content="Are you sure you want to add more than one Device to an Asset?" onYes={addDevices}></AlertDialog>}
+                        {devices?.length !== 0 && <AlertDialog len={devices.length} buttonTitle="Add device" title="Warning - Device on Asset" content="Are you sure you want to add more than one Device to an Asset?" onYes={addDevices}></AlertDialog>}
                     </div>
                 </div>
                 <TableGrid
@@ -111,8 +123,7 @@ function AssetDevicesComponent({ intl, id: assetId, asset, onAssetChange }) {
                             icon: DeleteIcon,
                             tooltip: 'Remove device from asset',
                             onClick: (_event, rowData) => {
-                                let devices = [{ id: rowData.id }];
-                                assetsService.deleteAssetDevice(assetId, { devices: devices }).then(() => {
+                                assetsServiceV2.deleteDeviceToAsset(rowData.id, asset.id).then(() => {
                                     setDevices(deviceList => deviceList.filter(dev => dev.id !== rowData.id))
                                     setLoading(false)
                                     toaster.notify('success', intl.formatMessage({ id: 'ASSET_DEVICE.REMOVED' }));

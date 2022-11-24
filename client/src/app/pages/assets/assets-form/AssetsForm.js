@@ -7,6 +7,7 @@ import AssetDevicesComponent from "../../../components/form/AssetDevicesComponen
 import AssetFormExtraFields from "../../../components/form/AssetFormExtraFields";
 import AssetsFormComponent from "../../../components/form/AssetsFormComponent";
 import apiService from '../../../services/apiService';
+import apiServiceV2 from '../../../services/v2/apiServiceV2';
 import DeviceSelector from "./DeviceSelector";
 
 
@@ -75,12 +76,11 @@ export function AssetsForm({ match, location }) {
 
     useEffect(() => {
         setLoading(true)
-        apiService.getById(`asset/`, assetId).then((results) => {
-            const asset = results.assets[0]
+        apiServiceV2.get(`v2/assets/` + assetId).then((results) => {
+            const asset = results.asset
             setAssetInfo(asset)
             setLoading(false)
         }).catch(err => {
-            console.log(err)
             if (err.status === 404) {
                 history.push('/error/error-v1')
             }
@@ -88,13 +88,11 @@ export function AssetsForm({ match, location }) {
     }, [assetId, refetch])
 
     useEffect(() => {
-        apiService.getByEndpoint("asset/" + assetId + "/asset-type").then((response) => {
-            if (response.asset_type === undefined) {
+        apiService.getByEndpoint("v2/assets/" + assetId).then((response) => {
+            if(response.asset.asset_type.metadataschema != undefined && response.asset.asset_type.metadataschema != "{}" ){
+                setMetadataSchema(true)
+            }else{
                 setMetadataSchema(false)
-            } else {
-                if (response.asset_type.metadataschema !== undefined && response.asset_type.metadataschema !== "{}") {
-                    setMetadataSchema(true)
-                }
             }
         });
     }, []);
