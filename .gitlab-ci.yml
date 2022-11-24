@@ -17,6 +17,8 @@ build:
   stage: build
   only:
     - master
+  tags: 
+    - sense-runner
   image:
     name: docker:latest
     entrypoint: [""]
@@ -25,14 +27,14 @@ build:
     - docker login sensehubaksecr.azurecr.io -u $ACR_USERNAME -p $ACR_PASSWORD
     - docker build -f Dockerfile . -t $REPOSITORY_URL:$REVISION
     - docker push $REPOSITORY_URL:$REVISION
-  tags:
-    - docker
   allow_failure: false
 
 deploy:
   stage: deploy
   only:
     - master
+  tags: 
+    - sense-runner
   image:
     name: bitnami/kubectl:latest
     entrypoint: [""]
@@ -44,7 +46,4 @@ deploy:
     # kubectl apply -f prod.yaml
     - kubectl apply -f deployment.yaml
     - sh check_pod_status.sh
-  
-  tags:
-    - docker
   allow_failure: false
