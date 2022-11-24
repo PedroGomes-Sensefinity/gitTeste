@@ -6,7 +6,7 @@ import BlockUi from "react-block-ui";
 import { injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
-import apiServiceV2 from '../../services/apiServiceV2';
+import apiServiceV2 from '../../services/v2/apiServiceV2';
 import locationService from "../../services/locationservice";
 import { getInputClasses } from '../../utils/formik';
 import toaster from '../../utils/toaster';

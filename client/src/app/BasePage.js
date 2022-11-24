@@ -42,6 +42,7 @@ import { LocationsList } from "./pages/locations/locations-list/LocationsList";
 import { LocationsForm } from "./pages/locations/locations-form/LocationsForm";
 import { SubLocationsList } from "./pages/locations/sublocations-list/SublocationsList";
 import { SubLocationsForm } from "./pages/locations/sublocation-form/SubLocationsForm";
+import { ErrorPage1 } from "./modules/ErrorsExamples/ErrorPage1";
 import { Impacts } from "./pages/impacts/Impacts";
 
 
@@ -55,7 +56,6 @@ export default function BasePage() {
   //   console.log('Base page');
   // }, []) // [] - is required if you need only one call
   // https://reactjs.org/docs/hooks-reference.html#useeffect
-
 
 
   const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
@@ -115,7 +115,7 @@ export default function BasePage() {
         {permissions.canViewAssets &&
           [<ContentRoute key="/assets/list" path="/assets/list" component={AssetsList} />,
           <ContentRoute key="/assets/new" path="/assets/new" component={CreateAsset} />,
-          <ContentRoute key="/assets/:id" path="/assets/:id" component={AssetsForm} />
+          <ContentRoute key="/assets/:id" path="/assets/:id" component={AssetsForm} />,
           ]
         }
         { /* Routes Routes*/}
@@ -173,15 +173,13 @@ export default function BasePage() {
         {permissions.canViewLocations && [          
           <ContentRoute key="/sublocations/edit/:id" path="/sublocations/edit/:id" component={SubLocationsForm} />,
           <ContentRoute key="/sublocations/list" path="/sublocations/list" component={SubLocationsList} />,
-          <ContentRoute key="/sublocations/new" path="/sublocations/new" component={SubLocationsForm} />
+          <ContentRoute key="/sublocations/new" path="/sublocations/new" component={SubLocationsForm} />,
         ]}
         { /* what's new Page*/}
-        <ContentRoute key="/whatsnew" path="/whatsnew" component={News} />
-
+        <ContentRoute key="/whatsnew" path="/whatsnew" component={News} />,
         <ContentRoute key="/impacts" path="/impacts" component={Impacts} />,
 
-
-        <Redirect to="/error/error-v1" />
+        <ContentRoute key="/*" path="/*" component={ErrorPage1} />,
       </Switch>
     </Suspense>
   );

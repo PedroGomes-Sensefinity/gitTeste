@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 
 import MaterialTable from '@material-table/core';
-import apiServiceV2 from '../../services/apiServiceV2';
+import apiServiceV2 from '../../services/v2/apiServiceV2';
 
 function TableGridV2(props) {
     const tableRef = useRef(null)
