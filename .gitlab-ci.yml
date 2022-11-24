@@ -9,9 +9,6 @@ variables:
 services:
   - docker:19.03.5-dind
 
-before_script:
-  - until docker info; do sleep 1; done
-
 stages:
   - build
   - deploy
@@ -25,8 +22,10 @@ build:
   image:
     name: docker:latest
     entrypoint: [""]
+  before_script:
+    - until docker info; do sleep 1; done
   script:
-    - echo "Build on Azure"
+    - echo "Build"
     - docker login sensehubaksecr.azurecr.io -u $ACR_USERNAME -p $ACR_PASSWORD
     - docker build -f Dockerfile . -t $REPOSITORY_URL:$REVISION
     - docker push $REPOSITORY_URL:$REVISION
