@@ -4,6 +4,7 @@ import * as L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./map.css";
 import markerIcon from 'leaflet/dist/images/marker-icon-2x.png';
+import { get } from "lodash";
 
 class MapGeoPoint extends React.Component {
     map = null;
@@ -46,12 +47,16 @@ class MapGeoPoint extends React.Component {
                         map.setView(latlng);
                     }
                 });
-                L.geoJSON({"type":"Feature","properties":{"name":"Name","radius":null},"geometry":{"type":"Polygon","coordinates":[[[-9.17911,38.698288],[-9.176877,38.702508],[-9.168033,38.706526],[-9.155926,38.708268],[-9.141929,38.706794],[-9.144419,38.700565],[-9.157557,38.697082],[-9.173958,38.695541],[-9.17911,38.698288]]]},"radius":null}).addTo(map);
             }
         }
     }
 
+
+    
+
+
     componentDidUpdate() {
+
         // Verify if shapes sent are diferent than initialized map
         if (
             !this.isEqualObject(this.state.position, this.props.position)
@@ -63,6 +68,13 @@ class MapGeoPoint extends React.Component {
             this.setState({prevPosition: this.props.position});
             this.drawPosition(this.props.position);
         }
+        if(this.props.shapes != undefined){
+            this.props.shapes.forEach(s =>{
+                L.geoJSON(s.geoJSON,{style: { "color": "rgba(0, 0, 180, 0.06)", "fillOpacity": .35 }}).addTo(this.map);
+            })
+            
+        }
+
     }
 
     componentWillUnmount() {
