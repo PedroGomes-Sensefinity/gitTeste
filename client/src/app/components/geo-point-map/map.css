@@ -1,0 +1,14 @@
+.map {
+  height: 500px;
+  width: 500px;
+}
+
+.leaflet-draw-actions a {
+  border-left: 1px solid #AAA;
+  color: #AAA;
+  background-color:rgba(255,0,0,0.0);
+}
+
+.leaflet-container {
+  background-color:rgba(255,0,0,0.0);
+}
