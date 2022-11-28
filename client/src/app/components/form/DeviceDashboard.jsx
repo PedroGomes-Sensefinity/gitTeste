@@ -87,32 +87,42 @@ function DeviceDashboard(props) {
 
             {permissions.canViewContainerDashboard && (
                 <div className="row mt-3">
-                    <div className="col-xl-4 col-lg-4">
-                        <div className="card card-custom">
+                    <div className="col-xl-3 col-lg-3">
+                        <div style={{ width: '100%', height: '100%'}} className="card card-custom">
                             <div className="card-header">
                                 <div className="card-title">
                                     <h3 className="card-label">Last Location/Sublocation</h3>
                                 </div>
                             </div>
-                            <div className="card-body">
-                                <ul style={{ listStyle: "none" }}>
-                                    <li>
-                                        <MdNavigation /> Location: {utils.either(dashboard.last_location, "In Transit")}
-                                    </li>
-                                    <li>
-                                        <MdNavigation /> SubLocation:{" "}
+                            <div style={{textAlign: "center"}} className="card-body">
+                                
+                                    <h1>
+                                        {utils.either(dashboard.last_location, "In Transit")}
+                                    </h1>
+                                    <h1>
                                         {utils.either(dashboard.last_sublocation, "In Transit")} (
                                         {utils.either(dashboard.last_port_code, "No Port Code")})
-                                    </li>
-                                    <li>
-                                        <BsClock /> Timestamp: {utils.either(dashboard.last_geofence_timestamp, "N/A")}
-                                    </li>
-                                </ul>
+                                    </h1>
                             </div>
                         </div>
                     </div>
-                    <div className="col-xl-4 col-lg-4">
-                        <div className="card card-custom">
+                    <div className="col-xl-3 col-lg-3">
+                        <div style={{ width: '100%', height: '100%'}} className="card card-custom">
+                            <div className="card-header">
+                                <div className="card-title">
+                                    <h3 className="card-label">Reverse Geocoding</h3>
+                                </div>
+                            </div>
+                            <div className="card-body">
+                                    <h1 style={{textAlign: "center", textSize: "20px"}}>{utils.either(
+                                    geoCodingText,
+                                    "Not possible to convert geographic coordinates to address!"
+                                )}</h1>  
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-xl-3 col-lg-3">
+                        <div style={{ width: '100%', height: '100%'}} className="card card-custom">
                             <div className="card-header">
                                 <div className="card-title">
                                     <h3 className="card-label">Last Geofence</h3>
@@ -120,9 +130,9 @@ function DeviceDashboard(props) {
                             </div>
                             <div className="card-body">
                                 <ul style={{ listStyle: "none" }}>
-                                    <li>
-                                        <MdBorderOuter /> Name: {utils.either(dashboard.last_geofence, "N/A")}
-                                    </li>
+                                    <h1>
+                                        {utils.either(dashboard.last_geofence, "Outside off all geofences!")}
+                                    </h1>
                                     <li>
                                         <MdBorderOuter /> Alert Status:{" "}
                                         {utils.either(dashboard.last_geofence_status, "N/A")}
@@ -134,23 +144,15 @@ function DeviceDashboard(props) {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xl-4 col-lg-4">
-                        <div className="card card-custom">
+                    <div className="col-xl-3 col-lg-3" >
+                        <div  style={{ width: '100%', height: '100%'}}  className="card card-custom">
                             <div className="card-header">
                                 <div className="card-title">
                                     <h3 className="card-label">Long Standing</h3>
                                 </div>
                             </div>
                             <div className="card-body">
-                                <ul style={{ listStyle: "none" }}>
-                                    <li>Days: {utils.either(dashboard.long_standing, "0")}</li>
-                                    <li style={{ visibility: "hidden" }}>
-                                        <MdWifiTethering />
-                                    </li>
-                                    <li style={{ visibility: "hidden" }}>
-                                        <MdWifiTethering />
-                                    </li>
-                                </ul>
+                                    <h1 style={{textAlign: "center"}}>{utils.either(dashboard.long_standing, "0")} Days</h1>  
                             </div>
                         </div>
                     </div>
