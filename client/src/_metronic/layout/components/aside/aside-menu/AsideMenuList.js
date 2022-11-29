@@ -86,6 +86,19 @@ export function AsideMenuList({ layoutProps }) {
                   </NavLink>
                 </li>
                 {/*end::2 Level*/}
+                                {/*begin::2 Level*/}
+                                <li
+                  className={`menu-item ${getMenuItemActive("/dashboard/worldmap")}`}
+                  aria-haspopup="true"
+                >
+                  <NavLink className="menu-link" to="/dashboard/worldmap">
+                    <i className="menu-bullet menu-bullet-dot">
+                      <span />
+                    </i>
+                    <span className="menu-text">World Dashboard</span>
+                  </NavLink>
+                </li>
+                {/*end::2 Level*/}
               </ul>
             </div>}
         </li>

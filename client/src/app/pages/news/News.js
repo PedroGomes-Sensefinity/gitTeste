@@ -6,6 +6,10 @@ import Typography from '@mui/material/Typography';
 
 const versions = [
     {
+        versionNumber: "V.0.1.0", date: "24/11/2022", changes:
+            ["Major Update!", "1. World Map Available", "2. Reverse Geocoding on Dashboards", "3. Longstanding by coordinates and not by Location/Sublocation", "4. Increased size of PTLIS"]
+    },
+    {
         versionNumber: "V.0.0.5", date: "24/11/2022", changes:
             ["It's now possible to check the Geofence on the Asset map"]
     },
