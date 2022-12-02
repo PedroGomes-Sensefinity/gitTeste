@@ -82,12 +82,12 @@ export function AsideMenuList({ layoutProps }) {
                     <i className="menu-bullet menu-bullet-dot">
                       <span />
                     </i>
-                    <span className="menu-text">Container Dashboard Kibana</span>
+                    <span className="menu-text">General Dashboard</span>
                   </NavLink>
                 </li>
                 {/*end::2 Level*/}
-                                {/*begin::2 Level*/}
-                                <li
+                {/*begin::2 Level*/}
+                <li
                   className={`menu-item ${getMenuItemActive("/dashboard/worldmap")}`}
                   aria-haspopup="true"
                 >
@@ -99,6 +99,21 @@ export function AsideMenuList({ layoutProps }) {
                   </NavLink>
                 </li>
                 {/*end::2 Level*/}
+                {/*begin::2 Level*/}
+                <li
+                  className={`menu-item ${getMenuItemActive("/dashboard/continente")}`}
+                  aria-haspopup="true"
+                >
+                  <NavLink className="menu-link" to="/dashboard/continente">
+                    <i className="menu-bullet menu-bullet-dot">
+                      <span />
+                    </i>
+                    <span className="menu-text">Continente Dashboard</span>
+                  </NavLink>
+                </li>
+                {/*end::2 Level*/}
+
+
               </ul>
             </div>}
         </li>
@@ -438,18 +453,18 @@ export function AsideMenuList({ layoutProps }) {
             </NavLink>
           </li>
         }
-          <li
-            className={`menu-item ${getMenuItemActive("/impacts", false)}`}
-            aria-haspopup="true"
-          >
-            <NavLink className="menu-link" to="/impacts">
-              <span className="svg-icon menu-icon">
-                <SVG src={toAbsoluteUrl("/media/svg/icons/General/Attachment2.svg")} />
-              </span>
-              <span className="menu-text">Impacts (BETA)</span>
-            </NavLink>
-          </li>
-        
+        <li
+          className={`menu-item ${getMenuItemActive("/impacts", false)}`}
+          aria-haspopup="true"
+        >
+          <NavLink className="menu-link" to="/impacts">
+            <span className="svg-icon menu-icon">
+              <SVG src={toAbsoluteUrl("/media/svg/icons/General/Attachment2.svg")} />
+            </span>
+            <span className="menu-text">Impacts (BETA)</span>
+          </NavLink>
+        </li>
+
       </ul>
       {/* end::Menu Nav */}
     </>

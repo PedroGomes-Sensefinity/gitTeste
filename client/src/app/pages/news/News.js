@@ -6,6 +6,12 @@ import Typography from '@mui/material/Typography';
 
 const versions = [
     {
+        versionNumber: "V.0.1.2", date: "02/12/2022", changes:
+            ["1. New General Dashboard", 
+            "2. Updates to World Dashboard - Now includes Longstanding and reverse geocoding", 
+            "3. New Continente Dashboard (First Version)"]
+    },
+    {
         versionNumber: "V.0.1.1", date: "02/12/2022", changes:
             ["1. Increased Size of all Sublocations"]
     },

@@ -45,6 +45,7 @@ import { SubLocationsForm } from "./pages/locations/sublocation-form/SubLocation
 import { ErrorPage1 } from "./modules/ErrorsExamples/ErrorPage1";
 import { Impacts } from "./pages/impacts/Impacts";
 import { WorldDashboard } from "./pages/dashboards/WorldDashboard";
+import { ContinenteDashboard } from "./pages/dashboards/ContinenteDashboard";
 
 
 /*const UserProfilepage = lazy(() =>
@@ -70,7 +71,8 @@ export default function BasePage() {
         {permissions.canViewContainerDashboard && [
           <ContentRoute key="/dashboard/containers" path="/dashboard/containers" component={ContainersDashboard} />,
           <ContentRoute key="/dashboard/containers/general" path="/dashboard/general/containers" component={GeneralContainers} />,
-          <ContentRoute key="/dashboard/worldmap" path="/dashboard/worldmap" component={WorldDashboard} />
+          <ContentRoute key="/dashboard/worldmap" path="/dashboard/worldmap" component={WorldDashboard} />,
+          <ContentRoute key="/dashboard/continente" path="/dashboard/continente" component={ContinenteDashboard} />,
         ]}
         <ContentRoute path="/dashboard/default" component={Dashboard} />
 
