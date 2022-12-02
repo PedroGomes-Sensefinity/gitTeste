@@ -264,7 +264,7 @@ function SubLocationFormComponent(props) {
                                 <div className="form-group row">
                                     {/*begin:: Map */}
                                     <div className={`col-xl-6 col-lg-6`}>
-                                        <Map zoom={15} shapes={geofences} onChangeShape={onChangeShape} />
+                                        <Map zoom={5} shapes={geofences} onChangeShape={onChangeShape} />
                                     </div>
                                     <div className={`col-xl-6 col-lg-6  `}>
                                         <TableGrid
