@@ -112,6 +112,8 @@ export function Permissions(permsArray) {
         canCreateFloorMaps: permsObj['floormap_create'] || defaultValue,
         canEditFloorMaps: permsObj['floormap_edit'] || defaultValue,
 
+        // Dashboards
+        canViewRoutesDashboard: permsObj['dashboard_routes'] || defaultValue,
         canViewContainerDashboard: permsObj['dashboard_containers'] || defaultValue,
         canViewDeviceDashboardExtras: permsObj['device_dashboard_extras'] || defaultValue,
 
@@ -119,6 +121,9 @@ export function Permissions(permsArray) {
         canViewLocations: permsObj['locations_view'] || defaultValue,
         canCreateLocations: permsObj['locations_create'] || defaultValue,
         canEditLocations: permsObj['locations_edit'] || defaultValue,
+
+        //Impacts
+        canViewImpacts: permsObj['impacts_view'] || defaultValue,
     }
 }
 
