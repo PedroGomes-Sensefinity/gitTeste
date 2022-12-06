@@ -18,7 +18,7 @@ export function DashboardsContainers() {
     };
 
     useEffect(() => {
-        apiServiceV2.get("v2/tenants/dashboards").then(response => {
+        apiServiceV2.get("v2/tenants/dashboards?search=Containers").then(response => {
             let dashboard = [{ id: 0, name: "Containers Dashboard", url: "", group_name: "Containers", tenant_id: 1 }];
             if(response.dashboards_tenant != undefined){
                 response.dashboards_tenant.forEach(d => dashboard.push(d));
