@@ -14,7 +14,7 @@ export function Footer() {
 
   return (
     <div
-      className={`footer bg-white py-4 d-flex flex-lg-column  ${layoutProps.footerClasses}`}
+      className={`footer bg-white d-flex flex-lg-column  ${layoutProps.footerClasses}`}
       id="kt_footer"
     >
       <div
@@ -39,14 +39,6 @@ export function Footer() {
             className="nav-link pr-3 pl-0"
           >
             About
-          </a>
-          <a
-            href="https://career.sensefinity.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="nav-link px-3"
-          >
-            Career
           </a>
           <a
             href="https://www.sensefinity.com/contact-sensefinity"

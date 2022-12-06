@@ -9,9 +9,7 @@ import { CreateAsset } from "./pages/assets/assets-form/CreateAsset";
 import { AssetsList } from "./pages/assets/assets-list/AssetsList";
 import { BoardFamiliesForm } from "./pages/board-families/form/BoardFamiliesForm";
 import { BoardFamiliesList } from "./pages/board-families/list/BoardFamiliesList";
-import { ContainersDashboard } from "./pages/dashboards/ContainersDashboard";
 import { Dashboard } from "./pages/dashboards/Dashboard";
-import { GeneralContainers } from "./pages/dashboards/GeneralContainers";
 import { CreateDevice } from "./pages/devices/device/CreateDevice";
 import { Device } from "./pages/devices/device/Device";
 import { DevicesList } from "./pages/devices/devices-list/DevicesList";
@@ -44,8 +42,7 @@ import { SubLocationsList } from "./pages/locations/sublocations-list/Sublocatio
 import { SubLocationsForm } from "./pages/locations/sublocation-form/SubLocationsForm";
 import { ErrorPage1 } from "./modules/ErrorsExamples/ErrorPage1";
 import { Impacts } from "./pages/impacts/Impacts";
-import { WorldDashboard } from "./pages/dashboards/WorldDashboard";
-import { ContinenteDashboard } from "./pages/dashboards/ContinenteDashboard";
+import { DashboardsContainers } from "./pages/dashboards/containers/DashboardsContainers";
 
 
 /*const UserProfilepage = lazy(() =>
@@ -69,10 +66,7 @@ export default function BasePage() {
           <Redirect exact from="/" to="/dashboard/default" />
         }
         {permissions.canViewContainerDashboard && [
-          <ContentRoute key="/dashboard/containers" path="/dashboard/containers" component={ContainersDashboard} />,
-          <ContentRoute key="/dashboard/containers/general" path="/dashboard/general/containers" component={GeneralContainers} />,
-          <ContentRoute key="/dashboard/worldmap" path="/dashboard/worldmap" component={WorldDashboard} />,
-          <ContentRoute key="/dashboard/continente" path="/dashboard/continente" component={ContinenteDashboard} />,
+          <ContentRoute key="/dashboard/containers" path="/dashboard/containers" component={DashboardsContainers} />,
         ]}
         <ContentRoute path="/dashboard/default" component={Dashboard} />
 

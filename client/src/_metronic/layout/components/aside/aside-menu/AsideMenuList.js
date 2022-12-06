@@ -69,51 +69,10 @@ export function AsideMenuList({ layoutProps }) {
                     <i className="menu-bullet menu-bullet-dot">
                       <span />
                     </i>
-                    <span className="menu-text">Container Dashboard</span>
+                    <span className="menu-text">Containers Dashboards</span>
                   </NavLink>
                 </li>
                 {/*end::2 Level*/}
-                {/*begin::2 Level*/}
-                <li
-                  className={`menu-item ${getMenuItemActive("/dashboard/general/containers")}`}
-                  aria-haspopup="true"
-                >
-                  <NavLink className="menu-link" to="/dashboard/general/containers">
-                    <i className="menu-bullet menu-bullet-dot">
-                      <span />
-                    </i>
-                    <span className="menu-text">General Dashboard</span>
-                  </NavLink>
-                </li>
-                {/*end::2 Level*/}
-                {/*begin::2 Level*/}
-                <li
-                  className={`menu-item ${getMenuItemActive("/dashboard/worldmap")}`}
-                  aria-haspopup="true"
-                >
-                  <NavLink className="menu-link" to="/dashboard/worldmap">
-                    <i className="menu-bullet menu-bullet-dot">
-                      <span />
-                    </i>
-                    <span className="menu-text">World Dashboard</span>
-                  </NavLink>
-                </li>
-                {/*end::2 Level*/}
-                {/*begin::2 Level*/}
-                <li
-                  className={`menu-item ${getMenuItemActive("/dashboard/continente")}`}
-                  aria-haspopup="true"
-                >
-                  <NavLink className="menu-link" to="/dashboard/continente">
-                    <i className="menu-bullet menu-bullet-dot">
-                      <span />
-                    </i>
-                    <span className="menu-text">Continente Dashboard</span>
-                  </NavLink>
-                </li>
-                {/*end::2 Level*/}
-
-
               </ul>
             </div>}
         </li>
