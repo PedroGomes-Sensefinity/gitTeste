@@ -99,15 +99,16 @@ function DeviceFormComponent(props) {
         }
 
         if (device.parent_id !== undefined && device.parent_id !== '') {
-            let selectedParent = { id: device.parent_id, label: device.parent_id };
+            let selectedParent = [{ id: device.parent_id, label: device.parent_id }];
             setSelectedParent(selectedParent)
         }
 
-        console.log(device)
         if (device.container !== undefined && device.container.id !== 0) {
             let selectedGroup = [{
                 id: device.container.id,
-                label: makeGroupLabel(device.container)
+                label: device.container.label,
+                //displayLabel is an extra field that is used only for display purposes, it is needed for the displayed field value is kept the same 
+                displayLabel: makeGroupLabel(device.container)
             }];
             setSelectedGroup(selectedGroup)
         }
@@ -133,20 +134,21 @@ function DeviceFormComponent(props) {
     const getGroups = (records) => {
         if (Array.isArray(records)) {
             return records.map((group) => {
-                const label = makeGroupLabel(group);
-                return { id: group.id, label: label }
+                return { ...group, displayLabel: makeGroupLabel(group) }
             });
         }
         return []
     };
 
     const makeGroupLabel = (group) => {
-        const parentParent = (group.parent_parent_id !== 0) ? "../" : "";
-        const parent = (group.parent_label !== "") ? `${group.parent_label}/` : "";
+        console.log('making group label from')
+            console.log(group)
+        const parentParent = (group.parent_label !== undefined && group.parent_parent_id !== 0) ? "../" : "";
+        const parent = (group.parent_label !== undefined && group.parent_label !== "" ) ? `${group.parent_label}/` : "";
         return `${parentParent}${parent}${group.label}`;
     }
 
-    const saveDevice = (fields) => {
+    const saveDevice = (fields, setSubmitting, resetForm) => {
         setBlocking(true)
         let method = (isAddMode) ? 'save' : 'update';
         let msgSuccess = (isAddMode)
@@ -173,14 +175,25 @@ function DeviceFormComponent(props) {
             comments: fields.comments
         }
 
+        const newDevice = {
+            ...body,
+            container: fields.group[0]
+        }
+
         deviceService[method](body)
-            .then((_response) => {
+            .then(() => {
+                if (method == 'update') {
+                    setDevice(newDevice)
+                    updateInitialValues(newDevice, boardFamilies)
+                }
                 toaster.notify('success', msgSuccess);
+                resetForm(initialValues)
             })
             .catch((err) => {
                 toaster.notify('error', err.data.detail);
             })
             .finally(() => {
+                setSubmitting(false)
                 setBlocking(false)
             });
     };
@@ -245,12 +258,8 @@ function DeviceFormComponent(props) {
             enableReinitialize
             initialValues={initialValues}
             validationSchema={validationSchema}
-            onSubmit={(values, { setFieldValue, setSubmitting, resetForm }) => {
-                saveDevice(values, {
-                    setFieldValue,
-                    setSubmitting,
-                    resetForm,
-                });
+            onSubmit={(values, { setSubmitting, resetForm }) => {
+                saveDevice(values, setSubmitting, resetForm);
             }}
         >
             {({
@@ -264,6 +273,7 @@ function DeviceFormComponent(props) {
                 handleSubmit,
                 values
             }) => {
+                console.log(values)
                 return (
                     <form
                         className='card card-custom'
@@ -349,7 +359,7 @@ function DeviceFormComponent(props) {
                                             {({ field }) => {
                                                 return <AsyncTypeahead
                                                     id='async-typeahead-group'
-                                                    labelKey='label'
+                                                    labelKey='displayLabel'
                                                     name={field.name}
                                                     size="lg"
                                                     onChange={(value) => {
