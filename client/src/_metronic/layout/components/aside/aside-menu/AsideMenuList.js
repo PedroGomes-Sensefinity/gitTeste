@@ -78,10 +78,10 @@ export function AsideMenuList({ layoutProps }) {
               {/*begin::2 Level*/}
               {permissions.canViewRoutesDashboard &&
                 <li
-                  className={`menu-item ${getMenuItemActive("/dashboard/routes")}`}
+                  className={`menu-item ${getMenuItemActive("/dashboard/route")}`}
                   aria-haspopup="true"
                 >
-                  <NavLink className="menu-link" to="/dashboard/routes">
+                  <NavLink className="menu-link" to="/dashboard/route">
                     <i className="menu-bullet menu-bullet-dot">
                       <span />
                     </i>
