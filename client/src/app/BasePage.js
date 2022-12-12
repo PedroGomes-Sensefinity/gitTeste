@@ -71,7 +71,7 @@ export default function BasePage() {
           <ContentRoute key="/dashboard/containers" path="/dashboard/containers" component={DashboardsContainers} />,
         ]}
         {permissions.canViewRoutesDashboard && [
-          <ContentRoute key="/dashboard/routes" path="/dashboard/routes" component={DashboardsRoutes} />,
+          <ContentRoute key="/dashboard/route" path="/dashboard/route" component={DashboardsRoutes} />,
         ]}
         <ContentRoute path="/dashboard/default" component={Dashboard} />
 
