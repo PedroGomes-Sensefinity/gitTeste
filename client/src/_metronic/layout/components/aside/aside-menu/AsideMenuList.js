@@ -189,30 +189,34 @@ export function AsideMenuList({ layoutProps }) {
                 </li>
                 {/*end::2 Level*/}
                 {/*begin::2 Level*/}
-                <li
-                  className={`menu-item ${getMenuItemActive("/devices/provision")}`}
-                  aria-haspopup="true"
-                >
-                  <NavLink className="menu-link" to="/devices/provision">
-                    <i className="menu-bullet menu-bullet-dot">
-                      <span />
-                    </i>
-                    <span className="menu-text">Device Provision</span>
-                  </NavLink>
-                </li>
+                {permissions.canCreateDevices &&
+                  <li
+                    className={`menu-item ${getMenuItemActive("/devices/provision")}`}
+                    aria-haspopup="true"
+                  >
+                    <NavLink className="menu-link" to="/devices/provision">
+                      <i className="menu-bullet menu-bullet-dot">
+                        <span />
+                      </i>
+                      <span className="menu-text">Device Provision</span>
+                    </NavLink>
+                  </li>
+                }
                 {/*end::2 Level*/}
                 {/*begin::2 Level*/}
-                <li
-                  className={`menu-item ${getMenuItemActive("/device/upload")}`}
-                  aria-haspopup="true"
-                >
-                  <NavLink className="menu-link" to="/devices/upload">
-                    <i className="menu-bullet menu-bullet-dot">
-                      <span />
-                    </i>
-                    <span className="menu-text">Device Upload</span>
-                  </NavLink>
-                </li>
+                {permissions.canCreateDevices &&
+                  <li
+                    className={`menu-item ${getMenuItemActive("/device/upload")}`}
+                    aria-haspopup="true"
+                  >
+                    <NavLink className="menu-link" to="/devices/upload">
+                      <i className="menu-bullet menu-bullet-dot">
+                        <span />
+                      </i>
+                      <span className="menu-text">Device Upload</span>
+                    </NavLink>
+                  </li>
+                }
                 {/*end::2 Level*/}
               </ul>
             </div>

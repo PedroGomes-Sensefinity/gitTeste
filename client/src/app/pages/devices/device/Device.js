@@ -29,7 +29,7 @@ export function Device({ match }) {
     }, [value, id])
 
     return (
-        <PermissionGate permission={'device_create'}>
+        <PermissionGate permission={'device_view'}>
             <div>
                 <Paper square>
                     <Tabs value={value} indicatorColor="primary" textColor="primary" onChange={handleChange}>

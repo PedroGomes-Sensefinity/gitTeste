@@ -13,6 +13,7 @@ import tenantService from '../../services/tenantService';
 import { getInputClasses } from '../../utils/formik';
 import toaster from '../../utils/toaster';
 import '../../utils/yup-validations';
+import { useSelector } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
     headerMarginTop: {
@@ -44,6 +45,8 @@ function DeviceFormComponent(props) {
         }
         return false
     }, [selectedBoardFamily])
+
+    const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
 
     const groupId = useMemo(() => {
         if (device.container !== undefined) {
@@ -285,7 +288,7 @@ function DeviceFormComponent(props) {
                                 </span>
                             </div>
                             <div className='card-toolbar'>
-                                <button
+                            {permissions.canEditDevices && <button
                                     type='submit'
                                     className='btn btn-success mr-2'
                                     disabled={
@@ -295,7 +298,7 @@ function DeviceFormComponent(props) {
                                     <DoneIcon />
                                     Save Changes
                                     {isSubmitting}
-                                </button>
+                                </button>}
                                 <Link
                                     to='/devices/list'
                                     className='btn btn-secondary'>
@@ -321,7 +324,7 @@ function DeviceFormComponent(props) {
                                                 name='id'
                                                 placeholder='Set the Device ID'
                                                 {...getFieldProps('id')}
-                                                disabled={!isAddMode}
+                                                disabled={!isAddMode || !permissions.canEditDevices}
                                                 maxLength={18}
                                             />
                                             <ErrorMessage name="id" component="div" className="invalid-feedback" />
@@ -337,6 +340,7 @@ function DeviceFormComponent(props) {
                                                 'label'
                                             )}`}
                                             name='label'
+                                            disabled={!permissions.canEditDevices}
                                             placeholder='Set the Device Label'
                                             {...getFieldProps('label')}
                                         />
@@ -359,6 +363,7 @@ function DeviceFormComponent(props) {
                                             onSearch={handleSearchGroup}
                                             isLoading={loading}
                                             filterBy={filterBy}
+                                            disabled={!permissions.canEditDevices}
                                             className={getInputClasses({ errors, touched }, 'group_id')}
                                         />
                                         <ErrorMessage name="group_id" component="div" className="invalid-feedback" />
@@ -377,6 +382,7 @@ function DeviceFormComponent(props) {
                                             onSearch={handleSearchParent}
                                             isLoading={loading}
                                             filterBy={filterBy}
+                                            disabled={!permissions.canEditDevices}
                                             className={getInputClasses({ errors, touched }, 'parent_id')}
                                         />
                                         <ErrorMessage name="parentId" component="div" className="invalid-feedback" />
@@ -394,6 +400,7 @@ function DeviceFormComponent(props) {
                                             options={boardFamilies}
                                             placeholder=''
                                             selected={selectedBoardFamily}
+                                            disabled={!permissions.canEditDevices}
                                             className={getInputClasses({ errors, touched }, 'board_family_id')}
                                         />
                                         <ErrorMessage name="board_family_id" component="div" className="invalid-feedback" />
@@ -409,6 +416,7 @@ function DeviceFormComponent(props) {
                                                 )}`}
                                                 name='board'
                                                 placeholder='Set the Board ID'
+                                                disabled={!permissions.canEditDevices}
                                                 {...getFieldProps('board')}
                                             />
                                             <ErrorMessage name="board" component="div" className="invalid-feedback" />
@@ -425,6 +433,7 @@ function DeviceFormComponent(props) {
                                                 )}`}
                                                 name='imei'
                                                 placeholder='Set the Device IMEI'
+                                                disabled={!permissions.canEditDevices}
                                                 {...getFieldProps('imei')}
                                             />
                                             <ErrorMessage name="imei" component="div" className="invalid-feedback" />
@@ -446,6 +455,7 @@ function DeviceFormComponent(props) {
                                                     )}`}
                                                     name='meta_data'
                                                     placeholder='Set the meta_data'
+                                                    disabled={!permissions.canEditDevices}
                                                     {...getFieldProps(
                                                         'meta_data'
                                                     )}
@@ -468,6 +478,7 @@ function DeviceFormComponent(props) {
                                                 )}`}
                                                 name='comments'
                                                 placeholder='Comments and Observations'
+                                                disabled={!permissions.canEditDevices}
                                                 {...getFieldProps(
                                                     'comments'
                                                 )}
@@ -489,6 +500,7 @@ function DeviceFormComponent(props) {
                                                 )}`}
                                                 name='meta_data'
                                                 placeholder='Device metadata'
+                                                disabled={!permissions.canEditDevices}
                                                 {...getFieldProps(
                                                     'meta_data'
                                                 )}
