@@ -72,9 +72,9 @@ function AssetsFormComponent(props) {
 
         if (props.asset !== undefined) {
             props.asset.threshold_ids.forEach(id => {
-                apiService.getById("threshold", id).then(response => {
+                apiServiceV2.get("v2/thresholds/"+ id).then(response => {
                     const thresholdsSelected = selectedThresholds;
-                    thresholdsSelected.push(response.thresholds[0]);
+                    thresholdsSelected.push({id: response.threshold.id, label : response.threshold.label});
                     setSelectedThresholds([...thresholdsSelected]);
                 });
             });
