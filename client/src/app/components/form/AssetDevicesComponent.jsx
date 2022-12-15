@@ -10,6 +10,7 @@ import deviceService from "../../services/deviceService";
 import AlertDialog from "../../utils/AlertDialog/alertDialog";
 import toaster from '../../utils/toaster';
 import assetsServiceV2 from "../../services/v2/assetsServiceV2";
+import apiServiceV2 from "../../services/v2/apiServiceV2";
 
 
 function AssetDevicesComponent({ intl, id: assetId, asset, onAssetChange }) {
@@ -22,11 +23,12 @@ function AssetDevicesComponent({ intl, id: assetId, asset, onAssetChange }) {
     useEffect(() => {
         if (asset.devices_ids !== undefined) {
             asset.devices_ids.forEach(id=>{
-                apiService.getById("device", id).then(response =>{
+                apiServiceV2.get("v2/devices/" + id).then(response =>{
                     const newDevices = devices
-                    newDevices.push(response.devices[0])
+                    newDevices.push(response.device)
                     setDevices([...newDevices])
                 })
+
             })
         }
     },[]);
@@ -43,7 +45,7 @@ function AssetDevicesComponent({ intl, id: assetId, asset, onAssetChange }) {
 
     const handleSearchDevice = (query) => {
         setLoading(true);
-        deviceService.getToAsset(query, 100, 0).then((response) => {
+        apiServiceV2.getByLimitOffsetSearchTenant("v2/devices", 50, 0 , query , asset.tenant.id).then((response) => {
             const respDevices = response.devices || []
             setDevicesSearch(filterDevicesSelected(respDevices))
             setLoading(false)
@@ -67,7 +69,13 @@ function AssetDevicesComponent({ intl, id: assetId, asset, onAssetChange }) {
             toaster.notify('success', intl.formatMessage({ id: 'ASSET_DEVICE.INCLUDED' }));
             onAssetChange()
             setLoading(false)
-        })
+        }).catch((response) => {
+            if(response.code === 409){
+                toaster.notify('error', "Conflict");
+            }else{
+                toaster.notify('error', "Error");
+            }
+        } )
     }
     const columns = [
         {
