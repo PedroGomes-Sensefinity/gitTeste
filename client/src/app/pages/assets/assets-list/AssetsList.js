@@ -52,6 +52,10 @@ export function AssetsList() {
             field: 'description',
             title: 'Description',
         },
+        {
+            field: 'tenant.name',
+            title: 'Tenant',
+        },
     ];
 
     return <Card>

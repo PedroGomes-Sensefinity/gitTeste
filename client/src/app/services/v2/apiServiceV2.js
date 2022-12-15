@@ -51,6 +51,23 @@ const apiServiceV2 = {
                     reject(err.response.data);
                 });
         });
+    },
+
+    getByLimitOffsetSearchTenant: function(endpoint, limit, offset, search,tenantID){
+        return new Promise(function(resolve, reject) {
+            axios
+                .get(`${process.env.REACT_APP_REST_API_URL}${endpoint}?limit=${limit}&offset=${offset}&search=${search}&tenant_id=${tenantID}`)
+                .then(function(response) {
+                    let data = [];
+                    if (response.status === 200) {
+                        data = response.data.data;
+                    }
+                    resolve(data);
+                })
+                .catch(function(err) {
+                    reject(err.response.data);
+                });
+        });
     }
 
 }
