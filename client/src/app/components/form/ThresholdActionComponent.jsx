@@ -8,6 +8,8 @@ import { injectIntl } from 'react-intl';
 import * as Yup from 'yup';
 import apiService from '../../services/apiService';
 import thresholdService from '../../services/thresholdService';
+import apiServiceV2 from '../../services/v2/apiServiceV2';
+import thresholdServiceV2 from '../../services/v2/thresholdServiceV2';
 import toaster from '../../utils/toaster';
 import '../../utils/yup-validations';
 
@@ -30,12 +32,11 @@ function ThresholdActionComponent(props) {
         action: '',
     };
     const classes = useStyles()
-
     const handleSearch = (query) => {
         setLoading(true)
-        apiService.getByText('notificationstemplate', query, 100, 0).then((response) => {
-            const data = (typeof response.notifications_templates !== undefined && Array.isArray(response.notifications_templates))
-                ? filterOptionsBySelected(response.notifications_templates)
+        apiServiceV2.getByLimitOffsetSearchTenant("v2/notification-templates",50, 0, query,threshold.tenant.id).then((response) => {
+            const data = (typeof response.notification_templates !== undefined && Array.isArray(response.notification_templates))
+                ? filterOptionsBySelected(response.notification_templates)
                 : [];
             setOptions(data)
             setLoading(false)
@@ -72,9 +73,9 @@ function ThresholdActionComponent(props) {
                 label: s.label,
             }
         })
-
+        console.log(threshold)
         tempThreshold.rule = JSON.stringify(rule);
-        thresholdService.update(tempThreshold)
+        thresholdServiceV2.update(tempThreshold)
             .then(() => {
                 toaster.notify('success', props.intl.formatMessage({ id: 'THRESHOLD.ACTION_SAVED' }));
                 tempThreshold.rule = rule

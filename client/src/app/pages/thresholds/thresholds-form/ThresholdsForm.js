@@ -7,6 +7,7 @@ import { Paper, Tab, Tabs } from "@material-ui/core";
 import {TabContainer} from "react-bootstrap";
 import apiService from "../../../services/apiService";
 import BlockUi from "react-block-ui";
+import apiServiceV2 from "../../../services/v2/apiServiceV2";
 
 export function ThresholdsForm({match}) {
     const {id} = match.params;
@@ -19,9 +20,9 @@ export function ThresholdsForm({match}) {
     }
 
     useEffect(() => {
-        apiService.getById('threshold', id)
+        apiServiceV2.get('v2/thresholds/' + id)
             .then((response) => {
-                let threshold = response.thresholds[0];
+                let threshold = response.threshold;
                 let rule = JSON.parse(threshold.rule);
                 threshold.rule = rule 
                 setThreshold(threshold)
