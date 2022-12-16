@@ -5,7 +5,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import TableGrid from '../../../components/table-grid/TableGrid';
+import TableGridV2 from '../../../components/table-grid/TableGridV2';
 import apiService from '../../../services/apiService';
 
 const useStyles = makeStyles((theme) => ({
@@ -45,67 +45,18 @@ export function ThresholdsList() {
 
     const columns = [
         {
-            field: 'name',
-            title: 'Name',
+            field: 'label',
+            title: 'Label',
         },
         {
             field: 'type',
             title: 'Type',
-        }
+        },
+        {
+            field: 'tenant.name',
+            title: 'Tenant',
+        },
     ];
-
-    useEffect(() => {
-        getData();
-    }, []);
-
-    const getData = () => {
-        new Promise((resolve, _reject) => {
-            let method = 'get';
-            let params = ['threshold', 999999, 0];
-
-            apiService[method](...params)
-                .then((result) => {
-                    resolve({
-                        data: result['thresholds'],
-                        page: 0,
-                        totalCount: result.total,
-                    });
-                });
-        }).then((result) => {
-            if (result.data !== undefined) {
-                if (result.length !== 0) {
-                    result.data.forEach(threshold => {
-                        const rule = JSON.parse(threshold['rule']);
-                        switch (rule['type']) {
-                            case 'temperaturedegree':
-                            case 'temperature':
-                                threshold['type'] = "Temperature";
-                                break;
-                            case 'geofences':
-                            case 'geofence':
-                                threshold['type'] = "Geo-fences";
-                                break;
-                            case 'humidityrelative':
-                                threshold['type'] = "Humidity";
-                                break;
-                            case 'buttonpressed':
-                                threshold['type'] = "Button pressed"
-                                break;
-                            case 'movementstatus':
-                                threshold['type'] = "Movement status"
-                                break;
-                            case 'acceleration':
-                                threshold['type'] = "Acceleration"
-                                break;
-                            default:
-                                console.log("Error: Unidentified threshold type.")
-                        }
-                    })
-                }
-                setData(result.data);
-            }
-        });
-    }
 
 
     return (
@@ -122,11 +73,12 @@ export function ThresholdsList() {
                         <AddIcon className={classes.leftIcon} />
                         New threshold
                     </Button> : <></>}
-                <TableGrid
+                <TableGridV2
                     actions={actions}
                     title=''
                     columns={columns}
-                    data={data}
+                    endpoint={'/v2/thresholds'}
+                    dataField='thresholds'
                 />
             </CardContent>
         </Card>
