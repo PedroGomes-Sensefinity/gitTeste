@@ -446,6 +446,19 @@ export function AsideMenuList({ layoutProps }) {
             </NavLink>
           </li>
         }
+
+          <li
+            className={`menu-item ${getMenuItemActive("/operation/geofenceThreshold", false)}`}
+            aria-haspopup="true"
+          >
+            <NavLink className="menu-link" to="/operation/geofenceThreshold">
+              <span className="svg-icon menu-icon">
+                <SVG src={toAbsoluteUrl("/media/svg/icons/General/Attachment2.svg")} />
+              </span>
+              <span className="menu-text">Operation (BETA)</span>
+            </NavLink>
+          </li>
+        
       </ul>
       {/* end::Menu Nav */}
     </>
