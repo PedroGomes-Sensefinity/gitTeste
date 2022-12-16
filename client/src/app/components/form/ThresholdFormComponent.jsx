@@ -70,13 +70,14 @@ function ThresholdFormComponent(props) {
     useEffect(() => {
         apiService.get('route', 100, 0).then((response) => {
             let routes = [];
-
-            response.routes.forEach(function (route) {
-                routes.push({
-                    id: route.id,
-                    name: route.label,
+            if(response.routes != undefined){
+                response.routes.forEach(function (route) {
+                    routes.push({
+                        id: route.id,
+                        name: route.label,
+                    });
                 });
-            });
+            }
             setRouteOptions(routes)
         });
     }, []);
