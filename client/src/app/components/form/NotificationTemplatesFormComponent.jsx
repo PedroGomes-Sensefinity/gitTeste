@@ -32,8 +32,10 @@ import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/theme-github";
 import { Table } from "react-bootstrap";
-import notificationService from "../../services/notificationService";
+import apiServiceV2 from "../../services/v2/apiServiceV2";
 import { useSelector } from 'react-redux';
+import notificationTemplateServiceV2 from '../../services/v2/notificationTemplateServiceV2';
+import { toast } from 'react-toastify';
 
 class NotificationsTemplatesFormComponent extends React.Component {
     constructor(props) {
@@ -85,6 +87,8 @@ class NotificationsTemplatesFormComponent extends React.Component {
         emailSubject: '',
         cacheControl: '',
         url: '',
+        tenant_id: 0,
+        tenantsOptions: []
     };
 
     validationSchema = Yup.object().shape({
@@ -127,23 +131,29 @@ class NotificationsTemplatesFormComponent extends React.Component {
 
     save = (fields, { setStatus, setSubmitting, resetForm }) => {
         this.setState({ blocking: true });
-        let method = (this.state.isAddMode) ? 'save' : 'update';
+        let method = (this.state.isAddMode) ? 'create' : 'update';
         let msgSuccess = (this.state.isAddMode)
-            ? this.state.intl.formatMessage({ id: 'DEVICE.CREATED' })
-            : this.state.intl.formatMessage({ id: 'DEVICE.UPDATED' });
+            ? this.state.intl.formatMessage({ id: 'NOTIFICATION_TEMPLATE.CREATED' })
+            : this.state.intl.formatMessage({ id: 'NOTIFICATION_TEMPLATE.UPDATED' })
 
-        const notificationTemplate = this.setNotificationTemplate(fields)
+        let notificationTemplate = this.setNotificationTemplate(fields)
+        notificationTemplate.tenant_id = fields.tenant_id
 
-        notificationService[method](notificationTemplate)
+        console.log(notificationTemplate)
+
+        notificationTemplateServiceV2[method](notificationTemplate)
             .then((response) => {
                 toaster.notify('success', msgSuccess);
                 this.setState({ blocking: false });
-            });
+            })
+            .catch(errors => toaster.notify('error', this.state.intl.formatMessage({ id: 'GENERAL_ERROR' })));
+        this.setState({ blocking: false })
     };
 
     setNotificationTemplate(fields) {
         let body = fields[fields.type];
         let targets = []
+        let template = {}
 
         if (fields.type === 'email') {
             let emailsArr = []
@@ -166,7 +176,7 @@ class NotificationsTemplatesFormComponent extends React.Component {
             body = this.state.jsonTemplate;
         }
 
-        let template = {
+        template = {
             subject: fields.emailSubject,
             body: body,
             targets_list: targets
@@ -323,6 +333,7 @@ class NotificationsTemplatesFormComponent extends React.Component {
                         touched,
                         isSubmitting,
                         handleSubmit,
+                        getFieldProps,
                         values,
                         setFieldValue
                     }) => {
@@ -330,15 +341,26 @@ class NotificationsTemplatesFormComponent extends React.Component {
                         const classes = this.useStyles();
 
                         useEffect(() => {
+                            apiServiceV2.get("v2/tenants/children").then(response => {
+                                const respTenants = response.tenants_new || [];
+
+                                const tenantsOptionsR = respTenants.map(tenant => {
+                                    return { id: tenant.id, name: tenant.name };
+                                });
+                                setFieldValue('tenantsOptions', tenantsOptionsR);
+                            });
+
+                            // notificationTemplateServiceV2.getByID(this.state.id).
                             if (!this.state.isAddMode && this.state.id !== 'new') {
-                                apiService
-                                    .getById('notificationstemplate', this.state.id)
-                                    .then((response) => {
-                                        const notification = response.notifications_templates[0]
-                                        const template = JSON.parse(notification.template);
+                                notificationTemplateServiceV2
+                                    .getByID(this.state.id)
+                                    .then((notification) => {
+                                        console.log(notification)
+                                        const template = JSON.parse(notification.template || '{}');
 
                                         setFieldValue('label', notification.label, false);
                                         setFieldValue('type', notification.type, false);
+                                        setFieldValue('tenant_id', notification.tenant.id, false);
 
                                         if (notification.type === 'sms') {
                                             this.setTargets(template.targets_list, 'smsAdded');
@@ -370,7 +392,7 @@ class NotificationsTemplatesFormComponent extends React.Component {
                         useEffect(() => {
                             this.setState({ type: values.type });
                         }, [values.type]);
-                        
+
                         return (
                             <form
                                 className='card card-custom'
@@ -425,15 +447,15 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                                     placeholder='Select the type of this alarm'
                                                 >
                                                     <option key='0' value=''>&nbsp;</option>
-                                                    {permissions.canOptionAlarmEditNotificationTemplates && <option key='alarm' value='alarm'>Alarm</option>}
-                                                    {permissions.canOptionEmailNotificationTemplates && <option key='email' value='email'>Email</option>}
-                                                    {permissions.canOptionSMSEditNotificationTemplates && <option key='sms' value='sms'>SMS</option>}
-                                                    {permissions.canOptionWebhookEditNotificationTemplates && <option key='webhook' value='webhook'>Webhook</option>}
+                                                    {/*permissions.canOptionAlarmEditNotificationTemplates && */<option key='alarm' value='alarm'>Alarm</option>}
+                                                    {/*permissions.canOptionEmailNotificationTemplates &&  */<option key='email' value='email'>Email</option>}
+                                                    {/*permissions.canOptionSMSEditNotificationTemplates &&  */<option key='sms' value='sms'>SMS</option>}
+                                                    {/*permissions.canOptionWebhookEditNotificationTemplates &&  */<option key='webhook' value='webhook'>Webhook</option>}
                                                 </Field>
                                             </div>
 
 
-                                            <div className='col-xl-8 col-lg-8'>
+                                            <div className='col-xl-4 col-lg-4'>
                                                 <label>Template Label</label>
                                                 <Field
                                                     component="input"
@@ -445,6 +467,37 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                                     placeholder='Set the Template Label'
                                                 />
                                             </div>
+
+                                            <div className="col-xl-4 col-lg-4">
+                                                <label className={`required`}>Tenant</label>
+                                                <Field
+                                                    disabled={!this.state.isAddMode}
+                                                    type={"number"}
+                                                    as="select"
+                                                    className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                        { errors, touched },
+                                                        "tenant_id"
+                                                    )}`}
+                                                    name="tenant_id"
+                                                    placeholder=""
+                                                    {...getFieldProps("tenant_id")}
+                                                    onChange={e => {
+                                                        setFieldValue("tenant_id", Number.parseInt(e.target.value));
+                                                    }}
+                                                >
+                                                    {this.state.isAddMode && <option key="" value=""></option>}
+                                                    {values.tenantsOptions.map(e => {
+                                                        return (
+                                                            <option key={e.id} value={e.id}>
+                                                                {e.name}
+                                                            </option>
+                                                        );
+                                                    })}
+                                                </Field>
+                                                <ErrorMessage name="tenant_id" component="div" className="invalid-feedback" />
+                                            </div>
+
+
                                         </div>
                                         {(values.type === 'sms') &&
                                             <div className={'form-group row'}>
