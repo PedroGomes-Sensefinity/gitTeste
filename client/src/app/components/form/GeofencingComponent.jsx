@@ -41,7 +41,7 @@ function GeofencingComponent(props) {
     useEffect(() => {
         // Get tenant options
         if (isAddMode) {
-            apiServiceV2.get("v2/tenants/parents").then(response => {
+            apiServiceV2.get("v2/tenants/children").then(response => {
                 const respTenants = response.tenants_new || [];
 
                 const tenantsOptionsR = respTenants.map(tenant => {
