@@ -75,11 +75,14 @@ function GeofencingComponent(props) {
                     description: geofence.description,
                     alert_mode: geofence.alert_mode
                 });
-                const shapes = JSON.parse(geofence.metadata);
+                console.log(geofence)
+                const shapes = geofence.shapes;
                 const geofencesArr = [];
                 // Shapes Data
-                Object.keys(shapes).forEach(key => {
-                    geofencesArr.push(JSON.parse(shapes[key]));
+                shapes.forEach(shape => {
+                    const shapeJson = JSON.parse(shape)
+                    shapeJson["geoJSON"] = JSON.parse(shapeJson["geoJSON"])
+                    geofencesArr.push(shapeJson);
                 });
                 setGeofences(geofencesArr);
                 // Add threshold to Geofence Data
