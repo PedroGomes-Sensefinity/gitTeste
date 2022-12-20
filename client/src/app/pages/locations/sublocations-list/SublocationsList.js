@@ -27,8 +27,8 @@ export function SubLocationsList() {
         const acts = []
 
         acts.push({
-            icon: permissions.canEditLocations ? EditIcon : MdSpaceDashboard,
-            tooltip: permissions.canEditLocations ? 'Edit Sublocation' : 'View Sublocation',
+            icon: permissions.canEditSubLocations ? EditIcon : MdSpaceDashboard,
+            tooltip: permissions.canEditSubLocations ? 'Edit Sublocation' : 'View Sublocation',
             onClick: (_, rowData) => {
                 history.push(`/sublocations/edit/${rowData.id}`);
             },
@@ -46,7 +46,10 @@ export function SubLocationsList() {
         {
             field: 'port_code',
             title: 'Port Code',
-        },
+        }, {
+            field: 'tenant.name',
+            title: 'Tenant'
+        }
     ];
 
     return <Card>
