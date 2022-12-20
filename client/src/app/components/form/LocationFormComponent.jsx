@@ -31,22 +31,23 @@ function LocationFormComponent(props) {
 
     //const [initialValues, setInitialValues] = useState({ id: '', name: '', tenantsOptions: tenantsOptions })
     const [tenantsOptions, setTenantOptions] = useState([])
-    const initialTenantID = useMemo(() => location === undefined ? 0 : location.tenant.id, [location]) 
 
     const [location, setLocation] = useState({
         id: '',
         name: ''
     })
 
+    const initialTenantID = location.tenant === undefined ? 0 : location.tenant.id
+
     const initialValues = {
         id: location.id || '',
         name: location.name || '',
+        tenant_id: initialTenantID,
         tenantsOptions: tenantsOptions,
         geofences: geofences,
         tenant_id: initialTenantID
     }
 
-    console.log(initialValues)  
     useEffect(() => {
         apiServiceV2.get("v2/tenants/children").then(response => {
             const respTenants = response.tenants_new || [];
@@ -60,7 +61,7 @@ function LocationFormComponent(props) {
         if (typeof id !== 'undefined' && id !== 0) {
             //Get Geofence Data
             apiServiceV2.get("v2/locations/" + id).then((response) => {
-                setLocation({ id: response.location.id, name: response.location.name })
+                setLocation(response.location)
                 const geofencesArr = []
                 if (response.location.geofence !== undefined && response.location.geofence !== "{}") {
                     geofencesArr.push(JSON.parse(response.location.geofence))
@@ -82,7 +83,7 @@ function LocationFormComponent(props) {
     const onChangeShape = (setFieldValue) => ((shapes) => {
         setFieldValue('geofences', shapes)
     })
-    
+
 
     const columnsGeofences = [
         {

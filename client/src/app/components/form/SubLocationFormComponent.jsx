@@ -54,7 +54,6 @@ function SubLocationFormComponent(props) {
     }
 
     useEffect(() => {
-        setBlocking(true)
         apiServiceV2.get("v2/tenants/children").then(response => {
             const respTenants = response.tenants_new || [];
             setTenantOptions(respTenants.map(tenant => {
@@ -84,7 +83,7 @@ function SubLocationFormComponent(props) {
                             return { id: location.id, name: location.name }
                         })
                         setLocationsOptions(options)
-                        setBlocking(false)
+                        
                     })
             });
         }
@@ -164,8 +163,6 @@ function SubLocationFormComponent(props) {
             location_id: fields.location_id,
             geofence: JSON.stringify(fields.geofences[0])
         }
-
-        console.log(toSubmit)
 
         sublocationService[endpoint](id, toSubmit)
             .then((_response) => {
