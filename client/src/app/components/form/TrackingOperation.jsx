@@ -2,6 +2,7 @@ import DoneIcon from "@material-ui/icons/Done";
 import { makeStyles } from "@material-ui/styles";
 import { ErrorMessage, Field, Formik, FieldArray } from "formik";
 import React, { useCallback, useEffect, useState } from "react";
+import { useHistory } from 'react-router-dom';
 import BlockUi from "react-block-ui";
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import { injectIntl } from "react-intl";
@@ -35,6 +36,8 @@ function TrackingOperation() {
     const selectedAssetsId = selectedAssets.map(t => t.id);
 
     const [info, setInfo] = useState([]);
+
+    const history = useHistory()
 
     const [tenantId, setTenantId] = useState(0);
     const [tenantsOptions, setTenantsOptions] = useState([{ id: 0, name: "Tenants Not Found" }]);
@@ -195,6 +198,7 @@ function TrackingOperation() {
             console.log(r)
             setBlocking(false);
             setSubmitting(false);
+            history.push('/thresholds/list')
         }).catch( r => {
             console.log(r)
             setBlocking(false);

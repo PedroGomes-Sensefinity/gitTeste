@@ -452,10 +452,10 @@ export function AsideMenuList({ layoutProps }) {
         }
 
         <li
-          className={`menu-item ${getMenuItemActive("/operation/geofenceThreshold", false)}`}
+          className={`menu-item ${getMenuItemActive("/operation/tracking", false)}`}
           aria-haspopup="true"
         >
-          <NavLink className="menu-link" to="/operation/geofenceThreshold">
+          <NavLink className="menu-link" to="/operation/tracking">
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/General/Attachment2.svg")} />
             </span>

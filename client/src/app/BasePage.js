@@ -182,7 +182,7 @@ export default function BasePage() {
         { /* what's new Page*/}
         <ContentRoute key="/whatsnew" path="/whatsnew" component={News} />,
         <ContentRoute key="/impacts" path="/impacts" component={Impacts} />,
-        <ContentRoute key="/operation/geofenceThreshold" path="/operation/geofenceThreshold" component={TrackingOperation} />,
+        <ContentRoute key="/operation/tracking" path="/operation/tracking" component={TrackingOperation} />,
 
         <ContentRoute key="/*" path="/*" component={ErrorPage1} />,
       </Switch>
