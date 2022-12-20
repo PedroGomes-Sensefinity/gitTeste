@@ -26,6 +26,8 @@ function DeviceFormComponent(props) {
     const deviceId = props.entity
     const isAddMode = !deviceId
 
+    const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
+
     const [blocking, setBlocking] = useState(false)
     const [loading, setLoading] = useState(false)
 
