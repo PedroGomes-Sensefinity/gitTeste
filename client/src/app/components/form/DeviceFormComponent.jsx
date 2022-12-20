@@ -32,28 +32,11 @@ function DeviceFormComponent(props) {
     const [device, setDevice] = useState({})
     const [selectedBoardFamily, setSelectedBoardFamily] = useState([])
     const [boardFamilies, setBoardFamilies] = useState([])
-
     const [selectedParent, setSelectedParent] = useState([])
-    const [parents, setParents] = useState([])
-
     const [selectedGroup, setSelectedGroup] = useState([])
-    const [groups, setGroups] = useState([])
 
-    const forceBoardId = useMemo(() => {
-        if (selectedBoardFamily.length !== 0) {
-            return selectedBoardFamily[0].force_board_id || false
-        }
-        return false
-    }, [selectedBoardFamily])
+    const forceBoardId = selectedBoardFamily.length !== 0 ? selectedBoardFamily[0].force_board_id : false
 
-    const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
-
-    const groupId = useMemo(() => {
-        if (device.container !== undefined) {
-            return device.container.id
-        }
-        return ''
-    }, [device])
 
     const [tenant, setTenant] = useState({})
     const classes = useStyles();
@@ -61,9 +44,15 @@ function DeviceFormComponent(props) {
     const initialValues = {
         id: device.id || '',
         label: device.label || '',
-        group_id: groupId || '',
-        board_family_id: device.board_family_id || '',
-        parent_id: device.parent_id || '',
+        //group stuff
+        group: selectedGroup,
+        group_options: [],
+        //parent device stuff 
+        parent_device: selectedParent,
+        parent_options: [],
+        // board family stuff
+        board_family: selectedBoardFamily,
+        board_families_options: boardFamilies,
         board: device.board || '',
         imei: device.imei || '',
         meta_data: device.meta_data || '{}',
@@ -76,7 +65,7 @@ function DeviceFormComponent(props) {
     useEffect(() => {
         setBlocking(true)
 
-        let promises = [
+        const promises = [
             apiService.get('board_families', 100, 0),
             tenantService.getInfo(),
         ];
@@ -93,6 +82,7 @@ function DeviceFormComponent(props) {
                     if (respDevices.length > 0) {
                         const device = respDevices[0];
                         // initForm(device, {setFieldValue});
+                        updateInitialValues(device, respBoardFamilies)
                         setDevice(device)
                         setBlocking(false)
                     }
@@ -103,23 +93,35 @@ function DeviceFormComponent(props) {
         });
     }, [])
 
-    useEffect(() => {
+    const updateInitialValues = (device, boardFamilies) => {
         if (device.board_family_id !== undefined && device.board_family_id !== '') {
-            let selectedBoardFamily = getSelectedBoardFamily(device.board_family_id);
-            setSelectedBoardFamily(selectedBoardFamily);
+            let selectedBoardFamily = getSelectedBoardFamily(device.board_family_id, boardFamilies);
+            setSelectedBoardFamily(selectedBoardFamily)
         }
+
         if (device.parent_id !== undefined && device.parent_id !== '') {
             let selectedParent = [{ id: device.parent_id, label: device.parent_id }];
             setSelectedParent(selectedParent)
         }
-        if (device.container !== undefined) {
+
+        if (device.container !== undefined && device.container.id !== 0) {
             let selectedGroup = [{
                 id: device.container.id,
-                label: makeGroupLabel(device.container)
+                label: device.container.label,
+                //displayLabel is an extra field that is used only for display purposes, it is needed for the displayed field value is kept the same 
+                displayLabel: makeGroupLabel(device.container)
             }];
-            setSelectedGroup(selectedGroup);
+            setSelectedGroup(selectedGroup)
         }
-    }, [device])
+    }
+
+    const updateForceBoardId = (newBoardFamilyArr, setFieldValue) => {
+        setFieldValue('force_board_id', false)
+        if (newBoardFamilyArr.length > 0) {
+            const boardFamily = newBoardFamilyArr[0]
+            setFieldValue('force_board_id', boardFamily.force_board_id)
+        }
+    }
 
     const getParents = (records) => {
         if (Array.isArray(records)) {
@@ -133,90 +135,88 @@ function DeviceFormComponent(props) {
     const getGroups = (records) => {
         if (Array.isArray(records)) {
             return records.map((group) => {
-                const label = makeGroupLabel(group);
-                return { id: group.id, label: label }
+                return { ...group, displayLabel: makeGroupLabel(group) }
             });
         }
         return []
     };
 
     const makeGroupLabel = (group) => {
-        const parentParent = (group.parent_parent_id !== 0) ? "../" : "";
-        const parent = (group.parent_label !== "") ? `${group.parent_label}/` : "";
+        console.log('making group label from')
+            console.log(group)
+        const parentParent = (group.parent_label !== undefined && group.parent_parent_id !== 0) ? "../" : "";
+        const parent = (group.parent_label !== undefined && group.parent_label !== "" ) ? `${group.parent_label}/` : "";
         return `${parentParent}${parent}${group.label}`;
     }
 
-    const saveDevice = (fields, { setSubmitting, resetForm }) => {
+    const saveDevice = (fields, setSubmitting, resetForm) => {
         setBlocking(true)
         let method = (isAddMode) ? 'save' : 'update';
         let msgSuccess = (isAddMode)
             ? intl.formatMessage({ id: 'DEVICE.CREATED' })
             : intl.formatMessage({ id: 'DEVICE.UPDATED' });
-        deviceService[method](fields)
-            .then((_response) => {
-                toaster.notify('success', msgSuccess);
 
-                if (isAddMode) {
-                    resetForm(initialValues);
-                    setSelectedGroup([])
-                    setSelectedBoardFamily([])
+        let body = {}
+
+        if (fields.parent_device.length > 0) {
+            body.parent_id = fields.parent_device[0].id
+        }
+        const group_id = fields.group[0].id
+        const board_family_id = fields.board_family[0].id
+
+        body = {
+            ...body,
+            id: fields.id,
+            label: fields.label,
+            group_id,
+            board_family_id,
+            board: fields.board,
+            imei: fields.imei,
+            meta_data: fields.meta_data,
+            comments: fields.comments
+        }
+
+        const newDevice = {
+            ...body,
+            container: fields.group[0]
+        }
+
+        deviceService[method](body)
+            .then(() => {
+                if (method == 'update') {
+                    setDevice(newDevice)
+                    updateInitialValues(newDevice, boardFamilies)
                 }
+                toaster.notify('success', msgSuccess);
+                resetForm(initialValues)
             })
             .catch((err) => {
                 toaster.notify('error', err.data.detail);
             })
             .finally(() => {
+                setSubmitting(false)
                 setBlocking(false)
-                setSubmitting(false);
             });
     };
 
-    const onChangeGroup = (opt, setFieldValue) => {
-        setSelectedGroup(opt)
-        setFieldValue('group_id', '');
-        if (opt.length > 0) {
-            setFieldValue('group_id', opt[0].id);
-        }
-    };
-
-    const onChangeParent = (opt, setFieldValue) => {
-        setSelectedParent(opt)
-        setFieldValue('parent_id', '');
-
-        if (opt.length > 0) {
-            setFieldValue('parent_id', opt[0].id);
-        }
-    };
-
-    const onChangeBoardFamily = (opt, setFieldValue) => {
-        setFieldValue('board_family_id', '');
-        setFieldValue('force_board_id', false);
-
-        if (opt.length > 0) {
-            setFieldValue('board_family_id', opt[0].id);
-            setFieldValue('force_board_id', opt[0].force_board_id);
-        }
-        setSelectedBoardFamily(opt)
-    };
-
-    const getSelectedBoardFamily = (boardFamilyId) => {
+    const getSelectedBoardFamily = (boardFamilyId, boardFamilies) => {
         return boardFamilies.filter(b => b.id === boardFamilyId);
     };
 
-    const handleSearchGroup = (query) => {
+    const handleSearchGroup = (query, setFieldValue) => {
         setLoading(true)
         apiService.getByText('group', query, 100, 0).then((response) => {
             const respGroups = response.groups || []
-            setGroups(getGroups(respGroups))
+            setFieldValue('group_options', getGroups(respGroups))
             setLoading(false)
         });
     };
 
-    const handleSearchParent = (query) => {
+    const handleSearchParent = (query, setFieldValue) => {
         setLoading(true)
         apiService.getByText('device', query, 100, 0).then((response) => {
             const respParents = response.devices || []
-            setParents(getParents(respParents))
+            setFieldValue('parent_options', getParents(respParents))
             setLoading(false)
         });
     };
@@ -224,16 +224,24 @@ function DeviceFormComponent(props) {
     const filterBy = () => true;
 
     const validationSchema = Yup.object().shape({
-        id: Yup.number('Device ID must be numeric').moreThan(0, 'Device ID must be a positive number.')
-            .test('len', 'Device ID be less or equal 18 digits',
-                val => val.toString().length <= 18)
+        id: Yup.number('Device ID must be numeric').test('len', 'Device ID be less or equal 18 digits',
+            val => val?.toString().length <= 18)
+            .moreThan(0, 'Device ID must be a positive number.')
             .required('Device ID is required'),
         label: Yup.string()
             .required('Label is required'),
-        group_id: Yup.string()
-            .required('Group is required'),
-        board_family_id: Yup.number()
-            .required('Board family is required'),
+        group: Yup.array().of(Yup.object().shape({
+            id: Yup.number().moreThan(0),
+            label: Yup.string()
+        })).min(1, 'Group is required').max(1, 'Group is required'),
+        parent_device: Yup.array().of(Yup.object().shape({
+            id: Yup.number().moreThan(0),
+            label: Yup.string()
+        })).max(1, 'Group is required'),
+        board_family: Yup.array().of(Yup.object().shape({
+            id: Yup.number().moreThan(0),
+            label: Yup.string()
+        })).min(1, 'Board Family is required').max(1, 'Board Family is required'),
         meta_data: Yup.string()
             .isJson("Metadata needs to be a valid JSON"),
         force_board_id: Yup.boolean(),
@@ -251,17 +259,14 @@ function DeviceFormComponent(props) {
             enableReinitialize
             initialValues={initialValues}
             validationSchema={validationSchema}
-            onSubmit={(values, { setFieldValue, setSubmitting, resetForm }) => {
-                saveDevice(values, {
-                    setFieldValue,
-                    setSubmitting,
-                    resetForm,
-                });
+            onSubmit={(values, { setSubmitting, resetForm }) => {
+                saveDevice(values, setSubmitting, resetForm);
             }}
         >
             {({
                 isValid,
                 getFieldProps,
+                setFieldTouched,
                 errors,
                 touched,
                 isSubmitting,
@@ -269,6 +274,7 @@ function DeviceFormComponent(props) {
                 handleSubmit,
                 values
             }) => {
+                console.log(values)
                 return (
                     <form
                         className='card card-custom'
@@ -293,7 +299,7 @@ function DeviceFormComponent(props) {
                                     className='btn btn-success mr-2'
                                     disabled={
                                         isSubmitting ||
-                                        (touched && !isValid)
+                                        !isValid
                                     }>
                                     <DoneIcon />
                                     Save Changes
@@ -351,59 +357,82 @@ function DeviceFormComponent(props) {
                                 <div className='form-group row'>
                                     <div className='col-xl-6 col-lg-6'>
                                         <label className={`required`}>Groups</label>
-                                        <AsyncTypeahead
-                                            id='typeahead-groups'
-                                            labelKey='label'
-                                            size="lg"
-                                            onChange={(data) => onChangeGroup(data, setFieldValue)}
-                                            options={groups}
-                                            clearButton={true}
-                                            placeholder=''
-                                            selected={selectedGroup}
-                                            onSearch={handleSearchGroup}
-                                            isLoading={loading}
-                                            filterBy={filterBy}
-                                            disabled={!permissions.canEditDevices}
-                                            className={getInputClasses({ errors, touched }, 'group_id')}
-                                        />
-                                        <ErrorMessage name="group_id" component="div" className="invalid-feedback" />
+                                        <Field name="group">
+                                            {({ field }) => {
+                                                return <AsyncTypeahead
+                                                    id='async-typeahead-group'
+                                                    labelKey='displayLabel'
+                                                    name={field.name}
+                                                    size="lg"
+                                                    onChange={(value) => {
+                                                        setFieldValue('group', value)
+                                                    }}
+                                                    onBlur={() => {
+                                                        setFieldTouched('group')
+                                                    }}
+                                                    options={values.group_options}
+                                                    clearButton={true}
+                                                    placeholder=''
+                                                    selected={field.value}
+                                                    onSearch={(q) => handleSearchGroup(q, setFieldValue)}
+                                                    isLoading={loading}
+                                                    filterBy={filterBy}
+                                                    className={getInputClasses({ errors, touched }, 'group')}
+                                                />
+                                            }}
+                                        </Field>
+                                        <ErrorMessage name="group" component="div" className="invalid-feedback" />
                                     </div>
                                     <div className='col-xl-6 col-lg-6'>
                                         <label>Device parent</label>
-                                        <AsyncTypeahead
-                                            id='typeahead-parent'
-                                            labelKey='label'
-                                            size="lg"
-                                            onChange={(data) => onChangeParent(data, setFieldValue)}
-                                            options={parents}
-                                            clearButton={true}
-                                            placeholder=''
-                                            selected={selectedParent}
-                                            onSearch={handleSearchParent}
-                                            isLoading={loading}
-                                            filterBy={filterBy}
-                                            disabled={!permissions.canEditDevices}
-                                            className={getInputClasses({ errors, touched }, 'parent_id')}
-                                        />
-                                        <ErrorMessage name="parentId" component="div" className="invalid-feedback" />
+                                        <Field name='parent_device'>
+                                            {({ field }) =>
+                                                <AsyncTypeahead
+                                                    id='typeahead-parent'
+                                                    labelKey='label'
+                                                    name={field.name}
+                                                    size="lg"
+                                                    onChange={value => {
+                                                        setFieldValue('parent_device', value)
+                                                    }}
+                                                    options={values.parent_options}
+                                                    clearButton={true}
+                                                    placeholder=''
+                                                    selected={field.value}
+                                                    onSearch={q => handleSearchParent(q, setFieldValue)}
+                                                    isLoading={loading}
+                                                    filterBy={filterBy}
+                                                    className={getInputClasses({ errors, touched }, 'parent_id')}
+                                                />}
+                                        </Field>
                                     </div>
                                 </div>
 
                                 <div className='form-group row'>
                                     <div className='col-lg-3 col-xl-3'>
                                         <label className={`required`}>Board Family</label>
-                                        <Typeahead
-                                            id='typeahead-board-family'
-                                            labelKey="name"
-                                            size="lg"
-                                            onChange={data => onChangeBoardFamily(data, setFieldValue)}
-                                            options={boardFamilies}
-                                            placeholder=''
-                                            selected={selectedBoardFamily}
-                                            disabled={!permissions.canEditDevices}
-                                            className={getInputClasses({ errors, touched }, 'board_family_id')}
-                                        />
-                                        <ErrorMessage name="board_family_id" component="div" className="invalid-feedback" />
+                                        <Field name="board_family">
+                                            {({ field }) =>
+                                                <Typeahead
+                                                    id='typeahead-board-family'
+                                                    labelKey="name"
+                                                    name={field.name}
+                                                    size="lg"
+                                                    onChange={(value) => {
+                                                        updateForceBoardId(value, setFieldValue)
+                                                        setFieldValue('board_family', value)
+                                                    }}
+                                                    onBlur={() => {
+                                                        setFieldTouched(field.name)
+                                                    }}
+                                                    options={values.board_families_options}
+                                                    placeholder=''
+                                                    selected={field.value}
+                                                    className={getInputClasses({ errors, touched }, 'board_family')}
+                                                />
+                                            }
+                                        </Field>
+                                        <ErrorMessage name="board_family" component="div" className="invalid-feedback" />
                                     </div>
                                     <div className='col-lg-3 col-xl-3'>
                                         <label className={`${values.force_board_id ? 'required' : ''}`}>Board ID</label>
@@ -460,8 +489,6 @@ function DeviceFormComponent(props) {
                                                         'meta_data'
                                                     )}
                                                 />
-                                                <ErrorMessage name="meta_data" component="div"
-                                                    className="invalid-feedback" />
                                             </div>
                                         </div>
                                     }
@@ -505,7 +532,6 @@ function DeviceFormComponent(props) {
                                                     'meta_data'
                                                 )}
                                             />
-                                            <ErrorMessage name="metadata" component="div" className="invalid-feedback" />
                                         </div>
                                     </div>
                                 </div>
@@ -513,10 +539,10 @@ function DeviceFormComponent(props) {
                         </div>
                         {/* end::Form */}
                     </form>
-                );
+                )
             }}
         </Formik>
-    </BlockUi>
+    </BlockUi >
 }
 
 export default injectIntl(DeviceFormComponent);
