@@ -246,7 +246,6 @@ function LocationFormComponent(props) {
                                             })}
                                         </Field>
                                         <ErrorMessage name="tenant_id" component="div" className="invalid-feedback" />
-                                        <ErrorMessage name="name" component="div" className="invalid-feedback" />
                                     </div>
                                 </div>
 

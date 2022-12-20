@@ -174,7 +174,7 @@ export default function BasePage() {
           <ContentRoute key="/locations/new" path="/locations/new" component={LocationsForm} />
         ]}
         { /* Sublocations Routes*/}
-        {permissions.canViewLocations && [          
+        {permissions.canViewSubLocations && [          
           <ContentRoute key="/sublocations/edit/:id" path="/sublocations/edit/:id" component={SubLocationsForm} />,
           <ContentRoute key="/sublocations/list" path="/sublocations/list" component={SubLocationsList} />,
           <ContentRoute key="/sublocations/new" path="/sublocations/new" component={SubLocationsForm} />,
