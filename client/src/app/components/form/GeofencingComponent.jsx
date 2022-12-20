@@ -1,73 +1,99 @@
-import DoneIcon from '@material-ui/icons/Done';
-import { makeStyles } from '@material-ui/styles';
-import { ErrorMessage, Field, Formik } from 'formik';
-import React, { useCallback, useEffect, useState } from 'react';
+import DoneIcon from "@material-ui/icons/Done";
+import { makeStyles } from "@material-ui/styles";
+import { ErrorMessage, Field, Formik } from "formik";
+import React, { useCallback, useEffect, useState } from "react";
 import BlockUi from "react-block-ui";
-import { AsyncTypeahead } from 'react-bootstrap-typeahead';
-import { injectIntl } from 'react-intl';
-import { Link } from 'react-router-dom';
-import * as Yup from 'yup';
-import apiService from '../../services/apiService';
-import geofenceService from "../../services/geofenceservice";
-import { getInputClasses } from '../../utils/formik';
-import toaster from '../../utils/toaster';
-import '../../utils/yup-validations';
+import { AsyncTypeahead } from "react-bootstrap-typeahead";
+import { injectIntl } from "react-intl";
+import { Link } from "react-router-dom";
+import * as Yup from "yup";
+import { getInputClasses } from "../../utils/formik";
+import toaster from "../../utils/toaster";
+import "../../utils/yup-validations";
 import Map from "../geo-fencing-map/map";
-import TableGrid from '../table-grid/TableGrid';
+import TableGrid from "../table-grid/TableGrid";
+import apiServiceV2 from "../../services/v2/apiServiceV2";
+import geofenceServiceV2 from "../../services/v2/geofenceServiceV2";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
     headerMarginTop: {
-        marginTop: theme.spacing(5),
+        marginTop: theme.spacing(5)
     }
 }));
 
 function GeofencingComponent(props) {
     const id = props.id;
-    const isAddMode = !id
+    const isAddMode = !id;
     const classes = useStyles();
-    const [blocking, setBlocking] = useState(false)
-    const [geofences, setGeofences] = useState([])
-    const [thresholds, setThresholds] = useState([])
-    const [selectedThresholds, setSelectedThresholds] = useState([])
-    const selectedThresholdsId = selectedThresholds.map(t => t.id)
-    const [loading, setLoading] = useState(false)
+    const [blocking, setBlocking] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    const [initialValues, setInitialValues] = useState({ id: '', label: '', description: '', alert_mode: '1', })
+    const [geofences, setGeofences] = useState([]);
+
+    const [thresholds, setThresholds] = useState([]);
+    const [selectedThresholds, setSelectedThresholds] = useState([]);
+
+    const [tenantsOptions, setTenantsOptions] = useState([{ id: 0, name: "Tenants Not Found" }]);
+    const [tenantId, setTenantId] = useState(0);
+
+    const [initialValues, setInitialValues] = useState({ id: "", label: "", description: "", alert_mode: "1" });
 
     useEffect(() => {
+        // Get tenant options
+        if (isAddMode) {
+            apiServiceV2.get("v2/tenants/children").then(response => {
+                const respTenants = response.tenants_new || [];
+
+                const tenantsOptionsR = respTenants.map(tenant => {
+                    return { id: tenant.id, name: tenant.name };
+                });
+                setTenantsOptions(tenantsOptionsR);
+            });
+        }
         //Edit Case
-        if (typeof id !== 'undefined' && id !== 0) {
+        if (typeof id !== "undefined" && id !== 0) {
             //Get Geofence Data
-            apiService.getById("geofence", id).then((response) => {
-                const geofence = response.geofence
+            apiServiceV2.get("v2/geofences/" + id).then(response => {
+                const geofence = response.geofence;
                 switch (geofence.alert_mode) {
                     case "None":
-                        geofence.alert_mode = "1"
+                        geofence.alert_mode = "1";
                         break;
                     case "In":
-                        geofence.alert_mode = "2"
+                        geofence.alert_mode = "2";
                         break;
                     case "Out":
-                        geofence.alert_mode = "3"
+                        geofence.alert_mode = "3";
                         break;
                     case "In/Out":
-                        geofence.alert_mode = "4"
+                        geofence.alert_mode = "4";
                         break;
                 }
-                setInitialValues({ id: geofence.id, label: geofence.label, description: geofence.description, alert_mode: geofence.alert_mode })
-                const shapes = JSON.parse(geofence.metadata)
-                const geofencesArr = []
-                // Shapes Data
-                Object.keys(shapes).forEach((key) => {
-                    geofencesArr.push(JSON.parse(shapes[key]))
-                })
-                setGeofences(geofencesArr)
-                // Add threshold to Geofence Data
-                const endpoint = "geofence/" + id + "/thresholds"
-                apiService.getByEndpoint(endpoint).then((response) => {
-                    const respThresholds = response.thresholds || []
-                    setSelectedThresholds(respThresholds)
+                setInitialValues({
+                    id: geofence.id,
+                    label: geofence.label,
+                    description: geofence.description,
+                    alert_mode: geofence.alert_mode
                 });
+                console.log(geofence)
+                const shapes = geofence.shapes;
+                const geofencesArr = [];
+                // Shapes Data
+                shapes.forEach(shape => {
+                    const shapeJson = JSON.parse(shape)
+                    shapeJson["geoJSON"] = JSON.parse(shapeJson["geoJSON"])
+                    geofencesArr.push(shapeJson);
+                });
+                setGeofences(geofencesArr);
+                // Add threshold to Geofence Data
+                geofence.thresholdsIds.forEach(id => {
+                    apiServiceV2.get("v2/thresholds/"+ id).then(response => {
+                        const thresholdsSelected = selectedThresholds;
+                        thresholdsSelected.push({id: response.threshold.id, label : response.threshold.label});
+                        setSelectedThresholds([...thresholdsSelected]);
+                    });
+                })
+                setTenantsOptions([{ id: geofence.tenant.id, name: geofence.tenant.name }]);
             });
         }
     }, []);
@@ -76,128 +102,170 @@ function GeofencingComponent(props) {
         { id: 1, name: "None" },
         { id: 2, name: "In" },
         { id: 3, name: "Out" },
-        { id: 4, name: "In/Out" },
-    ]
+        { id: 4, name: "In/Out" }
+    ];
 
-    const getGeofenceIndexById = useCallback((id) => {
-        for (let i = 0; i < geofences.length; i++) {
-            if (geofences[i].id === id) {
-                return i;
+    const getGeofenceIndexById = useCallback(
+        id => {
+            for (let i = 0; i < geofences.length; i++) {
+                if (geofences[i].id === id) {
+                    return i;
+                }
             }
-        }
-        return -1;
-    }, [geofences])
+            return -1;
+        },
+        [geofences]
+    );
 
-    const onChangeShape = (shapes) => {
-        setGeofences(shapes)
+    const onChangeShape = shapes => {
+        setGeofences(shapes);
     };
 
     const filterBy = () => true;
 
-    const onChangeThreshold = (opt) => {
-        setSelectedThresholds(opt)
+    const onChangeThreshold = opt => {
+        setSelectedThresholds(opt);
     };
 
-    const handleSearchThreshold = (query) => {
-        setLoading(true)
+    const handleSearchThreshold = query => {
+        setLoading(true);
+        if (isAddMode) {
+            apiServiceV2.getByLimitOffsetSearchTenant("v2/thresholds", 50, 0, query, tenantId).then(response => {
+                const thresholds =
+                    typeof response.thresholds !== undefined && Array.isArray(response.thresholds)
+                        ? filterThresholdSelected(response.thresholds)
+                        : [];
 
-        apiService.getByText('threshold', query, 100, 0).then((response) => {
-            const respThresholds = response.thresholds || []
-            setThresholds(filterThresholdSelected(respThresholds))
-            setLoading(false)
-        });
+                setThresholds(thresholds);
+                setLoading(false);
+            });
+        } else {
+            apiServiceV2
+                .getByLimitOffsetSearchTenant("v2/thresholds", 50, 0, query, tenantsOptions[0].id)
+                .then(response => {
+                    const thresholds =
+                        typeof response.thresholds !== undefined && Array.isArray(response.thresholds)
+                            ? filterThresholdSelected(response.thresholds)
+                            : [];
+
+                    setThresholds(thresholds);
+                    setLoading(false);
+                });
+        }
     };
 
-    const filterThresholdSelected = (options) => options
-        .filter(t => !selectedThresholdsId.includes(t.id))
-        .map(t => {
-            return {
-                id: t.id,
-                label: t.name
+    const filterThresholdSelected = options => {
+        let data = [];
+        options.forEach(o => {
+            if (!selectedThresholds.some(e => e.id === o.id)) {
+                data.push(o);
             }
-        })
+        });
+        return data;
+    };
+
 
     const columnsGeofences = [
         {
-            field: 'name',
-            title: 'Shape'
+            field: "name",
+            title: "Shape"
         }
     ];
 
-
     const validationSchema = Yup.object().shape({
-        label: Yup.string().required('Label is required'),
-        alert_mode: Yup.string().required('AlertMode is required'),
+        label: Yup.string().required("Label is required"),
+        alert_mode: Yup.string().required("AlertMode is required")
     });
+
+    const validateTenant = value => {
+        let error;
+        if (!isAddMode) {
+            return error;
+        }
+        if (value === undefined || value === "" || value === 0 || isNaN(value)) {
+            error = "Select Asset Type";
+            return error;
+        }
+        return error;
+    };
+
+    const handleChangeTenant = event => {
+        setTenantId(event.target.value);
+        setThresholds([]);
+        setSelectedThresholds([]);
+    };
 
     const save = (fields, { setFieldValue, setSubmitting }) => {
         if (geofences.length === 0) {
-            toaster.notify('error', "Geofence needs at least 1 Shape!");
+            toaster.notify("error", "Geofence needs at least 1 Shape!");
             setBlocking(false);
             setSubmitting(false);
-            return
+            return;
         }
         setBlocking(true);
         setSubmitting(true);
         switch (fields["alert_mode"]) {
             case "1":
-                fields["alert_mode"] = "None"
+                fields["alert_mode"] = "None";
                 break;
             case "2":
-                fields["alert_mode"] = "In"
+                fields["alert_mode"] = "In";
                 break;
             case "3":
-                fields["alert_mode"] = "Out"
+                fields["alert_mode"] = "Out";
                 break;
             case "4":
-                fields["alert_mode"] = "In/Out"
+                fields["alert_mode"] = "In/Out";
                 break;
         }
-        const data = {}
+        const data = {};
         for (let i = 0; i < geofences.length; i++) {
-            data[i] = (JSON.stringify(geofences[i]))
+            data[i] = JSON.stringify(geofences[i]);
         }
-        fields["metadata"] = JSON.stringify(data)
-        fields["thresholdsIds"] = selectedThresholdsId
-        const endpoint = isAddMode ? "save" : "update"
-        console.log(endpoint)
-        geofenceService[endpoint](fields)
-            .then((_response) => {
-                toaster.notify('success', "Success Geofences!");
-                setSubmitting(false);
-                setBlocking(false);
+        fields["metadata"] = JSON.stringify(data);
+        fields["thresholdsIds"] = selectedThresholds.map(t => t.id);
+        if (isAddMode) {
+            fields["id"] = 0;
+            fields["tenant_id"] = parseInt(fields.tenant.id);
+        }
+        fields["tenant"] = {};
+        const endpoint = isAddMode ? "save" : "update";
+        geofenceServiceV2[endpoint](fields).then(_response => {
+            toaster.notify("success", "Success Geofences!");
+            setSubmitting(false);
+            setBlocking(false);
 
-                switch (fields["alert_mode"]) {
-                    case "None":
-                        fields["alert_mode"] = "1"
-                        break;
-                    case "In":
-                        fields["alert_mode"] = "2"
-                        break;
-                    case "Out":
-                        fields["alert_mode"] = "3"
-                        break;
-                    case "In/Out":
-                        fields["alert_mode"] = "4"
-                        break;
-                }
-                setFieldValue('alert_mode', fields["alert_mode"], false);
+            switch (fields["alert_mode"]) {
+                case "None":
+                    fields["alert_mode"] = "1";
+                    break;
+                case "In":
+                    fields["alert_mode"] = "2";
+                    break;
+                case "Out":
+                    fields["alert_mode"] = "3";
+                    break;
+                case "In/Out":
+                    fields["alert_mode"] = "4";
+                    break;
+            }
+            setFieldValue("alert_mode", fields["alert_mode"], false);
 
-                if (isAddMode) {
-                    setFieldValue('label', '', false);
-                    setFieldValue('description', '', false);
-                    setFieldValue('alert_mode', '1', false);
-                    setGeofences([])
-                    setThresholds([])
-                    setSelectedThresholds([])
-                }
-                setBlocking(false);
-                setSubmitting(false);
-            });
+            if (isAddMode) {
+                setFieldValue("label", "", false);
+                setFieldValue("description", "", false);
+                setFieldValue("alert_mode", "1", false);
+                setGeofences([]);
+                setThresholds([]);
+                setSelectedThresholds([]);
+            }
+            setBlocking(false);
+            setSubmitting(false);
+        });
     };
 
     return (
-        <BlockUi tag='div' blocking={blocking}>
+        <BlockUi tag="div" blocking={blocking}>
             <Formik
                 enableReinitialize
                 initialValues={initialValues}
@@ -206,49 +274,35 @@ function GeofencingComponent(props) {
                     save(values, {
                         setFieldValue,
                         setSubmitting,
-                        resetForm,
+                        resetForm
                     });
                 }}
             >
-                {({
-                    isValid,
-                    getFieldProps,
-                    errors,
-                    touched,
-                    isSubmitting,
-                    handleSubmit,
-                }) => <form
-                    className='card card-custom'
-                    onSubmit={handleSubmit}>
+                {({ isValid, getFieldProps, errors, touched, isSubmitting, handleSubmit, setFieldValue }) => (
+                    <form className="card card-custom" onSubmit={handleSubmit}>
                         {/* begin::Header */}
-                        <div
-                            className={`card-header py-3 ` + classes.headerMarginTop}>
-                            <div className='card-title align-items-start flex-column'>
-                                <h3 className='card-label font-weight-bolder text-dark'>
-                                    Geofences
-                                </h3>
-                                <span className='text-muted font-weight-bold font-size-sm mt-1'>
+                        <div className={`card-header py-3 ` + classes.headerMarginTop}>
+                            <div className="card-title align-items-start flex-column">
+                                <h3 className="card-label font-weight-bolder text-dark">Geofences</h3>
+                                <span className="text-muted font-weight-bold font-size-sm mt-1">
                                     Create or Edit Geofences
                                 </span>
-                                <span className='text-muted font-weight-bold font-size-sm mt-1'>
-                                    <label className="required">&nbsp;</label> All fields marked with asterisks are required
+                                <span className="text-muted font-weight-bold font-size-sm mt-1">
+                                    <label className="required">&nbsp;</label> All fields marked with asterisks are
+                                    required
                                 </span>
                             </div>
-                            <div className='card-toolbar'>
+                            <div className="card-toolbar">
                                 <button
-                                    type='submit'
-                                    className='btn btn-success mr-2'
-                                    disabled={
-                                        isSubmitting ||
-                                        (touched && !isValid)
-                                    }>
+                                    type="submit"
+                                    className="btn btn-success mr-2"
+                                    disabled={isSubmitting || (touched && !isValid)}
+                                >
                                     <DoneIcon />
                                     Save Changes
                                     {isSubmitting}
                                 </button>
-                                <Link
-                                    to='/geofences/list'
-                                    className='btn btn-secondary'>
+                                <Link to="/geofences/list" className="btn btn-secondary">
                                     Back to list
                                 </Link>
                             </div>
@@ -256,37 +310,67 @@ function GeofencingComponent(props) {
                         {/* end::Header */}
 
                         {/* begin::Form */}
-                        <div className='form'>
-                            <div className='card-body'>
-                                <div className='form-group row'>
-
-                                    <div className='col-xl-6 col-lg-6'>
+                        <div className="form">
+                            <div className="card-body">
+                                <div className="form-group row">
+                                    <div className="col-xl-12 col-lg-12">
+                                        <label className={`required`}>Tenant</label>
+                                        <Field
+                                            disabled={!isAddMode}
+                                            validate={validateTenant}
+                                            type={"number"}
+                                            as="select"
+                                            className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                { errors, touched },
+                                                "tenant.id"
+                                            )}`}
+                                            name="tenant.id"
+                                            placeholder=""
+                                            {...getFieldProps("tenant.id")}
+                                            onChange={e => {
+                                                setFieldValue("tenant.id", e.target.value);
+                                                handleChangeTenant(e);
+                                            }}
+                                        >
+                                            {isAddMode && <option key="" value=""></option>}
+                                            {tenantsOptions.map(e => {
+                                                return (
+                                                    <option key={e.id} value={e.id}>
+                                                        {e.name}
+                                                    </option>
+                                                );
+                                            })}
+                                        </Field>
+                                        <ErrorMessage name="tenant_id" component="div" className="invalid-feedback" />
+                                    </div>
+                                </div>
+                                <div className="form-group row">
+                                    <div className="col-xl-6 col-lg-6">
                                         <label className={`required`}>Label</label>
                                         <Field
                                             as="input"
                                             className={`form-control form-control-lg form-control-solid ${getInputClasses(
                                                 { errors, touched },
-                                                'label'
+                                                "label"
                                             )}`}
-                                            name='name'
-                                            placeholder='Set the Geofence label'
-                                            {...getFieldProps('label')}
+                                            name="name"
+                                            placeholder="Set the Geofence label"
+                                            {...getFieldProps("label")}
                                         />
                                         <ErrorMessage name="label" component="div" className="invalid-feedback" />
                                     </div>
 
-
-                                    <div className='col-xl-6 col-lg-6'>
+                                    <div className="col-xl-6 col-lg-6">
                                         <label>Threshold</label>
                                         <div>
                                             <AsyncTypeahead
-                                                id='typeahead-threshold'
-                                                labelKey='label'
+                                                id="typeahead-threshold"
+                                                labelKey="label"
                                                 size="lg"
                                                 multiple
                                                 onChange={onChangeThreshold}
                                                 options={thresholds}
-                                                placeholder=''
+                                                placeholder=""
                                                 selected={selectedThresholds}
                                                 onSearch={handleSearchThreshold}
                                                 isLoading={loading}
@@ -295,28 +379,25 @@ function GeofencingComponent(props) {
                                             />
                                         </div>
                                     </div>
-
                                 </div>
 
-                                <div className='form-group row'>
-                                    <div className='col-xl-6 col-lg-6'>
+                                <div className="form-group row">
+                                    <div className="col-xl-6 col-lg-6">
                                         <label>Description</label>
                                         <Field
                                             as="textarea"
-                                            rows='1'
+                                            rows="1"
                                             className={`form-control form-control-lg form-control-solid ${getInputClasses(
                                                 { errors, touched },
-                                                'description'
+                                                "description"
                                             )}`}
-                                            name='description'
-                                            placeholder='Set the description'
-                                            {...getFieldProps(
-                                                'description'
-                                            )}
+                                            name="description"
+                                            placeholder="Set the description"
+                                            {...getFieldProps("description")}
                                         />
                                     </div>
 
-                                    <div className='col-xl-6 col-lg-6'>
+                                    <div className="col-xl-6 col-lg-6">
                                         <label className={`required`}>Alert Mode</label>
                                         <Field
                                             type={"number"}
@@ -324,30 +405,29 @@ function GeofencingComponent(props) {
                                             default="1"
                                             className={`form-control form-control-lg form-control-solid ${getInputClasses(
                                                 { errors, touched },
-                                                'alert_mode'
+                                                "alert_mode"
                                             )}`}
-                                            name='alert_mode'
-                                            placeholder=''
-                                            {...getFieldProps('alert_mode')}
+                                            name="alert_mode"
+                                            placeholder=""
+                                            {...getFieldProps("alert_mode")}
                                         >
-                                            {options.map((e) => {
-                                                return (<option key={e.id} value={e.id}>{e.name}</option>);
+                                            {options.map(e => {
+                                                return (
+                                                    <option key={e.id} value={e.id}>
+                                                        {e.name}
+                                                    </option>
+                                                );
                                             })}
                                         </Field>
-                                        <ErrorMessage
-                                            name='alert_mode'
-                                            component='div'
-                                            className='invalid-feedback'
-                                        />
+                                        <ErrorMessage name="alert_mode" component="div" className="invalid-feedback" />
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                         {/* end::Form */}
                         {/* begin::Form */}
-                        <div className='form'>
-                            <div className='card-body'>
+                        <div className="form">
+                            <div className="card-body">
                                 <div className="form-group row">
                                     {/*begin:: Map */}
                                     <div className={`col-xl-6 col-lg-6`}>
@@ -355,7 +435,7 @@ function GeofencingComponent(props) {
                                     </div>
                                     <div className={`col-xl-6 col-lg-6  `}>
                                         <TableGrid
-                                            title=''
+                                            title=""
                                             columns={columnsGeofences}
                                             data={geofences}
                                             style={{ height: 500 }}
@@ -368,7 +448,7 @@ function GeofencingComponent(props) {
                                                             dataUpdate[index] = newData;
                                                             onChangeShape(dataUpdate);
                                                             resolve();
-                                                        }, 1000)
+                                                        }, 1000);
                                                     })
                                             }}
                                         />
@@ -378,7 +458,7 @@ function GeofencingComponent(props) {
                         </div>
                         {/* end::Form */}
                     </form>
-                }
+                )}
             </Formik>
         </BlockUi>
     );

@@ -38,29 +38,30 @@ export function AsideMenuList({ layoutProps }) {
             </span>
             <span className="menu-text">Dashboards</span>
           </NavLink>
-          {permissions.canViewContainerDashboard &&
-            <div className="menu-submenu">
-              <i className="menu-arrow" />
-              <ul className="menu-subnav">
-                <li className="menu-item menu-item-parent" aria-haspopup="true">
-                  <span className="menu-link">
-                    <span className="menu-text">Dashboard</span>
-                  </span>
-                </li>
-                {/*begin::2 Level*/}
-                <li
-                  className={`menu-item ${getMenuItemActive("/dashboard/default")}`}
-                  aria-haspopup="true"
-                >
-                  <NavLink className="menu-link" to="/dashboard/default">
-                    <i className="menu-bullet menu-bullet-dot">
-                      <span />
-                    </i>
-                    <span className="menu-text">Dashboard</span>
-                  </NavLink>
-                </li>
-                {/*end::2 Level*/}
-                {/*begin::2 Level*/}
+
+          <div className="menu-submenu">
+            <i className="menu-arrow" />
+            <ul className="menu-subnav">
+              <li className="menu-item menu-item-parent" aria-haspopup="true">
+                <span className="menu-link">
+                  <span className="menu-text">Dashboard</span>
+                </span>
+              </li>
+              {/*begin::2 Level*/}
+              <li
+                className={`menu-item ${getMenuItemActive("/dashboard/default")}`}
+                aria-haspopup="true"
+              >
+                <NavLink className="menu-link" to="/dashboard/default">
+                  <i className="menu-bullet menu-bullet-dot">
+                    <span />
+                  </i>
+                  <span className="menu-text">Dashboard</span>
+                </NavLink>
+              </li>
+              {/*end::2 Level*/}
+              {/*begin::2 Level*/}
+              {permissions.canViewContainerDashboard &&
                 <li
                   className={`menu-item ${getMenuItemActive("/dashboard/containers")}`}
                   aria-haspopup="true"
@@ -69,38 +70,28 @@ export function AsideMenuList({ layoutProps }) {
                     <i className="menu-bullet menu-bullet-dot">
                       <span />
                     </i>
-                    <span className="menu-text">Container Dashboard</span>
+                    <span className="menu-text">Containers Dashboards</span>
                   </NavLink>
                 </li>
-                {/*end::2 Level*/}
-                {/*begin::2 Level*/}
+              }
+              {/*end::2 Level*/}
+              {/*begin::2 Level*/}
+              {permissions.canViewRoutesDashboard &&
                 <li
-                  className={`menu-item ${getMenuItemActive("/dashboard/general/containers")}`}
+                  className={`menu-item ${getMenuItemActive("/dashboard/route")}`}
                   aria-haspopup="true"
                 >
-                  <NavLink className="menu-link" to="/dashboard/general/containers">
+                  <NavLink className="menu-link" to="/dashboard/route">
                     <i className="menu-bullet menu-bullet-dot">
                       <span />
                     </i>
-                    <span className="menu-text">Container Dashboard Kibana</span>
+                    <span className="menu-text">Routes Dashboards</span>
                   </NavLink>
                 </li>
-                {/*end::2 Level*/}
-                                {/*begin::2 Level*/}
-                                <li
-                  className={`menu-item ${getMenuItemActive("/dashboard/worldmap")}`}
-                  aria-haspopup="true"
-                >
-                  <NavLink className="menu-link" to="/dashboard/worldmap">
-                    <i className="menu-bullet menu-bullet-dot">
-                      <span />
-                    </i>
-                    <span className="menu-text">World Dashboard</span>
-                  </NavLink>
-                </li>
-                {/*end::2 Level*/}
-              </ul>
-            </div>}
+              }
+              {/*end::2 Level*/}
+            </ul>
+          </div>
         </li>
         {/*end::1 Level*/}
 
@@ -198,30 +189,34 @@ export function AsideMenuList({ layoutProps }) {
                 </li>
                 {/*end::2 Level*/}
                 {/*begin::2 Level*/}
-                <li
-                  className={`menu-item ${getMenuItemActive("/devices/provision")}`}
-                  aria-haspopup="true"
-                >
-                  <NavLink className="menu-link" to="/devices/provision">
-                    <i className="menu-bullet menu-bullet-dot">
-                      <span />
-                    </i>
-                    <span className="menu-text">Device Provision</span>
-                  </NavLink>
-                </li>
+                {permissions.canCreateDevices &&
+                  <li
+                    className={`menu-item ${getMenuItemActive("/devices/provision")}`}
+                    aria-haspopup="true"
+                  >
+                    <NavLink className="menu-link" to="/devices/provision">
+                      <i className="menu-bullet menu-bullet-dot">
+                        <span />
+                      </i>
+                      <span className="menu-text">Device Provision</span>
+                    </NavLink>
+                  </li>
+                }
                 {/*end::2 Level*/}
                 {/*begin::2 Level*/}
-                <li
-                  className={`menu-item ${getMenuItemActive("/device/upload")}`}
-                  aria-haspopup="true"
-                >
-                  <NavLink className="menu-link" to="/devices/upload">
-                    <i className="menu-bullet menu-bullet-dot">
-                      <span />
-                    </i>
-                    <span className="menu-text">Device Upload</span>
-                  </NavLink>
-                </li>
+                {permissions.canCreateDevices &&
+                  <li
+                    className={`menu-item ${getMenuItemActive("/device/upload")}`}
+                    aria-haspopup="true"
+                  >
+                    <NavLink className="menu-link" to="/devices/upload">
+                      <i className="menu-bullet menu-bullet-dot">
+                        <span />
+                      </i>
+                      <span className="menu-text">Device Upload</span>
+                    </NavLink>
+                  </li>
+                }
                 {/*end::2 Level*/}
               </ul>
             </div>
@@ -261,7 +256,7 @@ export function AsideMenuList({ layoutProps }) {
         }
         {/*end::1 Level*/}
         {/*begin::1 Level*/}
-        {permissions.canViewLocations &&
+        {(permissions.canViewLocations || permissions.canViewSubLocations) &&
           <li
             className={`menu-item ${getMenuItemActive("/locations", true) || getMenuItemActive("/sublocations", true)}`}
             aria-haspopup="true"
@@ -281,30 +276,34 @@ export function AsideMenuList({ layoutProps }) {
                   </span>
                 </li>
                 {/*begin::2 Level*/}
-                <li
-                  className={`menu-item ${getMenuItemActive("/locations/list")}`}
-                  aria-haspopup="true"
-                >
-                  <NavLink className="menu-link" to="/locations/list">
-                    <i className="menu-bullet menu-bullet-dot">
-                      <span />
-                    </i>
-                    <span className="menu-text">Locations</span>
-                  </NavLink>
-                </li>
+                {permissions.canViewLocations &&
+                  <li
+                    className={`menu-item ${getMenuItemActive("/locations/list")}`}
+                    aria-haspopup="true"
+                  >
+                    <NavLink className="menu-link" to="/locations/list">
+                      <i className="menu-bullet menu-bullet-dot">
+                        <span />
+                      </i>
+                      <span className="menu-text">Locations</span>
+                    </NavLink>
+                  </li>
+                }
                 {/*end::2 Level*/}
                 {/*begin::2 Level*/}
-                <li
-                  className={`menu-item ${getMenuItemActive("/sublocations/list")}`}
-                  aria-haspopup="true"
-                >
-                  <NavLink className="menu-link" to="/sublocations/list">
-                    <i className="menu-bullet menu-bullet-dot">
-                      <span />
-                    </i>
-                    <span className="menu-text">Sublocations</span>
-                  </NavLink>
-                </li>
+                {permissions.canViewSubLocations &&
+                  <li
+                    className={`menu-item ${getMenuItemActive("/sublocations/list")}`}
+                    aria-haspopup="true"
+                  >
+                    <NavLink className="menu-link" to="/sublocations/list">
+                      <i className="menu-bullet menu-bullet-dot">
+                        <span />
+                      </i>
+                      <span className="menu-text">Sublocations</span>
+                    </NavLink>
+                  </li>
+                }
                 {/*end::2 Level*/}
               </ul>
             </div>
@@ -438,6 +437,7 @@ export function AsideMenuList({ layoutProps }) {
             </NavLink>
           </li>
         }
+        {permissions.canViewImpacts &&
           <li
             className={`menu-item ${getMenuItemActive("/impacts", false)}`}
             aria-haspopup="true"
@@ -449,7 +449,20 @@ export function AsideMenuList({ layoutProps }) {
               <span className="menu-text">Impacts (BETA)</span>
             </NavLink>
           </li>
-        
+        }
+
+        <li
+          className={`menu-item ${getMenuItemActive("/operation/tracking", false)}`}
+          aria-haspopup="true"
+        >
+          <NavLink className="menu-link" to="/operation/tracking">
+            <span className="svg-icon menu-icon">
+              <SVG src={toAbsoluteUrl("/media/svg/icons/General/Attachment2.svg")} />
+            </span>
+            <span className="menu-text">Operation (BETA)</span>
+          </NavLink>
+        </li>
+
       </ul>
       {/* end::Menu Nav */}
     </>

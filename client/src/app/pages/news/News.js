@@ -6,6 +6,20 @@ import Typography from '@mui/material/Typography';
 
 const versions = [
     {
+        versionNumber: "V.0.1.3", date: "06/12/2022", changes:
+            ["1. We added all Dashboards to a single page: 'Dashboards - Containers Dashboards'. Now you can use Tabs to navigate between dashboards"]
+    },
+    {
+        versionNumber: "V.0.1.2", date: "02/12/2022", changes:
+            ["1. New General Dashboard",
+                "2. Updates to World Dashboard - Now includes Longstanding and reverse geocoding",
+                "3. New Continente Dashboard (First Version)"]
+    },
+    {
+        versionNumber: "V.0.1.1", date: "02/12/2022", changes:
+            ["1. Increased Size of all Sublocations"]
+    },
+    {
         versionNumber: "V.0.1.0", date: "24/11/2022", changes:
             ["Major Update!", "1. World Map Available", "2. Reverse Geocoding on Dashboards", "3. Longstanding by coordinates and not by Location/Sublocation", "4. Increased size of PTLIS"]
     },

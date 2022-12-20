@@ -17,6 +17,8 @@
   "UPLOAD.FILE_EMPTY": "File is required",
   "DEVICE.CREATED": "Device created successfully",
   "DEVICE.UPDATED": "Device updated successfully",
+  "NOTIFICATION_TEMPLATE.CREATED": "Notification Template created successfully",
+  "NOTIFICATION_TEMPLATE.UPDATED": "Notification Template updated successfully",
   "DEVICE.CONFIG_MESSAGE": "Configuration message sent successfully",
   "DEVICE.THRESHOLD.SUCCESS": "Thresholds associated successfully",
   "DEVICE.QTT_PENDING_MESSAGES": "Quantity of pending messages waiting send to device",
@@ -54,5 +56,6 @@
   "ASSET_DEVICE.INCLUDED": "Devices added into asset",
   "ASSET_DEVICE.REMOVED": "Device removed from asset",
   "ROUTES.CREATED": "Route created successfully",
-  "ROUTES.UPDATED": "Route updated successfully"
+  "ROUTES.UPDATED": "Route updated successfully",
+  "GENERAL_ERROR": "There was an error processing your request"
 }

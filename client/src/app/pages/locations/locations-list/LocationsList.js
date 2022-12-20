@@ -28,6 +28,7 @@ export function LocationsList() {
             icon: permissions.canEditLocations ? EditIcon : MdSpaceDashboard,
             tooltip: permissions.canEditLocations ? 'Edit Location' : 'View Location',
             onClick: (_, rowData) => {
+                console.log(rowData)
                 history.push(`/locations/edit/${rowData.id}`);
             },
         })
@@ -39,7 +40,10 @@ export function LocationsList() {
         {
             field: 'name',
             title: 'Name',
-        },
+        }, {
+            field: 'tenant.name',
+            title: 'Tenant'
+        }
     ];
 
     return <Card>

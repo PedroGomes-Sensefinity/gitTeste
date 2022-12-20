@@ -5,7 +5,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import TableGrid from '../../../components/table-grid/TableGrid';
+import TableGridV2 from '../../../components/table-grid/TableGridV2';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -44,6 +44,9 @@ export function NotificationTemplatesList() {
         {
             field: 'type',
             title: 'Type',
+        }, {
+            field: 'tenant.name',
+            title: 'Tenant'
         }
     ];
 
@@ -61,12 +64,12 @@ export function NotificationTemplatesList() {
                         <AddIcon className={classes.leftIcon} />
                         New Notification Template
                     </Button> : <></>}
-                <TableGrid
+                <TableGridV2
                     actions={actions}
                     title=''
                     columns={columns}
-                    endpoint={'notificationstemplate'}
-                    dataField='notifications_templates'
+                    endpoint={'/v2/notification-templates'}
+                    dataField='notification_templates'
                 />
             </CardContent>
         </Card>

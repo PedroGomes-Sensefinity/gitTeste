@@ -9,9 +9,7 @@ import { CreateAsset } from "./pages/assets/assets-form/CreateAsset";
 import { AssetsList } from "./pages/assets/assets-list/AssetsList";
 import { BoardFamiliesForm } from "./pages/board-families/form/BoardFamiliesForm";
 import { BoardFamiliesList } from "./pages/board-families/list/BoardFamiliesList";
-import { ContainersDashboard } from "./pages/dashboards/ContainersDashboard";
 import { Dashboard } from "./pages/dashboards/Dashboard";
-import { GeneralContainers } from "./pages/dashboards/GeneralContainers";
 import { CreateDevice } from "./pages/devices/device/CreateDevice";
 import { Device } from "./pages/devices/device/Device";
 import { DevicesList } from "./pages/devices/devices-list/DevicesList";
@@ -44,7 +42,10 @@ import { SubLocationsList } from "./pages/locations/sublocations-list/Sublocatio
 import { SubLocationsForm } from "./pages/locations/sublocation-form/SubLocationsForm";
 import { ErrorPage1 } from "./modules/ErrorsExamples/ErrorPage1";
 import { Impacts } from "./pages/impacts/Impacts";
-import { WorldDashboard } from "./pages/dashboards/WorldDashboard";
+import { DashboardsContainers } from "./pages/dashboards/containers/DashboardsContainers";
+import {DashboardsRoutes} from "./pages/dashboards/routes/DashboardsRoutes";
+import TrackingOperation from "./components/form/TrackingOperation";
+
 
 
 /*const UserProfilepage = lazy(() =>
@@ -68,9 +69,10 @@ export default function BasePage() {
           <Redirect exact from="/" to="/dashboard/default" />
         }
         {permissions.canViewContainerDashboard && [
-          <ContentRoute key="/dashboard/containers" path="/dashboard/containers" component={ContainersDashboard} />,
-          <ContentRoute key="/dashboard/containers/general" path="/dashboard/general/containers" component={GeneralContainers} />,
-          <ContentRoute key="/dashboard/worldmap" path="/dashboard/worldmap" component={WorldDashboard} />
+          <ContentRoute key="/dashboard/containers" path="/dashboard/containers" component={DashboardsContainers} />,
+        ]}
+        {permissions.canViewRoutesDashboard && [
+          <ContentRoute key="/dashboard/route" path="/dashboard/route" component={DashboardsRoutes} />,
         ]}
         <ContentRoute path="/dashboard/default" component={Dashboard} />
 
@@ -172,7 +174,7 @@ export default function BasePage() {
           <ContentRoute key="/locations/new" path="/locations/new" component={LocationsForm} />
         ]}
         { /* Sublocations Routes*/}
-        {permissions.canViewLocations && [          
+        {permissions.canViewSubLocations && [          
           <ContentRoute key="/sublocations/edit/:id" path="/sublocations/edit/:id" component={SubLocationsForm} />,
           <ContentRoute key="/sublocations/list" path="/sublocations/list" component={SubLocationsList} />,
           <ContentRoute key="/sublocations/new" path="/sublocations/new" component={SubLocationsForm} />,
@@ -180,6 +182,7 @@ export default function BasePage() {
         { /* what's new Page*/}
         <ContentRoute key="/whatsnew" path="/whatsnew" component={News} />,
         <ContentRoute key="/impacts" path="/impacts" component={Impacts} />,
+        <ContentRoute key="/operation/tracking" path="/operation/tracking" component={TrackingOperation} />,
 
         <ContentRoute key="/*" path="/*" component={ErrorPage1} />,
       </Switch>

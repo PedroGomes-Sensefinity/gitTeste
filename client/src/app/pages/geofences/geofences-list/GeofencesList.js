@@ -6,7 +6,7 @@ import AddIcon from "@material-ui/icons/Add";
 import EditIcon from '@material-ui/icons/Edit';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import TableGrid from '../../../components/table-grid/TableGrid';
+import TableGridV2 from '../../../components/table-grid/TableGridV2';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -50,6 +50,10 @@ export function GeofencesList() {
             field: 'alert_mode',
             title: 'Alert Mode',
         },
+        {
+            field: 'tenant.name',
+            title: 'Tenant',
+        },
     ];
 
 
@@ -64,11 +68,11 @@ export function GeofencesList() {
                     <AddIcon className={classes.leftIcon} />
                     New Geofence
                 </Button> : <></>}
-            <TableGrid
+            <TableGridV2
                 actions={actions}
                 title=''
                 columns={columns}
-                endpoint={'geofence'}
+                endpoint={'/v2/geofences'}
                 dataField='geofences'
             />
         </CardContent>

@@ -22,19 +22,22 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function AssetsFormComponent(props) {
-    const [ruleTypeOptions, setRuleTypeOptions] = useState([{ id: 1, name: "No Types", type: "NA" }]);
+    const [ruleTypeOptions, setRuleTypeOptions] = useState([{ id: 0, name: "Asset Types Not Found", type: "NA" }]);
+    const [tenantsOptions, setTenantsOptions] = useState([{ id: 0, name: "Tenants Not Found" }]);
     const isAddMode = !props.id;
     const [blocking, setBlocking] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const [thresholds, setThresholds] = useState([]);
     const [selectedThresholds, setSelectedThresholds] = useState([]);
+    const [tenantId, setTenantId] = useState(0);
 
     const initialValues = props.asset || {
         id: 0,
         label: "",
         description: "",
         asset_type: { id: 1 },
+        tenant: { id: 0, name: "Tenants Not Found" },
         devices: [],
         weight: 0.0,
         type: []
@@ -49,12 +52,29 @@ function AssetsFormComponent(props) {
             });
             setRuleTypeOptions(ruleTypeOptions);
         });
+        if (isAddMode) {
+            apiServiceV2.get("v2/tenants/children").then(response => {
+                const respTenants = response.tenants_new || [];
+
+                const tenantsOptionsR = respTenants.map(tenant => {
+                    return { id: tenant.id, name: tenant.name };
+                });
+                setTenantsOptions(tenantsOptionsR);
+            });
+        } else {
+            apiService.getByEndpoint("tenant_new/" + props.asset.tenant.id).then(response => {
+                const respTenantNews = response.tenants_new || [];
+                if (respTenantNews[0] != undefined) {
+                    setTenantsOptions([{ id: props.asset.tenant.id, name: respTenantNews[0].name }]);
+                }
+            });
+        }
 
         if (props.asset !== undefined) {
             props.asset.threshold_ids.forEach(id => {
-                apiService.getById("threshold", id).then(response => {
+                apiServiceV2.get("v2/thresholds/"+ id).then(response => {
                     const thresholdsSelected = selectedThresholds;
-                    thresholdsSelected.push(response.thresholds[0]);
+                    thresholdsSelected.push({id: response.threshold.id, label : response.threshold.label});
                     setSelectedThresholds([...thresholdsSelected]);
                 });
             });
@@ -65,18 +85,37 @@ function AssetsFormComponent(props) {
         setSelectedThresholds(opt);
     };
 
+    const handleChangeTenant = event => {
+        setTenantId(event.target.value);
+        setThresholds([]);
+        setSelectedThresholds([]);
+    };
+
     const handleSearchThreshold = query => {
         setLoading(true);
+        if (isAddMode) {
+            apiServiceV2.getByLimitOffsetSearchTenant("v2/thresholds", 50, 0, query, tenantId).then(response => {
+                const thresholds =
+                    typeof response.thresholds !== undefined && Array.isArray(response.thresholds)
+                        ? filterThresholdSelected(response.thresholds)
+                        : [];
 
-        apiService.getByText("threshold", query, 100, 0).then(response => {
-            const thresholds =
-                typeof response.thresholds !== undefined && Array.isArray(response.thresholds)
-                    ? filterThresholdSelected(response.thresholds)
-                    : [];
+                setThresholds(thresholds);
+                setLoading(false);
+            });
+        } else {
+            apiServiceV2
+                .getByLimitOffsetSearchTenant("v2/thresholds", 50, 0, query, props.asset.tenant.id)
+                .then(response => {
+                    const thresholds =
+                        typeof response.thresholds !== undefined && Array.isArray(response.thresholds)
+                            ? filterThresholdSelected(response.thresholds)
+                            : [];
 
-            setThresholds(thresholds);
-            setLoading(false);
-        });
+                    setThresholds(thresholds);
+                    setLoading(false);
+                });
+        }
     };
 
     const filterThresholdSelected = options => {
@@ -151,6 +190,18 @@ function AssetsFormComponent(props) {
         return error;
     };
 
+    const validateTenant = value => {
+        let error;
+        if (!isAddMode) {
+            return error;
+        }
+        if (value === undefined || value === "" || value === 0 || isNaN(value)) {
+            error = "Select Asset Type";
+            return error;
+        }
+        return error;
+    };
+
     const validationSchema = Yup.object().shape({
         label: Yup.string().required("Label is required")
     });
@@ -166,8 +217,14 @@ function AssetsFormComponent(props) {
             ? props.intl.formatMessage({ id: "ASSETS.CREATED" })
             : props.intl.formatMessage({ id: "ASSETS.UPDATED" });
 
+        // Prepare Request
         fields["threshold_ids"] = selectedThresholds.map(t => t.id);
         fields["asset_type_id"] = fields.asset_type.id;
+        if (isAddMode) {
+            fields["tenant_id"] = parseInt(fields.tenant.id);
+        }
+        fields["tenant"] = {};
+        console.log(fields);
         assetsServiceV2[method](fields)
             .then(response => {
                 toaster.notify("success", msgSuccess);
@@ -179,11 +236,11 @@ function AssetsFormComponent(props) {
                     setFieldValue("label", "", false);
                     setFieldValue("description", "", false);
                     setFieldValue("devices", [], false);
-                    setSelectedThresholds([])
+                    setSelectedThresholds([]);
                 }
             })
             .catch(err => {
-                console.log(err)
+                console.log(err);
                 toaster.notify("error", err.status);
                 setSubmitting(false);
                 setBlocking(false);
@@ -208,7 +265,7 @@ function AssetsFormComponent(props) {
                     });
                 }}
             >
-                {({ isValid, getFieldProps, errors, touched, isSubmitting, handleSubmit }) => (
+                {({ isValid, getFieldProps, errors, touched, isSubmitting, handleSubmit, setFieldValue }) => (
                     <form className="card card-custom" onSubmit={handleSubmit}>
                         {/* begin::Header */}
                         <div className={`card-header py-3 ` + classes.headerMarginTop}>
@@ -242,6 +299,38 @@ function AssetsFormComponent(props) {
                         {/* begin::Form */}
                         <div className="form">
                             <div className="card-body">
+                                <div className="form-group row">
+                                    <div className="col-xl-12 col-lg-12">
+                                        <label className={`required`}>Tenant</label>
+                                        <Field
+                                            disabled={!isAddMode}
+                                            validate={validateTenant}
+                                            type={"number"}
+                                            as="select"
+                                            className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                { errors, touched },
+                                                "tenant.id"
+                                            )}`}
+                                            name="tenant.id"
+                                            placeholder=""
+                                            {...getFieldProps("tenant.id")}
+                                            onChange={e => {
+                                                setFieldValue("tenant.id", e.target.value);
+                                                handleChangeTenant(e);
+                                            }}
+                                        >
+                                            {isAddMode && <option key="" value=""></option>}
+                                            {tenantsOptions.map(e => {
+                                                return (
+                                                    <option key={e.id} value={e.id}>
+                                                        {e.name}
+                                                    </option>
+                                                );
+                                            })}
+                                        </Field>
+                                        <ErrorMessage name="tenant_id" component="div" className="invalid-feedback" />
+                                    </div>
+                                </div>
                                 <div className="form-group row">
                                     <div className="col-xl-6 col-lg-6">
                                         <label className={`required`}>Type</label>

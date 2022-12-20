@@ -13,6 +13,7 @@ import tenantService from '../../services/tenantService';
 import { getInputClasses } from '../../utils/formik';
 import toaster from '../../utils/toaster';
 import '../../utils/yup-validations';
+import { useSelector } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
     headerMarginTop: {
@@ -293,7 +294,7 @@ function DeviceFormComponent(props) {
                                 </span>
                             </div>
                             <div className='card-toolbar'>
-                                <button
+                            {permissions.canEditDevices && <button
                                     type='submit'
                                     className='btn btn-success mr-2'
                                     disabled={
@@ -303,7 +304,7 @@ function DeviceFormComponent(props) {
                                     <DoneIcon />
                                     Save Changes
                                     {isSubmitting}
-                                </button>
+                                </button>}
                                 <Link
                                     to='/devices/list'
                                     className='btn btn-secondary'>
@@ -329,7 +330,7 @@ function DeviceFormComponent(props) {
                                                 name='id'
                                                 placeholder='Set the Device ID'
                                                 {...getFieldProps('id')}
-                                                disabled={!isAddMode}
+                                                disabled={!isAddMode || !permissions.canEditDevices}
                                                 maxLength={18}
                                             />
                                             <ErrorMessage name="id" component="div" className="invalid-feedback" />
@@ -345,6 +346,7 @@ function DeviceFormComponent(props) {
                                                 'label'
                                             )}`}
                                             name='label'
+                                            disabled={!permissions.canEditDevices}
                                             placeholder='Set the Device Label'
                                             {...getFieldProps('label')}
                                         />
@@ -443,6 +445,7 @@ function DeviceFormComponent(props) {
                                                 )}`}
                                                 name='board'
                                                 placeholder='Set the Board ID'
+                                                disabled={!permissions.canEditDevices}
                                                 {...getFieldProps('board')}
                                             />
                                             <ErrorMessage name="board" component="div" className="invalid-feedback" />
@@ -459,6 +462,7 @@ function DeviceFormComponent(props) {
                                                 )}`}
                                                 name='imei'
                                                 placeholder='Set the Device IMEI'
+                                                disabled={!permissions.canEditDevices}
                                                 {...getFieldProps('imei')}
                                             />
                                             <ErrorMessage name="imei" component="div" className="invalid-feedback" />
@@ -480,6 +484,7 @@ function DeviceFormComponent(props) {
                                                     )}`}
                                                     name='meta_data'
                                                     placeholder='Set the meta_data'
+                                                    disabled={!permissions.canEditDevices}
                                                     {...getFieldProps(
                                                         'meta_data'
                                                     )}
@@ -500,6 +505,7 @@ function DeviceFormComponent(props) {
                                                 )}`}
                                                 name='comments'
                                                 placeholder='Comments and Observations'
+                                                disabled={!permissions.canEditDevices}
                                                 {...getFieldProps(
                                                     'comments'
                                                 )}
@@ -521,6 +527,7 @@ function DeviceFormComponent(props) {
                                                 )}`}
                                                 name='meta_data'
                                                 placeholder='Device metadata'
+                                                disabled={!permissions.canEditDevices}
                                                 {...getFieldProps(
                                                     'meta_data'
                                                 )}
