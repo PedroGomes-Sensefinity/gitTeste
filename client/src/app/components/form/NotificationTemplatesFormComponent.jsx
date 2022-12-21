@@ -506,7 +506,7 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                                         <div className=''>
                                                             <span>
                                                                 <b>Time variables</b>: %timestamp%  <b>Device variables</b>: %device_group% %device_id%
-                                                                %device_label% <b>Measurements variables</b>: %measurement_type% %measurement_value% <b>Threshold variables</b>: %threshold_name% %threshold_id% <b>Asset variables</b>: %asset_id% %asset_label% <b>Geofences variables</b>: %geofence_id% %geofence_label% %alert_status%
+                                                                %device_label% <b>Measurements variables</b>: %measurement_type% %measurement_value% <b>Threshold variables</b>: %threshold_name% %threshold_id% <b>Asset variables</b>: %asset_id% %asset_label% <b>Geofences variables</b>: %geofence_id% %geofence_label% %alert_status% <b>Shape variables</b>: %shape_id% %shape_label%
                                                             </span>
                                                         </div>
                                                     </div>
@@ -647,7 +647,7 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                                         <div className=''>
                                                             <span>
                                                                 <b>Time variables</b>: %timestamp%  <b>Device variables</b>: %device_group% %device_id%
-                                                                %device_label% <b>Measurements variables</b>: %measurement_type% %measurement_value% <b>Threshold variables</b>: %threshold_name% %threshold_id% <b>Asset variables</b>: %asset_id% %asset_label% <b>Geofences variables</b>: %geofence_id% %geofence_label% %alert_status%
+                                                                %device_label% <b>Measurements variables</b>: %measurement_type% %measurement_value% <b>Threshold variables</b>: %threshold_name% %threshold_id% <b>Asset variables</b>: %asset_id% %asset_label% <b>Geofences variables</b>: %geofence_id% %geofence_label% %alert_status% <b>Shape variables</b>: %shape_id% %shape_label%
                                                             </span>
                                                         </div>
                                                     </div>
