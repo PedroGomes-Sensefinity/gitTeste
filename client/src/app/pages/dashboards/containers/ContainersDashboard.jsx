@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import apiService from "../../../services/apiService";
+import apiServiceV2 from "../../../services/v2/apiServiceV2";
 import BlockUi from "react-block-ui";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -9,6 +10,7 @@ import TableRow from "@mui/material/TableRow";
 import { styled } from "@mui/material/styles";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import { injectIntl } from "react-intl";
+import Select from "react-select";
 
 export function ContainersDashboard() {
     const locationStyle = { fontWeight: "bold", textAlign: "center" };
@@ -50,8 +52,76 @@ export function ContainersDashboard() {
     const [data60_90, setData60_90] = useState([0]);
     const [data90, setData90] = useState([0]);
 
+    const [containersOptions, setContainersOptions] = useState([{ id: 0, label: "Containers Not Found" }]);
+    const [selectedOption, setSelectedOption] = useState(null);
+
     useEffect(() => {
-        apiService.getByEndpointDashboard("dashboards/containers/locations").then(response => {
+        apiServiceV2.get("v2/tenants/containers").then(response => {
+            const respContainers = response.containers || [];
+
+            const containersOptionsR = respContainers.map(container => {
+                return { id: container.id, label: container.label };
+            });
+            setContainersOptions(containersOptionsR);
+            if(containersOptionsR.length > 0 ){
+                apiService.getByEndpointDashboard("dashboards/containers/locations?container_id=" + containersOptionsR[0].id).then(response => {
+                    if (response.locations["Madeira"] !== undefined) {
+                        setMadeiraCount(response.locations["Madeira"]);
+                    }
+                    if (response.locations["Açores"] !== undefined) {
+                        setAcoresCount(response.locations["Açores"]);
+                    }
+                    if (response.locations["Cabo Verde"] !== undefined) {
+                        setCaboVerdeCount(response.locations["Cabo Verde"]);
+                    }
+                    if (response.locations["Continente"] !== undefined) {
+                        setContinenteCount(response.locations["Continente"]);
+                    }
+                    if (response.locations["Outros"] !== undefined) {
+                        setOutrosCount(response.locations["Outros"]);
+                    }
+                    if (response.locations["In Transit"] !== undefined) {
+                        setIntrasitCount(response.locations["In Transit"]);
+                    }
+                });
+                apiService.getByEndpointDashboard("dashboards/containers/longstandings?container_id=" + containersOptionsR[0].id).then(response => {
+                    const ports_R = [];
+                    const data15_R = [];
+                    const data15_30_R = [];
+                    const data30_60_R = [];
+                    const data60_90_R = [];
+                    const data90_R = [];
+                    for (const longStanding of response) {
+                        ports_R.push(longStanding.port_code);
+                        data15_R.push(longStanding.interval_count.less15);
+                        data15_30_R.push(longStanding.interval_count.interval15_30);
+                        data30_60_R.push(longStanding.interval_count.interval30_60);
+                        data60_90_R.push(longStanding.interval_count.interval60_90);
+                        data90_R.push(longStanding.interval_count.more90);
+                    }
+                    if (ports.length !== 0) {
+                        setPorts(ports_R);
+                        setData15(data15_R);
+                        setData15_30(data15_30_R);
+                        setData30_60(data30_60_R);
+                        setData60_90(data60_90_R);
+                        setData90(data90_R);
+                    }
+                });
+            }
+        });
+        
+        apiService.getByEndpointDashboard("dashboards/containers").then(response => {});
+    }, []);
+
+    function handleTable(e) {
+        console.log(e.target.innerHTML);
+        console.log(e.target.cellIndex);
+        console.log(e.target.parentElement.rowIndex);
+    }
+
+    function onChangeContainer(e){
+        apiService.getByEndpointDashboard("dashboards/containers/locations?container_id=" + e.id).then(response => {
             if (response.locations["Madeira"] !== undefined) {
                 setMadeiraCount(response.locations["Madeira"]);
             }
@@ -71,7 +141,7 @@ export function ContainersDashboard() {
                 setIntrasitCount(response.locations["In Transit"]);
             }
         });
-        apiService.getByEndpointDashboard("dashboards/containers/longstandings").then(response => {
+        apiService.getByEndpointDashboard("dashboards/containers/longstandings?container_id=" + e.id).then(response => {
             const ports_R = [];
             const data15_R = [];
             const data15_30_R = [];
@@ -95,17 +165,15 @@ export function ContainersDashboard() {
                 setData90(data90_R);
             }
         });
-        apiService.getByEndpointDashboard("dashboards/containers").then(response => {});
-    }, []);
-
-    function handleTable(e) {
-        console.log(e.target.innerHTML);
-        console.log(e.target.cellIndex);
-        console.log(e.target.parentElement.rowIndex);
     }
 
     return (
         <BlockUi tag="div">
+            <div className="row mt-6">
+                <div className="col-xl-4 col-lg-4">
+                    <Select defaultValue={selectedOption} onChange={onChangeContainer} options={containersOptions} />
+                </div>
+            </div>
             <div className="row mt-3">
                 <div className="col-xl-2 col-lg-2">
                     <div className="card card-custom">
