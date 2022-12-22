@@ -63,54 +63,60 @@ export function ContainersDashboard() {
                 return { id: container.id, label: container.label };
             });
             setContainersOptions(containersOptionsR);
-            if(containersOptionsR.length > 0 ){
-                apiService.getByEndpointDashboard("dashboards/containers/locations?container_id=" + containersOptionsR[0].id).then(response => {
-                    if (response.locations["Madeira"] !== undefined) {
-                        setMadeiraCount(response.locations["Madeira"]);
-                    }
-                    if (response.locations["Açores"] !== undefined) {
-                        setAcoresCount(response.locations["Açores"]);
-                    }
-                    if (response.locations["Cabo Verde"] !== undefined) {
-                        setCaboVerdeCount(response.locations["Cabo Verde"]);
-                    }
-                    if (response.locations["Continente"] !== undefined) {
-                        setContinenteCount(response.locations["Continente"]);
-                    }
-                    if (response.locations["Outros"] !== undefined) {
-                        setOutrosCount(response.locations["Outros"]);
-                    }
-                    if (response.locations["In Transit"] !== undefined) {
-                        setIntrasitCount(response.locations["In Transit"]);
-                    }
-                });
-                apiService.getByEndpointDashboard("dashboards/containers/longstandings?container_id=" + containersOptionsR[0].id).then(response => {
-                    const ports_R = [];
-                    const data15_R = [];
-                    const data15_30_R = [];
-                    const data30_60_R = [];
-                    const data60_90_R = [];
-                    const data90_R = [];
-                    for (const longStanding of response) {
-                        ports_R.push(longStanding.port_code);
-                        data15_R.push(longStanding.interval_count.less15);
-                        data15_30_R.push(longStanding.interval_count.interval15_30);
-                        data30_60_R.push(longStanding.interval_count.interval30_60);
-                        data60_90_R.push(longStanding.interval_count.interval60_90);
-                        data90_R.push(longStanding.interval_count.more90);
-                    }
-                    if (ports.length !== 0) {
-                        setPorts(ports_R);
-                        setData15(data15_R);
-                        setData15_30(data15_30_R);
-                        setData30_60(data30_60_R);
-                        setData60_90(data60_90_R);
-                        setData90(data90_R);
-                    }
-                });
+            if (containersOptionsR.length > 0) {
+                apiService
+                    .getByEndpointDashboard("dashboards/containers/locations?container_id=" + containersOptionsR[0].id)
+                    .then(response => {
+                        if (response.locations["Madeira"] !== undefined) {
+                            setMadeiraCount(response.locations["Madeira"]);
+                        }
+                        if (response.locations["Açores"] !== undefined) {
+                            setAcoresCount(response.locations["Açores"]);
+                        }
+                        if (response.locations["Cabo Verde"] !== undefined) {
+                            setCaboVerdeCount(response.locations["Cabo Verde"]);
+                        }
+                        if (response.locations["Continente"] !== undefined) {
+                            setContinenteCount(response.locations["Continente"]);
+                        }
+                        if (response.locations["Outros"] !== undefined) {
+                            setOutrosCount(response.locations["Outros"]);
+                        }
+                        if (response.locations["In Transit"] !== undefined) {
+                            setIntrasitCount(response.locations["In Transit"]);
+                        }
+                    });
+                apiService
+                    .getByEndpointDashboard(
+                        "dashboards/containers/longstandings?container_id=" + containersOptionsR[0].id
+                    )
+                    .then(response => {
+                        const ports_R = [];
+                        const data15_R = [];
+                        const data15_30_R = [];
+                        const data30_60_R = [];
+                        const data60_90_R = [];
+                        const data90_R = [];
+                        for (const longStanding of response) {
+                            ports_R.push(longStanding.port_code);
+                            data15_R.push(longStanding.interval_count.less15);
+                            data15_30_R.push(longStanding.interval_count.interval15_30);
+                            data30_60_R.push(longStanding.interval_count.interval30_60);
+                            data60_90_R.push(longStanding.interval_count.interval60_90);
+                            data90_R.push(longStanding.interval_count.more90);
+                        }
+                        if (ports.length !== 0) {
+                            setPorts(ports_R);
+                            setData15(data15_R);
+                            setData15_30(data15_30_R);
+                            setData30_60(data30_60_R);
+                            setData60_90(data60_90_R);
+                            setData90(data90_R);
+                        }
+                    });
             }
         });
-        
+
         apiService.getByEndpointDashboard("dashboards/containers").then(response => {});
     }, []);
 
@@ -120,7 +126,7 @@ export function ContainersDashboard() {
         console.log(e.target.parentElement.rowIndex);
     }
 
-    function onChangeContainer(e){
+    function onChangeContainer(e) {
         apiService.getByEndpointDashboard("dashboards/containers/locations?container_id=" + e.id).then(response => {
             if (response.locations["Madeira"] !== undefined) {
                 setMadeiraCount(response.locations["Madeira"]);
@@ -171,6 +177,7 @@ export function ContainersDashboard() {
         <BlockUi tag="div">
             <div className="row mt-6">
                 <div className="col-xl-4 col-lg-4">
+                    <h3 className="card-label">Select Group:</h3>
                     <Select defaultValue={selectedOption} onChange={onChangeContainer} options={containersOptions} />
                 </div>
             </div>

@@ -6,6 +6,10 @@ import Typography from '@mui/material/Typography';
 
 const versions = [
     {
+        versionNumber: "V.0.2.0", date: "22/12/2022", changes:
+            ["Major Update!", "1. We added support for multiple tenants", "2. You can now create notifications by shape on Geofences"]
+    },
+    {
         versionNumber: "V.0.1.3", date: "06/12/2022", changes:
             ["1. We added all Dashboards to a single page: 'Dashboards - Containers Dashboards'. Now you can use Tabs to navigate between dashboards"]
     },
