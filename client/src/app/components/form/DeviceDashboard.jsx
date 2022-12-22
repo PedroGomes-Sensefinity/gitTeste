@@ -14,6 +14,7 @@ import {
 } from "react-icons/md";
 import GeoPointMap from "../geo-point-map/GeoPointMap";
 import apiService from "../../services/apiService";
+import apiServiceV2 from "../../services/v2/apiServiceV2";
 import geoCoding from "../../services/geocoding";
 import deviceService from "../../services/deviceService";
 import utils from "../../utils/utils";
@@ -35,18 +36,14 @@ function DeviceDashboard(props) {
 
     function initDashboard() {
         Promise.all([
-            apiService.getById("device", props.id),
+            apiServiceV2.get("v2/devices/" + props.id),
             deviceService.dashboard(props.id),
             deviceService.getPendingConfig(props.id)
         ]).then(allResponses => {
-            const device = allResponses[0].devices[0];
+            const device = allResponses[0].device;
             let dashboard = allResponses[1];
             const pendingConfigMessages = allResponses[2];
-
-            if (device.position_timestamp === "0001-01-01 00:00:00 +0000 UTC") {
-                device.position_timestamp = "N/A";
-            }
-
+            
             if (dashboard.last_geofence_json != undefined) {
                 const shapes = JSON.parse(dashboard.last_geofence_json);
                 const geofencesArr = [];
