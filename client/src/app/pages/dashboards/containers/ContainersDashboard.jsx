@@ -47,7 +47,7 @@ const OVERLAY_STYLE = {
 };
 
 export function ContainersDashboard() {
-    const locationStyle = { fontWeight: "bold", textAlign: "center" };
+    const locationStyle = { fontWeight: "bold", textAlign: "center", cursor: "pointer" };
     const geofencesStyle = { backgroundColor: "#D8D8D8" };
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
         [`&.${tableCellClasses.head}`]: {
