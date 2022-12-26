@@ -12,6 +12,40 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import { injectIntl } from "react-intl";
 import Select from "react-select";
 
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+import Button from "@mui/material/Button";
+import { LocationsList } from "../../../components/lists/locations/LocationsList";
+
+const style = {
+    position: "absolute",
+
+    bgcolor: "background.paper",
+    border: "3px solid #000",
+    boxShadow: 24,
+    pt: 2,
+    px: 4,
+    pb: 3,
+    "overflow-y": "auto",
+    marginTop: "50px",
+    marginLeft: "550px",
+    marginRight: "550px"
+};
+
+const OVERLAY_STYLE = {
+    position: "fixed",
+    display: "flex",
+    justifyContent: "center",
+    top: "0",
+    left: "0",
+    width: "auto",
+    height: "auto",
+    backgroundColor: "rgba(0,0,0, .8)",
+    zIndex: "1000",
+    overflowY: "auto",
+    overflowX: "auto"
+};
+
 export function ContainersDashboard() {
     const locationStyle = { fontWeight: "bold", textAlign: "center" };
     const geofencesStyle = { backgroundColor: "#D8D8D8" };
@@ -43,7 +77,7 @@ export function ContainersDashboard() {
     const [contineteCount, setContinenteCount] = useState(0);
     const [caboVerdeCount, setCaboVerdeCount] = useState(0);
     const [outrosCount, setOutrosCount] = useState(0);
-    const [intrasitCount, setIntrasitCount] = useState(0);
+    const [intransitCount, setIntransitCount] = useState(0);
 
     const [ports, setPorts] = useState(["PORT"]);
     const [data15, setData15] = useState([0]);
@@ -54,6 +88,18 @@ export function ContainersDashboard() {
 
     const [containersOptions, setContainersOptions] = useState([{ id: 0, label: "Containers Not Found" }]);
     const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedLocation, setSelectedLocation] = React.useState("");
+    const [containerId, setContainerId] = React.useState(0);
+
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = m => {
+        console.log(m);
+        setSelectedLocation(m);
+        setOpen(true);
+    };
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     useEffect(() => {
         apiServiceV2.get("v2/tenants/containers").then(response => {
@@ -64,6 +110,7 @@ export function ContainersDashboard() {
             });
             setContainersOptions(containersOptionsR);
             if (containersOptionsR.length > 0) {
+                setContainerId(containersOptionsR[0].id);
                 apiService
                     .getByEndpointDashboard("dashboards/containers/locations?container_id=" + containersOptionsR[0].id)
                     .then(response => {
@@ -83,7 +130,7 @@ export function ContainersDashboard() {
                             setOutrosCount(response.locations["Outros"]);
                         }
                         if (response.locations["In Transit"] !== undefined) {
-                            setIntrasitCount(response.locations["In Transit"]);
+                            setIntransitCount(response.locations["In Transit"]);
                         }
                     });
                 apiService
@@ -127,26 +174,49 @@ export function ContainersDashboard() {
     }
 
     function onChangeContainer(e) {
-        apiService.getByEndpointDashboard("dashboards/containers/locations?container_id=" + e.id).then(response => {
-            if (response.locations["Madeira"] !== undefined) {
-                setMadeiraCount(response.locations["Madeira"]);
-            }
-            if (response.locations["Açores"] !== undefined) {
-                setAcoresCount(response.locations["Açores"]);
-            }
-            if (response.locations["Cabo Verde"] !== undefined) {
-                setCaboVerdeCount(response.locations["Cabo Verde"]);
-            }
-            if (response.locations["Continente"] !== undefined) {
-                setContinenteCount(response.locations["Continente"]);
-            }
-            if (response.locations["Outros"] !== undefined) {
-                setOutrosCount(response.locations["Outros"]);
-            }
-            if (response.locations["In Transit"] !== undefined) {
-                setIntrasitCount(response.locations["In Transit"]);
-            }
-        });
+        setContainerId(e.id);
+        apiService
+            .getByEndpointDashboard("dashboards/containers/locations?container_id=" + e.id)
+            .then(response => {
+                if (response.locations["Madeira"] !== undefined) {
+                    setMadeiraCount(response.locations["Madeira"]);
+                } else {
+                    setMadeiraCount(0);
+                }
+                if (response.locations["Açores"] !== undefined) {
+                    setAcoresCount(response.locations["Açores"]);
+                } else {
+                    setAcoresCount(0);
+                }
+                if (response.locations["Cabo Verde"] !== undefined) {
+                    setCaboVerdeCount(response.locations["Cabo Verde"]);
+                } else {
+                    setCaboVerdeCount(0);
+                }
+                if (response.locations["Continente"] !== undefined) {
+                    setContinenteCount(response.locations["Continente"]);
+                } else {
+                    setContinenteCount(0);
+                }
+                if (response.locations["Outros"] !== undefined) {
+                    setOutrosCount(response.locations["Outros"]);
+                } else {
+                    setOutrosCount(0);
+                }
+                if (response.locations["In Transit"] !== undefined) {
+                    setIntransitCount(response.locations["In Transit"]);
+                } else {
+                    setIntransitCount(0);
+                }
+            })
+            .catch(r => {
+                setMadeiraCount(0);
+                setAcoresCount(0);
+                setCaboVerdeCount(0);
+                setContinenteCount(0);
+                setOutrosCount(0);
+                setIntransitCount(0);
+            });
         apiService.getByEndpointDashboard("dashboards/containers/longstandings?container_id=" + e.id).then(response => {
             const ports_R = [];
             const data15_R = [];
@@ -162,19 +232,40 @@ export function ContainersDashboard() {
                 data60_90_R.push(longStanding.interval_count.interval60_90);
                 data90_R.push(longStanding.interval_count.more90);
             }
-            if (ports.length !== 0) {
-                setPorts(ports_R);
-                setData15(data15_R);
-                setData15_30(data15_30_R);
-                setData30_60(data30_60_R);
-                setData60_90(data60_90_R);
-                setData90(data90_R);
-            }
+
+            setPorts(ports_R);
+            setData15(data15_R);
+            setData15_30(data15_30_R);
+            setData30_60(data30_60_R);
+            setData60_90(data60_90_R);
+            setData90(data90_R);
         });
     }
 
     return (
         <BlockUi tag="div">
+            <Modal
+                hideBackdrop
+                open={open}
+                onClose={handleClose}
+                style={OVERLAY_STYLE}
+                aria-labelledby="child-modal-title"
+                aria-describedby="child-modal-description"
+            >
+                <Box sx={{ ...style, width: "90%", height: "90%" }}>
+                    <Button
+                        size="small"
+                        onClick={handleClose}
+                        type="button"
+                        style={{ margin: "15px" }}
+                        className={`btn btn-danger mr-1 d-block mr-0 ml-auto`}
+                    >
+                        X
+                    </Button>
+                    <LocationsList container_id={containerId} location={selectedLocation}></LocationsList>
+                </Box>
+            </Modal>
+
             <div className="row mt-6">
                 <div className="col-xl-4 col-lg-4">
                     <h3 className="card-label">Select Group:</h3>
@@ -189,7 +280,7 @@ export function ContainersDashboard() {
                                 <h3 className="card-label">Madeira</h3>
                             </div>
                         </div>
-                        <div className="card-body" style={locationStyle}>
+                        <div className="card-body" style={locationStyle} onClick={() => handleOpen("Madeira")}>
                             <h3>{madeiraCount}</h3>
                         </div>
                     </div>
@@ -201,7 +292,7 @@ export function ContainersDashboard() {
                                 <h3 className="card-label">Açores</h3>
                             </div>
                         </div>
-                        <div className="card-body" style={locationStyle}>
+                        <div className="card-body" style={locationStyle} onClick={() => handleOpen("Açores")}>
                             <h3>{acoresCount}</h3>
                         </div>
                     </div>
@@ -213,7 +304,7 @@ export function ContainersDashboard() {
                                 <h3 className="card-label">Cabo Verde</h3>
                             </div>
                         </div>
-                        <div className="card-body" style={locationStyle}>
+                        <div className="card-body" style={locationStyle} onClick={() => handleOpen("Cabo Verde")}>
                             <h3>{caboVerdeCount}</h3>
                         </div>
                     </div>
@@ -225,7 +316,7 @@ export function ContainersDashboard() {
                                 <h3 className="card-label">Continente</h3>
                             </div>
                         </div>
-                        <div className="card-body" style={locationStyle}>
+                        <div className="card-body" style={locationStyle} onClick={() => handleOpen("Continente")}>
                             <h3>{contineteCount}</h3>
                         </div>
                     </div>
@@ -237,7 +328,7 @@ export function ContainersDashboard() {
                                 <h3 className="card-label">Outros</h3>
                             </div>
                         </div>
-                        <div className="card-body" style={locationStyle}>
+                        <div className="card-body" style={locationStyle} onClick={() => handleOpen("Outros")}>
                             <h3>{outrosCount}</h3>
                         </div>
                     </div>
@@ -249,8 +340,8 @@ export function ContainersDashboard() {
                                 <h3 className="card-label">Em Trânsito</h3>
                             </div>
                         </div>
-                        <div className="card-body" style={locationStyle}>
-                            <h3>{intrasitCount}</h3>
+                        <div className="card-body" style={locationStyle} onClick={() => handleOpen("In Transit")}>
+                            <h3>{intransitCount}</h3>
                         </div>
                     </div>
                 </div>
