@@ -43,13 +43,22 @@ export function LocationsList(props) {
             field: 'longstanding',
             title: 'Longstanding',
         },
+        {
+            field: 'geofence_label',
+            title: 'Geofence Label',
+        },
+        {
+            field: 'geofence_status',
+            title: 'Geofence Status',
+        }
     ];
 
     return(
         <TableGridLocation
-        title=''
+        title={props.location}
         columns={columns}
         location={props.location}
+        container_id={props.container_id}
         endpoint={'v2/assets/tracking'}
         dataField='assets_tracking'
     />)

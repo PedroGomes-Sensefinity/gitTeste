@@ -58,9 +58,7 @@ function TableGridLocation(props) {
                         let params = [endpoint, pageSize, page * pageSize];
 
                         if (props.location !== undefined || props.location !== "") {
-                            method = 'getByLimitOffsetSearch'
-                            params = [endpoint, pageSize, page * pageSize, props.location]
-                            apiServiceV2.get(props.endpoint + "?limit=" + pageSize + "&offset=" + page * pageSize + "&location=" + props.location + "&container=master.sensefinity").then((result) => {
+                            apiServiceV2.get(props.endpoint + "?limit=" + pageSize + "&offset=" + page * pageSize + "&location=" + props.location + "&container_id=" + props.container_id).then((result) => {
                                 const newData = result[dataField] || []
                                 resolve({
                                     data: newData,
