@@ -77,6 +77,8 @@ export function ContainersDashboard() {
         borderRight: "2px solid black"
     };
 
+    const [blocking, setBlocking] = useState(false);
+
     //Should be a object to reduce useState use
     const [madeiraCount, setMadeiraCount] = useState(0);
     const [acoresCount, setAcoresCount] = useState(0);
@@ -145,6 +147,7 @@ export function ContainersDashboard() {
 
     //Get containers and get information for first container
     useEffect(() => {
+        setBlocking(true)
         apiServiceV2.get("v2/tenants/containers").then(response => {
             const respContainers = response.containers || [];
 
@@ -204,6 +207,7 @@ export function ContainersDashboard() {
                             setData60_90(data60_90_R);
                             setData90(data90_R);
                         }
+                        setBlocking(false)
                     });
             }
         });
@@ -213,6 +217,7 @@ export function ContainersDashboard() {
 
     //Handle container changes
     function onChangeContainer(e) {
+        setBlocking(true)
         setselectedContainer(e.target.value);
         setContainerId(e.target.value);
         apiService
@@ -281,6 +286,7 @@ export function ContainersDashboard() {
                 setData30_60(data30_60_R);
                 setData60_90(data60_90_R);
                 setData90(data90_R);
+                setBlocking(false)
             });
     }
 
@@ -338,7 +344,7 @@ export function ContainersDashboard() {
     );
 
     return (
-        <BlockUi tag="div">
+        <BlockUi tag="div" blocking={blocking}>
             {locationsModal}
             {longStandingModal}
             <FormControl style={{ margin: "15px" }}>
