@@ -10,7 +10,11 @@ import TableRow from "@mui/material/TableRow";
 import { styled } from "@mui/material/styles";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import { injectIntl } from "react-intl";
-import Select from "react-select";
+
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
@@ -90,8 +94,7 @@ export function ContainersDashboard() {
     const [data90, setData90] = useState([0]);
 
     const [containersOptions, setContainersOptions] = useState([{ id: 0, label: "Containers Not Found" }]);
-
-    const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedContainer, setselectedContainer] = useState(0);
 
     const [selectedLocation, setSelectedLocation] = React.useState("");
     const [selectedPortCode, setSelectedPortCode] = React.useState("");
@@ -111,7 +114,7 @@ export function ContainersDashboard() {
     };
 
     const [openLongStanding, setOpenLongStanding] = React.useState(false);
-    
+
     const handleCloseLongStanding = () => {
         setOpenLongStanding(false);
     };
@@ -119,22 +122,22 @@ export function ContainersDashboard() {
     function handleTable(e) {
         switch (e.target.parentElement.rowIndex) {
             case 1:
-                setSelectedInterval("lte15")
+                setSelectedInterval("lte15");
                 break;
             case 2:
-                setSelectedInterval("15-30")
+                setSelectedInterval("15-30");
                 break;
             case 3:
-                setSelectedInterval("30-60")
+                setSelectedInterval("30-60");
                 break;
             case 4:
-                setSelectedInterval("60-90")
+                setSelectedInterval("60-90");
                 break;
             case 5:
-                setSelectedInterval("gte90")
+                setSelectedInterval("gte90");
                 break;
         }
-        setSelectedPortCode(ports[e.target.cellIndex - 1])
+        setSelectedPortCode(ports[e.target.cellIndex - 1]);
         setOpenLongStanding(true);
     }
 
@@ -145,6 +148,7 @@ export function ContainersDashboard() {
             const containersOptionsR = respContainers.map(container => {
                 return { id: container.id, label: container.label };
             });
+            setselectedContainer(containersOptionsR[0].id)
             setContainersOptions(containersOptionsR);
             if (containersOptionsR.length > 0) {
                 setContainerId(containersOptionsR[0].id);
@@ -204,11 +208,11 @@ export function ContainersDashboard() {
         apiService.getByEndpointDashboard("dashboards/containers").then(response => {});
     }, []);
 
-
     function onChangeContainer(e) {
-        setContainerId(e.id);
+        setselectedContainer(e.target.value)
+        setContainerId(e.target.value);
         apiService
-            .getByEndpointDashboard("dashboards/containers/locations?container_id=" + e.id)
+            .getByEndpointDashboard("dashboards/containers/locations?container_id=" + e.target.value)
             .then(response => {
                 if (response.locations["Madeira"] !== undefined) {
                     setMadeiraCount(response.locations["Madeira"]);
@@ -249,7 +253,7 @@ export function ContainersDashboard() {
                 setOutrosCount(0);
                 setIntransitCount(0);
             });
-        apiService.getByEndpointDashboard("dashboards/containers/longstandings?container_id=" + e.id).then(response => {
+        apiService.getByEndpointDashboard("dashboards/containers/longstandings?container_id=" + e.target.value).then(response => {
             const ports_R = [];
             const data15_R = [];
             const data15_30_R = [];
@@ -317,7 +321,11 @@ export function ContainersDashboard() {
                 >
                     X
                 </Button>
-                <LongStandingList container_id={containerId} port_code={selectedPortCode} interval={selectedInterval} ></LongStandingList>
+                <LongStandingList
+                    container_id={containerId}
+                    port_code={selectedPortCode}
+                    interval={selectedInterval}
+                ></LongStandingList>
             </Box>
         </Modal>
     );
@@ -326,12 +334,19 @@ export function ContainersDashboard() {
         <BlockUi tag="div">
             {locationsModal}
             {longStandingModal}
-            <div className="row mt-6">
-                <div className="col-xl-4 col-lg-4">
-                    <h3 className="card-label">Select Group:</h3>
-                    <Select defaultValue={selectedOption} onChange={onChangeContainer} options={containersOptions} />
-                </div>
-            </div>
+            <FormControl style={{margin: "15px"}}>
+                <InputLabel id="select-container">Group</InputLabel>
+                <Select
+                    labelId="select-container"
+                    value={selectedContainer}
+                    label="Age"
+                    onChange={onChangeContainer}
+                >
+                    {containersOptions.map(c => (
+                        <MenuItem value={c.id}>{c.label}</MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
             <div className="row mt-3">
                 <div className="col-xl-2 col-lg-2">
                     <div className="card card-custom">
@@ -364,7 +379,11 @@ export function ContainersDashboard() {
                                 <h3 className="card-label">Cabo Verde</h3>
                             </div>
                         </div>
-                        <div className="card-body" style={locationStyle} onClick={() => handleOpenLocation("Cabo Verde")}>
+                        <div
+                            className="card-body"
+                            style={locationStyle}
+                            onClick={() => handleOpenLocation("Cabo Verde")}
+                        >
                             <h3>{caboVerdeCount}</h3>
                         </div>
                     </div>
@@ -376,7 +395,11 @@ export function ContainersDashboard() {
                                 <h3 className="card-label">Continente</h3>
                             </div>
                         </div>
-                        <div className="card-body" style={locationStyle} onClick={() => handleOpenLocation("Continente")}>
+                        <div
+                            className="card-body"
+                            style={locationStyle}
+                            onClick={() => handleOpenLocation("Continente")}
+                        >
                             <h3>{contineteCount}</h3>
                         </div>
                     </div>
@@ -400,7 +423,11 @@ export function ContainersDashboard() {
                                 <h3 className="card-label">Em Trânsito</h3>
                             </div>
                         </div>
-                        <div className="card-body" style={locationStyle} onClick={() => handleOpenLocation("In Transit")}>
+                        <div
+                            className="card-body"
+                            style={locationStyle}
+                            onClick={() => handleOpenLocation("In Transit")}
+                        >
                             <h3>{intransitCount}</h3>
                         </div>
                     </div>
