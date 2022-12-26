@@ -16,6 +16,7 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
 import { LocationsList } from "../../../components/lists/locations/LocationsList";
+import { LongStandingList } from "../../../components/lists/longStanding/LongStandingList";
 
 const style = {
     position: "absolute",
@@ -26,7 +27,7 @@ const style = {
     pt: 2,
     px: 4,
     pb: 3,
-    "overflow-y": "auto",
+    overflowY: "auto",
     marginTop: "50px",
     marginLeft: "550px",
     marginRight: "550px"
@@ -56,7 +57,8 @@ export function ContainersDashboard() {
         },
         [`&.${tableCellClasses.body}`]: {
             backgroundColor: "#B9D3EE",
-            fontSize: 15,
+            fontSize: 25,
+            cursor: "pointer",
             borderColor: "#808080"
         },
         "&:nth-of-type(odd)": {
@@ -72,6 +74,7 @@ export function ContainersDashboard() {
         borderRight: "2px solid black"
     };
 
+    //Should be a object to reduce useState use
     const [madeiraCount, setMadeiraCount] = useState(0);
     const [acoresCount, setAcoresCount] = useState(0);
     const [contineteCount, setContinenteCount] = useState(0);
@@ -87,19 +90,53 @@ export function ContainersDashboard() {
     const [data90, setData90] = useState([0]);
 
     const [containersOptions, setContainersOptions] = useState([{ id: 0, label: "Containers Not Found" }]);
+
     const [selectedOption, setSelectedOption] = useState(null);
+
     const [selectedLocation, setSelectedLocation] = React.useState("");
+    const [selectedPortCode, setSelectedPortCode] = React.useState("");
+    const [selectedInterval, setSelectedInterval] = React.useState("");
+
     const [containerId, setContainerId] = React.useState(0);
 
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = m => {
+    const [openLocation, setOpenLocation] = React.useState(false);
+
+    const handleOpenLocation = m => {
         console.log(m);
         setSelectedLocation(m);
-        setOpen(true);
+        setOpenLocation(true);
     };
-    const handleClose = () => {
-        setOpen(false);
+    const handleCloseLocation = () => {
+        setOpenLocation(false);
     };
+
+    const [openLongStanding, setOpenLongStanding] = React.useState(false);
+    
+    const handleCloseLongStanding = () => {
+        setOpenLongStanding(false);
+    };
+
+    function handleTable(e) {
+        switch (e.target.parentElement.rowIndex) {
+            case 1:
+                setSelectedInterval("lte15")
+                break;
+            case 2:
+                setSelectedInterval("15-30")
+                break;
+            case 3:
+                setSelectedInterval("30-60")
+                break;
+            case 4:
+                setSelectedInterval("60-90")
+                break;
+            case 5:
+                setSelectedInterval("gte90")
+                break;
+        }
+        setSelectedPortCode(ports[e.target.cellIndex - 1])
+        setOpenLongStanding(true);
+    }
 
     useEffect(() => {
         apiServiceV2.get("v2/tenants/containers").then(response => {
@@ -167,11 +204,6 @@ export function ContainersDashboard() {
         apiService.getByEndpointDashboard("dashboards/containers").then(response => {});
     }, []);
 
-    function handleTable(e) {
-        console.log(e.target.innerHTML);
-        console.log(e.target.cellIndex);
-        console.log(e.target.parentElement.rowIndex);
-    }
 
     function onChangeContainer(e) {
         setContainerId(e.id);
@@ -242,30 +274,58 @@ export function ContainersDashboard() {
         });
     }
 
+    const locationsModal = (
+        <Modal
+            hideBackdrop
+            open={openLocation}
+            onClose={handleCloseLocation}
+            style={OVERLAY_STYLE}
+            aria-labelledby="child-modal-title"
+            aria-describedby="child-modal-description"
+        >
+            <Box sx={{ ...style, width: "90%", height: "90%" }}>
+                <Button
+                    size="small"
+                    onClick={handleCloseLocation}
+                    type="button"
+                    style={{ margin: "15px" }}
+                    className={`btn btn-danger mr-1 d-block mr-0 ml-auto`}
+                >
+                    X
+                </Button>
+                <LocationsList container_id={containerId} location={selectedLocation}></LocationsList>
+            </Box>
+        </Modal>
+    );
+
+    const longStandingModal = (
+        <Modal
+            hideBackdrop
+            open={openLongStanding}
+            onClose={handleCloseLongStanding}
+            style={OVERLAY_STYLE}
+            aria-labelledby="child-modal-title"
+            aria-describedby="child-modal-description"
+        >
+            <Box sx={{ ...style, width: "90%", height: "90%" }}>
+                <Button
+                    size="small"
+                    onClick={handleCloseLongStanding}
+                    type="button"
+                    style={{ margin: "15px" }}
+                    className={`btn btn-danger mr-1 d-block mr-0 ml-auto`}
+                >
+                    X
+                </Button>
+                <LongStandingList container_id={containerId} port_code={selectedPortCode} interval={selectedInterval} ></LongStandingList>
+            </Box>
+        </Modal>
+    );
+
     return (
         <BlockUi tag="div">
-            <Modal
-                hideBackdrop
-                open={open}
-                onClose={handleClose}
-                style={OVERLAY_STYLE}
-                aria-labelledby="child-modal-title"
-                aria-describedby="child-modal-description"
-            >
-                <Box sx={{ ...style, width: "90%", height: "90%" }}>
-                    <Button
-                        size="small"
-                        onClick={handleClose}
-                        type="button"
-                        style={{ margin: "15px" }}
-                        className={`btn btn-danger mr-1 d-block mr-0 ml-auto`}
-                    >
-                        X
-                    </Button>
-                    <LocationsList container_id={containerId} location={selectedLocation}></LocationsList>
-                </Box>
-            </Modal>
-
+            {locationsModal}
+            {longStandingModal}
             <div className="row mt-6">
                 <div className="col-xl-4 col-lg-4">
                     <h3 className="card-label">Select Group:</h3>
@@ -280,7 +340,7 @@ export function ContainersDashboard() {
                                 <h3 className="card-label">Madeira</h3>
                             </div>
                         </div>
-                        <div className="card-body" style={locationStyle} onClick={() => handleOpen("Madeira")}>
+                        <div className="card-body" style={locationStyle} onClick={() => handleOpenLocation("Madeira")}>
                             <h3>{madeiraCount}</h3>
                         </div>
                     </div>
@@ -292,7 +352,7 @@ export function ContainersDashboard() {
                                 <h3 className="card-label">Açores</h3>
                             </div>
                         </div>
-                        <div className="card-body" style={locationStyle} onClick={() => handleOpen("Açores")}>
+                        <div className="card-body" style={locationStyle} onClick={() => handleOpenLocation("Açores")}>
                             <h3>{acoresCount}</h3>
                         </div>
                     </div>
@@ -304,7 +364,7 @@ export function ContainersDashboard() {
                                 <h3 className="card-label">Cabo Verde</h3>
                             </div>
                         </div>
-                        <div className="card-body" style={locationStyle} onClick={() => handleOpen("Cabo Verde")}>
+                        <div className="card-body" style={locationStyle} onClick={() => handleOpenLocation("Cabo Verde")}>
                             <h3>{caboVerdeCount}</h3>
                         </div>
                     </div>
@@ -316,7 +376,7 @@ export function ContainersDashboard() {
                                 <h3 className="card-label">Continente</h3>
                             </div>
                         </div>
-                        <div className="card-body" style={locationStyle} onClick={() => handleOpen("Continente")}>
+                        <div className="card-body" style={locationStyle} onClick={() => handleOpenLocation("Continente")}>
                             <h3>{contineteCount}</h3>
                         </div>
                     </div>
@@ -328,7 +388,7 @@ export function ContainersDashboard() {
                                 <h3 className="card-label">Outros</h3>
                             </div>
                         </div>
-                        <div className="card-body" style={locationStyle} onClick={() => handleOpen("Outros")}>
+                        <div className="card-body" style={locationStyle} onClick={() => handleOpenLocation("Outros")}>
                             <h3>{outrosCount}</h3>
                         </div>
                     </div>
@@ -340,7 +400,7 @@ export function ContainersDashboard() {
                                 <h3 className="card-label">Em Trânsito</h3>
                             </div>
                         </div>
-                        <div className="card-body" style={locationStyle} onClick={() => handleOpen("In Transit")}>
+                        <div className="card-body" style={locationStyle} onClick={() => handleOpenLocation("In Transit")}>
                             <h3>{intransitCount}</h3>
                         </div>
                     </div>
