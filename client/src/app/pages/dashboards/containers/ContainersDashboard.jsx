@@ -10,21 +10,19 @@ import TableRow from "@mui/material/TableRow";
 import { styled } from "@mui/material/styles";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import { injectIntl } from "react-intl";
-
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
+
 import { LocationsList } from "../../../components/lists/locations/LocationsList";
 import { LongStandingList } from "../../../components/lists/longStanding/LongStandingList";
 
 const style = {
     position: "absolute",
-
     bgcolor: "background.paper",
     border: "3px solid #000",
     boxShadow: 24,
@@ -52,6 +50,7 @@ const OVERLAY_STYLE = {
 };
 
 export function ContainersDashboard() {
+    //Styles
     const locationStyle = { fontWeight: "bold", textAlign: "center", cursor: "pointer" };
     const geofencesStyle = { backgroundColor: "#D8D8D8" };
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -93,6 +92,7 @@ export function ContainersDashboard() {
     const [data60_90, setData60_90] = useState([0]);
     const [data90, setData90] = useState([0]);
 
+    //Selected
     const [containersOptions, setContainersOptions] = useState([{ id: 0, label: "Containers Not Found" }]);
     const [selectedContainer, setselectedContainer] = useState(0);
 
@@ -104,6 +104,7 @@ export function ContainersDashboard() {
 
     const [openLocation, setOpenLocation] = React.useState(false);
 
+    //handlers for pop ups (modal)
     const handleOpenLocation = m => {
         console.log(m);
         setSelectedLocation(m);
@@ -119,6 +120,7 @@ export function ContainersDashboard() {
         setOpenLongStanding(false);
     };
 
+    //Handler to selection on table
     function handleTable(e) {
         switch (e.target.parentElement.rowIndex) {
             case 1:
@@ -141,6 +143,7 @@ export function ContainersDashboard() {
         setOpenLongStanding(true);
     }
 
+    //Get containers and get information for first container
     useEffect(() => {
         apiServiceV2.get("v2/tenants/containers").then(response => {
             const respContainers = response.containers || [];
@@ -148,7 +151,7 @@ export function ContainersDashboard() {
             const containersOptionsR = respContainers.map(container => {
                 return { id: container.id, label: container.label };
             });
-            setselectedContainer(containersOptionsR[0].id)
+            setselectedContainer(containersOptionsR[0].id);
             setContainersOptions(containersOptionsR);
             if (containersOptionsR.length > 0) {
                 setContainerId(containersOptionsR[0].id);
@@ -208,8 +211,9 @@ export function ContainersDashboard() {
         apiService.getByEndpointDashboard("dashboards/containers").then(response => {});
     }, []);
 
+    //Handle container changes
     function onChangeContainer(e) {
-        setselectedContainer(e.target.value)
+        setselectedContainer(e.target.value);
         setContainerId(e.target.value);
         apiService
             .getByEndpointDashboard("dashboards/containers/locations?container_id=" + e.target.value)
@@ -253,31 +257,34 @@ export function ContainersDashboard() {
                 setOutrosCount(0);
                 setIntransitCount(0);
             });
-        apiService.getByEndpointDashboard("dashboards/containers/longstandings?container_id=" + e.target.value).then(response => {
-            const ports_R = [];
-            const data15_R = [];
-            const data15_30_R = [];
-            const data30_60_R = [];
-            const data60_90_R = [];
-            const data90_R = [];
-            for (const longStanding of response) {
-                ports_R.push(longStanding.port_code);
-                data15_R.push(longStanding.interval_count.less15);
-                data15_30_R.push(longStanding.interval_count.interval15_30);
-                data30_60_R.push(longStanding.interval_count.interval30_60);
-                data60_90_R.push(longStanding.interval_count.interval60_90);
-                data90_R.push(longStanding.interval_count.more90);
-            }
+        apiService
+            .getByEndpointDashboard("dashboards/containers/longstandings?container_id=" + e.target.value)
+            .then(response => {
+                const ports_R = [];
+                const data15_R = [];
+                const data15_30_R = [];
+                const data30_60_R = [];
+                const data60_90_R = [];
+                const data90_R = [];
+                for (const longStanding of response) {
+                    ports_R.push(longStanding.port_code);
+                    data15_R.push(longStanding.interval_count.less15);
+                    data15_30_R.push(longStanding.interval_count.interval15_30);
+                    data30_60_R.push(longStanding.interval_count.interval30_60);
+                    data60_90_R.push(longStanding.interval_count.interval60_90);
+                    data90_R.push(longStanding.interval_count.more90);
+                }
 
-            setPorts(ports_R);
-            setData15(data15_R);
-            setData15_30(data15_30_R);
-            setData30_60(data30_60_R);
-            setData60_90(data60_90_R);
-            setData90(data90_R);
-        });
+                setPorts(ports_R);
+                setData15(data15_R);
+                setData15_30(data15_30_R);
+                setData30_60(data30_60_R);
+                setData60_90(data60_90_R);
+                setData90(data90_R);
+            });
     }
 
+    //Modal:
     const locationsModal = (
         <Modal
             hideBackdrop
@@ -334,14 +341,9 @@ export function ContainersDashboard() {
         <BlockUi tag="div">
             {locationsModal}
             {longStandingModal}
-            <FormControl style={{margin: "15px"}}>
+            <FormControl style={{ margin: "15px" }}>
                 <InputLabel id="select-container">Group</InputLabel>
-                <Select
-                    labelId="select-container"
-                    value={selectedContainer}
-                    label="Age"
-                    onChange={onChangeContainer}
-                >
+                <Select labelId="select-container" value={selectedContainer} label="Age" onChange={onChangeContainer}>
                     {containersOptions.map(c => (
                         <MenuItem value={c.id}>{c.label}</MenuItem>
                     ))}
