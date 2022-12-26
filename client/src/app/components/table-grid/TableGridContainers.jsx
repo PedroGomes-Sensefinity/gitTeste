@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react';
 import MaterialTable from '@material-table/core';
 import apiServiceV2 from '../../services/v2/apiServiceV2';
 
-function TableGridLocation(props) {
+function TableGridContainers(props) {
     const tableRef = useRef(null)
 
     const data = props.data
@@ -54,11 +54,20 @@ function TableGridLocation(props) {
                     new Promise((resolve, reject) => {
                         const pageSize = query.pageSize;
                         const page = query.page;
-                        let method = 'getByLimitOffset';
-                        let params = [endpoint, pageSize, page * pageSize];
 
-                        if (props.location !== undefined || props.location !== "") {
+                        if (props.location !== undefined) {
                             apiServiceV2.get(props.endpoint + "?limit=" + pageSize + "&offset=" + page * pageSize + "&location=" + props.location + "&container_id=" + props.container_id).then((result) => {
+                                const newData = result[dataField] || []
+                                resolve({
+                                    data: newData,
+                                    page: page,
+                                    totalCount: result.total || 0,
+                                });
+                            });
+                        }
+
+                        if (props.port_code !== undefined && props.interval !== undefined) {
+                            apiServiceV2.get(props.endpoint + "?limit=" + pageSize + "&offset=" + page * pageSize + "&portcode=" + props.port_code + "&container_id=" + props.container_id + "&longstanding_interval=" + props.interval).then((result) => {
                                 const newData = result[dataField] || []
                                 resolve({
                                     data: newData,
@@ -78,4 +87,4 @@ function TableGridLocation(props) {
 
 }
 
-export default TableGridLocation;
+export default TableGridContainers;

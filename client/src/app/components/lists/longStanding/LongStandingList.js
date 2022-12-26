@@ -1,7 +1,5 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { makeStyles } from "@material-ui/core/styles";
-import { useHistory } from 'react-router-dom';
-import TableGridV2 from '../../../components/table-grid/TableGridV2';
 import TableGridContainers from '../../table-grid/TableGridContainers';
 
 const useStyles = makeStyles((theme) => ({
@@ -13,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export function LocationsList(props) {
+export function LongStandingList(props) {
     const columns = [
         {
             field: 'asset_label',
@@ -63,9 +61,10 @@ export function LocationsList(props) {
 
     return(
         <TableGridContainers
-        title={props.location}
+        title={props.port_code}
         columns={columns}
-        location={props.location}
+        port_code={props.port_code}
+        interval={props.interval}
         container_id={props.container_id}
         endpoint={'v2/assets/tracking'}
         dataField='assets_tracking'
