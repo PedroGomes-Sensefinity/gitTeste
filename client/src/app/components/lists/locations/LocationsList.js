@@ -20,6 +20,10 @@ export function LocationsList(props) {
             title: 'Label',
         },
         {
+            field: 'timestamp',
+            title: 'Location Timestamp',
+        },
+        {
             field: 'asset_type',
             title: 'Asset Type',
         },
@@ -42,6 +46,10 @@ export function LocationsList(props) {
         {
             field: 'longstanding',
             title: 'Longstanding',
+        },
+        {
+            field: 'geofence_timestamp',
+            title: 'Geofence Timestamp',
         },
         {
             field: 'geofence_label',
