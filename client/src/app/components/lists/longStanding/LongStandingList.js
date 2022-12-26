@@ -61,7 +61,7 @@ export function LongStandingList(props) {
 
     return(
         <TableGridContainers
-        title={props.port_code}
+        title={props.port_code + " " + props.interval}
         columns={columns}
         port_code={props.port_code}
         interval={props.interval}
