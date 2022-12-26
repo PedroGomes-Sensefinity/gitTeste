@@ -253,10 +253,16 @@ export function ContainersDashboard() {
                 aria-describedby="child-modal-description"
             >
                 <Box sx={{ ...style, width: "90%", height: "90%" }}>
-                    <LocationsList container_id={containerId} location={selectedLocation}></LocationsList>
-                    <Button onClick={handleClose} type="button" className="btn btn-success mr-2 mt-8">
-                        CLOSE
+                    <Button
+                        size="small"
+                        onClick={handleClose}
+                        type="button"
+                        style={{ margin: "15px" }}
+                        className={`btn btn-danger mr-1 d-block mr-0 ml-auto`}
+                    >
+                        X
                     </Button>
+                    <LocationsList container_id={containerId} location={selectedLocation}></LocationsList>
                 </Box>
             </Modal>
 
