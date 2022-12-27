@@ -22,22 +22,17 @@ function ProfilesFormComponent(props) {
     const intl = props.intl
     const profileId = props.id
     const isAddMode = !props.id
-    const [profile, setProfile] = useState({
-        permissions: []
-    })
+    const [profile, setProfile] = useState({})
 
-    //each permission should have id and slug properties
-    {/*
-        {
-            "id":0
-            "slug": "some_permission"
-        }
-    */ }
-    const permissions = useMemo(() => profile.permissions || [], [profile])
     const [optionsPermissions, setPermissionOptions] = useState([])
     const [blocking, setBlocking] = useState(false)
     const classes = useStyles();
 
+    const initialValues = {
+        id: parseInt(props.id),
+        name: profile.name || '',
+        permissions: profile.permissions || [],
+    };
 
     useEffect(() => {
         apiService.get('permission', 100, 0).then((response) => {
@@ -57,11 +52,7 @@ function ProfilesFormComponent(props) {
         }
     }, [])
 
-    const initialValues = {
-        id: parseInt(props.id),
-        name: profile.name || '',
-        permissions: permissions || [],
-    };
+
 
     const validationSchema = Yup.object().shape({
         name: Yup.string().required('Name is required'),
@@ -89,11 +80,9 @@ function ProfilesFormComponent(props) {
             });
     };
 
-    const onChangePermissions = (opt) => {
-        setProfile(prev => {
-            return ({ ...prev, permissions: opt })
-        })
-    };
+    const getOnChangeFunction = (setFieldValue) => ((opt) => {
+        setFieldValue('permissions', opt)
+    });
 
     return (
         <BlockUi tag='div' blocking={blocking}>
@@ -115,7 +104,9 @@ function ProfilesFormComponent(props) {
                     errors,
                     touched,
                     isSubmitting,
-                    handleSubmit
+                    setFieldValue,
+                    handleSubmit,
+                    values
                 }) => {
                     return (
                         <form
@@ -179,10 +170,13 @@ function ProfilesFormComponent(props) {
                                                 //name of the prop from the type of object stored in "permissions" object
                                                 labelKey="slug"
                                                 size="lg"
-                                                onChange={data => onChangePermissions(data)}
+                                                onChange={data => {
+                                                    let onChange = getOnChangeFunction(setFieldValue)
+                                                    onChange(data)
+                                                }}
                                                 options={optionsPermissions}
                                                 placeholder=''
-                                                selected={permissions}
+                                                selected={values.permissions}
                                                 class={getInputClasses({ errors, touched }, 'permissions')}
                                             />
                                         </div>
