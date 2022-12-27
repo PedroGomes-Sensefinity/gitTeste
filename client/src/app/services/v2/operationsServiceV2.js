@@ -6,8 +6,8 @@ const operationsServiceV2 = {
             axios.post(`${process.env.REACT_APP_REST_API_URL}v2/operations/` + endpoint, formData)
                 .then((response) => response.data)
                 .then((responseData) => {
-                    let result = [];
-                    if (responseData.code === 200) {
+                    let result = {}
+                    if (responseData.status == "Ok") {
                         result = responseData.data;
                     }
                     resolve(result);

@@ -193,13 +193,20 @@ function TrackingOperation() {
         fields["geofence"] = JSON.stringify(data);
         fields["asset_ids"] = selectedAssetsId;
         fields["tenant_id"] = parseInt(fields["tenant"].id);
-        
-        operationsServiceV2.save("tracking", fields).then(r =>{
+
+        operationsServiceV2.save("tracking", fields).then(r => {
             console.log(r)
+            const threshold = r.threshold || {}
+            const id = threshold.id
             setBlocking(false);
             setSubmitting(false);
-            history.push('/thresholds/list')
-        }).catch( r => {
+            toaster.notify('success', "Successfully performed setup")
+            if (id !== undefined) {
+                history.push(`/thresholds/${id}/edit`)
+            } else {
+                history.push('/thresholds/list')
+            }
+        }).catch(r => {
             console.log(r)
             setBlocking(false);
             setSubmitting(false);
