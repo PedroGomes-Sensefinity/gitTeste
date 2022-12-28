@@ -6,6 +6,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import TableGrid from '../../../components/table-grid/TableGrid';
+import templates from '../../../utils/links';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -28,7 +29,8 @@ export function FloorMapsList() {
                 icon: EditIcon,
                 tooltip: 'Edit Floor Map',
                 onClick: (_event, rowData) => {
-                    history.push(`/floor-maps/edit/${rowData.id}`);
+                    const url = templates.floorMapsEdit.templateObj.expand({ id: rowData.id })
+                    history.push(url);
                 },
             })
         }
@@ -50,7 +52,7 @@ export function FloorMapsList() {
         <Card>
             <CardContent>
                 {permissions.canCreateFloorMaps ?
-                    <Link to='/floor-maps/new'>
+                    <Link to={templates.floorMapsCreate.templateString}>
                         <Button
                             variant='contained'
                             color='secondary'

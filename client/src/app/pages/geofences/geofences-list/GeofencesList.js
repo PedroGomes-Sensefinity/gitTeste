@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import TableGridV2 from '../../../components/table-grid/TableGridV2';
 import SelectableTableGrid from '../../../components/table-grid/SelectableTableGrid';
+import templates from '../../../utils/links';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -30,7 +31,8 @@ export function GeofencesList() {
                 icon: EditIcon,
                 tooltip: 'Edit Geofence',
                 onClick: (_event, rowData) => {
-                    history.push(`/geofences/edit/${rowData.id}`);
+                    const url = templates.geofencesEdit.templateObj.expand({ id: rowData.id })
+                    history.push(url);
                 },
             }]
         }
@@ -62,11 +64,15 @@ export function GeofencesList() {
                 <Button
                     variant='contained'
                     color='secondary'
-                    onClick={() => history.push('/geofences/new')}
-                    className={classes.button}>
+                    className={classes.button}
+                    onClick={() => {
+                        const url = templates.geofencesCreate.templateString
+                        history.push(url)
+                    }}>
                     <AddIcon className={classes.leftIcon} />
                     New Geofence
-                </Button> : <></>}
+                </Button>
+                : <></>}
             <SelectableTableGrid
                 actions={actions}
                 columns={columns}

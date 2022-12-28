@@ -7,6 +7,8 @@ import { MdSpaceDashboard } from "react-icons/md";
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import TableGridV2 from '../../../components/table-grid/TableGridV2';
+import templates from '../../../utils/links';
+
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -28,8 +30,8 @@ export function LocationsList() {
             icon: permissions.canEditLocations ? EditIcon : MdSpaceDashboard,
             tooltip: permissions.canEditLocations ? 'Edit Location' : 'View Location',
             onClick: (_, rowData) => {
-                console.log(rowData)
-                history.push(`/locations/edit/${rowData.id}`);
+                const url = templates.locationsEdit.templateObj.expand({ id: rowData.id })
+                history.push(url);
             },
         })
         return acts
@@ -52,7 +54,11 @@ export function LocationsList() {
                 <Button
                     variant='contained'
                     color='secondary'
-                    onClick={() => history.push('/locations/new')}
+                    onClick={() => {
+                        const url = templates.locationsCreate.templateString
+                        history.push(url)
+                    }
+                    }
                     className={classes.button}>
                     <AddIcon className={classes.leftIcon} />
                     New Location

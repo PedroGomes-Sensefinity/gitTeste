@@ -2,12 +2,13 @@ import React, { useMemo } from 'react';
 
 import { Button, Card, CardContent } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import { useSelector } from 'react-redux';
 import TableGrid from '../../../components/table-grid/TableGrid';
+import templates from '../../../utils/links';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -36,7 +37,8 @@ export function GroupsList() {
                 icon: EditIcon,
                 tooltip: 'Edit group',
                 onClick: (_event, rowData) => {
-                    history.push(`/groups/edit/${rowData.id}`);
+                    const url = templates.groupEdit.templateObj.expand({ id: rowData.id })
+                    history.push(url);
                 },
             })
         }
@@ -62,16 +64,14 @@ export function GroupsList() {
         <Card>
             <CardContent>
                 {permissions.canCreateGroups ?
-                    <Button
-                        variant='contained'
-                        color='secondary'
-                        className={classes.button}
-                        onClick={() => {
-                            history.push('/groups/new')
-                        }}>
-                        <AddIcon className={classes.leftIcon} />
-                        New group
-                    </Button> : <></>}
+                    <Link to={templates.groupCreate.templateString}>
+                        <Button
+                            variant='contained'
+                            color='secondary'
+                            className={classes.button}>
+                            <AddIcon className={classes.leftIcon} />
+                            New group
+                        </Button></Link> : <></>}
                 <TableGrid
                     actions={actions}
                     title=''

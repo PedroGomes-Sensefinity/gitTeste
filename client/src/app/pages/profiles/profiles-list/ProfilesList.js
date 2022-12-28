@@ -8,6 +8,7 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import { useSelector } from 'react-redux';
 import TableGrid from '../../../components/table-grid/TableGrid';
+import templates from '../../../utils/links';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -30,7 +31,8 @@ export function ProfilesList() {
                 icon: EditIcon,
                 tooltip: 'Edit profile',
                 onClick: (_event, rowData) => {
-                    history.push(`/profiles/edit/${rowData.id}`);
+                    const url = templates.profilesEdit.templateObj.expand({ id: rowData.id })
+                    history.push(url);
                 },
             })
         }
@@ -57,7 +59,8 @@ export function ProfilesList() {
                         color='secondary'
                         className={classes.button}
                         onClick={() => {
-                            history.push('/profiles/new')
+                            const url = templates.profilesCreate.templateString
+                            history.push(url)
                         }}>
                         <AddIcon className={classes.leftIcon} />
                         New Profile

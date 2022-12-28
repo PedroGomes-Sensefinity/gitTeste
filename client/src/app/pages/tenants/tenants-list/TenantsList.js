@@ -6,6 +6,8 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import TableGrid from '../../../components/table-grid/TableGrid';
+import templates from '../../../utils/links';
+
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -20,7 +22,7 @@ export function TenantsList() {
     const classes = useStyles();
     const history = useHistory()
     const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
-    
+
     const actions = useMemo(() => {
         const acts = []
         if (permissions.canEditTenants) {
@@ -28,7 +30,8 @@ export function TenantsList() {
                 icon: EditIcon,
                 tooltip: 'Edit tenant',
                 onClick: (_event, rowData) => {
-                    history.push(`/tenants/edit/${rowData.id}`);
+                    const url = templates.tenantsEdit.templateObj.expand({ id: rowData.id })
+                    history.push(url);
                 },
             })
         }
@@ -55,7 +58,8 @@ export function TenantsList() {
                         color='secondary'
                         className={classes.button}
                         onClick={() => {
-                            history.push('/tenants/new')
+                            const url = templates.tenantsCreate.templateString
+                            history.push(url)
                         }}>
                         <AddIcon className={classes.leftIcon} />
                         New Tenant

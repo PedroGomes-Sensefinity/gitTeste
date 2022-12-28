@@ -9,6 +9,7 @@ import { useHistory } from 'react-router-dom';
 import ChangePasswordFormComponent from "../../../components/form/ChangePasswordFormComponent";
 import GenericModalComponent from '../../../components/modal/GenericModalComponent';
 import TableGrid from '../../../components/table-grid/TableGrid';
+import templates from '../../../utils/links';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -34,7 +35,7 @@ export function UsersList() {
     const history = useHistory()
 
     const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
-    
+
     const actions = useMemo(() => {
         const acts = []
         if (permissions.canEditUsers) {
@@ -42,7 +43,8 @@ export function UsersList() {
                 icon: EditIcon,
                 tooltip: 'Edit user',
                 onClick: (_event, rowData) => {
-                    history.push(`/users/edit/${rowData.id}`);
+                    const url = templates.usersEdit.templateObj.expand({ id: rowData.id })
+                    history.push(url);
                 },
             },
                 {
@@ -80,7 +82,8 @@ export function UsersList() {
                         color='secondary'
                         className={classes.button}
                         onClick={() => {
-                            history.push('/users/new')
+                            const url = templates.usersCreate.templateString
+                            history.push(url)
                         }}>
                         <AddIcon className={classes.leftIcon} />
                         New User

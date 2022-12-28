@@ -6,6 +6,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import TableGridV2 from '../../../components/table-grid/TableGridV2';
+import templates from '../../../utils/links';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -28,6 +29,7 @@ export function NotificationTemplatesList() {
                 icon: EditIcon,
                 tooltip: 'Edit notification template',
                 onClick: (_event, rowData) => {
+                    const url = templates.notificationTemplatesEdit.templateObj.expand({id: rowData.od})
                     history.push(`/notification-templates/edit/${rowData.id}`);
                 },
             })
@@ -59,7 +61,8 @@ export function NotificationTemplatesList() {
                         color='secondary'
                         className={classes.button}
                         onClick={() => {
-                            history.push('/notification-templates/new')
+                            const url = templates.notificationTemplatesCreate.templateString
+                            history.push(url)
                         }}>
                         <AddIcon className={classes.leftIcon} />
                         New Notification Template

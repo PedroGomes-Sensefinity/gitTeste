@@ -8,6 +8,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import { useHistory } from 'react-router-dom';
 import TableGrid from '../../../components/table-grid/TableGrid';
 import { useSelector } from 'react-redux';
+import templates from '../../../utils/links'
+
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -45,7 +47,9 @@ export function BoardFamiliesList() {
                     icon: EditIcon,
                     tooltip: 'Edit board family',
                     onClick: (_event, rowData) => {
-                        history.push(`/board-families/edit/${rowData.id}`);
+                        const url = templates.boardFamilyEdit.templateObj.expand({ id: rowData.id })
+                        console.log(url)
+                        history.push(url);
                     },
                 })
         }
@@ -61,7 +65,8 @@ export function BoardFamiliesList() {
                         color='secondary'
                         className={classes.button}
                         onClick={() => {
-                            history.push('/board-families/new')
+                            const url = templates.boardFamilyCreate.templateObj.expand()
+                            history.push(url)
                         }}>
                         <AddIcon className={classes.leftIcon} />
                         New board family

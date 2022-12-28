@@ -6,6 +6,8 @@ import React, { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import TableGrid from '../../../components/table-grid/TableGrid';
+import templates from '../../../utils/links';
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -28,7 +30,8 @@ export function RoutesList() {
                 icon: EditIcon,
                 tooltip: 'Edit route',
                 onClick: (_event, rowData) => {
-                    history.push(`/routes/edit/${rowData.id}`);
+                    const url = templates.routesEdit.templateObj.expand({ id: rowData.id })
+                    history.push(url);
                 },
             })
         }
@@ -59,7 +62,8 @@ export function RoutesList() {
                         color='secondary'
                         className={classes.button}
                         onClick={() => {
-                            history.push('/routes/new')
+                            const url = templates.routesCreate.templateString
+                            history.push(url)
                         }}>
                         <AddIcon className={classes.leftIcon} />
                         New Route
