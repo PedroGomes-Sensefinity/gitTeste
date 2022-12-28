@@ -7,7 +7,7 @@ import { MdSpaceDashboard } from "react-icons/md";
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import TableGridV2 from '../../../components/table-grid/TableGridV2';
-
+import templates from '../../../utils/links'
 const useStyles = makeStyles((theme) => ({
     button: {
         margin: theme.spacing(1),
@@ -35,7 +35,7 @@ export function AssetsList() {
                 icon: EditIcon,
                 tooltip: 'Edit asset',
                 onClick: (_, rowData) => {
-                    history.push(`/assets/${rowData.id}#edit`);
+                    history.push(templates.assetsEdit.templateObj.expand({ id: rowData.id }));
                 },
             })
         }
@@ -64,7 +64,7 @@ export function AssetsList() {
                 <Button
                     variant='contained'
                     color='secondary'
-                    onClick={() => history.push('/assets/new')}
+                    onClick={() => history.push(templates.assetsCreate.templateString)}
                     className={classes.button}>
                     <AddIcon className={classes.leftIcon} />
                     New Asset
