@@ -124,8 +124,6 @@ export function ContainersDashboard() {
 
     //Handler to selection on table
     function handleTable(e) {
-        console.log(e.target.parentElement.rowIndex)
-        console.log(e.target.cellIndex - 1)
         if ((e.target.cellIndex - 1) < 0){
             return
         }
