@@ -1,36 +1,38 @@
 import React from "react";
+
+import { TabContainer } from "react-bootstrap";
+import { Route, Switch, useRouteMatch } from "react-router-dom";
 import TenantsFormComponent from "../../../components/form/TenantsComponent";
-import {Paper, Tab, Tabs} from "@material-ui/core";
-import {TabContainer} from "react-bootstrap";
 import TenantsPersonalizationComponent from "../../../components/form/TenantsPersonalizationComponent";
+import { LazyRender } from "../../../utils/LazyRender";
+import TenantFormHeader from "./TenantHeader";
 
-export function TenantsForm({match}) {
-    const {id} = match.params;
-    const [value, setValue] = React.useState(0);
 
-    function handleChange(event, newValue) {
-        setValue(newValue);
-    }
+export function TenantsForm({ match }) {
+    const { id } = match.params;
+    let { path, url } = useRouteMatch();
 
     return (
-        <div>
-            <Paper square>
-                <Tabs value={value}
-                      indicatorColor="primary"
-                      textColor="primary"
-                      onChange={handleChange}>
-                    <Tab label="Tenant"/>
-                    {typeof id !== "undefined" &&
-                        <Tab label="Personalization"/>
-                    }
-                </Tabs>
-            </Paper>
+        <>
+            <TenantFormHeader tenantId={id} />
             <TabContainer>
-                {value === 0 && <TenantsFormComponent id={id} />}
-            </TabContainer>
-            <TabContainer>
-                {value === 1 &&  <TenantsPersonalizationComponent id={id} />}
-            </TabContainer>
-        </div>
+                <Switch>
+                    <Route exact path={`${path}`}>
+                        {
+                            <LazyRender>
+                                <TenantsFormComponent id={id} />
+                            </LazyRender>
+                        }
+                    </Route>
+                    <Route path={`${path}/personalization`}>
+                        {
+                            <LazyRender >
+                                <TenantsPersonalizationComponent id={id} />
+                            </LazyRender>
+                        }
+                    </Route>
+                </Switch>
+            </TabContainer >
+        </>
     )
 }

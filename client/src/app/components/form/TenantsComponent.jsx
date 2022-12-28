@@ -21,11 +21,10 @@ function TenantsFormComponent(props) {
     const intl = props.intl
     const tenantId = props.id
     const isAddMode = !props.id
-    const [blocking, setBlocking] = useState(false)
+    const [blocking, setBlocking] = useState(true)
     const [groups, setGroups] = useState([])
     const [tenant, setTenant] = useState({})
     const metadata = JSON.parse(tenant.metadata || '{}')
-
     const classes = useStyles();
 
     useEffect(() => {
@@ -40,8 +39,11 @@ function TenantsFormComponent(props) {
                     if (respTenants.length === 1) {
                         let tenant = response.tenants_new[0];
                         setTenant(tenant)
+                        setBlocking(false)
                     }
                 });
+        } else {
+            setBlocking(false)
         }
     }, []);
 
