@@ -85,6 +85,45 @@ app.all('/api/georeverse/*', (req, res) => {
 
 });
 
+// Elastic
+app.all('/api/elastic/*', (req, res) => {
+  const pathUrl = req.url.replace('/api/elastic/','');
+
+  console.log("processing : " + pathUrl);
+
+  let axioData = {
+    method: req.method,
+    url: "https://analytics01.sensefinity.com" + pathUrl,
+    auth: {
+      username: "Cloud",
+      password: "jorge1martim2daniel3"
+    },
+    headers: {
+      'Content-Type': 'text/csv',
+    }
+  }
+
+  axios(axioData)
+  .then(function (response) {
+    res.set('Content-Type', 'application/json');
+    console.log(response.data)
+    res.status(response.status);
+    res.send(response.data);
+  })
+  .catch(function (error) {
+    console.log(error);
+    if (error.response) {
+        res.set('Content-Type', 'application/json')
+          .status(error.response.status)
+          .send(error.response.data)
+          .end();
+    } else {
+      res.status(500).end();
+    }
+  });
+
+});
+
 // Upload
 app.post('/api/*upload*',  (req, res) => {
     const pathUrl = req.url.replace('/api/','');
