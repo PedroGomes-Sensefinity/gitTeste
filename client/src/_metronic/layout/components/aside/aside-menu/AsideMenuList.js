@@ -7,6 +7,8 @@ import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { checkIsActive, toAbsoluteUrl } from "../../../../_helpers";
 import ReactGA from 'react-ga';
+import templates from "../../../../../app/utils/links";
+
 
 export function AsideMenuList({ layoutProps }) {
 
@@ -32,7 +34,7 @@ export function AsideMenuList({ layoutProps }) {
           className={`menu-item ${getMenuItemActive("/dashboard", false)}`}
           aria-haspopup="true"
         >
-          <NavLink className='menu-link menu-toggle' to="/dashboard">
+          <NavLink className='menu-link menu-toggle' to={templates.dashboardDefault.templateString}>
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Display1.svg")} />
             </span>
@@ -52,7 +54,7 @@ export function AsideMenuList({ layoutProps }) {
                 className={`menu-item ${getMenuItemActive("/dashboard/default")}`}
                 aria-haspopup="true"
               >
-                <NavLink className="menu-link" to="/dashboard/default">
+                <NavLink className="menu-link" to={templates.dashboardDefault.templateString}>
                   <i className="menu-bullet menu-bullet-dot">
                     <span />
                   </i>
@@ -66,7 +68,7 @@ export function AsideMenuList({ layoutProps }) {
                   className={`menu-item ${getMenuItemActive("/dashboard/containers")}`}
                   aria-haspopup="true"
                 >
-                  <NavLink className="menu-link" to="/dashboard/containers">
+                  <NavLink className="menu-link" to={templates.dashboardsContainers.templateString}>
                     <i className="menu-bullet menu-bullet-dot">
                       <span />
                     </i>
@@ -81,7 +83,7 @@ export function AsideMenuList({ layoutProps }) {
                   className={`menu-item ${getMenuItemActive("/dashboard/route")}`}
                   aria-haspopup="true"
                 >
-                  <NavLink className="menu-link" to="/dashboard/route">
+                  <NavLink className="menu-link" to={templates.dashboardsRoutes.templateString}>
                     <i className="menu-bullet menu-bullet-dot">
                       <span />
                     </i>
@@ -101,7 +103,7 @@ export function AsideMenuList({ layoutProps }) {
             className={`menu-item ${getMenuItemActive("/tenants", false)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link" to="/tenants/list">
+            <NavLink className="menu-link" to={templates.tenantsList.templateString}>
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Files/User-folder.svg")} />
               </span>
@@ -116,7 +118,7 @@ export function AsideMenuList({ layoutProps }) {
           <li
             className={`menu-item ${getMenuItemActive("/users", true)}`}
             aria-haspopup="true">
-            <NavLink className="menu-link menu-toggle" to="/users/list">
+            <NavLink className="menu-link menu-toggle" to={templates.usersList.templateString}>
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Files/User-folder.svg")} />
               </span>
@@ -131,7 +133,7 @@ export function AsideMenuList({ layoutProps }) {
             className={`menu-item ${getMenuItemActive("/profiles", true)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link menu-toggle" to="/profiles/list">
+            <NavLink className="menu-link menu-toggle" to={templates.profilesList.templateString}>
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Communication/Group.svg")} />
               </span>
@@ -147,7 +149,7 @@ export function AsideMenuList({ layoutProps }) {
             className={`menu-item ${getMenuItemActive("/assets", true)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link menu-toggle" to="/assets/list">
+            <NavLink className="menu-link menu-toggle" to={templates.assetsList.templateString}>
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Communication/Group.svg")} />
               </span>
@@ -180,7 +182,7 @@ export function AsideMenuList({ layoutProps }) {
                   className={`menu-item ${getMenuItemActive("/devices/list")}`}
                   aria-haspopup="true"
                 >
-                  <NavLink className="menu-link" to="/devices/list">
+                  <NavLink className="menu-link" to={templates.deviceList.templateString}>
                     <i className="menu-bullet menu-bullet-dot">
                       <span />
                     </i>
@@ -194,7 +196,7 @@ export function AsideMenuList({ layoutProps }) {
                     className={`menu-item ${getMenuItemActive("/devices/provision")}`}
                     aria-haspopup="true"
                   >
-                    <NavLink className="menu-link" to="/devices/provision">
+                    <NavLink className="menu-link" to={templates.deviceProvision.templateString}>
                       <i className="menu-bullet menu-bullet-dot">
                         <span />
                       </i>
@@ -209,7 +211,7 @@ export function AsideMenuList({ layoutProps }) {
                     className={`menu-item ${getMenuItemActive("/device/upload")}`}
                     aria-haspopup="true"
                   >
-                    <NavLink className="menu-link" to="/devices/upload">
+                    <NavLink className="menu-link" to={templates.deviceUpload.templateString}>
                       <i className="menu-bullet menu-bullet-dot">
                         <span />
                       </i>
@@ -230,7 +232,7 @@ export function AsideMenuList({ layoutProps }) {
             className={`menu-item ${getMenuItemActive("/board-families", true)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link menu-toggle" to="/board-families/list">
+            <NavLink className="menu-link menu-toggle" to={templates.boardFamilyList.templateString}>
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Router2.svg")} />
               </span>
@@ -246,7 +248,7 @@ export function AsideMenuList({ layoutProps }) {
             className={`menu-item ${getMenuItemActive("/groups", false)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link" to="/groups/list">
+            <NavLink className="menu-link" to={templates.groupList.templateString}>
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Layers.svg")} />
               </span>
@@ -281,7 +283,7 @@ export function AsideMenuList({ layoutProps }) {
                     className={`menu-item ${getMenuItemActive("/locations/list")}`}
                     aria-haspopup="true"
                   >
-                    <NavLink className="menu-link" to="/locations/list">
+                    <NavLink className="menu-link" to={templates.locationsList.templateString}>
                       <i className="menu-bullet menu-bullet-dot">
                         <span />
                       </i>
@@ -296,7 +298,7 @@ export function AsideMenuList({ layoutProps }) {
                     className={`menu-item ${getMenuItemActive("/sublocations/list")}`}
                     aria-haspopup="true"
                   >
-                    <NavLink className="menu-link" to="/sublocations/list">
+                    <NavLink className="menu-link" to={templates.subLocationsList.templateString}>
                       <i className="menu-bullet menu-bullet-dot">
                         <span />
                       </i>
@@ -338,7 +340,7 @@ export function AsideMenuList({ layoutProps }) {
                   )}`}
                   aria-haspopup="true"
                 >
-                  <NavLink className="menu-link" to="/routes/list">
+                  <NavLink className="menu-link" to={templates.routesList.templateString}>
                     <i className="menu-bullet menu-bullet-dot">
                       <span />
                     </i>
@@ -351,7 +353,7 @@ export function AsideMenuList({ layoutProps }) {
                   )}`}
                   aria-haspopup="true"
                 >
-                  <NavLink className="menu-link" to="/routes/completion">
+                  <NavLink className="menu-link" to={templates.routesCompletion.templateString}>
                     <i className="menu-bullet menu-bullet-dot">
                       <span />
                     </i>
@@ -369,7 +371,7 @@ export function AsideMenuList({ layoutProps }) {
             className={`menu-item ${getMenuItemActive("/geofences", true)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link menu-toggle" to="/geofences/list">
+            <NavLink className="menu-link menu-toggle" to={templates.geofencesList.templateString}>
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Select.svg")} />
               </span>
@@ -383,7 +385,7 @@ export function AsideMenuList({ layoutProps }) {
             className={`menu-item ${getMenuItemActive("/thresholds", false)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link" to="/thresholds/list">
+            <NavLink className="menu-link" to={templates.thresholdsList.templateString}>
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Diagnostics.svg")} />
               </span>
@@ -399,7 +401,7 @@ export function AsideMenuList({ layoutProps }) {
             className={`menu-item ${getMenuItemActive("/alarms", false)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link" to="/alarms/list">
+            <NavLink className="menu-link" to={templates.alarmsList.templateString}>
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Code/Warning-1-circle.svg")} />
               </span>
@@ -415,7 +417,7 @@ export function AsideMenuList({ layoutProps }) {
             className={`menu-item ${getMenuItemActive("/notification-templates", false)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link" to="/notification-templates/list">
+            <NavLink className="menu-link" to={templates.notificationTemplatesList.templateString}>
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Files/File.svg")} />
               </span>
@@ -429,7 +431,7 @@ export function AsideMenuList({ layoutProps }) {
             className={`menu-item ${getMenuItemActive("/floor-maps", false)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link" to="/floor-maps/list">
+            <NavLink className="menu-link" to={templates.notificationTemplatesList.templateString}>
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Home/Home.svg")} />
               </span>
@@ -442,7 +444,7 @@ export function AsideMenuList({ layoutProps }) {
             className={`menu-item ${getMenuItemActive("/impacts", false)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link" to="/impacts">
+            <NavLink className="menu-link" to={templates.impacts.templateString}>
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/General/Attachment2.svg")} />
               </span>
@@ -455,7 +457,7 @@ export function AsideMenuList({ layoutProps }) {
           className={`menu-item ${getMenuItemActive("/operation/tracking", false)}`}
           aria-haspopup="true"
         >
-          <NavLink className="menu-link" to="/operation/tracking">
+          <NavLink className="menu-link" to={templates.operationTracking.templateString}>
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/General/Attachment2.svg")} />
             </span>

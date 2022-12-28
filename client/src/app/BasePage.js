@@ -43,8 +43,9 @@ import { SubLocationsForm } from "./pages/locations/sublocation-form/SubLocation
 import { ErrorPage1 } from "./modules/ErrorsExamples/ErrorPage1";
 import { Impacts } from "./pages/impacts/Impacts";
 import { DashboardsContainers } from "./pages/dashboards/containers/DashboardsContainers";
-import {DashboardsRoutes} from "./pages/dashboards/routes/DashboardsRoutes";
+import { DashboardsRoutes } from "./pages/dashboards/routes/DashboardsRoutes";
 import TrackingOperation from "./components/form/TrackingOperation";
+import templates from "./utils/links";
 
 
 
@@ -59,130 +60,135 @@ export default function BasePage() {
   // }, []) // [] - is required if you need only one call
   // https://reactjs.org/docs/hooks-reference.html#useeffect
 
-
   const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
   return (
     <Suspense fallback={<LayoutSplashScreen />}>
       <Switch>
         {
           /* Redirect from root URL to /dashboard. */
-          <Redirect exact from="/" to="/dashboard/default" />
+          <Redirect exact from="/" to={templates.dashboardDefault.templateString} />
         }
         {permissions.canViewContainerDashboard && [
-          <ContentRoute key="/dashboard/containers" path="/dashboard/containers" component={DashboardsContainers} />,
+          <ContentRoute key={templates.dashboardsContainers.templateString} path={templates.dashboardsContainers.templateString} component={DashboardsContainers} />,
         ]}
         {permissions.canViewRoutesDashboard && [
-          <ContentRoute key="/dashboard/route" path="/dashboard/route" component={DashboardsRoutes} />,
+          <ContentRoute key={templates.dashboardsRoutes.templateString} path={templates.dashboardsRoutes.templateString} component={DashboardsRoutes} />,
         ]}
-        <ContentRoute path="/dashboard/default" component={Dashboard} />
+        <ContentRoute path={templates.dashboardDefault.templateString} component={Dashboard} />
 
         { /* Devices Routes*/}
         {permissions.canViewDevices && [
-          <ContentRoute key="/devices/edit/:id" path="/devices/edit/:id" component={Device} />,
-          <ContentRoute key="/devices/provision" path="/devices/provision" component={DevicesProvision} />,
-          <ContentRoute key="/devices/upload" path="/devices/upload" component={DevicesUpload} />,
-          <ContentRoute key="/devices/new" path="/devices/new" component={CreateDevice} />,
-          <ContentRoute key="/devices/list" path="/devices/list" component={DevicesList} />,
-          <ContentRoute key="/devices/:id" path="/devices/:id" component={Device} />
+          <ContentRoute key={templates.deviceEdit.templateString} path={templates.deviceEdit.templateString} component={Device} />,
+          <ContentRoute key={templates.deviceProvision.templateString} path={templates.deviceProvision.templateString} component={DevicesProvision} />,
+          <ContentRoute key={templates.deviceUpload.templateString} path={templates.deviceUpload.templateString} component={DevicesUpload} />,
+          <ContentRoute key={templates.deviceCreate.templateString} path={templates.deviceCreate.templateString} component={CreateDevice} />,
+          <ContentRoute key={templates.deviceList.templateString} path={templates.deviceList.templateString} component={DevicesList} />,
+          <ContentRoute key={templates.deviceEdit.templateString} path={templates.deviceEdit.templateString} component={Device} />
         ]}
 
         { /* Board families Routes*/}
         {permissions.canViewBoardFamilies && [
-          <ContentRoute key="/board-families/edit/:id" path="/board-families/edit/:id" component={BoardFamiliesForm} />,
-          <ContentRoute key="/board-families/list" path="/board-families/list" component={BoardFamiliesList} />,
-          <ContentRoute key="/board-families/new" path="/board-families/new" component={BoardFamiliesForm} />]
+          <ContentRoute key={templates.boardFamilyEdit.templateString} path={templates.boardFamilyEdit.templateString} component={BoardFamiliesForm} />,
+          <ContentRoute key={templates.boardFamilyList.templateString} path={templates.boardFamilyList.templateString} component={BoardFamiliesList} />,
+          <ContentRoute key={templates.boardFamilyCreate.templateString} path={templates.boardFamilyCreate.templateString} component={BoardFamiliesForm} />]
         }
 
         { /* Groups Routes*/}
         {permissions.canViewGroups &&
-          [<ContentRoute key="/groups/edit/:id" path="/groups/edit/:id" component={GroupsForm} />,
-          <ContentRoute key="/groups/list" path="/groups/list" component={GroupsList} />,
-          <ContentRoute key="/groups/new" path="/groups/new" component={GroupsForm} />
+          [<ContentRoute key={templates.groupEdit.templateString} path={templates.groupEdit.templateString} component={GroupsForm} />,
+          <ContentRoute key={templates.groupList.templateString} path={templates.groupList.templateString} component={GroupsList} />,
+          <ContentRoute key={templates.groupCreate.templateString} path={templates.groupCreate.templateString} component={GroupsForm} />
           ]}
 
         { /* Thresholds Routes*/}
         {permissions.canViewThresholds && [
-          <ContentRoute key="/thresholds/new" path="/thresholds/new" component={CreateThreshold} />,
-          <ContentRoute key="/thresholds/list" path="/thresholds/list" component={ThresholdsList} />,
-          <ContentRoute key="/thresholds/:id/edit" path="/thresholds/:id/edit" component={ThresholdsForm} />
+          <ContentRoute key={templates.thresholdsCreate.templateString} path={templates.thresholdsCreate.templateString} component={CreateThreshold} />,
+          <ContentRoute key={templates.thresholdsList.templateString} path={templates.thresholdsList.templateString} component={ThresholdsList} />,
+          <ContentRoute key={templates.thresholdsEdit.templateString} path={templates.thresholdsEdit.templateString} component={ThresholdsForm} />
         ]}
 
         { /* Profiles Routes*/}
         {permissions.canViewProfiles &&
           [
-            <ContentRoute key="/profiles/edit/:id" path="/profiles/edit/:id" component={ProfilesForm} />,
-            <ContentRoute key="/profiles/list" path="/profiles/list" component={ProfilesList} />,
-            <ContentRoute key="/profiles/new" path="/profiles/new" component={ProfilesForm} />
+            <ContentRoute key={templates.profilesList.templateString} path={templates.profilesList.templateString} component={ProfilesList} />,
+            <ContentRoute key={templates.profilesCreate.templateString} path={templates.profilesCreate.templateString} component={ProfilesForm} />,
+            <ContentRoute key={templates.profilesEdit.templateString} path={templates.profilesEdit.templateString} component={ProfilesForm} />,
+
           ]}
 
         { /* Assets Routes*/}
         {permissions.canViewAssets &&
-          [<ContentRoute key="/assets/list" path="/assets/list" component={AssetsList} />,
-          <ContentRoute key="/assets/new" path="/assets/new" component={CreateAsset} />,
-          <ContentRoute key="/assets/:id" path="/assets/:id" component={AssetsForm} />,
+          [<ContentRoute key={templates.assetsList.templateString} path={templates.assetsList.templateString} component={AssetsList} />,
+          <ContentRoute key={templates.assetsCreate.templateString} path={templates.assetsCreate.templateString} component={CreateAsset} />,
+          <ContentRoute key={templates.assetsEdit.templateString} path={templates.assetsEdit.templateString} component={AssetsForm} />,
           ]
         }
         { /* Routes Routes*/}
         {permissions.canViewRoutes && [
-          <ContentRoute key="/routes/edit/:id" path="/routes/edit/:id" component={RoutesForm} />,
-          <ContentRoute key="/routes/list" path="/routes/list" component={RoutesList} />,
-          <ContentRoute key="/routes/new" path="/routes/new" component={RoutesForm} />,
-          <ContentRoute key="/routes/completion" path="/routes/completion" component={RouteCompletion} />]
+          <ContentRoute key={templates.routesList.templateString} path={templates.routesList.templateString} component={RoutesList} />,
+          <ContentRoute key={templates.routesCreate.templateString} path={templates.routesCreate.templateString} component={RoutesForm} />,
+          <ContentRoute key={templates.routesCompletion.templateString} path={templates.routesCompletion.templateString} component={RouteCompletion} />,
+          <ContentRoute key={templates.routesEdit.templateString} path={templates.routesEdit.templateString} component={RoutesForm} />,
+        ]
         }
 
         { /* Geofences Routes*/}
         {permissions.canViewGeofences && [
-          <ContentRoute key="/geofences/edit/:id" path="/geofences/edit/:id" component={GeofencesForm} />,
-          <ContentRoute key="/geofences/list" path="/geofences/list" component={GeofencesList} />,
-          <ContentRoute key="/geofences/new" path="/geofences/new" component={GeofencesForm} />]
+          <ContentRoute key={templates.geofencesList.templateString} path={templates.geofencesList.templateString} component={GeofencesList} />,
+          <ContentRoute key={templates.geofencesCreate.templateString} path={templates.geofencesCreate.templateString} component={GeofencesForm} />,
+          <ContentRoute key={templates.geofencesEdit.templateString} path={templates.geofencesEdit.templateString} component={GeofencesForm} />,
+        ]
         }
 
         { /* Users Routes*/}
         {permissions.canViewUsers && [
-          <ContentRoute key="/users/edit/:id" path="/users/edit/:id" component={UsersForm} />,
-          <ContentRoute key="/users/list" path="/users/list" component={UsersList} />,
-          <ContentRoute key="/users/new" path="/users/new" component={UsersForm} />
+          <ContentRoute key={templates.usersList.templateString} path={templates.usersList.templateString} component={UsersList} />,
+          <ContentRoute key={templates.usersCreate.templateString} path={templates.usersCreate.templateString} component={UsersForm} />,
+          <ContentRoute key={templates.usersEdit.templateString} path={templates.usersEdit.templateString} component={UsersForm} />,
         ]}
         { /* Tenants (as companies Routes*/}
         {permissions.canViewTenants && [
-          <ContentRoute key="/tenants/edit/:id" path="/tenants/edit/:id" component={TenantsForm} />,
-          <ContentRoute key="/tenants/list" path="/tenants/list" component={TenantsList} />,
-          <ContentRoute key="/tenants/new" path="/tenants/new" component={TenantsForm} />
+          <ContentRoute key={templates.tenantsList.templateString} path={templates.tenantsList.templateString} component={TenantsList} />,
+          <ContentRoute key={templates.tenantsCreate.templateString} path={templates.tenantsCreate.templateString} component={TenantsForm} />,
+          <ContentRoute key={templates.tenantsEdit.templateString} path={templates.tenantsEdit.templateString} component={TenantsForm} />,
+
         ]}
         { /* Alarms Routes*/}
         {permissions.canViewAlarms && [
-          <ContentRoute key="/alarms/edit/:id" path="/alarms/edit/:id" component={AlarmsForm} />,
-          <ContentRoute key="/alarms/list" path="/alarms/list" component={AlarmsList} />,
-          <ContentRoute key="/alarms/new" path="/alarms/new" component={AlarmsForm} />]
+          <ContentRoute key={templates.alarmsList.templateString} path={templates.alarmsList.templateString} component={AlarmsList} />,
+          <ContentRoute key={templates.alarmsCreate.templateString} path={templates.alarmsCreate.templateString} component={AlarmsForm} />,
+          <ContentRoute key={templates.alarmsEdit.templateString} path={templates.alarmsEdit.templateString} component={AlarmsForm} />,
+        ]
         }
         { /* NotificationTemplates Routes*/}
         {permissions.canViewNotificationTemplates && [
-          <ContentRoute key="/notification-templates/edit/:id" path="/notification-templates/edit/:id" component={NotificationTemplatesForm} />,
-          <ContentRoute key="/notification-templates/list" path="/notification-templates/list" component={NotificationTemplatesList} />,
-          <ContentRoute key="/notification-templates/new" path="/notification-templates/new" component={NotificationTemplatesForm} />
+          <ContentRoute key={templates.notificationTemplatesList.templateString} path={templates.notificationTemplatesList.templateString} component={NotificationTemplatesList} />,
+          <ContentRoute key={templates.notificationTemplatesCreate.templateString} path={templates.notificationTemplatesCreate.templateString} component={NotificationTemplatesForm} />,
+          <ContentRoute key={templates.notificationTemplatesEdit.templateString} path={templates.notificationTemplatesEdit.templateString} component={NotificationTemplatesForm} />,
+
         ]}
         { /* Floor Maps Routes*/}
         {permissions.canViewFloorMaps && [
-          <ContentRoute key="/floor-maps/edit/:id" path="/floor-maps/edit/:id" component={FloorMapsForm} />,
-          <ContentRoute key="/floor-maps/list" path="/floor-maps/list" component={FloorMapsList} />,
-          <ContentRoute key="/floor-maps/new" path="/floor-maps/new" component={FloorMapsForm} />
+          <ContentRoute key={templates.floorMapsList.templateString} path={templates.floorMapsList.templateString} component={FloorMapsList} />,
+          <ContentRoute key={templates.floorMapsCreate.templateString} path={templates.floorMapsCreate.templateString} component={FloorMapsForm} />,
+          <ContentRoute key={templates.floorMapsEdit.templateString} path={templates.floorMapsEdit.templateString} component={FloorMapsForm} />,
         ]}
         { /* Locations Routes*/}
         {permissions.canViewLocations && [
-          <ContentRoute key="/locations/edit/:id" path="/locations/edit/:id" component={LocationsForm} />,
-          <ContentRoute key="/locations/list" path="/locations/list" component={LocationsList} />,
-          <ContentRoute key="/locations/new" path="/locations/new" component={LocationsForm} />
+          <ContentRoute key={templates.locationsList.templateString} path={templates.locationsList.templateString} component={LocationsList} />,
+          <ContentRoute key={templates.locationsCreate.templateString} path={templates.locationsCreate.templateString} component={LocationsForm} />,           <ContentRoute key={templates.locationsEdit.templateString} path={templates.locationsEdit.templateString} component={LocationsForm} />,
+          <ContentRoute key={templates.locationsEdit.templateString} path={templates.locationsEdit.templateString} component={LocationsForm} />,
         ]}
         { /* Sublocations Routes*/}
-        {permissions.canViewSubLocations && [          
-          <ContentRoute key="/sublocations/edit/:id" path="/sublocations/edit/:id" component={SubLocationsForm} />,
-          <ContentRoute key="/sublocations/list" path="/sublocations/list" component={SubLocationsList} />,
-          <ContentRoute key="/sublocations/new" path="/sublocations/new" component={SubLocationsForm} />,
+        {permissions.canViewSubLocations && [
+          <ContentRoute key={templates.subLocationsList.templateString} path={templates.subLocationsList.templateString} component={SubLocationsList} />,
+          <ContentRoute key={templates.subLocationsCreate.templateString} path={templates.subLocationsCreate.templateString} component={SubLocationsForm} />,
+          <ContentRoute key={templates.subLocationsEdit.templateString} path={templates.subLocationsEdit.templateString} component={SubLocationsForm} />,
         ]}
         { /* what's new Page*/}
-        <ContentRoute key="/whatsnew" path="/whatsnew" component={News} />,
-        <ContentRoute key="/impacts" path="/impacts" component={Impacts} />,
-        <ContentRoute key="/operation/tracking" path="/operation/tracking" component={TrackingOperation} />,
+        <ContentRoute key={templates.whatsNew.templateString} path={templates.whatsNew.templateString} component={News} />,
+        <ContentRoute key={templates.impacts.templateString} path={templates.impacts.templateString} component={Impacts} />,
+        <ContentRoute key={templates.operationTracking.templateString} path={templates.operationTracking.templateString} component={TrackingOperation} />,
 
         <ContentRoute key="/*" path="/*" component={ErrorPage1} />,
       </Switch>
