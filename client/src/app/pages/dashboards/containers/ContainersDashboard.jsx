@@ -51,7 +51,7 @@ const OVERLAY_STYLE = {
 
 export function ContainersDashboard() {
     //Styles
-    const locationStyle = { fontWeight: "bold", textAlign: "center", cursor: "pointer" };
+    const locationStyle = { fontWeight: "bold", textAlign: "center", cursor: "pointer", borderColor: "#808080" };
     const geofencesStyle = { backgroundColor: "#D8D8D8" };
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
         [`&.${tableCellClasses.head}`]: {
@@ -124,6 +124,11 @@ export function ContainersDashboard() {
 
     //Handler to selection on table
     function handleTable(e) {
+        console.log(e.target.parentElement.rowIndex)
+        console.log(e.target.cellIndex - 1)
+        if ((e.target.cellIndex - 1) < 0){
+            return
+        }
         switch (e.target.parentElement.rowIndex) {
             case 1:
                 setSelectedInterval("lte15");
@@ -140,6 +145,8 @@ export function ContainersDashboard() {
             case 5:
                 setSelectedInterval("gte90");
                 break;
+            case 0:
+                setSelectedInterval("")
         }
         setSelectedPortCode(ports[e.target.cellIndex - 1]);
         setOpenLongStanding(true);
@@ -452,7 +459,7 @@ export function ContainersDashboard() {
                                             Long Standing
                                         </TableCell>
                                         {ports.map(port => (
-                                            <TableCell component="th" scope="row" align="center">
+                                            <TableCell  style={locationStyle} component="th" scope="row" align="center">
                                                 {port}
                                             </TableCell>
                                         ))}
