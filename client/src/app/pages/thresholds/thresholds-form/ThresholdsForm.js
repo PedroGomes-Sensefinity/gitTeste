@@ -1,66 +1,73 @@
-import React, {useEffect, useState, useMemo} from "react";
-import ThresholdFormComponent from "../../../components/form/ThresholdFormComponent";
+import React, { useEffect, useState } from "react";
+import BlockUi from "react-block-ui";
+import { TabContainer } from "react-bootstrap";
+import { Route, Switch, useRouteMatch } from "react-router-dom";
 import ThresholdActionComponent from "../../../components/form/ThresholdActionComponent";
 import ThresholdDevicesComponent from "../../../components/form/ThresholdDevicesComponent";
+import ThresholdFormComponent from "../../../components/form/ThresholdFormComponent";
 import ThresholdGroupsComponent from "../../../components/form/ThresholdGroupsComponent";
-import { Paper, Tab, Tabs } from "@material-ui/core";
-import {TabContainer} from "react-bootstrap";
-import apiService from "../../../services/apiService";
-import BlockUi from "react-block-ui";
 import apiServiceV2 from "../../../services/v2/apiServiceV2";
+import { LazyRender } from "../../../utils/LazyRender";
+import templates from "../../../utils/links";
+import ThresholdFormHeader from "./ThresholdFormHeader";
 
-export function ThresholdsForm({match}) {
-    const {id} = match.params;
-    const [value, setValue] = useState(0);
+
+export function ThresholdsForm({ match }) {
+    const { id } = match.params;
+    let { path } = useRouteMatch();
+
     const [threshold, setThreshold] = useState({})
     const [isLoading, setLoading] = useState(true)
-
-    function handleChange(event, newValue) {
-        setValue(newValue);
-    }
 
     useEffect(() => {
         apiServiceV2.get('v2/thresholds/' + id)
             .then((response) => {
                 let threshold = response.threshold;
                 let rule = JSON.parse(threshold.rule);
-                threshold.rule = rule 
+                threshold.rule = rule
                 setThreshold(threshold)
                 setLoading(false)
             });
     }, []);
 
-    const componentToBeRendered = useMemo(() => {
-        if(isLoading) {
-            return <></>
-        }
-        switch (value) {
-            case 0:
-                return <ThresholdFormComponent id={id} threshold={threshold} onChange={setThreshold}/>
-            case 1: 
-                return <ThresholdActionComponent id={id} threshold={threshold} onChange={setThreshold}/>
-            case 2: 
-                return <ThresholdDevicesComponent id={id} />
-            case 3:
-                return <ThresholdGroupsComponent id={id} />
-        }
-    } , [value, threshold, isLoading]);
-
     return (
-        <BlockUi tag='div' blocking={isLoading}>
-            <div>
-                <Paper square>
-                    <Tabs value={value} indicatorColor="primary" textColor="primary" onChange={handleChange}>
-                        <Tab label="Threshold Info"/>
-                        <Tab label="Action" disabled={typeof id === 'undefined'} />
-                        <Tab label="Devices" disabled={typeof id === 'undefined'} />
-                        <Tab label="Groups" disabled={typeof id === 'undefined'} />
-                    </Tabs>
-                </Paper>
-                <TabContainer>
-                    {componentToBeRendered}
-                </TabContainer>
-            </div>
-        </BlockUi>
+        <div>
+            <ThresholdFormHeader thresholdId={id} />
+            <TabContainer>
+                <Switch>
+                    <Route exact path={templates.thresholdsEdit.templateString}>
+                        {
+                            <LazyRender isLoading={isLoading}>
+                                <ThresholdFormComponent id={id} threshold={threshold} onChange={setThreshold} />
+                            </LazyRender>
+                        }
+                    </Route>
+                    <Route path={templates.thresholdsActions.templateString}>
+                        {
+                            <LazyRender isLoading={isLoading}>
+                                <ThresholdActionComponent id={id} threshold={threshold} onChange={setThreshold} />
+                            </LazyRender>
+                        }
+                    </Route>
+                    <Route path={templates.thresholdsDevices.templateString}>
+                        {<LazyRender isLoading={isLoading}>
+                            <BlockUi tag='div' blocking={isLoading}>
+                                <ThresholdDevicesComponent id={id} />
+                            </BlockUi>
+                        </LazyRender>
+                        }
+                    </Route>
+                    <Route path={templates.thresholdsGroups.templateString}>
+                        {
+                            <LazyRender isLoading={isLoading}>
+                                <BlockUi tag='div' blocking={isLoading}>
+                                    <ThresholdGroupsComponent id={id} />
+                                </BlockUi>
+                            </LazyRender>
+                        }
+                    </Route>
+                </Switch>
+            </TabContainer>
+        </div>
     );
 }

@@ -30,6 +30,7 @@ const ruleTypeOptions = [
 ];
 
 function ThresholdFormComponent(props) {
+    console.log('rendering threshold form lower layer')
     const intl = props.intl;
     const onThresholdChange = props.onChange;
     const isAddMode = props.id === undefined;

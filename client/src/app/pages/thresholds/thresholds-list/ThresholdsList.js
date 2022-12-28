@@ -2,11 +2,12 @@ import { Button, Card, CardContent } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import TableGridV2 from '../../../components/table-grid/TableGridV2';
-import apiService from '../../../services/apiService';
+import templates from '../../../utils/links';
+
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -24,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export function ThresholdsList() {
-    const [data, setData] = useState([]);
     const classes = useStyles();
     const history = useHistory()
 
@@ -36,7 +36,8 @@ export function ThresholdsList() {
                 icon: EditIcon,
                 tooltip: 'Edit threshold',
                 onClick: (_event, rowData) => {
-                    history.push(`/thresholds/${rowData.id}/edit`);
+                    const url = templates.thresholdsEdit.templateObj.expand({ id: rowData.id })
+                    history.push(url);
                 },
             })
         }
@@ -68,7 +69,8 @@ export function ThresholdsList() {
                         color='secondary'
                         className={classes.button}
                         onClick={() => {
-                            history.push('/thresholds/new')
+                            const url = templates.thresholdsCreate.templateString
+                            history.push(url)
                         }}>
                         <AddIcon className={classes.leftIcon} />
                         New threshold
