@@ -21,9 +21,8 @@ import Button from "@mui/material/Button";
 import { LocationsList } from "../../../components/lists/locations/LocationsList";
 import { LongStandingList } from "../../../components/lists/longStanding/LongStandingList";
 import elasticService from "../../../services/elasticService";
-import ProgressBar from "react-bootstrap/ProgressBar";
-import { formatMs } from "@material-ui/core";
 import Progress from "../../../utils/Progress/Progress";
+import toaster from "../../../utils/toaster";
 
 const style = {
     position: "absolute",
@@ -139,25 +138,68 @@ export function ContainersDashboard() {
     };
 
     const getReportFromElastic = path => {
-        elasticService.get(path).then(response => {
-            downloadFile(response.data, "report.csv", "csv");
-            setButtonDisabled(false);
-            setButtonLabel("Generate Report");
-            setShowProgress(false)
-        });
-    }; 
+        elasticService
+            .get(path)
+            .then(response => {
+                downloadFile(response.data, "report_" + selectedLocation + ".csv", "csv");
+                setButtonDisabled(false);
+                setButtonLabel("Generate Report");
+                setShowProgress(false);
+            })
+            .catch(r => {
+                toaster.notify("error", "Error on Generate Report!");
+                setButtonDisabled(false);
+                setButtonLabel("Generate Report");
+                setShowProgress(false);
+            });
+    };
     const getLocationReport = () => {
+        setShowProgress(true);
         setButtonDisabled(true);
         setButtonLabel("Generating Report...");
-        setShowProgress(true)
-        apiServiceV2
-            .get("v2/reports/generate?container_id=" + containerId + "&type=locations&file_format=csv")
-            .then(response => {
-                setTimeout(() => {
-                    setButtonLabel("Downloading...");
-                    getReportFromElastic(response.report.path);
-                }, 50000);
-            });
+        if (selectedLocation === "In Transit") {
+            apiServiceV2
+                .get(
+                    "v2/reports/generate?container_id=" +
+                        containerId +
+                        "&filter=" +
+                        selectedLocation +
+                        "&type=locations_in_transit&file_format=csv"
+                )
+                .then(response => {
+                    setTimeout(() => {
+                        setButtonLabel("Downloading...");
+                        getReportFromElastic(response.report.path);
+                    }, 50000);
+                })
+                .catch(r => {
+                    toaster.notify("error", "Error on Generate Report!");
+                    setButtonDisabled(false);
+                    setButtonLabel("Generate Report");
+                    setShowProgress(false);
+                });
+        } else {
+            apiServiceV2
+                .get(
+                    "v2/reports/generate?container_id=" +
+                        containerId +
+                        "&filter=" +
+                        selectedLocation +
+                        "&type=locations&file_format=csv"
+                )
+                .then(response => {
+                    setTimeout(() => {
+                        setButtonLabel("Downloading...");
+                        getReportFromElastic(response.report.path);
+                    }, 50000);
+                })
+                .catch(r => {
+                    toaster.notify("error", "Error on Generate Report!");
+                    setButtonDisabled(false);
+                    setButtonLabel("Generate Report");
+                    setShowProgress(false);
+                });
+        }
     };
 
     const [openLongStanding, setOpenLongStanding] = React.useState(false);
@@ -370,7 +412,7 @@ export function ContainersDashboard() {
                 >
                     {buttonLabel}
                 </Button>
-                {showProgress && <Progress time={0.75}/>}
+                {showProgress && <Progress time={0.75} />}
             </Box>
         </Modal>
     );
