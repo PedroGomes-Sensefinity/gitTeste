@@ -136,13 +136,13 @@ export function ContainersDashboard() {
         a.remove();
     };
 
-    const getReportFromElastic = path => {
+    const getReportFromElastic = (path, Fname) => {
         path = path.replace("/api/reporting/jobs/download/", "");
         apiServiceV2
             .get("v2/reports/" + path)
             .then(response => {
                 if (response.report_result.result != undefined) {
-                    downloadFile(response.report_result.result, "report_" + selectedLocation + ".csv", "csv");
+                    downloadFile(response.report_result.result, "report_" + Fname + ".csv", "csv");
                     setButtonDisabled(false);
                     setButtonLabel("Generate Report");
                     setShowProgress(false);
@@ -171,7 +171,7 @@ export function ContainersDashboard() {
                 .then(response => {
                     setTimeout(() => {
                         setButtonLabel("Downloading...");
-                        getReportFromElastic(response.report.path);
+                        getReportFromElastic(response.report.path, selectedLocation);
                     }, 50000);
                 })
                 .catch(r => {
@@ -192,7 +192,7 @@ export function ContainersDashboard() {
                 .then(response => {
                     setTimeout(() => {
                         setButtonLabel("Downloading...");
-                        getReportFromElastic(response.report.path);
+                        getReportFromElastic(response.report.path, selectedLocation);
                     }, 50000);
                 })
                 .catch(r => {
@@ -202,6 +202,53 @@ export function ContainersDashboard() {
                     setShowProgress(false);
                 });
         }
+    };
+
+    const getLongStandingReport = () => {
+        setShowProgress(true);
+        setButtonDisabled(true);
+        setButtonLabel("Generating Report...");
+        let url =
+            "v2/reports/generate?container_id=" +
+            containerId +
+            "&filter=" +
+            selectedPortCode +
+            "&file_format=csv";
+        if (selectedInterval != "") {
+            switch (selectedInterval) {
+                case "lte15":
+                    url = url + "&start_interval=0&end_interval=15&type=port_code_interval";
+                    break;
+                case "15-30":
+                    url = url + "&start_interval=16&end_interval=30&type=port_code_interval";
+                    break;
+                case "30-60":
+                    url = url + "&start_interval=31&end_interval=60&type=port_code_interval";
+                    break;
+                case "60-90":
+                    url = url + "&start_interval=61&end_interval=90&type=port_code_interval";
+                    break;
+                case "gte90":
+                    url = url + "&start_interval=91&end_interval=1825&type=port_code_interval";
+                    break;
+            }
+        }else{
+            url = url + "&type=port_code";
+        }
+        apiServiceV2
+            .get(url)
+            .then(response => {
+                setTimeout(() => {
+                    setButtonLabel("Downloading...");
+                    getReportFromElastic(response.report.path, selectedPortCode);
+                }, 50000);
+            })
+            .catch(r => {
+                toaster.notify("error", "Error on Generate Report!");
+                setButtonDisabled(false);
+                setButtonLabel("Generate Report");
+                setShowProgress(false);
+            });
     };
 
     const [openLongStanding, setOpenLongStanding] = React.useState(false);
@@ -443,6 +490,17 @@ export function ContainersDashboard() {
                     port_code={selectedPortCode}
                     interval={selectedInterval}
                 ></LongStandingList>
+                <Button
+                    size="small"
+                    onClick={getLongStandingReport}
+                    type="button"
+                    disabled={buttonDisabled}
+                    style={{ margin: "15px" }}
+                    className={`btn btn-primary mr-3`}
+                >
+                    {buttonLabel}
+                </Button>
+                {showProgress && <Progress time={0.75} />}
             </Box>
         </Modal>
     );
