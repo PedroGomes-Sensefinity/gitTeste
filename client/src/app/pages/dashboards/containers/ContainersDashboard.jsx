@@ -20,6 +20,8 @@ import Button from "@mui/material/Button";
 
 import { LocationsList } from "../../../components/lists/locations/LocationsList";
 import { LongStandingList } from "../../../components/lists/longStanding/LongStandingList";
+import Progress from "../../../utils/Progress/Progress";
+import toaster from "../../../utils/toaster";
 
 const style = {
     position: "absolute",
@@ -105,6 +107,9 @@ export function ContainersDashboard() {
     const [containerId, setContainerId] = React.useState(0);
 
     const [openLocation, setOpenLocation] = React.useState(false);
+    const [buttonDisabled, setButtonDisabled] = React.useState(false);
+    const [buttonLabel, setButtonLabel] = React.useState("Generate Report");
+    const [showProgress, setShowProgress] = React.useState(false);
 
     //handlers for pop ups (modal)
     const handleOpenLocation = m => {
@@ -116,6 +121,89 @@ export function ContainersDashboard() {
         setOpenLocation(false);
     };
 
+    const downloadFile = (data, fileName, fileType) => {
+        const blob = new Blob([data], { type: fileType });
+
+        const a = document.createElement("a");
+        a.download = fileName;
+        a.href = window.URL.createObjectURL(blob);
+        const clickEvt = new MouseEvent("click", {
+            view: window,
+            bubbles: true,
+            cancelable: true
+        });
+        a.dispatchEvent(clickEvt);
+        a.remove();
+    };
+
+    const getReportFromElastic = path => {
+        path = path.replace("/api/reporting/jobs/download/", "");
+        apiServiceV2
+            .get("v2/reports/" + path)
+            .then(response => {
+                if (response.report_result.result != undefined) {
+                    downloadFile(response.report_result.result, "report_" + selectedLocation + ".csv", "csv");
+                    setButtonDisabled(false);
+                    setButtonLabel("Generate Report");
+                    setShowProgress(false);
+                }
+            })
+            .catch(r => {
+                toaster.notify("error", "Error on Generate Report!");
+                setButtonDisabled(false);
+                setButtonLabel("Generate Report");
+                setShowProgress(false);
+            });
+    };
+    const getLocationReport = () => {
+        setShowProgress(true);
+        setButtonDisabled(true);
+        setButtonLabel("Generating Report...");
+        if (selectedLocation === "In Transit") {
+            apiServiceV2
+                .get(
+                    "v2/reports/generate?container_id=" +
+                        containerId +
+                        "&filter=" +
+                        selectedLocation +
+                        "&type=locations_in_transit&file_format=csv"
+                )
+                .then(response => {
+                    setTimeout(() => {
+                        setButtonLabel("Downloading...");
+                        getReportFromElastic(response.report.path);
+                    }, 50000);
+                })
+                .catch(r => {
+                    toaster.notify("error", "Error on Generate Report!");
+                    setButtonDisabled(false);
+                    setButtonLabel("Generate Report");
+                    setShowProgress(false);
+                });
+        } else {
+            apiServiceV2
+                .get(
+                    "v2/reports/generate?container_id=" +
+                        containerId +
+                        "&filter=" +
+                        selectedLocation +
+                        "&type=locations&file_format=csv"
+                )
+                .then(response => {
+                    setTimeout(() => {
+                        setButtonLabel("Downloading...");
+                        getReportFromElastic(response.report.path);
+                    }, 50000);
+                })
+                .catch(r => {
+                    toaster.notify("error", "Error on Generate Report!");
+                    setButtonDisabled(false);
+                    setButtonLabel("Generate Report");
+                    setShowProgress(false);
+                });
+        }
+    };
+
     const [openLongStanding, setOpenLongStanding] = React.useState(false);
 
     const handleCloseLongStanding = () => {
@@ -124,8 +212,8 @@ export function ContainersDashboard() {
 
     //Handler to selection on table
     function handleTable(e) {
-        if ((e.target.cellIndex - 1) < 0){
-            return
+        if (e.target.cellIndex - 1 < 0) {
+            return;
         }
         switch (e.target.parentElement.rowIndex) {
             case 1:
@@ -144,7 +232,7 @@ export function ContainersDashboard() {
                 setSelectedInterval("gte90");
                 break;
             case 0:
-                setSelectedInterval("")
+                setSelectedInterval("");
         }
         setSelectedPortCode(ports[e.target.cellIndex - 1]);
         setOpenLongStanding(true);
@@ -152,7 +240,7 @@ export function ContainersDashboard() {
 
     //Get containers and get information for first container
     useEffect(() => {
-        setBlocking(true)
+        setBlocking(true);
         apiServiceV2.get("v2/tenants/containers").then(response => {
             const respContainers = response.containers || [];
 
@@ -212,7 +300,7 @@ export function ContainersDashboard() {
                             setData60_90(data60_90_R);
                             setData90(data90_R);
                         }
-                        setBlocking(false)
+                        setBlocking(false);
                     });
             }
         });
@@ -222,7 +310,7 @@ export function ContainersDashboard() {
 
     //Handle container changes
     function onChangeContainer(e) {
-        setBlocking(true)
+        setBlocking(true);
         setselectedContainer(e.target.value);
         setContainerId(e.target.value);
         apiService
@@ -291,7 +379,7 @@ export function ContainersDashboard() {
                 setData30_60(data30_60_R);
                 setData60_90(data60_90_R);
                 setData90(data90_R);
-                setBlocking(false)
+                setBlocking(false);
             });
     }
 
@@ -316,6 +404,17 @@ export function ContainersDashboard() {
                     X
                 </Button>
                 <LocationsList container_id={containerId} location={selectedLocation}></LocationsList>
+                <Button
+                    size="small"
+                    onClick={getLocationReport}
+                    type="button"
+                    disabled={buttonDisabled}
+                    style={{ margin: "15px" }}
+                    className={`btn btn-primary mr-3`}
+                >
+                    {buttonLabel}
+                </Button>
+                {showProgress && <Progress time={0.75} />}
             </Box>
         </Modal>
     );
@@ -457,7 +556,7 @@ export function ContainersDashboard() {
                                             Long Standing
                                         </TableCell>
                                         {ports.map(port => (
-                                            <TableCell  style={locationStyle} component="th" scope="row" align="center">
+                                            <TableCell style={locationStyle} component="th" scope="row" align="center">
                                                 {port}
                                             </TableCell>
                                         ))}
