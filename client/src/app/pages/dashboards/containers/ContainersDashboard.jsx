@@ -20,7 +20,6 @@ import Button from "@mui/material/Button";
 
 import { LocationsList } from "../../../components/lists/locations/LocationsList";
 import { LongStandingList } from "../../../components/lists/longStanding/LongStandingList";
-import elasticService from "../../../services/elasticService";
 import Progress from "../../../utils/Progress/Progress";
 import toaster from "../../../utils/toaster";
 
@@ -138,13 +137,16 @@ export function ContainersDashboard() {
     };
 
     const getReportFromElastic = path => {
-        elasticService
-            .get(path)
+        path = path.replace("/api/reporting/jobs/download/", "");
+        apiServiceV2
+            .get("v2/reports/" + path)
             .then(response => {
-                downloadFile(response.data, "report_" + selectedLocation + ".csv", "csv");
-                setButtonDisabled(false);
-                setButtonLabel("Generate Report");
-                setShowProgress(false);
+                if (response.report_result.result != undefined) {
+                    downloadFile(response.report_result.result, "report_" + selectedLocation + ".csv", "csv");
+                    setButtonDisabled(false);
+                    setButtonLabel("Generate Report");
+                    setShowProgress(false);
+                }
             })
             .catch(r => {
                 toaster.notify("error", "Error on Generate Report!");
