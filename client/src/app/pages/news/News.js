@@ -6,6 +6,10 @@ import Typography from '@mui/material/Typography';
 
 const versions = [
     {
+        versionNumber: "V.0.2.2", date: "02/01/2023", changes:
+            ["1. You can now Download Reports (.csv) from the Container Dashboard.", "2. It's now possible to check the History from an Asset! Go to Assets - Asset - History"]
+    },
+    {
         versionNumber: "V.0.2.1", date: "26/12/2022", changes:
             ["1. Support for lists on Container Dashboard for Locations and LongStanding!"]
     },
