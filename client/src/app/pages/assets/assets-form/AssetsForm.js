@@ -5,6 +5,7 @@ import { TabContainer } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import AssetDevicesComponent from "../../../components/form/AssetDevicesComponent";
 import AssetFormExtraFields from "../../../components/form/AssetFormExtraFields";
+import AssetHistory from "../../../components/form/AssetHistory";
 import AssetsFormComponent from "../../../components/form/AssetsFormComponent";
 import apiService from '../../../services/apiService';
 import apiServiceV2 from '../../../services/v2/apiServiceV2';
@@ -43,6 +44,9 @@ export function AssetsForm({ match, location }) {
                 history.push(`${baseURL}#devices`)
                 return
             case 3:
+                history.push(`${baseURL}#history`)
+                return
+            case 4:
                 history.push(`${baseURL}#extra-fields`)
                 return
         }
@@ -53,7 +57,8 @@ export function AssetsForm({ match, location }) {
             case '': return 0
             case '#edit': return 1
             case '#devices': return 2
-            case '#extra-fields': return 3
+            case '#history': return 3
+            case '#extra-fields': return 4
         }
     }, [location.hash])
 
@@ -70,6 +75,8 @@ export function AssetsForm({ match, location }) {
             case 2:
                 return <AssetDevicesComponent id={assetId} asset={assetInfo} onAssetChange={onAssetChange} />
             case 3:
+                return <AssetHistory id={assetId}  asset={assetInfo}/>
+            case 4:
                 return <AssetFormExtraFields id={assetId} />
         }
     }, [value, assetInfo, isLoading]);
@@ -89,9 +96,9 @@ export function AssetsForm({ match, location }) {
 
     useEffect(() => {
         apiService.getByEndpoint("v2/assets/" + assetId).then((response) => {
-            if(response.asset.asset_type.metadataschema != undefined && response.asset.asset_type.metadataschema != "{}" ){
+            if (response.asset.asset_type.metadataschema != undefined && response.asset.asset_type.metadataschema != "{}") {
                 setMetadataSchema(true)
-            }else{
+            } else {
                 setMetadataSchema(false)
             }
         });
@@ -103,6 +110,7 @@ export function AssetsForm({ match, location }) {
                 <Tab label="Dashboard" />
                 <Tab label="Asset Info" />
                 <Tab label="Devices" disabled={typeof assetId === 'undefined'} />
+                <Tab label="History" disabled={typeof assetId === 'undefined'} />
                 <Tab label="Extra Fields" disabled={typeof assetId === 'undefined' || hasMetadataSchema === false} />
             </Tabs>
         </Paper>
