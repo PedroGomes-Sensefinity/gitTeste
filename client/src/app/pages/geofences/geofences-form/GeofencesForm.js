@@ -5,6 +5,7 @@ import BlockUi from "react-block-ui";
 import { TabContainer } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import apiServiceV2 from '../../../services/v2/apiServiceV2';
+import GeofenceHistory from '../../../components/history/GeofenceHistory';
 
 export function GeofencesForm({ match, location }) {
     const { id: geofenceId } = match.params;
@@ -46,7 +47,7 @@ export function GeofencesForm({ match, location }) {
             case 0:
                 return <GeofencingComponent id={geofenceId} />
             case 1:
-                return <GeofencingComponent id={geofenceId} />
+                return <GeofenceHistory id={geofenceId} />
         }
     }, [value, geofenceInfo, isLoading]);
 

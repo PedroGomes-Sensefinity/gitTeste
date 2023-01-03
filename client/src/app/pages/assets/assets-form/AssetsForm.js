@@ -5,7 +5,7 @@ import { TabContainer } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import AssetDevicesComponent from "../../../components/form/AssetDevicesComponent";
 import AssetFormExtraFields from "../../../components/form/AssetFormExtraFields";
-import AssetHistory from "../../../components/form/AssetHistory";
+import AssetHistory from "../../../components/history/AssetHistory";
 import AssetsFormComponent from "../../../components/form/AssetsFormComponent";
 import apiService from '../../../services/apiService';
 import apiServiceV2 from '../../../services/v2/apiServiceV2';
