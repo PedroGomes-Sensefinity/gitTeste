@@ -30,7 +30,7 @@ export function GeofencesList() {
                 icon: EditIcon,
                 tooltip: 'Edit Geofence',
                 onClick: (_event, rowData) => {
-                    history.push(`/geofences/edit/${rowData.id}`);
+                    history.push(`/geofences/${rowData.id}#edit`);
                 },
             }]
         }

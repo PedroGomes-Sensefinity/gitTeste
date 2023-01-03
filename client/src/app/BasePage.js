@@ -18,6 +18,7 @@ import { DevicesUpload } from "./pages/devices/devices-upload/DevicesUpload";
 import { FloorMapsForm } from "./pages/floor-maps/form/FloorMapsForm";
 import { FloorMapsList } from "./pages/floor-maps/list/FloorMapsList";
 import { GeofencesForm } from "./pages/geofences/geofences-form/GeofencesForm";
+import { CreateGeofence } from "./pages/geofences/geofences-form/CreateGeofence";
 import { GroupsForm } from "./pages/groups/groups-form/GroupsForm";
 import { GroupsList } from "./pages/groups/groups-list/GroupsList";
 import { News } from "./pages/news/News";
@@ -132,9 +133,9 @@ export default function BasePage() {
 
         { /* Geofences Routes*/}
         {permissions.canViewGeofences && [
-          <ContentRoute key="/geofences/edit/:id" path="/geofences/edit/:id" component={GeofencesForm} />,
           <ContentRoute key="/geofences/list" path="/geofences/list" component={GeofencesList} />,
-          <ContentRoute key="/geofences/new" path="/geofences/new" component={GeofencesForm} />]
+          <ContentRoute key="/geofences/new" path="/geofences/new" component={CreateGeofence} />,
+          <ContentRoute key="/geofences/:id" path="/geofences/:id" component={GeofencesForm} />,]
         }
 
         { /* Users Routes*/}
