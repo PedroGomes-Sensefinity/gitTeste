@@ -10,6 +10,53 @@ export default function AssetHistory(props) {
     const [containersOptions, setContainersOptions] = useState([{ id: 0, label: "Containers Not Found" }]);
     const [selectedContainer, setselectedContainer] = useState(0);
 
+    const columns = [
+        {
+            field: "asset_label",
+            title: "Label"
+        },
+        {
+            field: "timestamp",
+            title: "Location Timestamp"
+        },
+        {
+            field: "asset_type",
+            title: "Asset Type"
+        },
+        {
+            field: "location",
+            title: "Location"
+        },
+        {
+            field: "sublocation",
+            title: "SubLocation"
+        },
+        {
+            field: "port_code",
+            title: "Port Code"
+        },
+        {
+            field: "reverse_geocoding",
+            title: "Reverse Geocoding"
+        },
+        {
+            field: "longstanding",
+            title: "Longstanding"
+        },
+        {
+            field: "geofence_timestamp",
+            title: "Geofence Timestamp"
+        },
+        {
+            field: "geofence_label",
+            title: "Geofence Label"
+        },
+        {
+            field: "geofence_status",
+            title: "Geofence Status"
+        }
+    ];
+
     useEffect(() => {
         apiServiceV2.get("v2/tenants/containers").then(response => {
             const respContainers = response.containers || [];
@@ -39,6 +86,7 @@ export default function AssetHistory(props) {
                 </Select>
             </FormControl>
             <HistoryList
+                columns={columns}
                 key={selectedContainer}
                 title={"Asset History"}
                 container_id={selectedContainer}
