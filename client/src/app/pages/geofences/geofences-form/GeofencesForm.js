@@ -6,6 +6,7 @@ import { TabContainer } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import apiServiceV2 from '../../../services/v2/apiServiceV2';
 import GeofenceHistory from '../../../components/history/GeofenceHistory';
+import GeofencesAssetsComponent from '../../../components/form/GeofencesAssetsComponent';
 
 export function GeofencesForm({ match, location }) {
     const { id: geofenceId } = match.params;
@@ -28,6 +29,9 @@ export function GeofencesForm({ match, location }) {
             case 1:
                 history.push(`${baseURL}#history`)
                 return
+            case 2:
+                history.push(`${baseURL}#assets`)
+                return
         }
     }
 
@@ -35,6 +39,7 @@ export function GeofencesForm({ match, location }) {
         switch (location.hash) {
             case '#edit': return 0
             case '#history': return 1
+            case '#assets': return 2
         }
     }, [location.hash])
 
@@ -48,6 +53,8 @@ export function GeofencesForm({ match, location }) {
                 return <GeofencingComponent id={geofenceId} />
             case 1:
                 return <GeofenceHistory id={geofenceId} />
+            case 2:
+                return <GeofencesAssetsComponent id={geofenceId} />
         }
     }, [value, geofenceInfo, isLoading]);
 
@@ -69,6 +76,7 @@ export function GeofencesForm({ match, location }) {
             <Tabs value={value} indicatorColor="primary" textColor="primary" onChange={handleChange}>
                 <Tab label="Geofence Info" />
                 <Tab label="History" disabled={typeof geofenceId === 'undefined'} />
+                <Tab label="Assets" disabled={typeof geofenceId === 'undefined'} />
             </Tabs>
         </Paper>
         <BlockUi tag='div' blocking={isLoading}>
