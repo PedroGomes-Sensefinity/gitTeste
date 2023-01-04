@@ -1,13 +1,14 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { connect } from "react-redux";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
 import { FormattedMessage, injectIntl } from "react-intl";
 import * as auth from "../_redux/authRedux";
-import {recoverPassword, checkInfo} from "../_redux/authService";
-import { useHistory } from "react-router-dom";
+import { recoverPassword, checkInfo } from "../_redux/authService";
+import { useNavigate, useParams } from "react-router-dom";
 import toaster from '../../../utils/toaster';
+import templates from "../../../utils/links";
 
 const initialValues = {
   email: "",
@@ -17,8 +18,8 @@ const initialValues = {
 
 function RecoverPassword(props) {
   const { intl } = props;
-  const { id } = props.match.params;
-  const history = useHistory()
+  const { id } = useParams();
+  const navigate = useNavigate()
 
   const [loading, setLoading] = useState(false);
   const RegistrationSchema = Yup.object().shape({
@@ -91,7 +92,7 @@ function RecoverPassword(props) {
       formik.setFieldValue('email', response.data.data.detail, false);
     }).catch((error) => {
       toaster.notify('error', "Token expired")
-      history.push("/auth/forgot-password")
+      navigate(templates.forgotPassword)
     });
   }, []);
 
@@ -122,7 +123,7 @@ function RecoverPassword(props) {
         {/* begin: Email */}
         <div className="form-group fv-plugins-icon-container">
           <input
-              disabled="disabled"
+            disabled="disabled"
             placeholder="Email"
             type="email"
             className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(

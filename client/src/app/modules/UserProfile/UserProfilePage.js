@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { useSubheader } from "../../../_metronic/layout";
 import AccountInformation from "./AccountInformation";
 import { ProfileOverview } from "./ProfileOverview";
@@ -15,8 +15,8 @@ export default function UserProfilePage() {
     <div className="d-flex flex-row">
       <ProfileCard></ProfileCard>
       <div className="flex-row-fluid ml-lg-8">
-        <Switch>
-          <Redirect
+        <Routes>
+          <Navigate
             from="/user-profile"
             exact={true}
             to="/user-profile/profile-overview"
@@ -41,7 +41,7 @@ export default function UserProfilePage() {
             path="/user-profile/personal-information"
             component={PersonaInformation}
           />
-        </Switch>
+        </Routes>
       </div>
     </div>
   );

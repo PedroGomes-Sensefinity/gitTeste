@@ -5,7 +5,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import ChangePasswordIcon from '@material-ui/icons/VpnKey';
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { generatePath, useNavigate } from 'react-router-dom';
+import { Layout } from '../../../../_metronic/layout';
 import ChangePasswordFormComponent from "../../../components/form/ChangePasswordFormComponent";
 import GenericModalComponent from '../../../components/modal/GenericModalComponent';
 import TableGrid from '../../../components/table-grid/TableGrid';
@@ -32,7 +33,7 @@ export function UsersList() {
     const [show, setShow] = useState(false);
     const [userId, setUserId] = useState(0);
     const [userUsername, setUserUsername] = useState('');
-    const history = useHistory()
+    const navigate = useNavigate()
 
     const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
 
@@ -43,8 +44,8 @@ export function UsersList() {
                 icon: EditIcon,
                 tooltip: 'Edit user',
                 onClick: (_event, rowData) => {
-                    const url = templates.usersEdit.templateObj.expand({ id: rowData.id })
-                    history.push(url);
+                    const url = generatePath(templates.usersEdit, { id: rowData.id })
+                    navigate(url);
                 },
             },
                 {
@@ -74,36 +75,37 @@ export function UsersList() {
     ];
 
     return (
-        <Card>
-            <CardContent>
-                {permissions.canCreateUsers ?
-                    <Button
-                        variant='contained'
-                        color='secondary'
-                        className={classes.button}
-                        onClick={() => {
-                            const url = templates.usersCreate.templateString
-                            history.push(url)
-                        }}>
-                        <AddIcon className={classes.leftIcon} />
-                        New User
-                    </Button> : <></>}
-                <TableGrid
-                    actions={actions}
-                    title=''
-                    columns={columns}
-                    endpoint={'user'}
-                    dataField='users'
-                />
-            </CardContent>
+        <Layout>
+            <Card>
+                <CardContent>
+                    {permissions.canCreateUsers ?
+                        <Button
+                            variant='contained'
+                            color='secondary'
+                            className={classes.button}
+                            onClick={() => {
+                                navigate(templates.usersCreate)
+                            }}>
+                            <AddIcon className={classes.leftIcon} />
+                            New User
+                        </Button> : <></>}
+                    <TableGrid
+                        actions={actions}
+                        title=''
+                        columns={columns}
+                        endpoint={'user'}
+                        dataField='users'
+                    />
+                </CardContent>
 
-            <GenericModalComponent
-                content={ChangePasswordComponent}
-                show={show}
-                handleClose={() => { setShow(false) }}
-                title={'Changing password [' + userUsername + ']'}
-            // title={intl.formatMessage({id: 'MODAL.PASSWORD.TITLE'}) + userUsername}
-            />
-        </Card>
+                <GenericModalComponent
+                    content={ChangePasswordComponent}
+                    show={show}
+                    handleClose={() => { setShow(false) }}
+                    title={'Changing password [' + userUsername + ']'}
+                // title={intl.formatMessage({id: 'MODAL.PASSWORD.TITLE'}) + userUsername}
+                />
+            </Card>
+        </Layout>
     );
 }
