@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import BlockUi from "react-block-ui";
 import { injectIntl } from 'react-intl';
 import NumberFormat from 'react-number-format';
+import { useOutletContext } from 'react-router-dom';
 import * as Yup from 'yup';
 import apiService from '../../services/apiService';
 import floorMapService from '../../services/floorMapService';
@@ -30,8 +31,8 @@ const SUPPORTED_FORMATS = [
 
 function FloorMapMapFormComponent(props) {
     const intl = props.intl
-    const floorMapId = props.id
-    const isAddMode = !props.id
+    const { floorMapId } = useOutletContext()
+    const isAddMode = !floorMapId
     const [floorMapInfo, setFloorMap] = useState({})
     const attachment = floorMapInfo.attachment || {}
     const metadata = JSON.parse(floorMapInfo.metadata || '{}')

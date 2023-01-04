@@ -4,7 +4,8 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { Link, useHistory } from 'react-router-dom';
+import { generatePath, Link, useNavigate } from 'react-router-dom';
+import { Layout } from '../../../../_metronic/layout';
 import TableGrid from '../../../components/table-grid/TableGrid';
 import templates from '../../../utils/links';
 
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 export function FloorMapsList() {
     const classes = useStyles();
-    const history = useHistory()
+    const navigate = useNavigate()
     const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
 
     const actions = useMemo(() => {
@@ -29,8 +30,8 @@ export function FloorMapsList() {
                 icon: EditIcon,
                 tooltip: 'Edit Floor Map',
                 onClick: (_event, rowData) => {
-                    const url = templates.floorMapsEdit.templateObj.expand({ id: rowData.id })
-                    history.push(url);
+                    const url = generatePath(templates.floorMapsEdit, { id: rowData.id })
+                    navigate(url);
                 },
             })
         }
@@ -49,26 +50,28 @@ export function FloorMapsList() {
     ];
 
     return (
-        <Card>
-            <CardContent>
-                {permissions.canCreateFloorMaps ?
-                    <Link to={templates.floorMapsCreate.templateString}>
-                        <Button
-                            variant='contained'
-                            color='secondary'
-                            className={classes.button}>
-                            <AddIcon className={classes.leftIcon} />
-                            New Floor Map
-                        </Button>
-                    </Link> : <></>}
-                <TableGrid
-                    actions={actions}
-                    title=''
-                    columns={columns}
-                    endpoint={'floormaps'}
-                    dataField='floormaps'
-                />
-            </CardContent>
-        </Card>
+        <Layout>
+            <Card>
+                <CardContent>
+                    {permissions.canCreateFloorMaps ?
+                        <Link to={templates.floorMapsCreate}>
+                            <Button
+                                variant='contained'
+                                color='secondary'
+                                className={classes.button}>
+                                <AddIcon className={classes.leftIcon} />
+                                New Floor Map
+                            </Button>
+                        </Link> : <></>}
+                    <TableGrid
+                        actions={actions}
+                        title=''
+                        columns={columns}
+                        endpoint={'floormaps'}
+                        dataField='floormaps'
+                    />
+                </CardContent>
+            </Card>
+        </Layout>
     );
 }
