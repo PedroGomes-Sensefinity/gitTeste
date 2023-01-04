@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import { Layout } from '../../../_metronic/layout';
 
 const versions = [
     {
@@ -58,24 +59,26 @@ const versions = [
 
 export function News() {
     return (
-        <Box sx={{ minWidth: 275, margin: "40px" }}>
-            <h1>What's New?</h1>
-            {versions.map((version) => (
-                <Card variant="outlined" sx={{ marginBottom: "1rem" }} >
-                    <CardContent>
-                        <Typography sx={{ fontSize: 14, backgroundColor: "#90EE90", display: "inline-block", borderRadius: "5px" }} color="text.secondary" gutterBottom>
-                            {version.versionNumber}
-                        </Typography>
-                        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                            {version.date}
-                        </Typography>
-                        {version.changes.map((change) => (
-                            <Typography variant="h5" component="div">
-                                {change}
+        <Layout>
+            <Box sx={{ minWidth: 275, margin: "40px" }}>
+                <h1>What's New?</h1>
+                {versions.map((version) => (
+                    <Card variant="outlined" sx={{ marginBottom: "1rem" }} >
+                        <CardContent>
+                            <Typography sx={{ fontSize: 14, backgroundColor: "#90EE90", display: "inline-block", borderRadius: "5px" }} color="text.secondary" gutterBottom>
+                                {version.versionNumber}
                             </Typography>
-                        ))}
-                    </CardContent>
-                </Card>))}
-        </Box>
+                            <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                                {version.date}
+                            </Typography>
+                            {version.changes.map((change) => (
+                                <Typography variant="h5" component="div">
+                                    {change}
+                                </Typography>
+                            ))}
+                        </CardContent>
+                    </Card>))}
+            </Box>
+        </Layout>
     );
 }
