@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import BlockUi from "react-block-ui";
 import RangeSlider from "react-bootstrap-range-slider";
 import { injectIntl } from "react-intl";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import * as Yup from "yup";
 import apiService from "../../services/apiService";
 import thresholdServiceV2 from "../../services/v2/thresholdServiceV2";
@@ -30,13 +30,12 @@ const ruleTypeOptions = [
 ];
 
 function ThresholdFormComponent(props) {
+    console.log('rendering threshold form lower layer')
+    const { thresholdId, thresholdInfo: threshold, onChange: onThresholdChange, isLoading } = useOutletContext() || props
     const intl = props.intl;
-    const onThresholdChange = props.onChange;
-    const isAddMode = props.id === undefined;
-    const threshold = props.threshold || {};
-    const thresholdId = props.id;
-    const geofences = isAddMode ? [] : threshold.rule.geofences;
-    const [blocking, setBlocking] = useState(false);
+    const isAddMode = thresholdId === undefined;
+    const geofences = isAddMode ? [] : threshold.rule?.geofences || [];
+    const [blocking, setBlocking] = useState(isLoading);
     const minLimit = 0;
     const maxLimit = 100;
 
@@ -52,22 +51,32 @@ function ThresholdFormComponent(props) {
     ];
 
     const initialValues = {
-        id: props.id || "",
+        id: thresholdId || "",
         routeId: isAddMode ? "" : threshold.route_id,
         label: isAddMode ? "" : threshold.label,
-        ruleMeasurementType: isAddMode ? "" : threshold.rule.type,
-        ruleWhenCron: isAddMode ? "" : threshold.rule.when.cron,
+        ruleMeasurementType: isAddMode || !threshold.rule ? "" : threshold.rule?.type || "",
+        ruleWhenCron: isAddMode || !threshold.rule ? "" : threshold.rule.when.cron,
         customCron: "",
         ruleWhenBetweenFrom: "",
         ruleWhenBetweenTo: "",
         ruleWhenSuccessiveTime: 0,
-        min: !isAddMode && threshold.rule.do.value.min !== undefined,
-        minValue: isAddMode ? 0 : threshold.rule.do.value.min || minLimit,
-        max: !isAddMode && threshold.rule.do.value.max !== undefined,
-        maxValue: isAddMode ? 0 : threshold.rule.do.value.max || maxLimit
+        min: !isAddMode && threshold.rule && threshold.rule.do.value.min !== undefined,
+        minValue: (isAddMode || !threshold.rule) ? 0 : threshold.rule.do.value.min || minLimit,
+        max: !isAddMode && threshold.rule && threshold.rule.do.value.max !== undefined,
+        maxValue: (isAddMode || !threshold.rule) ? 0 : threshold.rule.do.value.max || maxLimit
     };
 
     const [routeOptions, setRouteOptions] = useState([]);
+
+    useEffect(() => {
+        if (!isAddMode && threshold.tenant) {
+            setTenantsOptions([{ id: threshold.tenant.id, name: threshold.tenant.name }]);
+            setBlocking(false)
+        }
+
+    }, [threshold])
+
+
     useEffect(() => {
         // Get tenant options
         if (isAddMode) {
@@ -79,19 +88,14 @@ function ThresholdFormComponent(props) {
                 });
                 setTenantsOptions(tenantsOptionsR);
             });
-        }else{
-            setTenantsOptions([{ id: threshold.tenant.id, name: threshold.tenant.name }]);
         }
         apiService.get("route", 100, 0).then(response => {
-            let routes = [];
-            if (response.routes != undefined) {
-                response.routes.forEach(function(route) {
-                    routes.push({
-                        id: route.id,
-                        name: route.label
-                    });
-                });
-            }
+            let respRoutes = response.routes || [];
+            let routes = respRoutes.map((route) => ({
+                id: route.id,
+                name: route.label
+            }));
+
             setRouteOptions(routes);
         });
     }, []);
@@ -201,12 +205,12 @@ function ThresholdFormComponent(props) {
             ? intl.formatMessage({ id: "THRESHOLD.CREATED" })
             : intl.formatMessage({ id: "THRESHOLD.UPDATED" });
 
-        
+
 
         if (isAddMode) {
             threshold["id"] = 0
             threshold["tenant_id"] = parseInt(fields.tenant.id);
-        }else{
+        } else {
             threshold["id"] = parseInt(threshold["id"])
         }
 
@@ -277,41 +281,41 @@ function ThresholdFormComponent(props) {
                             <div className="form">
                                 <div className="card-body">
                                     <div className="form-group row">
-                                            <div className="col-xl-12 col-lg-12">
-                                                <label className={`required`}>Tenant</label>
-                                                <Field
-                                                    disabled={!isAddMode}
-                                                    validate={validateTenant}
-                                                    type={"number"}
-                                                    as="select"
-                                                    className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                        { errors, touched },
-                                                        "tenant.id"
-                                                    )}`}
-                                                    name="tenant.id"
-                                                    placeholder=""
-                                                    {...getFieldProps("tenant.id")}
-                                                    onChange={e => {
-                                                        setFieldValue("tenant.id", e.target.value);
-                                                        handleChangeTenant(e);
-                                                    }}
-                                                >
-                                                    {isAddMode && <option key="" value=""></option>}
-                                                    {tenantsOptions.map(e => {
-                                                        return (
-                                                            <option key={e.id} value={e.id}>
-                                                                {e.name}
-                                                            </option>
-                                                        );
-                                                    })}
-                                                </Field>
-                                                <ErrorMessage
-                                                    name="tenant_id"
-                                                    component="div"
-                                                    className="invalid-feedback"
-                                                />
-                                            </div>
+                                        <div className="col-xl-12 col-lg-12">
+                                            <label className={`required`}>Tenant</label>
+                                            <Field
+                                                disabled={!isAddMode}
+                                                validate={validateTenant}
+                                                type={"number"}
+                                                as="select"
+                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                    { errors, touched },
+                                                    "tenant.id"
+                                                )}`}
+                                                name="tenant.id"
+                                                placeholder=""
+                                                {...getFieldProps("tenant.id")}
+                                                onChange={e => {
+                                                    setFieldValue("tenant.id", e.target.value);
+                                                    handleChangeTenant(e);
+                                                }}
+                                            >
+                                                {isAddMode && <option key="" value=""></option>}
+                                                {tenantsOptions.map(e => {
+                                                    return (
+                                                        <option key={e.id} value={e.id}>
+                                                            {e.name}
+                                                        </option>
+                                                    );
+                                                })}
+                                            </Field>
+                                            <ErrorMessage
+                                                name="tenant_id"
+                                                component="div"
+                                                className="invalid-feedback"
+                                            />
                                         </div>
+                                    </div>
                                     <div className="form-group row">
                                         <div className="col-xl-6 col-lg-6">
                                             <label>Label</label>
@@ -361,9 +365,8 @@ function ThresholdFormComponent(props) {
                                             />
                                         </div>
                                         <div
-                                            className={`col-xl-3 col-lg-3 ${
-                                                values.ruleMeasurementType === "geofences" ? "hide" : ""
-                                            }`}
+                                            className={`col-xl-3 col-lg-3 ${values.ruleMeasurementType === "geofences" ? "hide" : ""
+                                                }`}
                                         >
                                             <div className={`mt-10 `}>
                                                 <div className="form-check form-check-inline">
@@ -390,9 +393,8 @@ function ThresholdFormComponent(props) {
                                             </div>
                                         </div>
                                         <div
-                                            className={`col-xl-3 col-lg-3 ${
-                                                values.ruleMeasurementType === "geofences" ? "" : "hide"
-                                            }`}
+                                            className={`col-xl-3 col-lg-3 ${values.ruleMeasurementType === "geofences" ? "" : "hide"
+                                                }`}
                                         >
                                             <label>Route</label>
                                             <Field
@@ -517,9 +519,8 @@ function ThresholdFormComponent(props) {
                                             />
                                         </div>
                                         <div
-                                            className={`col-xl-3 col-lg-3 ${
-                                                values.ruleWhenCron !== "custom" ? "hide" : ""
-                                            }`}
+                                            className={`col-xl-3 col-lg-3 ${values.ruleWhenCron !== "custom" ? "hide" : ""
+                                                }`}
                                         >
                                             <label>Custom cron</label>
                                             <Field

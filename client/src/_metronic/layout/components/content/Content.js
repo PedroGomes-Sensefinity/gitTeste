@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from "react";
-import {useRouteMatch} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useMatch } from "react-router-dom";
 import KTLayoutAside from '../../../_assets/js/layout/base/aside';
 
 export function Content({ children }) {
-  const match = useRouteMatch() || {};
+  const match = useMatch("*") || {};
+  console.log(match)
   const animationEndClass = "grid-animateContent-finished";
   const [cssClassesState, setCssClassesState] = useState([
     "grid-animateContent",
@@ -29,7 +30,7 @@ export function Content({ children }) {
       clearTimeout(timeOutId);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [match.url]);
+  }, [match.pathname]);
 
   return <>{children}</>;
 }

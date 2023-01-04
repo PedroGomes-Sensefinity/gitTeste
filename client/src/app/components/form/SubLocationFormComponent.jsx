@@ -5,12 +5,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import BlockUi from "react-block-ui";
 import { injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import sublocationService from "../../services/sublocationservice";
 import apiServiceV2 from '../../services/v2/apiServiceV2';
 import { getInputClasses } from '../../utils/formik';
+import templates from '../../utils/links';
 import toaster from '../../utils/toaster';
 import '../../utils/yup-validations';
 import Map from "../geo-fencing-map/map";
@@ -23,10 +24,10 @@ const useStyles = makeStyles((theme) => ({
 
 function SubLocationFormComponent(props) {
 
-    const id = props.id;
+    const { id } = props;
     const isAddMode = !id
     const classes = useStyles();
-    const history = useHistory()
+    //const navigate = useNavigate()
     const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
     const [blocking, setBlocking] = useState(false)
 
@@ -62,29 +63,29 @@ function SubLocationFormComponent(props) {
         });
 
         //Edit Case
-        if (typeof id !== 'undefined' && id !== 0) {
-            //Get Geofence Data
+        if (!isAddMode) {
+            //Get SubLocation Data
             apiServiceV2.get(`v2/sublocations/${id}`).then((response) => {
                 const respSubLocation = response.sublocation
-                if (respSubLocation === undefined) {
-                    history.push('/not-found')
-                }
+                //if (respSubLocation === undefined) {
+                //    navigate(templates.notFound)
+                //}
                 setSubLocationInfo(respSubLocation)
                 const geofencesArr = []
                 if (respSubLocation.geofence !== undefined && respSubLocation.geofence !== "{}") {
                     geofencesArr.push(JSON.parse(response.sublocation.geofence))
                     setGeofences(geofencesArr)
                 }
-                apiServiceV2.get(`v2/locations?limit=50&tenant_id=${respSubLocation.tenant.id}`)
-                    .then(response => {
-                        //Get Locations Available
-                        const respLocations = response.locations || []
-                        const options = respLocations.map((location) => {
-                            return { id: location.id, name: location.name }
-                        })
-                        setLocationsOptions(options)
-                        
-                    })
+                /* apiServiceV2.get(`v2/locations?limit=50&tenant_id=${respSubLocation.tenant.id}`)
+                     .then(response => {
+                         //Get Locations Available
+                         const respLocations = response.locations || []
+                         const options = respLocations.map((location) => {
+                             return { id: location.id, name: location.name }
+                         })
+                         setLocationsOptions(options)
+ 
+                     })*/
             });
         }
     }, []);
@@ -98,7 +99,9 @@ function SubLocationFormComponent(props) {
         return -1;
     }, [geofences])
 
-    const onChangeShape = (setFieldValue) => ((shapes) => setFieldValue('geofences', shapes))
+    const onChangeShape = (setFieldValue) => ((shapes) => {
+        setFieldValue('geofences', shapes)
+    })
 
     const columnsGeofences = [
         {
@@ -206,7 +209,6 @@ function SubLocationFormComponent(props) {
                     setFieldTouched,
                     values
                 }) => {
-                    console.log(errors)
                     return <form
                         className='card card-custom'
                         onSubmit={handleSubmit}>

@@ -5,7 +5,7 @@
 import "react-app-polyfill/ie11";
 import "react-app-polyfill/stable";
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import axios from "axios";
 import * as _redux from "./redux";
 import store, { persistor } from "./redux/store";
@@ -26,6 +26,7 @@ import {
   MetronicSplashScreenProvider,
   MetronicSubheaderProvider,
 } from "./_metronic/layout";
+import { createBrowserHistory } from 'history';
 import { MetronicI18nProvider } from "./_metronic/i18n";
 
 
@@ -52,15 +53,25 @@ _redux.setupAxios(axios, store);
 _redux.authInterceptor(axios, store);
 _redux.jwtBeforeExpireInterceptor(axios, store);
 
-ReactDOM.render(
+const history = createBrowserHistory({
+  forceRefresh: true
+})
+
+const rootContainer = document.getElementById("root")
+const root = createRoot(rootContainer)
+
+root.render(
   <MetronicI18nProvider>
     <MetronicLayoutProvider>
       <MetronicSubheaderProvider>
         <MetronicSplashScreenProvider>
-          <App store={store} persistor={persistor} basename={PUBLIC_URL} />
+          <App store={store} persistor={persistor} basename={PUBLIC_URL} history={history} />
         </MetronicSplashScreenProvider>
       </MetronicSubheaderProvider>
     </MetronicLayoutProvider>
   </MetronicI18nProvider>,
-  document.getElementById("root")
 );
+
+export {
+  history
+}

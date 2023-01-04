@@ -4,7 +4,7 @@ import { ErrorMessage, Field, Formik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import BlockUi from "react-block-ui";
 import { injectIntl } from 'react-intl';
-import { Link } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
 import * as Yup from 'yup';
 import apiService from '../../services/apiService';
 import tenantsService from "../../services/tenantsService";
@@ -19,13 +19,13 @@ const useStyles = makeStyles((theme) => ({
 
 function TenantsFormComponent(props) {
     const intl = props.intl
-    const tenantId = props.id
-    const isAddMode = !props.id
-    const [blocking, setBlocking] = useState(false)
+
+    const { tenantId } = useOutletContext() || props
+    const isAddMode = !tenantId
+    const [blocking, setBlocking] = useState(true)
     const [groups, setGroups] = useState([])
     const [tenant, setTenant] = useState({})
     const metadata = JSON.parse(tenant.metadata || '{}')
-
     const classes = useStyles();
 
     useEffect(() => {
@@ -40,8 +40,11 @@ function TenantsFormComponent(props) {
                     if (respTenants.length === 1) {
                         let tenant = response.tenants_new[0];
                         setTenant(tenant)
+                        setBlocking(false)
                     }
                 });
+        } else {
+            setBlocking(false)
         }
     }, []);
 

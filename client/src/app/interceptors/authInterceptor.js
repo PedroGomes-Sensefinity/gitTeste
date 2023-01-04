@@ -1,5 +1,6 @@
-import history from "../history";
 import { getToken } from '../services/authService';
+import { history } from '../../index.js'
+import templates from '../utils/links';
 
 export default function authInterceptor(axios, store) {
     axios.interceptors.response.use(
@@ -8,8 +9,9 @@ export default function authInterceptor(axios, store) {
             return response;
         },
         (error) => {
+            console.log(error.response)
             if (error.response.status === 401 && getToken()) {
-                history.push("/logout");
+                history.push(templates.logout)
             }
             return Promise.reject(error);
         }

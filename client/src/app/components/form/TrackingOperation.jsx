@@ -1,18 +1,17 @@
 import DoneIcon from "@material-ui/icons/Done";
 import { makeStyles } from "@material-ui/styles";
-import { ErrorMessage, Field, Formik, FieldArray } from "formik";
+import { ErrorMessage, Field, FieldArray, Formik } from "formik";
 import React, { useCallback, useEffect, useState } from "react";
-import { useHistory } from 'react-router-dom';
 import BlockUi from "react-block-ui";
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import { injectIntl } from "react-intl";
-import { Link } from "react-router-dom";
+import { generatePath, Link, useNavigate } from 'react-router-dom';
 import * as Yup from "yup";
-import apiService from "../../services/apiService";
-import geofenceService from "../../services/geofenceservice";
+import { Layout } from "../../../_metronic/layout";
 import apiServiceV2 from "../../services/v2/apiServiceV2";
 import operationsServiceV2 from "../../services/v2/operationsServiceV2";
 import { getInputClasses } from "../../utils/formik";
+import templates from "../../utils/links";
 import toaster from "../../utils/toaster";
 import "../../utils/yup-validations";
 import Map from "../geo-fencing-map/map";
@@ -37,7 +36,7 @@ function TrackingOperation() {
 
     const [info, setInfo] = useState([]);
 
-    const history = useHistory()
+    const navigate = useNavigate()
 
     const [tenantId, setTenantId] = useState(0);
     const [tenantsOptions, setTenantsOptions] = useState([{ id: 0, name: "Tenants Not Found" }]);
@@ -193,13 +192,20 @@ function TrackingOperation() {
         fields["geofence"] = JSON.stringify(data);
         fields["asset_ids"] = selectedAssetsId;
         fields["tenant_id"] = parseInt(fields["tenant"].id);
-        
-        operationsServiceV2.save("tracking", fields).then(r =>{
+
+        operationsServiceV2.save("tracking", fields).then(r => {
             console.log(r)
+            const threshold = r.threshold || {}
+            const id = threshold.id
             setBlocking(false);
             setSubmitting(false);
-            history.push('/thresholds/list')
-        }).catch( r => {
+            toaster.notify('success', "Successfully performed setup")
+            if (id !== undefined) {
+                navigate(generatePath(templates.thresholdsEdit, { id: id }))
+            } else {
+                navigate(templates.thresholdsList)
+            }
+        }).catch(r => {
             console.log(r)
             setBlocking(false);
             setSubmitting(false);
@@ -208,229 +214,139 @@ function TrackingOperation() {
     };
 
     return (
-        <BlockUi tag="div" blocking={blocking}>
-            <Formik
-                enableReinitialize
-                initialValues={initialValues}
-                validationSchema={validationSchema}
-                onSubmit={(values, { setFieldValue, setSubmitting, resetForm }) => {
-                    save(values, {
-                        setFieldValue,
-                        setSubmitting,
-                        resetForm
-                    });
-                }}
-            >
-                {({ isValid, getFieldProps, errors, touched, isSubmitting, handleSubmit, setFieldValue, values }) => (
-                    <form className="card card-custom" onSubmit={handleSubmit}>
-                        {/* begin::Header */}
-                        <div className={`card-header py-3 ` + classes.headerMarginTop}>
-                            <div className="card-title align-items-start flex-column">
-                                <h3 className="card-label font-weight-bolder text-dark">Setup Tracking</h3>
-                                <span className="text-muted font-weight-bold font-size-sm mt-1">
-                                    Operation to create Geofence, Threshold, Notification Template and associate with multiple Assets.
-                                </span>
-                                <span className="text-muted font-weight-bold font-size-sm mt-1">
-                                    <label className="required">&nbsp;</label> All fields marked with asterisks are
-                                    required
-                                </span>
-                            </div>
-                            <div className="card-toolbar">
-                                <button
-                                    type="submit"
-                                    className="btn btn-success mr-2"
-                                    disabled={isSubmitting || (touched && !isValid)}
-                                >
-                                    <DoneIcon />
-                                    Save Changes
-                                    {isSubmitting}
-                                </button>
-                                <Link to="/geofences/list" className="btn btn-secondary">
-                                    Back to list
-                                </Link>
-                            </div>
-                        </div>
-                        {/* end::Header */}
-                        {/* begin::Form */}
-                        <div className="form">
-                            <div className="card-body">
-                                <div className="form-group row">
-                                    <div className="col-xl-6 col-lg-6">
-                                        <label className={`required`}>Label</label>
-                                        <Field
-                                            as="input"
-                                            className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                { errors, touched },
-                                                "label"
-                                            )}`}
-                                            name="name"
-                                            placeholder="Set the label"
-                                            {...getFieldProps("label")}
-                                        />
-                                        <ErrorMessage name="label" component="div" className="invalid-feedback" />
-                                    </div>
-                                    <div className="col-xl-6 col-lg-6">
-                                        <label className={`required`}>Tenant</label>
-                                        <Field
-                                            validate={validateTenant}
-                                            type={"number"}
-                                            as="select"
-                                            className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                { errors, touched },
-                                                "tenant.id"
-                                            )}`}
-                                            name="tenant.id"
-                                            placeholder=""
-                                            {...getFieldProps("tenant.id")}
-                                            onChange={e => {
-                                                setFieldValue("tenant.id", e.target.value);
-                                                handleChangeTenant(e);
-                                            }}
-                                        >
-                                            <option key="" value=""></option>
-                                            {tenantsOptions.map(e => {
-                                                return (
-                                                    <option key={e.id} value={e.id}>
-                                                        {e.name}
-                                                    </option>
-                                                );
-                                            })}
-                                        </Field>
-                                        <ErrorMessage name="tenant_id" component="div" className="invalid-feedback" />
-                                    </div>
+        <Layout>
+            <BlockUi tag="div" blocking={blocking}>
+                <Formik
+                    enableReinitialize
+                    initialValues={initialValues}
+                    validationSchema={validationSchema}
+                    onSubmit={(values, { setFieldValue, setSubmitting, resetForm }) => {
+                        save(values, {
+                            setFieldValue,
+                            setSubmitting,
+                            resetForm
+                        });
+                    }}
+                >
+                    {({ isValid, getFieldProps, errors, touched, isSubmitting, handleSubmit, setFieldValue, values }) => (
+                        <form className="card card-custom" onSubmit={handleSubmit}>
+                            {/* begin::Header */}
+                            <div className={`card-header py-3 ` + classes.headerMarginTop}>
+                                <div className="card-title align-items-start flex-column">
+                                    <h3 className="card-label font-weight-bolder text-dark">Setup Tracking</h3>
+                                    <span className="text-muted font-weight-bold font-size-sm mt-1">
+                                        Operation to create Geofence, Threshold, Notification Template and associate with multiple Assets.
+                                    </span>
+                                    <span className="text-muted font-weight-bold font-size-sm mt-1">
+                                        <label className="required">&nbsp;</label> All fields marked with asterisks are
+                                        required
+                                    </span>
+                                </div>
+                                <div className="card-toolbar">
+                                    <button
+                                        type="submit"
+                                        className="btn btn-success mr-2"
+                                        disabled={isSubmitting || (touched && !isValid)}
+                                    >
+                                        <DoneIcon />
+                                        Save Changes
+                                        {isSubmitting}
+                                    </button>
                                 </div>
                             </div>
-                        </div>
-                        {/* end::Form */}
-                        {/* begin::Header */}
-                        <div className={`card-header py-3 ` + classes.headerMarginTop}>
-                            <div className="card-title align-items-start flex-column">
-                                <h3 className="card-label font-weight-bolder text-dark">Assets</h3>
-                                <span className="text-muted font-weight-bold font-size-sm mt-1">Add Assets</span>
-                            </div>
-                        </div>
-                        {/* end::Header */}
-                        {/* begin::Form */}
-                        <div className="form">
-                            <div className="card-body">
-                                <div className="form-group row">
-                                    <div className="col-xl-12 col-lg-12">
-                                        <label>Assets</label>
-                                        <div>
-                                            <AsyncTypeahead
-                                                id="typeahead-asset"
-                                                labelKey="label"
-                                                size="lg"
-                                                multiple
-                                                onChange={onChangeAsset}
-                                                options={assets}
-                                                placeholder=""
-                                                selected={selectedAssets}
-                                                onSearch={handleSearchAsset}
-                                                isLoading={loading}
-                                                filterBy={filterBy}
-                                                useCache={false}
+                            {/* end::Header */}
+                            {/* begin::Form */}
+                            <div className="form">
+                                <div className="card-body">
+                                    <div className="form-group row">
+                                        <div className="col-xl-6 col-lg-6">
+                                            <label className={`required`}>Label</label>
+                                            <Field
+                                                as="input"
+                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                    { errors, touched },
+                                                    "label"
+                                                )}`}
+                                                name="name"
+                                                placeholder="Set the label"
+                                                {...getFieldProps("label")}
                                             />
+                                            <ErrorMessage name="label" component="div" className="invalid-feedback" />
+                                        </div>
+                                        <div className="col-xl-6 col-lg-6">
+                                            <label className={`required`}>Tenant</label>
+                                            <Field
+                                                validate={validateTenant}
+                                                type={"number"}
+                                                as="select"
+                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                    { errors, touched },
+                                                    "tenant.id"
+                                                )}`}
+                                                name="tenant.id"
+                                                placeholder=""
+                                                {...getFieldProps("tenant.id")}
+                                                onChange={e => {
+                                                    setFieldValue("tenant.id", e.target.value);
+                                                    handleChangeTenant(e);
+                                                }}
+                                            >
+                                                <option key="" value=""></option>
+                                                {tenantsOptions.map(e => {
+                                                    return (
+                                                        <option key={e.id} value={e.id}>
+                                                            {e.name}
+                                                        </option>
+                                                    );
+                                                })}
+                                            </Field>
+                                            <ErrorMessage name="tenant_id" component="div" className="invalid-feedback" />
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        {/* end::Form */}
-                        {/* begin::Header */}
-                        <div className={`card-header py-3 ` + classes.headerMarginTop}>
-                            <div className="card-title align-items-start flex-column">
-                                <h3 className="card-label font-weight-bolder text-dark">Geofences</h3>
-                                <span className="text-muted font-weight-bold font-size-sm mt-1">
-                                    Create Geofence
-                                </span>
-                            </div>
-                        </div>
-                        {/* end::Header */}
-
-                        {/* begin::Form */}
-                        <div className="form">
-                            <div className="card-body">
-                                <div className="form-group row">
-                                    <div className="col-xl-6 col-lg-6">
-                                        <label>Description</label>
-                                        <Field
-                                            as="textarea"
-                                            rows="1"
-                                            className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                { errors, touched },
-                                                "description_geofence"
-                                            )}`}
-                                            name="description_geofence"
-                                            placeholder="Set the description"
-                                            {...getFieldProps("description_geofence")}
-                                        />
-                                    </div>
-
-                                    <div className="col-xl-6 col-lg-6">
-                                        <label className={`required`}>Alert Mode</label>
-                                        <Field
-                                            type={"number"}
-                                            as="select"
-                                            default="1"
-                                            className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                { errors, touched },
-                                                "alert_mode"
-                                            )}`}
-                                            name="alert_mode"
-                                            placeholder=""
-                                            {...getFieldProps("alert_mode")}
-                                        >
-                                            {optionsGeofences.map(e => {
-                                                return (
-                                                    <option key={e.id} value={e.id}>
-                                                        {e.name}
-                                                    </option>
-                                                );
-                                            })}
-                                        </Field>
-                                        <ErrorMessage name="alert_mode" component="div" className="invalid-feedback" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {/* end::Form */}
-                        {/* begin::Form */}
-                        <div className="form">
-                            <div className="card-body">
-                                <div className="form-group row">
-                                    {/*begin:: Map */}
-                                    <div className={`col-xl-6 col-lg-6`}>
-                                        <Map shapes={geofences} onChangeShape={onChangeShape} />
-                                    </div>
-                                    <div className={`col-xl-6 col-lg-6  `}>
-                                        <TableGrid
-                                            title=""
-                                            columns={columnsGeofences}
-                                            data={geofences}
-                                            style={{ height: 500 }}
-                                            editable={{
-                                                onRowUpdate: (newData, oldData) =>
-                                                    new Promise((resolve, _reject) => {
-                                                        setTimeout(() => {
-                                                            const dataUpdate = [...geofences];
-                                                            const index = getGeofenceIndexById(oldData.tableData.id);
-                                                            dataUpdate[index] = newData;
-                                                            onChangeShape(dataUpdate);
-                                                            resolve();
-                                                        }, 1000);
-                                                    })
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
+                            {/* end::Form */}
                             {/* begin::Header */}
                             <div className={`card-header py-3 ` + classes.headerMarginTop}>
                                 <div className="card-title align-items-start flex-column">
-                                    <h3 className="card-label font-weight-bolder text-dark">Notification</h3>
+                                    <h3 className="card-label font-weight-bolder text-dark">Assets</h3>
+                                    <span className="text-muted font-weight-bold font-size-sm mt-1">Add Assets</span>
+                                </div>
+                            </div>
+                            {/* end::Header */}
+                            {/* begin::Form */}
+                            <div className="form">
+                                <div className="card-body">
+                                    <div className="form-group row">
+                                        <div className="col-xl-12 col-lg-12">
+                                            <label>Assets</label>
+                                            <div>
+                                                <AsyncTypeahead
+                                                    id="typeahead-asset"
+                                                    labelKey="label"
+                                                    size="lg"
+                                                    multiple
+                                                    onChange={onChangeAsset}
+                                                    options={assets}
+                                                    placeholder=""
+                                                    selected={selectedAssets}
+                                                    onSearch={handleSearchAsset}
+                                                    isLoading={loading}
+                                                    filterBy={filterBy}
+                                                    useCache={false}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {/* end::Form */}
+                            {/* begin::Header */}
+                            <div className={`card-header py-3 ` + classes.headerMarginTop}>
+                                <div className="card-title align-items-start flex-column">
+                                    <h3 className="card-label font-weight-bolder text-dark">Geofences</h3>
                                     <span className="text-muted font-weight-bold font-size-sm mt-1">
-                                        Create Notification Template
+                                        Create Geofence
                                     </span>
                                 </div>
                             </div>
@@ -440,21 +356,36 @@ function TrackingOperation() {
                             <div className="form">
                                 <div className="card-body">
                                     <div className="form-group row">
-                                        <div className="col-xl-12 col-lg-12">
-                                            <label className={`required`}>Type</label>
+                                        <div className="col-xl-6 col-lg-6">
+                                            <label>Description</label>
+                                            <Field
+                                                as="textarea"
+                                                rows="1"
+                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                    { errors, touched },
+                                                    "description_geofence"
+                                                )}`}
+                                                name="description_geofence"
+                                                placeholder="Set the description"
+                                                {...getFieldProps("description_geofence")}
+                                            />
+                                        </div>
+
+                                        <div className="col-xl-6 col-lg-6">
+                                            <label className={`required`}>Alert Mode</label>
                                             <Field
                                                 type={"number"}
                                                 as="select"
                                                 default="1"
                                                 className={`form-control form-control-lg form-control-solid ${getInputClasses(
                                                     { errors, touched },
-                                                    "type"
+                                                    "alert_mode"
                                                 )}`}
-                                                name="type"
+                                                name="alert_mode"
                                                 placeholder=""
-                                                {...getFieldProps("type")}
+                                                {...getFieldProps("alert_mode")}
                                             >
-                                                {optionsNotification.map(e => {
+                                                {optionsGeofences.map(e => {
                                                     return (
                                                         <option key={e.id} value={e.id}>
                                                             {e.name}
@@ -462,84 +393,158 @@ function TrackingOperation() {
                                                     );
                                                 })}
                                             </Field>
-                                            <FieldArray name="notifications_templates">
-                                                {({ insert, remove, push }) => (
-                                                    <div>
-                                                        {values.notifications_templates.length > 0 &&
-                                                            values.notifications_templates.map((notification, index) => (
-                                                                <div className="row" key={index}>
-                                                                    <div className="col-xl-1 col-lg-1" style={{ display: "flex", margin: "5px" }}>
-                                                                        <button
-                                                                            type="button"
-                                                                            className="btn btn-secondary"
-                                                                            onClick={() => remove(index)}
-                                                                        >
-                                                                            Remove Contact
-                                                                        </button>
-                                                                    </div>
-                                                                    <div className="col-xl-3 col-lg-3">
-                                                                        <label
-                                                                            htmlFor={`notifications_templates.${index}.name`}
-                                                                        >
-                                                                            Name
-                                                                        </label>
-                                                                        <Field
-                                                                            className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                                                { errors, touched },
-                                                                                "notifications_templates.name"
-                                                                            )}`}
-                                                                            name={`notifications_templates.${index}.name`}
-                                                                            placeholder="User Sensefinity"
-                                                                            type="text"
-                                                                        />
-                                                                        <ErrorMessage
-                                                                            name={`notifications_templates.${index}.name`}
-                                                                            component="div"
-                                                                            className="field-error"
-                                                                        />
-                                                                    </div>
-                                                                    <div className="col-xl-4 col-lg-4">
-                                                                        <label
-                                                                            htmlFor={`notifications_templates.${index}.contact`}
-                                                                        >
-                                                                            Contact
-                                                                        </label>
-                                                                        <Field
-                                                                            className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                                                { errors, touched },
-                                                                                "notifications_templates.contact"
-                                                                            )}`}
-                                                                            name={`notifications_templates.${index}.contact`}
-                                                                        />
-                                                                        <ErrorMessage
-                                                                            name={`notifications_templates.${index}.name`}
-                                                                            component="div"
-                                                                            className="field-error"
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            ))}
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-success mr-2"
-                                                            onClick={() => push({ name: "", contact: "" })}
-                                                        >
-                                                            Add Contact
-                                                        </button>
-                                                    </div>
-                                                )}
-                                            </FieldArray>
+                                            <ErrorMessage name="alert_mode" component="div" className="invalid-feedback" />
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             {/* end::Form */}
-                        </div>
-                        {/* end::Form */}
-                    </form>
-                )}
-            </Formik>
-        </BlockUi>
+                            {/* begin::Form */}
+                            <div className="form">
+                                <div className="card-body">
+                                    <div className="form-group row">
+                                        {/*begin:: Map */}
+                                        <div className={`col-xl-6 col-lg-6`}>
+                                            <Map shapes={geofences} onChangeShape={onChangeShape} />
+                                        </div>
+                                        <div className={`col-xl-6 col-lg-6  `}>
+                                            <TableGrid
+                                                title=""
+                                                columns={columnsGeofences}
+                                                data={geofences}
+                                                style={{ height: 500 }}
+                                                editable={{
+                                                    onRowUpdate: (newData, oldData) =>
+                                                        new Promise((resolve, _reject) => {
+                                                            setTimeout(() => {
+                                                                const dataUpdate = [...geofences];
+                                                                const index = getGeofenceIndexById(oldData.tableData.id);
+                                                                dataUpdate[index] = newData;
+                                                                onChangeShape(dataUpdate);
+                                                                resolve();
+                                                            }, 1000);
+                                                        })
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                {/* begin::Header */}
+                                <div className={`card-header py-3 ` + classes.headerMarginTop}>
+                                    <div className="card-title align-items-start flex-column">
+                                        <h3 className="card-label font-weight-bolder text-dark">Notification</h3>
+                                        <span className="text-muted font-weight-bold font-size-sm mt-1">
+                                            Create Notification Template
+                                        </span>
+                                    </div>
+                                </div>
+                                {/* end::Header */}
+
+                                {/* begin::Form */}
+                                <div className="form">
+                                    <div className="card-body">
+                                        <div className="form-group row">
+                                            <div className="col-xl-12 col-lg-12">
+                                                <label className={`required`}>Type</label>
+                                                <Field
+                                                    type={"number"}
+                                                    as="select"
+                                                    default="1"
+                                                    className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                        { errors, touched },
+                                                        "type"
+                                                    )}`}
+                                                    name="type"
+                                                    placeholder=""
+                                                    {...getFieldProps("type")}
+                                                >
+                                                    {optionsNotification.map(e => {
+                                                        return (
+                                                            <option key={e.id} value={e.id}>
+                                                                {e.name}
+                                                            </option>
+                                                        );
+                                                    })}
+                                                </Field>
+                                                <FieldArray name="notifications_templates">
+                                                    {({ insert, remove, push }) => (
+                                                        <div>
+                                                            {values.notifications_templates.length > 0 &&
+                                                                values.notifications_templates.map((notification, index) => (
+                                                                    <div className="row" key={index}>
+                                                                        <div className="col-xl-1 col-lg-1" style={{ display: "flex", margin: "5px" }}>
+                                                                            <button
+                                                                                type="button"
+                                                                                className="btn btn-secondary"
+                                                                                onClick={() => remove(index)}
+                                                                            >
+                                                                                Remove Contact
+                                                                            </button>
+                                                                        </div>
+                                                                        <div className="col-xl-3 col-lg-3">
+                                                                            <label
+                                                                                htmlFor={`notifications_templates.${index}.name`}
+                                                                            >
+                                                                                Name
+                                                                            </label>
+                                                                            <Field
+                                                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                                                    { errors, touched },
+                                                                                    "notifications_templates.name"
+                                                                                )}`}
+                                                                                name={`notifications_templates.${index}.name`}
+                                                                                placeholder="User Sensefinity"
+                                                                                type="text"
+                                                                            />
+                                                                            <ErrorMessage
+                                                                                name={`notifications_templates.${index}.name`}
+                                                                                component="div"
+                                                                                className="field-error"
+                                                                            />
+                                                                        </div>
+                                                                        <div className="col-xl-4 col-lg-4">
+                                                                            <label
+                                                                                htmlFor={`notifications_templates.${index}.contact`}
+                                                                            >
+                                                                                Contact
+                                                                            </label>
+                                                                            <Field
+                                                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                                                    { errors, touched },
+                                                                                    "notifications_templates.contact"
+                                                                                )}`}
+                                                                                name={`notifications_templates.${index}.contact`}
+                                                                            />
+                                                                            <ErrorMessage
+                                                                                name={`notifications_templates.${index}.name`}
+                                                                                component="div"
+                                                                                className="field-error"
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-success mr-2"
+                                                                onClick={() => push({ name: "", contact: "" })}
+                                                            >
+                                                                Add Contact
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                </FieldArray>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {/* end::Form */}
+                            </div>
+                            {/* end::Form */}
+                        </form>
+                    )}
+                </Formik>
+            </BlockUi>
+        </Layout>
     );
 }
 

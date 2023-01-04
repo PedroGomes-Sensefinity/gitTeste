@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ErrorMessage, Field, Formik } from 'formik';
 import * as Yup from 'yup';
-import { Link } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
 import { makeStyles } from '@material-ui/styles';
 import floorMapService from '../../services/floorMapService';
 import apiService from '../../services/apiService';
@@ -20,8 +20,8 @@ const useStyles = makeStyles((theme) => ({
 
 function FloorMapFormComponent(props) {
     const intl = props.intl
-    const floorMapId = props.id
-    const isAddMode = !props.id
+    const { floorMapId } = useOutletContext() || props
+    const isAddMode = !floorMapId
     const [floorMapInfo, setFloorMap] = useState({})
     const [blocking, setBlocking] = useState(false)
     const classes = useStyles()
