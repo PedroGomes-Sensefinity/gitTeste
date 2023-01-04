@@ -2,13 +2,14 @@ import React, { useMemo } from 'react';
 
 import { Button, Card, CardContent } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { Link, useHistory } from 'react-router-dom';
+import { generatePath, Link, useNavigate } from 'react-router-dom';
 
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import { useSelector } from 'react-redux';
 import TableGrid from '../../../components/table-grid/TableGrid';
 import templates from '../../../utils/links';
+import { Layout } from '../../../../_metronic/layout';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -26,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export function GroupsList() {
-    const history = useHistory()
+    const navigate = useNavigate()
     const classes = useStyles();
     const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
 
@@ -37,8 +38,8 @@ export function GroupsList() {
                 icon: EditIcon,
                 tooltip: 'Edit group',
                 onClick: (_event, rowData) => {
-                    const url = templates.groupEdit.templateObj.expand({ id: rowData.id })
-                    history.push(url);
+                    const url = generatePath(templates.groupEdit, { id: rowData.id })
+                    navigate(url);
                 },
             })
         }
@@ -61,25 +62,27 @@ export function GroupsList() {
     ];
 
     return (
-        <Card>
-            <CardContent>
-                {permissions.canCreateGroups ?
-                    <Link to={templates.groupCreate.templateString}>
-                        <Button
-                            variant='contained'
-                            color='secondary'
-                            className={classes.button}>
-                            <AddIcon className={classes.leftIcon} />
-                            New group
-                        </Button></Link> : <></>}
-                <TableGrid
-                    actions={actions}
-                    title=''
-                    columns={columns}
-                    endpoint={'group'}
-                    dataField='groups'
-                />
-            </CardContent>
-        </Card>
+        <Layout>
+            <Card>
+                <CardContent>
+                    {permissions.canCreateGroups ?
+                        <Link to={templates.groupCreate}>
+                            <Button
+                                variant='contained'
+                                color='secondary'
+                                className={classes.button}>
+                                <AddIcon className={classes.leftIcon} />
+                                New group
+                            </Button></Link> : <></>}
+                    <TableGrid
+                        actions={actions}
+                        title=''
+                        columns={columns}
+                        endpoint={'group'}
+                        dataField='groups'
+                    />
+                </CardContent>
+            </Card>
+        </Layout>
     );
 }
