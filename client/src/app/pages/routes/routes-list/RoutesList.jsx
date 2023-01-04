@@ -4,7 +4,8 @@ import AddIcon from "@material-ui/icons/Add";
 import EditIcon from '@material-ui/icons/Edit';
 import React, { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { generatePath, useNavigate } from 'react-router-dom';
+import { Layout } from '../../../../_metronic/layout';
 import TableGrid from '../../../components/table-grid/TableGrid';
 import templates from '../../../utils/links';
 
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 export function RoutesList() {
     const classes = useStyles();
-    const history = useHistory()
+    const navigate = useNavigate()
     const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
 
     const actions = useMemo(() => {
@@ -30,8 +31,8 @@ export function RoutesList() {
                 icon: EditIcon,
                 tooltip: 'Edit route',
                 onClick: (_event, rowData) => {
-                    const url = templates.routesEdit.templateObj.expand({ id: rowData.id })
-                    history.push(url);
+                    const url = generatePath(templates.routesEdit, { id: rowData.id })
+                    navigate(url);
                 },
             })
         }
@@ -54,28 +55,29 @@ export function RoutesList() {
     }, []);
 
     return (
-        <Card>
-            <CardContent>
-                {permissions.canCreateRoutes ?
-                    <Button
-                        variant='contained'
-                        color='secondary'
-                        className={classes.button}
-                        onClick={() => {
-                            const url = templates.routesCreate.templateString
-                            history.push(url)
-                        }}>
-                        <AddIcon className={classes.leftIcon} />
-                        New Route
-                    </Button> : <></>}
-                <TableGrid
-                    actions={actions}
-                    title=''
-                    columns={columns}
-                    endpoint={'route'}
-                    dataField='routes'
-                />
-            </CardContent>
-        </Card>
+        <Layout>
+            <Card>
+                <CardContent>
+                    {permissions.canCreateRoutes ?
+                        <Button
+                            variant='contained'
+                            color='secondary'
+                            className={classes.button}
+                            onClick={() => {
+                                navigate(templates.routesCreate)
+                            }}>
+                            <AddIcon className={classes.leftIcon} />
+                            New Route
+                        </Button> : <></>}
+                    <TableGrid
+                        actions={actions}
+                        title=''
+                        columns={columns}
+                        endpoint={'route'}
+                        dataField='routes'
+                    />
+                </CardContent>
+            </Card>
+        </Layout>
     );
 }

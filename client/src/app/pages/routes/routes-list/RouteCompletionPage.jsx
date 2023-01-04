@@ -4,8 +4,9 @@ import { Card, CardContent } from '@material-ui/core';
 import moment from 'moment';
 import Form from 'react-bootstrap/Form';
 import TableGrid from '../../../components/table-grid/TableGrid';
+import { Layout } from '../../../../_metronic/layout';
 
-export function RouteCompletion() {
+export function RouteCompletionPage() {
     const [timefilter, setTimefilter] = React.useState();
 
     let dateEnd = moment.utc();
@@ -92,32 +93,34 @@ export function RouteCompletion() {
     }, []);
 
     return (
-        <Card>
-            <CardContent key={date.start}>
-                <div className='row'>
-                    <div className='col-xl-2 col-lg-2'>
-                        <Form>
-                            <Form.Group controlId='timefilter'>
-                                <Form.Label>Time filter</Form.Label>
-                                <Form.Control as='select' size='sm' name="timefilter" onChange={onChangeTimefilter} value={timefilter}>
-                                    {timefilterOptions.map((filter) => (
-                                        <option value={filter.id} key={filter.id}>
-                                            {filter.name}
-                                        </option>
-                                    ))}
-                                </Form.Control>
-                            </Form.Group>
-                        </Form>
+        <Layout>
+            <Card>
+                <CardContent key={date.start}>
+                    <div className='row'>
+                        <div className='col-xl-2 col-lg-2'>
+                            <Form>
+                                <Form.Group controlId='timefilter'>
+                                    <Form.Label>Time filter</Form.Label>
+                                    <Form.Control as='select' size='sm' name="timefilter" onChange={onChangeTimefilter} value={timefilter}>
+                                        {timefilterOptions.map((filter) => (
+                                            <option value={filter.id} key={filter.id}>
+                                                {filter.name}
+                                            </option>
+                                        ))}
+                                    </Form.Control>
+                                </Form.Group>
+                            </Form>
+                        </div>
                     </div>
-                </div>
-                <TableGrid
-                    title=''
-                    columns={columns}
-                    endpoint={'route-completion'}
-                    dataField='routecompletion'
-                    date={date}
-                />
-            </CardContent>
-        </Card>
+                    <TableGrid
+                        title=''
+                        columns={columns}
+                        endpoint={'route-completion'}
+                        dataField='routecompletion'
+                        date={date}
+                    />
+                </CardContent>
+            </Card>
+        </Layout>
     );
 }
