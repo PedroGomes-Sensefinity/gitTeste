@@ -1,11 +1,11 @@
 import { Button, Card, CardContent } from '@material-ui/core';
-import React, { useMemo } from 'react';
 import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from '@material-ui/icons/Edit';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import TableGridV2 from '../../../components/table-grid/TableGridV2';
+import { generatePath, useNavigate } from 'react-router-dom';
+import { Layout } from '../../../../_metronic/layout';
 import SelectableTableGrid from '../../../components/table-grid/SelectableTableGrid';
 import templates from '../../../utils/links';
 
@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export function GeofencesList() {
-    const history = useHistory()
+    const navigate = useNavigate()
     const classes = useStyles();
     const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
 
@@ -31,8 +31,8 @@ export function GeofencesList() {
                 icon: EditIcon,
                 tooltip: 'Edit Geofence',
                 onClick: (_event, rowData) => {
-                    const url = templates.geofencesEdit.templateObj.expand({ id: rowData.id })
-                    history.push(url);
+                    const url = generatePath(templates.geofencesEdit, { id: rowData.id })
+                    navigate(url);
                 },
             }]
         }
@@ -58,27 +58,29 @@ export function GeofencesList() {
         },
     ];
 
-    return <Card>
-        <CardContent>
-            {permissions.canCreateGeofences ?
-                <Button
-                    variant='contained'
-                    color='secondary'
-                    className={classes.button}
-                    onClick={() => {
-                        const url = templates.geofencesCreate.templateString
-                        history.push(url)
-                    }}>
-                    <AddIcon className={classes.leftIcon} />
-                    New Geofence
-                </Button>
-                : <></>}
-            <SelectableTableGrid
-                actions={actions}
-                columns={columns}
-                endpoint={'/v2/geofences'}
-                dataField='geofences'
-            />
-        </CardContent>
-    </Card>
+    return <Layout>
+        <Card>
+            <CardContent>
+                {permissions.canCreateGeofences ?
+                    <Button
+                        variant='contained'
+                        color='secondary'
+                        className={classes.button}
+                        onClick={() => {
+                            const url = templates.geofencesCreate
+                            navigate(url)
+                        }}>
+                        <AddIcon className={classes.leftIcon} />
+                        New Geofence
+                    </Button>
+                    : <></>}
+                <SelectableTableGrid
+                    actions={actions}
+                    columns={columns}
+                    endpoint={'/v2/geofences'}
+                    dataField='geofences'
+                />
+            </CardContent>
+        </Card>
+    </Layout>
 }
