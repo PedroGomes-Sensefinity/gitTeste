@@ -5,7 +5,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import React, { useMemo } from 'react';
 import { MdSpaceDashboard } from "react-icons/md";
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { generatePath, useNavigate } from 'react-router-dom';
+import { Layout } from '../../../../_metronic/layout';
 import TableGridV2 from '../../../components/table-grid/TableGridV2';
 import templates from '../../../utils/links';
 
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export function LocationsList() {
-    const history = useHistory()
+    const navigate = useNavigate()
     const classes = useStyles();
     const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
 
@@ -30,8 +31,8 @@ export function LocationsList() {
             icon: permissions.canEditLocations ? EditIcon : MdSpaceDashboard,
             tooltip: permissions.canEditLocations ? 'Edit Location' : 'View Location',
             onClick: (_, rowData) => {
-                const url = templates.locationsEdit.templateObj.expand({ id: rowData.id })
-                history.push(url);
+                const url = generatePath(templates.locationsEdit, { id: rowData.id })
+                navigate(url);
             },
         })
         return acts
@@ -48,28 +49,29 @@ export function LocationsList() {
         }
     ];
 
-    return <Card>
-        <CardContent>
-            {permissions.canCreateLocations ?
-                <Button
-                    variant='contained'
-                    color='secondary'
-                    onClick={() => {
-                        const url = templates.locationsCreate.templateString
-                        history.push(url)
-                    }
-                    }
-                    className={classes.button}>
-                    <AddIcon className={classes.leftIcon} />
-                    New Location
-                </Button> : <></>}
-            <TableGridV2
-                actions={actions}
-                title=''
-                columns={columns}
-                endpoint={'/v2/locations'}
-                dataField='locations'
-            />
-        </CardContent>
-    </Card>
+    return <Layout>
+        <Card>
+            <CardContent>
+                {permissions.canCreateLocations ?
+                    <Button
+                        variant='contained'
+                        color='secondary'
+                        onClick={() => {
+                            navigate(templates.locationsCreate)
+                        }
+                        }
+                        className={classes.button}>
+                        <AddIcon className={classes.leftIcon} />
+                        New Location
+                    </Button> : <></>}
+                <TableGridV2
+                    actions={actions}
+                    title=''
+                    columns={columns}
+                    endpoint={'/v2/locations'}
+                    dataField='locations'
+                />
+            </CardContent>
+        </Card>
+    </Layout>
 }

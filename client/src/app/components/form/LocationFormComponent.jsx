@@ -1,7 +1,7 @@
 import DoneIcon from '@material-ui/icons/Done';
 import { makeStyles } from '@material-ui/styles';
 import { ErrorMessage, Field, Formik } from 'formik';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import BlockUi from "react-block-ui";
 import { injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
@@ -21,15 +21,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function LocationFormComponent(props) {
-
-    const id = props.id;
+    const { id } = props;
     const isAddMode = !id
     const classes = useStyles();
     const [blocking, setBlocking] = useState(false)
     const [geofences, setGeofences] = useState([])
     const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
-
-    //const [initialValues, setInitialValues] = useState({ id: '', name: '', tenantsOptions: tenantsOptions })
     const [tenantsOptions, setTenantOptions] = useState([])
 
     const [location, setLocation] = useState({
@@ -51,15 +48,14 @@ function LocationFormComponent(props) {
     useEffect(() => {
         apiServiceV2.get("v2/tenants/children").then(response => {
             const respTenants = response.tenants_new || [];
-
             setTenantOptions(respTenants.map(tenant => {
                 return { id: tenant.id, name: tenant.name };
             }));
         });
 
         //Edit Case
-        if (typeof id !== 'undefined' && id !== 0) {
-            //Get Geofence Data
+        if (!isAddMode) {
+            //Get Location Data
             apiServiceV2.get("v2/locations/" + id).then((response) => {
                 setLocation(response.location)
                 const geofencesArr = []
@@ -259,7 +255,7 @@ function LocationFormComponent(props) {
                                 <div className="form-group row">
                                     {/*begin:: Map */}
                                     <div className={`col-xl-6 col-lg-6`}>
-                                        <Map zoom={6} shapes={geofences} onChangeShape={onChangeShape(setFieldValue)} />
+                                        <Map zoom={6} shapes={values.geofences} onChangeShape={onChangeShape(setFieldValue)} />
                                     </div>
                                     <div className={`col-xl-6 col-lg-6  `}>
                                         <TableGrid

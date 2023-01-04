@@ -5,8 +5,10 @@ import EditIcon from '@material-ui/icons/Edit';
 import React, { useMemo } from 'react';
 import { MdSpaceDashboard } from "react-icons/md";
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { generatePath, useNavigate } from 'react-router-dom';
+import { Layout } from '../../../../_metronic/layout';
 import TableGridV2 from '../../../components/table-grid/TableGridV2';
+import templates from '../../../utils/links';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -18,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export function SubLocationsList() {
-    const history = useHistory()
+    const navigate = useNavigate()
     const classes = useStyles();
     const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
 
@@ -30,7 +32,8 @@ export function SubLocationsList() {
             icon: permissions.canEditSubLocations ? EditIcon : MdSpaceDashboard,
             tooltip: permissions.canEditSubLocations ? 'Edit Sublocation' : 'View Sublocation',
             onClick: (_, rowData) => {
-                history.push(`/sublocations/edit/${rowData.id}`);
+                const url = generatePath(templates.subLocationsEdit, { id: rowData.id })
+                navigate(url);
             },
         })
 
@@ -52,24 +55,26 @@ export function SubLocationsList() {
         }
     ];
 
-    return <Card>
-        <CardContent>
-            {permissions.canCreateLocations ?
-                <Button
-                    variant='contained'
-                    color='secondary'
-                    onClick={() => history.push('/sublocations/new')}
-                    className={classes.button}>
-                    <AddIcon className={classes.leftIcon} />
-                    New SubLocation
-                </Button> : <></>}
-            <TableGridV2
-                actions={actions}
-                title=''
-                columns={columns}
-                endpoint={'/v2/sublocations'}
-                dataField='sublocations'
-            />
-        </CardContent>
-    </Card>
+    return <Layout>
+        <Card>
+            <CardContent>
+                {permissions.canCreateLocations ?
+                    <Button
+                        variant='contained'
+                        color='secondary'
+                        onClick={() => navigate(templates.subLocationsCreate)}
+                        className={classes.button}>
+                        <AddIcon className={classes.leftIcon} />
+                        New SubLocation
+                    </Button> : <></>}
+                <TableGridV2
+                    actions={actions}
+                    title=''
+                    columns={columns}
+                    endpoint={'/v2/sublocations'}
+                    dataField='sublocations'
+                />
+            </CardContent>
+        </Card>
+    </Layout>
 }
