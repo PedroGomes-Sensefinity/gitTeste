@@ -3,6 +3,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import { injectIntl } from "react-intl";
 import { KibanaDashboard } from "../KibanaDashboard";
 import apiServiceV2 from "../../../services/v2/apiServiceV2";
+import { Layout } from "../../../../_metronic/layout";
 
 export function DashboardsRoutes() {
     const [value, setValue] = useState(-1);
@@ -15,13 +16,13 @@ export function DashboardsRoutes() {
     useEffect(() => {
         apiServiceV2.get("v2/tenants/dashboards?search=Routes").then(response => {
             let dashboard = [];
-            if(response.dashboards_tenant != undefined){
+            if (response.dashboards_tenant != undefined) {
                 response.dashboards_tenant.forEach(d => dashboard.push(d));
             }
-            if(dashboard.length === 0){
+            if (dashboard.length === 0) {
                 dashboard = [{}];
                 setDashboards(dashboard);
-            }else{
+            } else {
                 console.log(dashboard)
                 setDashboards(dashboard);
                 setValue(0)
@@ -32,7 +33,7 @@ export function DashboardsRoutes() {
     const componentToBeRendered = useMemo(() => {
         console.log(value)
         console.log(dashboards)
-        if (dashboards[value] !== undefined && dashboards[value].url !== undefined){
+        if (dashboards[value] !== undefined && dashboards[value].url !== undefined) {
             switch (value) {
                 default:
                     return <KibanaDashboard url={dashboards[value].url} />;
@@ -41,7 +42,7 @@ export function DashboardsRoutes() {
     }, [value]);
 
     return (
-        <>
+        <Layout>
             <Paper square>
                 <Tabs value={value} indicatorColor="secondary" textColor="secondary" onChange={handleChange}>
                     {dashboards.map(d => (
@@ -49,8 +50,8 @@ export function DashboardsRoutes() {
                     ))}
                 </Tabs>
             </Paper>
-            {componentToBeRendered} 
-        </>
+            {componentToBeRendered}
+        </Layout>
     );
 }
 export default injectIntl(DashboardsRoutes);

@@ -8,6 +8,7 @@ import { injectIntl } from "react-intl";
 import BlockUi from "react-block-ui";
 import { KibanaDashboard } from "../KibanaDashboard";
 import apiServiceV2 from "../../../services/v2/apiServiceV2";
+import { Layout } from "../../../../_metronic/layout";
 
 export function DashboardsContainers() {
     const [value, setValue] = useState(0);
@@ -37,7 +38,7 @@ export function DashboardsContainers() {
     }, [value]);
 
     return (
-        <>
+        <Layout>
             <Paper square>
                 <Tabs value={value} indicatorColor="secondary" textColor="secondary" onChange={handleChange}>
                     {dashboards.map(d => (
@@ -46,7 +47,7 @@ export function DashboardsContainers() {
                 </Tabs>
             </Paper>
             {componentToBeRendered} 
-        </>
+        </Layout>
     );
 }
 export default injectIntl(DashboardsContainers);
