@@ -22,6 +22,7 @@ import { LocationsList } from "../../../components/lists/locations/LocationsList
 import { LongStandingList } from "../../../components/lists/longStanding/LongStandingList";
 import Progress from "../../../utils/Progress/Progress";
 import toaster from "../../../utils/toaster";
+import { HistoryList } from "../../../components/lists/history/HistoryList";
 
 const style = {
     position: "absolute",
@@ -107,6 +108,7 @@ export function ContainersDashboard() {
     const [containerId, setContainerId] = React.useState(0);
 
     const [openLocation, setOpenLocation] = React.useState(false);
+    const [openGeofences, setOpenGeofences] = React.useState(false);
     const [buttonDisabled, setButtonDisabled] = React.useState(false);
     const [buttonLabel, setButtonLabel] = React.useState("Generate Report");
     const [showProgress, setShowProgress] = React.useState(false);
@@ -117,8 +119,15 @@ export function ContainersDashboard() {
         setSelectedLocation(m);
         setOpenLocation(true);
     };
+    const handleOpenGeofences = () => {
+        setOpenGeofences(true);
+    };
     const handleCloseLocation = () => {
         setOpenLocation(false);
+    };
+
+    const handleCloseGeofences = () => {
+        setOpenGeofences(false);
     };
 
     const downloadFile = (data, fileName, fileType) => {
@@ -209,11 +218,7 @@ export function ContainersDashboard() {
         setButtonDisabled(true);
         setButtonLabel("Generating Report...");
         let url =
-            "v2/reports/generate?container_id=" +
-            containerId +
-            "&filter=" +
-            selectedPortCode +
-            "&file_format=csv";
+            "v2/reports/generate?container_id=" + containerId + "&filter=" + selectedPortCode + "&file_format=csv";
         if (selectedInterval != "") {
             switch (selectedInterval) {
                 case "lte15":
@@ -232,7 +237,7 @@ export function ContainersDashboard() {
                     url = url + "&start_interval=91&end_interval=1825&type=port_code_interval";
                     break;
             }
-        }else{
+        } else {
             url = url + "&type=port_code";
         }
         apiServiceV2
@@ -505,10 +510,52 @@ export function ContainersDashboard() {
         </Modal>
     );
 
+    const columnsGeofences = [
+        { field: "asset_label", title: "Label" },
+        { field: "timestamp", title: "Location Timestamp" },
+        { field: "asset_type", title: "Asset Type" },
+        { field: "reverse_geocoding", title: "Reverse Geocoding" },
+        { field: "geofence_label", title: "Geofence Label" },
+        { field: "geofence_status", title: "Geofence Status" }
+    ];
+
+    //Modal:
+    const geofencesModal = (
+        <Modal
+            hideBackdrop
+            open={openGeofences}
+            onClose={handleCloseGeofences}
+            style={OVERLAY_STYLE}
+            aria-labelledby="child-modal-title"
+            aria-describedby="child-modal-description"
+        >
+            <Box sx={{ ...style, width: "90%", height: "90%" }}>
+                <Button
+                    size="small"
+                    onClick={handleCloseGeofences}
+                    type="button"
+                    style={{ margin: "15px" }}
+                    className={`btn btn-danger mr-1 d-block mr-0 ml-auto`}
+                >
+                    X
+                </Button>
+                <HistoryList
+                    columns={columnsGeofences}
+                    key={selectedContainer}
+                    title={"Histórico Geofences"}
+                    container_id={selectedContainer}
+                    endpoint={"v2/geofences/history"}
+                    dataField={"assets_tracking"}
+                ></HistoryList>
+            </Box>
+        </Modal>
+    );
+
     return (
         <BlockUi tag="div" blocking={blocking}>
             {locationsModal}
             {longStandingModal}
+            {geofencesModal}
             <FormControl style={{ margin: "15px" }}>
                 <InputLabel id="select-container">Group</InputLabel>
                 <Select labelId="select-container" value={selectedContainer} label="Age" onChange={onChangeContainer}>
@@ -680,14 +727,18 @@ export function ContainersDashboard() {
                         </div>
                     </div>
                     <div className="col-xl-6 col-lg-6">
-                        <div className="card card-custom" style={geofencesStyle}>
+                        <div className="card card-custom">
                             <div className="card-header">
                                 <div className="card-title">
                                     <h3 className="card-label">Entradas / Saídas Geofences</h3>
                                 </div>
                             </div>
-                            <div className="card-body" style={locationStyle}>
-                                <h3>Coming Soon</h3>
+                            <div className="card-body" style={{"margin":"auto"}}>
+                                <button
+                                    type="submit"
+                                    className="btn btn-success mr-2"
+                                    onClick={() => handleOpenGeofences()}
+                                >Abrir Histórico</button>
                             </div>
                         </div>
                     </div>
