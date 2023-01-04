@@ -6,7 +6,8 @@ import { te } from 'date-fns/locale';
 import React, { useMemo } from 'react';
 import { MdSpaceDashboard } from "react-icons/md";
 import { useSelector } from "react-redux";
-import { Link, useHistory } from 'react-router-dom';
+import { generatePath, Link, useNavigate } from 'react-router-dom';
+import { Layout } from '../../../../_metronic/layout';
 import TableGrid from '../../../components/table-grid/TableGrid';
 import templates from '../../../utils/links'
 
@@ -22,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 
 export function DevicesList() {
     const classes = useStyles();
-    const history = useHistory()
+    const navigate = useNavigate()
 
     const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
     const actions = useMemo(() => {
@@ -30,7 +31,8 @@ export function DevicesList() {
             icon: MdSpaceDashboard,
             tooltip: 'Inspect device',
             onClick: (_event, rowData) => {
-                history.push(`/devices/${rowData.id}`);
+                const url = generatePath(templates.deviceDashboard, { id: rowData.id })
+                navigate(url);
             },
         }]
         if (permissions.canEditDevices) {
@@ -38,8 +40,8 @@ export function DevicesList() {
                 icon: EditIcon,
                 tooltip: 'Edit device',
                 onClick: (_event, rowData) => {
-                    const url = templates.deviceEdit.templateObj.expand({ id: rowData.id })
-                    history.push(url);
+                    const url = generatePath(templates.deviceDetail, { id: rowData.id })
+                    navigate(url);
                 },
             })
         }
@@ -77,26 +79,28 @@ export function DevicesList() {
     ];
 
     return (
-        <Card>
-            <CardContent>
-                {permissions.canCreateDevices ?
-                    <Link to={templates.deviceCreate.templateObj.expand()}>
-                        <Button
-                            variant='contained'
-                            color='secondary'
-                            className={classes.button}>
-                            <AddIcon className={classes.leftIcon} />
-                            New device
-                        </Button>
-                    </Link> : <></>}
-                <TableGrid
-                    actions={actions}
-                    title=''
-                    columns={columns}
-                    endpoint={'device'}
-                    dataField='devices'
-                />
-            </CardContent>
-        </Card>
+        <Layout>
+            <Card>
+                <CardContent>
+                    {permissions.canCreateDevices ?
+                        <Link to={templates.deviceCreate}>
+                            <Button
+                                variant='contained'
+                                color='secondary'
+                                className={classes.button}>
+                                <AddIcon className={classes.leftIcon} />
+                                New device
+                            </Button>
+                        </Link> : <></>}
+                    <TableGrid
+                        actions={actions}
+                        title=''
+                        columns={columns}
+                        endpoint={'device'}
+                        dataField='devices'
+                    />
+                </CardContent>
+            </Card>
+        </Layout>
     );
 }
