@@ -17,13 +17,13 @@ import Select from "@mui/material/Select";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
-
 import { LocationsList } from "../../../components/lists/locations/LocationsList";
 import { LongStandingList } from "../../../components/lists/longStanding/LongStandingList";
 import Progress from "../../../utils/Progress/Progress";
 import toaster from "../../../utils/toaster";
 import { HistoryList } from "../../../components/lists/history/HistoryList";
 
+// General Styles
 const style = {
     position: "absolute",
     bgcolor: "background.paper",
@@ -53,7 +53,7 @@ const OVERLAY_STYLE = {
 };
 
 export function ContainersDashboard() {
-    //Styles
+    //Specific Styles
     const locationStyle = { fontWeight: "bold", textAlign: "center", cursor: "pointer", borderColor: "#808080" };
     const geofencesStyle = { backgroundColor: "#D8D8D8" };
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -80,42 +80,47 @@ export function ContainersDashboard() {
         borderRight: "2px solid black"
     };
 
-    const [blocking, setBlocking] = useState(false);
-
-    //Should be a object to reduce useState use
-    const [madeiraCount, setMadeiraCount] = useState(0);
-    const [acoresCount, setAcoresCount] = useState(0);
-    const [contineteCount, setContinenteCount] = useState(0);
-    const [caboVerdeCount, setCaboVerdeCount] = useState(0);
-    const [outrosCount, setOutrosCount] = useState(0);
-    const [intransitCount, setIntransitCount] = useState(0);
-
+    //Dashboard Data
+    const [locationDataDashboard, setLocationDataDashboard] = useState({
+        Madeira: 0,
+        Açores: 0,
+        Continente: 0,
+        "Cabo Verde": 0,
+        Outros: 0,
+        "In Transit": 0
+    });
     const [ports, setPorts] = useState(["PORT"]);
-    const [data15, setData15] = useState([0]);
-    const [data15_30, setData15_30] = useState([0]);
-    const [data30_60, setData30_60] = useState([0]);
-    const [data60_90, setData60_90] = useState([0]);
-    const [data90, setData90] = useState([0]);
+    const [intervalData, setIntervalData] = useState({
+        data15: [0],
+        data15_30: [0],
+        data30_60: [0],
+        data60_90: [0],
+        data90: [0]
+    });
 
-    //Selected
+    //Container States
     const [containersOptions, setContainersOptions] = useState([{ id: 0, label: "Containers Not Found" }]);
     const [selectedContainer, setselectedContainer] = useState(0);
+    const [containerId, setContainerId] = React.useState(0);
 
+    //Selected States (use to ask for specific information)
     const [selectedLocation, setSelectedLocation] = React.useState("");
     const [selectedPortCode, setSelectedPortCode] = React.useState("");
     const [selectedInterval, setSelectedInterval] = React.useState("");
-
-    const [containerId, setContainerId] = React.useState(0);
-
+    //Modals States
     const [openLocation, setOpenLocation] = React.useState(false);
     const [openGeofences, setOpenGeofences] = React.useState(false);
+    const [openLongStanding, setOpenLongStanding] = React.useState(false);
+    // Button States (Block report)
     const [buttonDisabled, setButtonDisabled] = React.useState(false);
     const [buttonLabel, setButtonLabel] = React.useState("Generate Report");
     const [showProgress, setShowProgress] = React.useState(false);
 
+    //Default States
+    const [blocking, setBlocking] = useState(false);
+
     //handlers for pop ups (modal)
     const handleOpenLocation = m => {
-        console.log(m);
         setSelectedLocation(m);
         setOpenLocation(true);
     };
@@ -130,6 +135,11 @@ export function ContainersDashboard() {
         setOpenGeofences(false);
     };
 
+    const handleCloseLongStanding = () => {
+        setOpenLongStanding(false);
+    };
+
+    //Report Functions
     const downloadFile = (data, fileName, fileType) => {
         const blob = new Blob([data], { type: fileType });
 
@@ -256,12 +266,6 @@ export function ContainersDashboard() {
             });
     };
 
-    const [openLongStanding, setOpenLongStanding] = React.useState(false);
-
-    const handleCloseLongStanding = () => {
-        setOpenLongStanding(false);
-    };
-
     //Handler to selection on table
     function handleTable(e) {
         if (e.target.cellIndex - 1 < 0) {
@@ -306,24 +310,38 @@ export function ContainersDashboard() {
                 apiService
                     .getByEndpointDashboard("dashboards/containers/locations?container_id=" + containersOptionsR[0].id)
                     .then(response => {
+                        const locations = {};
                         if (response.locations["Madeira"] !== undefined) {
-                            setMadeiraCount(response.locations["Madeira"]);
+                            locations["Madeira"] = response.locations["Madeira"];
+                        } else {
+                            locations["Madeira"] = 0;
                         }
                         if (response.locations["Açores"] !== undefined) {
-                            setAcoresCount(response.locations["Açores"]);
+                            locations["Açores"] = response.locations["Açores"];
+                        } else {
+                            locations["Açores"] = 0;
                         }
                         if (response.locations["Cabo Verde"] !== undefined) {
-                            setCaboVerdeCount(response.locations["Cabo Verde"]);
+                            locations["Cabo Verde"] = response.locations["Cabo Verde"];
+                        } else {
+                            locations["Cabo Verde"] = 0;
                         }
                         if (response.locations["Continente"] !== undefined) {
-                            setContinenteCount(response.locations["Continente"]);
+                            locations["Continente"] = response.locations["Continente"];
+                        } else {
+                            locations["Continente"] = 0;
                         }
                         if (response.locations["Outros"] !== undefined) {
-                            setOutrosCount(response.locations["Outros"]);
+                            locations["Outros"] = response.locations["Outros"];
+                        } else {
+                            locations["Outros"] = 0;
                         }
                         if (response.locations["In Transit"] !== undefined) {
-                            setIntransitCount(response.locations["In Transit"]);
+                            locations["In Transit"] = response.locations["In Transit"];
+                        } else {
+                            locations["In Transit"] = 0;
                         }
+                        setLocationDataDashboard(locations);
                     });
                 apiService
                     .getByEndpointDashboard(
@@ -346,11 +364,14 @@ export function ContainersDashboard() {
                         }
                         if (ports.length !== 0) {
                             setPorts(ports_R);
-                            setData15(data15_R);
-                            setData15_30(data15_30_R);
-                            setData30_60(data30_60_R);
-                            setData60_90(data60_90_R);
-                            setData90(data90_R);
+                            const intervalData_R = {
+                                data15: data15_R,
+                                data15_30: data15_30_R,
+                                data30_60: data30_60_R,
+                                data60_90: data60_90_R,
+                                data90: data90_R
+                            };
+                            setIntervalData(intervalData_R);
                         }
                         setBlocking(false);
                     });
@@ -368,44 +389,48 @@ export function ContainersDashboard() {
         apiService
             .getByEndpointDashboard("dashboards/containers/locations?container_id=" + e.target.value)
             .then(response => {
+                const locations = {};
                 if (response.locations["Madeira"] !== undefined) {
-                    setMadeiraCount(response.locations["Madeira"]);
+                    locations["Madeira"] = response.locations["Madeira"];
                 } else {
-                    setMadeiraCount(0);
+                    locations["Madeira"] = 0;
                 }
                 if (response.locations["Açores"] !== undefined) {
-                    setAcoresCount(response.locations["Açores"]);
+                    locations["Açores"] = response.locations["Açores"];
                 } else {
-                    setAcoresCount(0);
+                    locations["Açores"] = 0;
                 }
                 if (response.locations["Cabo Verde"] !== undefined) {
-                    setCaboVerdeCount(response.locations["Cabo Verde"]);
+                    locations["Cabo Verde"] = response.locations["Cabo Verde"];
                 } else {
-                    setCaboVerdeCount(0);
+                    locations["Cabo Verde"] = 0;
                 }
                 if (response.locations["Continente"] !== undefined) {
-                    setContinenteCount(response.locations["Continente"]);
+                    locations["Continente"] = response.locations["Continente"];
                 } else {
-                    setContinenteCount(0);
+                    locations["Continente"] = 0;
                 }
                 if (response.locations["Outros"] !== undefined) {
-                    setOutrosCount(response.locations["Outros"]);
+                    locations["Outros"] = response.locations["Outros"];
                 } else {
-                    setOutrosCount(0);
+                    locations["Outros"] = 0;
                 }
                 if (response.locations["In Transit"] !== undefined) {
-                    setIntransitCount(response.locations["In Transit"]);
+                    locations["In Transit"] = response.locations["In Transit"];
                 } else {
-                    setIntransitCount(0);
+                    locations["In Transit"] = 0;
                 }
+                setLocationDataDashboard(locations);
             })
             .catch(r => {
-                setMadeiraCount(0);
-                setAcoresCount(0);
-                setCaboVerdeCount(0);
-                setContinenteCount(0);
-                setOutrosCount(0);
-                setIntransitCount(0);
+                const locations = {};
+                locations["Madeira"] = 0;
+                locations["Açores"] = 0;
+                locations["Cabo Verde"] = 0;
+                locations["Continente"] = 0;
+                locations["Outros"] = 0;
+                locations["In Transit"] = 0;
+                setLocationDataDashboard(locations);
             });
         apiService
             .getByEndpointDashboard("dashboards/containers/longstandings?container_id=" + e.target.value)
@@ -426,16 +451,19 @@ export function ContainersDashboard() {
                 }
 
                 setPorts(ports_R);
-                setData15(data15_R);
-                setData15_30(data15_30_R);
-                setData30_60(data30_60_R);
-                setData60_90(data60_90_R);
-                setData90(data90_R);
+                const intervalData_R = {
+                    data15: data15_R,
+                    data15_30: data15_30_R,
+                    data30_60: data30_60_R,
+                    data60_90: data60_90_R,
+                    data90: data90_R
+                };
+                setIntervalData(intervalData_R);
                 setBlocking(false);
             });
     }
 
-    //Modal:
+    //Modals:
     const locationsModal = (
         <Modal
             hideBackdrop
@@ -573,7 +601,7 @@ export function ContainersDashboard() {
                             </div>
                         </div>
                         <div className="card-body" style={locationStyle} onClick={() => handleOpenLocation("Madeira")}>
-                            <h3>{madeiraCount}</h3>
+                            <h3>{locationDataDashboard["Madeira"]}</h3>
                         </div>
                     </div>
                 </div>
@@ -585,7 +613,7 @@ export function ContainersDashboard() {
                             </div>
                         </div>
                         <div className="card-body" style={locationStyle} onClick={() => handleOpenLocation("Açores")}>
-                            <h3>{acoresCount}</h3>
+                            <h3>{locationDataDashboard["Açores"]}</h3>
                         </div>
                     </div>
                 </div>
@@ -601,7 +629,7 @@ export function ContainersDashboard() {
                             style={locationStyle}
                             onClick={() => handleOpenLocation("Cabo Verde")}
                         >
-                            <h3>{caboVerdeCount}</h3>
+                            <h3>{locationDataDashboard["Cabo Verde"]}</h3>
                         </div>
                     </div>
                 </div>
@@ -617,7 +645,7 @@ export function ContainersDashboard() {
                             style={locationStyle}
                             onClick={() => handleOpenLocation("Continente")}
                         >
-                            <h3>{contineteCount}</h3>
+                            <h3>{locationDataDashboard["Continente"]}</h3>
                         </div>
                     </div>
                 </div>
@@ -629,7 +657,7 @@ export function ContainersDashboard() {
                             </div>
                         </div>
                         <div className="card-body" style={locationStyle} onClick={() => handleOpenLocation("Outros")}>
-                            <h3>{outrosCount}</h3>
+                            <h3>{locationDataDashboard["Outros"]}</h3>
                         </div>
                     </div>
                 </div>
@@ -645,7 +673,7 @@ export function ContainersDashboard() {
                             style={locationStyle}
                             onClick={() => handleOpenLocation("In Transit")}
                         >
-                            <h3>{intransitCount}</h3>
+                            <h3>{locationDataDashboard["In Transit"]}</h3>
                         </div>
                     </div>
                 </div>
@@ -672,7 +700,7 @@ export function ContainersDashboard() {
                                         <TableCell style={sticky} component="th" scope="row">
                                             &#60; 15
                                         </TableCell>
-                                        {data15.map(data15i => (
+                                        {intervalData["data15"].map(data15i => (
                                             <StyledTableCell align="center">{data15i}</StyledTableCell>
                                         ))}
                                     </TableRow>
@@ -680,7 +708,7 @@ export function ContainersDashboard() {
                                         <TableCell style={sticky} component="th" scope="row">
                                             15-30
                                         </TableCell>
-                                        {data15_30.map(data15_30i => (
+                                        {intervalData["data15_30"].map(data15_30i => (
                                             <StyledTableCell align="center">{data15_30i}</StyledTableCell>
                                         ))}
                                     </TableRow>
@@ -688,7 +716,7 @@ export function ContainersDashboard() {
                                         <TableCell style={sticky} component="th" scope="row">
                                             30-60
                                         </TableCell>
-                                        {data30_60.map(data30_60i => (
+                                        {intervalData["data30_60"].map(data30_60i => (
                                             <StyledTableCell align="center">{data30_60i}</StyledTableCell>
                                         ))}
                                     </TableRow>
@@ -696,7 +724,7 @@ export function ContainersDashboard() {
                                         <TableCell style={sticky} component="th" scope="row">
                                             60-90
                                         </TableCell>
-                                        {data60_90.map(data60_90i => (
+                                        {intervalData["data60_90"].map(data60_90i => (
                                             <StyledTableCell align="center">{data60_90i}</StyledTableCell>
                                         ))}
                                     </TableRow>
@@ -704,7 +732,7 @@ export function ContainersDashboard() {
                                         <TableCell style={sticky} component="th" scope="row">
                                             &#62; 90
                                         </TableCell>
-                                        {data90.map(data90i => (
+                                        {intervalData["data90"].map(data90i => (
                                             <StyledTableCell align="center">{data90i}</StyledTableCell>
                                         ))}
                                     </TableRow>
@@ -733,12 +761,14 @@ export function ContainersDashboard() {
                                     <h3 className="card-label">Entradas / Saídas Geofences</h3>
                                 </div>
                             </div>
-                            <div className="card-body" style={{"margin":"auto"}}>
+                            <div className="card-body" style={{ margin: "auto" }}>
                                 <button
                                     type="submit"
                                     className="btn btn-success mr-2"
                                     onClick={() => handleOpenGeofences()}
-                                >Abrir Histórico</button>
+                                >
+                                    Abrir Histórico
+                                </button>
                             </div>
                         </div>
                     </div>
