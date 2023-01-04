@@ -5,10 +5,11 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
-import { useHistory } from 'react-router-dom';
+import { generatePath, useNavigate } from 'react-router-dom';
 import TableGrid from '../../../components/table-grid/TableGrid';
 import { useSelector } from 'react-redux';
 import templates from '../../../utils/links'
+import { Layout } from '../../../../_metronic/layout';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -28,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 export function BoardFamiliesList() {
     const classes = useStyles();
-    const history = useHistory()
+    const navigate = useNavigate()
 
     const columns = [
         {
@@ -47,9 +48,9 @@ export function BoardFamiliesList() {
                     icon: EditIcon,
                     tooltip: 'Edit board family',
                     onClick: (_event, rowData) => {
-                        const url = templates.boardFamilyEdit.templateObj.expand({ id: rowData.id })
+                        const url = generatePath(templates.boardFamilyEdit, { id: rowData.id })
                         console.log(url)
-                        history.push(url);
+                        navigate(url);
                     },
                 })
         }
@@ -57,29 +58,30 @@ export function BoardFamiliesList() {
     }, [permissions])
 
     return (
-        <Card>
-            <CardContent>
-                {permissions.canCreateBoardFamilies ?
-                    <Button
-                        variant='contained'
-                        color='secondary'
-                        className={classes.button}
-                        onClick={() => {
-                            const url = templates.boardFamilyCreate.templateObj.expand()
-                            history.push(url)
-                        }}>
-                        <AddIcon className={classes.leftIcon} />
-                        New board family
-                    </Button> : <></>
-                }
-                <TableGrid
-                    actions={actions}
-                    title=''
-                    columns={columns}
-                    endpoint={'board_families'}
-                    dataField='board_families'
-                />
-            </CardContent>
-        </Card>
+        <Layout>
+            <Card>
+                <CardContent>
+                    {permissions.canCreateBoardFamilies ?
+                        <Button
+                            variant='contained'
+                            color='secondary'
+                            className={classes.button}
+                            onClick={() => {
+                                navigate(templates.boardFamilyCreate)
+                            }}>
+                            <AddIcon className={classes.leftIcon} />
+                            New board family
+                        </Button> : <></>
+                    }
+                    <TableGrid
+                        actions={actions}
+                        title=''
+                        columns={columns}
+                        endpoint={'board_families'}
+                        dataField='board_families'
+                    />
+                </CardContent>
+            </Card>
+        </Layout>
     );
 }
