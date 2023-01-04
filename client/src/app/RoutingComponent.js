@@ -20,6 +20,8 @@ import DeviceThresholdComponent from "./components/form/DeviceThresholdComponent
 import FloorMapAnchorsFormComponent from "./components/form/FloorMapAnchorsFormComponent";
 import FloorMapFormComponent from "./components/form/FloorMapFormComponent";
 import FloorMapMapFormComponent from "./components/form/FloorMapMapFormComponent";
+import GeofencesAssetsComponent from "./components/form/GeofencesAssetsComponent";
+import GeofencingComponent from "./components/form/GeofencingComponent";
 import RoutesFormComponent from "./components/form/RoutesFormComponent";
 import RoutesMapComponent from "./components/form/RoutesMapComponent";
 import TenantsComponent from "./components/form/TenantsComponent";
@@ -29,6 +31,8 @@ import ThresholdDevicesComponent from "./components/form/ThresholdDevicesCompone
 import ThresholdFormComponent from "./components/form/ThresholdFormComponent";
 import ThresholdGroupsComponent from "./components/form/ThresholdGroupsComponent";
 import TrackingOperation from "./components/form/TrackingOperation";
+import { AssetHistory } from "./components/history/AssetHistory";
+import GeofenceHistory from "./components/history/GeofenceHistory";
 import { AuthPage } from "./modules/Auth/pages/AuthPage";
 import ForgotPassword from "./modules/Auth/pages/ForgotPassword";
 import Login from "./modules/Auth/pages/Login";
@@ -170,6 +174,7 @@ export function RoutingComponent() {
       <Route key={templates.assetsEdit} path={templates.assetsEdit} element={<AssetDetailPage />}>
         <Route exact path={templates.assetsDashboard} element={<DeviceSelector />} />
         <Route index path={templates.assetsDevices} element={<AssetDevicesComponent />} />
+        <Route index path={templates.assetsHistory} element={<AssetHistory />} />
         <Route path={templates.assetsExtraFields} element={<AssetFormExtraFields />} />
         <Route path={templates.assetsEdit} element={<AssetsFormComponent />} />
       </Route >,
@@ -186,7 +191,11 @@ export function RoutingComponent() {
       { /* Geofences Routes*/}
       <Route key={templates.geofencesList} path={templates.geofencesList} element={<GeofencesList />} />,
       <Route key={templates.geofencesCreate} path={templates.geofencesCreate} element={<GeofencesDetailPage />} />,
-      <Route key={templates.geofencesEdit} path={templates.geofencesEdit} element={<GeofencesDetailPage />} />,
+      <Route key={templates.geofencesEdit} path={templates.geofencesEdit} element={<GeofencesDetailPage />}>
+        <Route path={templates.geofencesEdit} element={<GeofencingComponent />} />
+        <Route path={templates.geofencesAssets} element={<GeofencesAssetsComponent />} />
+        <Route path={templates.geofencesHistory} element={<GeofenceHistory />} />
+      </Route>,
 
 
       { /* Users Routes*/}

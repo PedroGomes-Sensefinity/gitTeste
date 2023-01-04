@@ -5,10 +5,16 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import apiServiceV2 from "../../services/v2/apiServiceV2";
 import { HistoryList } from "../lists/history/HistoryList";
+import { useOutletContext } from "react-router-dom";
+import BlockUi from "react-block-ui";
 
-export default function AssetHistory(props) {
+export function AssetHistory() {
+
+    const { assetInfo, isLoading } = useOutletContext()
     const [containersOptions, setContainersOptions] = useState([{ id: 0, label: "Containers Not Found" }]);
     const [selectedContainer, setselectedContainer] = useState(0);
+
+    const assetLabel = assetInfo ? assetInfo.label : ''
 
     const columns = [
         {
@@ -76,23 +82,25 @@ export default function AssetHistory(props) {
     }
 
     return (
-        <div className={`card card-custom`}>
-            <FormControl style={{ margin: "15px" }}>
-                <InputLabel id="select-container">Group</InputLabel>
-                <Select labelId="select-container" value={selectedContainer} onChange={onChangeContainer}>
-                    {containersOptions.map(c => (
-                        <MenuItem value={c.id}>{c.label}</MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
-            <HistoryList
-                columns={columns}
-                key={selectedContainer}
-                title={"Asset History"}
-                container_id={selectedContainer}
-                endpoint={"v2/assets/" + props.asset.label + "/history"}
-                dataField={"assets_tracking"}
-            ></HistoryList>
-        </div>
+        <BlockUi tag='div' blocking={isLoading}>
+            <div className={`card card-custom`}>
+                <FormControl style={{ margin: "15px" }}>
+                    <InputLabel id="select-container">Group</InputLabel>
+                    <Select labelId="select-container" value={selectedContainer} onChange={onChangeContainer}>
+                        {containersOptions.map(c => (
+                            <MenuItem value={c.id}>{c.label}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+                <HistoryList
+                    columns={columns}
+                    key={selectedContainer}
+                    title={"Asset History"}
+                    container_id={selectedContainer}
+                    endpoint={"v2/assets/" + assetLabel + "/history"}
+                    dataField={"assets_tracking"}
+                ></HistoryList>
+            </div>
+        </BlockUi>
     );
 }

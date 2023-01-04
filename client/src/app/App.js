@@ -29,7 +29,7 @@ export default function App({ store, persistor, basename, history }) {
       {/* Asynchronously persist redux stores and show `SplashScreen` while it's loading. */}
       <PersistGate persistor={persistor} loading={<LayoutSplashScreen />}>
         {/* Add high level `Suspense` in case if was not handled inside the React tree. */}
-        <React.Suspense fallback={<LayoutSplashScreen />}>
+        <Suspense fallback={<LayoutSplashScreen />}>
           {/* Override `basename` (e.g: `homepage` in `package.json`) */}
           <HistoryRouter history={history} basename={basename}>
             {/*This library only returns the location that has been active before the recent location change in the current window lifetime.*/}
@@ -44,7 +44,7 @@ export default function App({ store, persistor, basename, history }) {
               <ToastContainer />
             </MaterialThemeProvider>
           </HistoryRouter>
-        </React.Suspense>
+        </Suspense>
       </PersistGate>
     </Provider>
   );

@@ -3,13 +3,15 @@ import React from "react";
 import { Link, useLocation, generatePath } from "react-router-dom";
 import templates from "../../../utils/links";
 
-const dashboardTemplate = templates.assetsDashboard
-const devicesTemplate = templates.assetsDevices
+const assetDevicesDashboard = templates.assetsDashboard
+const assetDevices = templates.assetsDevices
+const assetsHistory = templates.assetsHistory
 const extraFieldsTemplate = templates.assetsExtraFields
 
 
-const dashboardSegment = dashboardTemplate.split('/').pop()
-const devicesSegment = devicesTemplate.split('/').pop()
+const dashboardSegment = assetDevicesDashboard.split('/').pop()
+const devicesSegment = assetDevices.split('/').pop()
+const historySegment = assetsHistory.split('/').pop()
 const extraFields = extraFieldsTemplate.split('/').pop()
 
 
@@ -29,7 +31,8 @@ export default function AssetPageHeader(props) {
             case dashboardSegment: return 0
             case infoSegment: return 1
             case devicesSegment: return 2
-            case extraFields: return 3
+            case historySegment: return 3
+            case extraFields: return 4
         }
     }
 
@@ -37,9 +40,10 @@ export default function AssetPageHeader(props) {
 
     return <Paper square>
         <Tabs value={value} indicatorColor="primary" textColor="primary" >
-            <Tab label="Dashboard" disabled={isAddMode} component={Link} to={isAddMode ? '' : generatePath(dashboardTemplate, { id: assetId })} />
+            <Tab label="Dashboard" disabled={isAddMode} component={Link} to={isAddMode ? '' : generatePath(assetDevicesDashboard, { id: assetId })} />
             <Tab label="Asset Info" component={Link} to={isAddMode ? '' : generatePath(templates.assetsEdit, { id: assetId })} />
-            <Tab label="Devices" disabled={isAddMode} component={Link} to={isAddMode ? '' : generatePath(devicesTemplate, { id: assetId })} />
+            <Tab label="Devices" disabled={isAddMode} component={Link} to={isAddMode ? '' : generatePath(assetDevices, { id: assetId })} />
+            <Tab label="History" disabled={isAddMode} component={Link} to={isAddMode ? '' : generatePath(assetsHistory, { id: assetId })} />
             <Tab label="Extra Fields" disabled={isAddMode || hasMetadataSchema === false} component={Link} to={isAddMode ? '' : generatePath(extraFieldsTemplate, { id: assetId })} />
         </Tabs>
     </Paper>
