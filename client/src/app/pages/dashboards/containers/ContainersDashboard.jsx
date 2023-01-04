@@ -83,19 +83,28 @@ export function ContainersDashboard() {
     const [blocking, setBlocking] = useState(false);
 
     //Should be a object to reduce useState use
-    const [madeiraCount, setMadeiraCount] = useState(0);
-    const [acoresCount, setAcoresCount] = useState(0);
-    const [contineteCount, setContinenteCount] = useState(0);
-    const [caboVerdeCount, setCaboVerdeCount] = useState(0);
-    const [outrosCount, setOutrosCount] = useState(0);
-    const [intransitCount, setIntransitCount] = useState(0);
+    const [locationDataDashboard, setLocationDataDashboard] = useState({
+        Madeira: 0,
+        Açores: 0,
+        Continente: 0,
+        "Cabo Verde": 0,
+        Outros: 0,
+        "In Transit": 0
+    });
 
     const [ports, setPorts] = useState(["PORT"]);
+    const [intervalData, setIntervalData] = useState({
+        data15: [0],
+        data15_30: [0],
+        data30_60: [0],
+        data60_90: [0],
+        data90: [0]
+    });
     const [data15, setData15] = useState([0]);
     const [data15_30, setData15_30] = useState([0]);
     const [data30_60, setData30_60] = useState([0]);
     const [data60_90, setData60_90] = useState([0]);
-    const [data90, setData90] = useState([0]);
+    const [, setData90] = useState([0]);
 
     //Selected
     const [containersOptions, setContainersOptions] = useState([{ id: 0, label: "Containers Not Found" }]);
@@ -306,24 +315,38 @@ export function ContainersDashboard() {
                 apiService
                     .getByEndpointDashboard("dashboards/containers/locations?container_id=" + containersOptionsR[0].id)
                     .then(response => {
+                        const locations = {};
                         if (response.locations["Madeira"] !== undefined) {
-                            setMadeiraCount(response.locations["Madeira"]);
+                            locations["Madeira"] = response.locations["Madeira"];
+                        } else {
+                            locations["Madeira"] = 0;
                         }
                         if (response.locations["Açores"] !== undefined) {
-                            setAcoresCount(response.locations["Açores"]);
+                            locations["Açores"] = response.locations["Açores"];
+                        } else {
+                            locations["Açores"] = 0;
                         }
                         if (response.locations["Cabo Verde"] !== undefined) {
-                            setCaboVerdeCount(response.locations["Cabo Verde"]);
+                            locations["Cabo Verde"] = response.locations["Cabo Verde"];
+                        } else {
+                            locations["Cabo Verde"] = 0;
                         }
                         if (response.locations["Continente"] !== undefined) {
-                            setContinenteCount(response.locations["Continente"]);
+                            locations["Continente"] = response.locations["Continente"];
+                        } else {
+                            locations["Continente"] = 0;
                         }
                         if (response.locations["Outros"] !== undefined) {
-                            setOutrosCount(response.locations["Outros"]);
+                            locations["Outros"] = response.locations["Outros"];
+                        } else {
+                            locations["Outros"] = 0;
                         }
                         if (response.locations["In Transit"] !== undefined) {
-                            setIntransitCount(response.locations["In Transit"]);
+                            locations["In Transit"] = response.locations["In Transit"];
+                        } else {
+                            locations["In Transit"] = 0;
                         }
+                        setLocationDataDashboard(locations);
                     });
                 apiService
                     .getByEndpointDashboard(
@@ -368,44 +391,48 @@ export function ContainersDashboard() {
         apiService
             .getByEndpointDashboard("dashboards/containers/locations?container_id=" + e.target.value)
             .then(response => {
+                const locations = {};
                 if (response.locations["Madeira"] !== undefined) {
-                    setMadeiraCount(response.locations["Madeira"]);
+                    locations["Madeira"] = response.locations["Madeira"];
                 } else {
-                    setMadeiraCount(0);
+                    locations["Madeira"] = 0;
                 }
                 if (response.locations["Açores"] !== undefined) {
-                    setAcoresCount(response.locations["Açores"]);
+                    locations["Açores"] = response.locations["Açores"];
                 } else {
-                    setAcoresCount(0);
+                    locations["Açores"] = 0;
                 }
                 if (response.locations["Cabo Verde"] !== undefined) {
-                    setCaboVerdeCount(response.locations["Cabo Verde"]);
+                    locations["Cabo Verde"] = response.locations["Cabo Verde"];
                 } else {
-                    setCaboVerdeCount(0);
+                    locations["Cabo Verde"] = 0;
                 }
                 if (response.locations["Continente"] !== undefined) {
-                    setContinenteCount(response.locations["Continente"]);
+                    locations["Continente"] = response.locations["Continente"];
                 } else {
-                    setContinenteCount(0);
+                    locations["Continente"] = 0;
                 }
                 if (response.locations["Outros"] !== undefined) {
-                    setOutrosCount(response.locations["Outros"]);
+                    locations["Outros"] = response.locations["Outros"];
                 } else {
-                    setOutrosCount(0);
+                    locations["Outros"] = 0;
                 }
                 if (response.locations["In Transit"] !== undefined) {
-                    setIntransitCount(response.locations["In Transit"]);
+                    locations["In Transit"] = response.locations["In Transit"];
                 } else {
-                    setIntransitCount(0);
+                    locations["In Transit"] = 0;
                 }
+                setLocationDataDashboard(locations);
             })
             .catch(r => {
-                setMadeiraCount(0);
-                setAcoresCount(0);
-                setCaboVerdeCount(0);
-                setContinenteCount(0);
-                setOutrosCount(0);
-                setIntransitCount(0);
+                const locations = {};
+                locations["Madeira"] = 0;
+                locations["Açores"] = 0;
+                locations["Cabo Verde"] = 0;
+                locations["Continente"] = 0;
+                locations["Outros"] = 0;
+                locations["In Transit"] = 0;
+                setLocationDataDashboard(locations);
             });
         apiService
             .getByEndpointDashboard("dashboards/containers/longstandings?container_id=" + e.target.value)
@@ -573,7 +600,7 @@ export function ContainersDashboard() {
                             </div>
                         </div>
                         <div className="card-body" style={locationStyle} onClick={() => handleOpenLocation("Madeira")}>
-                            <h3>{madeiraCount}</h3>
+                            <h3>{locationDataDashboard["Madeira"]}</h3>
                         </div>
                     </div>
                 </div>
@@ -585,7 +612,7 @@ export function ContainersDashboard() {
                             </div>
                         </div>
                         <div className="card-body" style={locationStyle} onClick={() => handleOpenLocation("Açores")}>
-                            <h3>{acoresCount}</h3>
+                            <h3>{locationDataDashboard["Açores"]}</h3>
                         </div>
                     </div>
                 </div>
@@ -601,7 +628,7 @@ export function ContainersDashboard() {
                             style={locationStyle}
                             onClick={() => handleOpenLocation("Cabo Verde")}
                         >
-                            <h3>{caboVerdeCount}</h3>
+                            <h3>{locationDataDashboard["Cabo Verde"]}</h3>
                         </div>
                     </div>
                 </div>
@@ -617,7 +644,7 @@ export function ContainersDashboard() {
                             style={locationStyle}
                             onClick={() => handleOpenLocation("Continente")}
                         >
-                            <h3>{contineteCount}</h3>
+                            <h3>{locationDataDashboard["Continente"]}</h3>
                         </div>
                     </div>
                 </div>
@@ -629,7 +656,7 @@ export function ContainersDashboard() {
                             </div>
                         </div>
                         <div className="card-body" style={locationStyle} onClick={() => handleOpenLocation("Outros")}>
-                            <h3>{outrosCount}</h3>
+                            <h3>{locationDataDashboard["Outros"]}</h3>
                         </div>
                     </div>
                 </div>
@@ -645,7 +672,7 @@ export function ContainersDashboard() {
                             style={locationStyle}
                             onClick={() => handleOpenLocation("In Transit")}
                         >
-                            <h3>{intransitCount}</h3>
+                            <h3>{locationDataDashboard["In Transit"]}</h3>
                         </div>
                     </div>
                 </div>
@@ -733,12 +760,14 @@ export function ContainersDashboard() {
                                     <h3 className="card-label">Entradas / Saídas Geofences</h3>
                                 </div>
                             </div>
-                            <div className="card-body" style={{"margin":"auto"}}>
+                            <div className="card-body" style={{ margin: "auto" }}>
                                 <button
                                     type="submit"
                                     className="btn btn-success mr-2"
                                     onClick={() => handleOpenGeofences()}
-                                >Abrir Histórico</button>
+                                >
+                                    Abrir Histórico
+                                </button>
                             </div>
                         </div>
                     </div>
