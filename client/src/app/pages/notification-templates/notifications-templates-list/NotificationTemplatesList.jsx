@@ -4,7 +4,8 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { generatePath, useNavigate } from 'react-router-dom';
+import { Layout } from '../../../../_metronic/layout';
 import TableGridV2 from '../../../components/table-grid/TableGridV2';
 import templates from '../../../utils/links';
 
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 export function NotificationTemplatesList() {
     const classes = useStyles();
-    const history = useHistory()
+    const navigate = useNavigate()
 
     const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
     const actions = useMemo(() => {
@@ -29,8 +30,8 @@ export function NotificationTemplatesList() {
                 icon: EditIcon,
                 tooltip: 'Edit notification template',
                 onClick: (_event, rowData) => {
-                    const url = templates.notificationTemplatesEdit.templateObj.expand({id: rowData.od})
-                    history.push(`/notification-templates/edit/${rowData.id}`);
+                    const url = generatePath(templates.notificationTemplatesEdit, { id: rowData.id })
+                    navigate(url);
                 },
             })
         }
@@ -53,28 +54,29 @@ export function NotificationTemplatesList() {
     ];
 
     return (
-        <Card>
-            <CardContent>
-                {permissions.canCreateNotificationTemplates ?
-                    <Button
-                        variant='contained'
-                        color='secondary'
-                        className={classes.button}
-                        onClick={() => {
-                            const url = templates.notificationTemplatesCreate.templateString
-                            history.push(url)
-                        }}>
-                        <AddIcon className={classes.leftIcon} />
-                        New Notification Template
-                    </Button> : <></>}
-                <TableGridV2
-                    actions={actions}
-                    title=''
-                    columns={columns}
-                    endpoint={'/v2/notification-templates'}
-                    dataField='notification_templates'
-                />
-            </CardContent>
-        </Card>
+        <Layout>
+            <Card>
+                <CardContent>
+                    {permissions.canCreateNotificationTemplates ?
+                        <Button
+                            variant='contained'
+                            color='secondary'
+                            className={classes.button}
+                            onClick={() => {
+                                navigate(templates.notificationTemplatesCreate)
+                            }}>
+                            <AddIcon className={classes.leftIcon} />
+                            New Notification Template
+                        </Button> : <></>}
+                    <TableGridV2
+                        actions={actions}
+                        title=''
+                        columns={columns}
+                        endpoint={'/v2/notification-templates'}
+                        dataField='notification_templates'
+                    />
+                </CardContent>
+            </Card>
+        </Layout>
     );
 }
