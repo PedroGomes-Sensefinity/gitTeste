@@ -4,6 +4,7 @@ import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { Layout } from '../../../../_metronic/layout';
 import apiService from '../../../services/apiService';
 import apiServiceV2 from '../../../services/v2/apiServiceV2';
+import templates from '../../../utils/links';
 import AssetPageHeader from './AssetsPageHeader';
 
 
@@ -30,7 +31,7 @@ export function AssetDetailPage() {
         }).catch(err => {
             console.log(err)
             if (err.status === 404) {
-                navigate('/error/error-v1')
+                navigate(templates.notFound)
             }
         })
     }, [assetId, refetch])
