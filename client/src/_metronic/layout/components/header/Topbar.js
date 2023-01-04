@@ -1,7 +1,6 @@
-import React, { useMemo } from "react";
 import objectPath from "object-path";
+import React, { useMemo } from "react";
 import { useHtmlClassService } from "../../_core/MetronicLayout";
-import { LanguageSelectorDropdown } from "../extras/dropdowns/LanguageSelectorDropdown";
 import { QuickUserToggler } from "../extras/QuiclUserToggler";
 
 export function Topbar() {

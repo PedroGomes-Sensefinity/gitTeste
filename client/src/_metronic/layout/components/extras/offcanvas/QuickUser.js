@@ -3,18 +3,19 @@ import React from "react";
 import { Link } from "react-router-dom";
 import SVG from "react-inlinesvg";
 import { shallowEqual, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toAbsoluteUrl } from "../../../../_helpers";
+import templates from "../../../../../app/utils/links";
 
 export function QuickUser() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user, shallowEqual);
   const logoutClick = () => {
     const toggle = document.getElementById("kt_quick_user_toggle");
     if (toggle) {
       toggle.click();
     }
-    history.push("/logout");
+    navigate(templates.logout);
   };
 
   return (
@@ -52,7 +53,7 @@ export function QuickUser() {
               className="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"
             >
               {/*{user.firstname} {user.lastname}*/}
-                {user.email[0] || user.username[0]}
+              {user.email[0] || user.username[0]}
             </a>
             <div className="text-muted mt-1">{user.occupation}</div>
             <div className="navi mt-2">
