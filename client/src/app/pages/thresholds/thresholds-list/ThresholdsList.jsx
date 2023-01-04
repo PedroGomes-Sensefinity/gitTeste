@@ -4,7 +4,8 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { generatePath, useNavigate } from 'react-router-dom';
+import { Layout } from '../../../../_metronic/layout';
 import TableGridV2 from '../../../components/table-grid/TableGridV2';
 import templates from '../../../utils/links';
 
@@ -26,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 
 export function ThresholdsList() {
     const classes = useStyles();
-    const history = useHistory()
+    const navigate = useNavigate()
 
     const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
     const actions = useMemo(() => {
@@ -36,8 +37,8 @@ export function ThresholdsList() {
                 icon: EditIcon,
                 tooltip: 'Edit threshold',
                 onClick: (_event, rowData) => {
-                    const url = templates.thresholdsEdit.templateObj.expand({ id: rowData.id })
-                    history.push(url);
+                    const url = generatePath(templates.thresholdsEdit, { id: rowData.id })
+                    navigate(url);
                 },
             })
         }
@@ -61,28 +62,29 @@ export function ThresholdsList() {
 
 
     return (
-        <Card>
-            <CardContent>
-                {permissions.canCreateThresholds ?
-                    <Button
-                        variant='contained'
-                        color='secondary'
-                        className={classes.button}
-                        onClick={() => {
-                            const url = templates.thresholdsCreate.templateString
-                            history.push(url)
-                        }}>
-                        <AddIcon className={classes.leftIcon} />
-                        New threshold
-                    </Button> : <></>}
-                <TableGridV2
-                    actions={actions}
-                    title=''
-                    columns={columns}
-                    endpoint={'/v2/thresholds'}
-                    dataField='thresholds'
-                />
-            </CardContent>
-        </Card>
+        <Layout>
+            <Card>
+                <CardContent>
+                    {permissions.canCreateThresholds ?
+                        <Button
+                            variant='contained'
+                            color='secondary'
+                            className={classes.button}
+                            onClick={() => {
+                                navigate(templates.thresholdsCreate)
+                            }}>
+                            <AddIcon className={classes.leftIcon} />
+                            New threshold
+                        </Button> : <></>}
+                    <TableGridV2
+                        actions={actions}
+                        title=''
+                        columns={columns}
+                        endpoint={'/v2/thresholds'}
+                        dataField='thresholds'
+                    />
+                </CardContent>
+            </Card>
+        </Layout>
     );
 }

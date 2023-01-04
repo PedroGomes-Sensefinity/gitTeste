@@ -2,17 +2,18 @@ import React from "react"
 import { Paper, Tab, Tabs } from "@material-ui/core"
 import { TabContainer } from "react-bootstrap";
 import ThresholdFormComponent from "../../../components/form/ThresholdFormComponent";
+import { Layout } from "../../../../_metronic/layout";
 
-export function CreateThreshold() {
+export function CreateThresholdPage() {
 
-    return <div>
+    return <Layout>
         <Paper square>
             <Tabs value={0} indicatorColor="primary" textColor="primary">
                 <Tab label="Threshold Info" />
             </Tabs>
         </Paper>
         <TabContainer>
-            <ThresholdFormComponent id={undefined} onChange={() => {}}/>
+            <ThresholdFormComponent thresholdId={undefined} onChange={() => { }} />
         </TabContainer>
-    </div>
+    </Layout>
 }
