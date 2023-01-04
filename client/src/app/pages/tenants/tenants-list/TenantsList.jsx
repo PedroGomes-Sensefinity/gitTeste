@@ -4,7 +4,8 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { generatePath, useNavigate } from 'react-router-dom';
+import { Layout } from '../../../../_metronic/layout';
 import TableGrid from '../../../components/table-grid/TableGrid';
 import templates from '../../../utils/links';
 
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 
 export function TenantsList() {
     const classes = useStyles();
-    const history = useHistory()
+    const navigate = useNavigate()
     const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
 
     const actions = useMemo(() => {
@@ -30,8 +31,8 @@ export function TenantsList() {
                 icon: EditIcon,
                 tooltip: 'Edit tenant',
                 onClick: (_event, rowData) => {
-                    const url = templates.tenantsEdit.templateObj.expand({ id: rowData.id })
-                    history.push(url);
+                    const url = generatePath(templates.tenantsEdit, { id: rowData.id })
+                    navigate(url);
                 },
             })
         }
@@ -50,28 +51,29 @@ export function TenantsList() {
     ];
 
     return (
-        <Card>
-            <CardContent>
-                {permissions.canCreateTenants ?
-                    <Button
-                        variant='contained'
-                        color='secondary'
-                        className={classes.button}
-                        onClick={() => {
-                            const url = templates.tenantsCreate.templateString
-                            history.push(url)
-                        }}>
-                        <AddIcon className={classes.leftIcon} />
-                        New Tenant
-                    </Button> : <></>}
-                <TableGrid
-                    actions={actions}
-                    title=''
-                    columns={columns}
-                    endpoint={'tenant_new'}
-                    dataField='tenants_new'
-                />
-            </CardContent>
-        </Card>
+        <Layout>
+            <Card>
+                <CardContent>
+                    {permissions.canCreateTenants ?
+                        <Button
+                            variant='contained'
+                            color='secondary'
+                            className={classes.button}
+                            onClick={() => {
+                                navigate(templates.tenantsCreate)
+                            }}>
+                            <AddIcon className={classes.leftIcon} />
+                            New Tenant
+                        </Button> : <></>}
+                    <TableGrid
+                        actions={actions}
+                        title=''
+                        columns={columns}
+                        endpoint={'tenant_new'}
+                        dataField='tenants_new'
+                    />
+                </CardContent>
+            </Card>
+        </Layout>
     );
 }
