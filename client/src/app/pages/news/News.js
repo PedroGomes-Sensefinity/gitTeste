@@ -6,6 +6,10 @@ import Typography from '@mui/material/Typography';
 
 const versions = [
     {
+        versionNumber: "V.0.2.3", date: "04/01/2023", changes:
+            ["1. It's now possible to check the History for a specific Geofence and also all the assets still inside that geofence. Go to Geofences - Select Geofence - History / Assets"]
+    },
+    {
         versionNumber: "V.0.2.2", date: "02/01/2023", changes:
             ["1. You can now Download Reports (.csv) from the Container Dashboard.", "2. It's now possible to check the History from an Asset! Go to Assets - Asset - History"]
     },

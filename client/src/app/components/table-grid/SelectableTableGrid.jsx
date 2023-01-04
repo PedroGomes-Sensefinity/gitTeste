@@ -200,15 +200,15 @@ export default function SelectableTableGrid(props) {
                                     </TableCell>
 
                                     {/* Actions table cell*/}
+                                    <TableCell key={`${row.id}`}>
                                     {actions.map((action, idx) => (
-                                        <TableCell key={`${row.id}-${idx}`}>
                                             <Tooltip title={action.tooltip}>
                                                 <IconButton onClick={e => action.onClick(e, row)}>
                                                     {React.createElement(action.icon)}
                                                 </IconButton>
                                             </Tooltip>
-                                        </TableCell>
                                     ))}
+                                    </TableCell>
 
                                     {columns.map((column, id) => {
                                         //handle nested fields

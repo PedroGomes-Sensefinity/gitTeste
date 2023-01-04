@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from '@material-ui/icons/Edit';
+import { MdSpaceDashboard } from "react-icons/md";
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import TableGridV2 from '../../../components/table-grid/TableGridV2';
@@ -26,13 +27,22 @@ export function GeofencesList() {
     const actions = useMemo(() => {
         const acts = []
         if (permissions.canEditGeofences) {
-            return [{
-                icon: EditIcon,
-                tooltip: 'Edit Geofence',
-                onClick: (_event, rowData) => {
-                    history.push(`/geofences/${rowData.id}#edit`);
+            return [
+                {
+                    icon: MdSpaceDashboard,
+                    tooltip: 'View Geofence',
+                    onClick: (_event, rowData) => {
+                        history.push(`/geofences/${rowData.id}#history`);
+                    }
                 },
-            }]
+                {
+                    icon: EditIcon,
+                    tooltip: 'Edit Geofence',
+                    onClick: (_event, rowData) => {
+                        history.push(`/geofences/${rowData.id}#edit`);
+                    },
+                }
+            ]
         }
         return acts
     }, [permissions])
