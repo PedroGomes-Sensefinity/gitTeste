@@ -2,13 +2,14 @@ import React, { useMemo } from 'react';
 
 import { Button, Card, CardContent } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { useHistory } from 'react-router-dom';
+import { generatePath, useNavigate } from 'react-router-dom';
 
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import { useSelector } from 'react-redux';
 import TableGrid from '../../../components/table-grid/TableGrid';
 import templates from '../../../utils/links';
+import { Layout } from '../../../../_metronic/layout';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -21,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 
 export function ProfilesList() {
     const classes = useStyles();
-    const history = useHistory()
+    const navigate = useNavigate()
 
     const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
     const actions = useMemo(() => {
@@ -31,8 +32,8 @@ export function ProfilesList() {
                 icon: EditIcon,
                 tooltip: 'Edit profile',
                 onClick: (_event, rowData) => {
-                    const url = templates.profilesEdit.templateObj.expand({ id: rowData.id })
-                    history.push(url);
+                    const url = generatePath(templates.profilesEdit, { id: rowData.id })
+                    navigate(url);
                 },
             })
         }
@@ -51,28 +52,29 @@ export function ProfilesList() {
     ];
 
     return (
-        <Card>
-            <CardContent>
-                {permissions.canCreateProfiles ?
-                    <Button
-                        variant='contained'
-                        color='secondary'
-                        className={classes.button}
-                        onClick={() => {
-                            const url = templates.profilesCreate.templateString
-                            history.push(url)
-                        }}>
-                        <AddIcon className={classes.leftIcon} />
-                        New Profile
-                    </Button> : <></>}
-                <TableGrid
-                    actions={actions}
-                    title=''
-                    columns={columns}
-                    endpoint={'profile'}
-                    dataField='profiles'
-                />
-            </CardContent>
-        </Card>
+        <Layout>
+            <Card>
+                <CardContent>
+                    {permissions.canCreateProfiles ?
+                        <Button
+                            variant='contained'
+                            color='secondary'
+                            className={classes.button}
+                            onClick={() => {
+                                navigate(templates.profilesCreate)
+                            }}>
+                            <AddIcon className={classes.leftIcon} />
+                            New Profile
+                        </Button> : <></>}
+                    <TableGrid
+                        actions={actions}
+                        title=''
+                        columns={columns}
+                        endpoint={'profile'}
+                        dataField='profiles'
+                    />
+                </CardContent>
+            </Card>
+        </Layout>
     );
 }

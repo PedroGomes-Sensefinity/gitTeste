@@ -1,13 +1,15 @@
 import { Paper, Tab, Tabs } from "@material-ui/core";
 import React from "react";
 import { TabContainer } from "react-bootstrap";
+import { useParams } from "react-router-dom";
+import { Layout } from "../../../../_metronic/layout";
 import ProfilesFormComponent from "../../../components/form/ProfilesComponent";
 
-export function ProfilesForm({ match }) {
-    const { id } = match.params;
+export function ProfilesPage() {
+    const { id } = useParams()
 
     return (
-        <div>
+        <Layout>
             <Paper square>
                 <Tabs value={0} indicatorColor="primary" textColor="primary" >
                     <Tab label="Profile" />
@@ -16,6 +18,6 @@ export function ProfilesForm({ match }) {
             <TabContainer>
                 <ProfilesFormComponent id={id} />
             </TabContainer>
-        </div>
+        </Layout>
     )
 }
