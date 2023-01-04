@@ -5,7 +5,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import React, { useMemo } from 'react';
 import { MdSpaceDashboard } from "react-icons/md";
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { generatePath, useNavigate } from 'react-router-dom';
+import { Layout } from '../../../../_metronic/layout';
 import TableGridV2 from '../../../components/table-grid/TableGridV2';
 import templates from '../../../utils/links'
 const useStyles = makeStyles((theme) => ({
@@ -18,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export function AssetsList() {
-    const history = useHistory()
+    const navigate = useNavigate()
     const classes = useStyles();
     const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
 
@@ -27,7 +28,8 @@ export function AssetsList() {
             icon: MdSpaceDashboard,
             tooltip: 'Inspect asset',
             onClick: (_, rowData) => {
-                history.push(`/assets/${rowData.id}`);
+                const url = generatePath(templates.assetsDashboard, { id: rowData.id })
+                navigate(url);
             },
         }]
         if (permissions.canEditAssets) {
@@ -35,7 +37,8 @@ export function AssetsList() {
                 icon: EditIcon,
                 tooltip: 'Edit asset',
                 onClick: (_, rowData) => {
-                    history.push(templates.assetsEdit.templateObj.expand({ id: rowData.id }));
+                    const url = generatePath(templates.assetsEdit, { id: rowData.id })
+                    navigate(url);
                 },
             })
         }
@@ -58,24 +61,26 @@ export function AssetsList() {
         },
     ];
 
-    return <Card>
-        <CardContent>
-            {permissions.canCreateAssets ?
-                <Button
-                    variant='contained'
-                    color='secondary'
-                    onClick={() => history.push(templates.assetsCreate.templateString)}
-                    className={classes.button}>
-                    <AddIcon className={classes.leftIcon} />
-                    New Asset
-                </Button> : <></>}
-            <TableGridV2
-                actions={actions}
-                title=''
-                columns={columns}
-                endpoint={'/v2/assets'}
-                dataField='assets'
-            />
-        </CardContent>
-    </Card>
+    return <Layout>
+        <Card>
+            <CardContent>
+                {permissions.canCreateAssets ?
+                    <Button
+                        variant='contained'
+                        color='secondary'
+                        onClick={() => navigate(templates.assetsCreate)}
+                        className={classes.button}>
+                        <AddIcon className={classes.leftIcon} />
+                        New Asset
+                    </Button> : <></>}
+                <TableGridV2
+                    actions={actions}
+                    title=''
+                    columns={columns}
+                    endpoint={'/v2/assets'}
+                    dataField='assets'
+                />
+            </CardContent>
+        </Card>
+    </Layout>
 }

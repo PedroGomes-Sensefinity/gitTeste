@@ -1,12 +1,11 @@
 import DoneIcon from "@material-ui/icons/Done";
 import { makeStyles } from "@material-ui/styles";
 import { ErrorMessage, Field, Formik } from "formik";
-import { flatMap } from "lodash";
 import React, { useEffect, useState } from "react";
 import BlockUi from "react-block-ui";
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import { injectIntl } from "react-intl";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import * as Yup from "yup";
 import apiService from "../../services/apiService";
 import apiServiceV2 from "../../services/v2/apiServiceV2";
@@ -22,9 +21,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function AssetsFormComponent(props) {
+
+    const { id: assetId, assetInfo: assetInfo, onAssetChange: onAssetChange, isLoading: isLoading } = useOutletContext() || props
+
     const [ruleTypeOptions, setRuleTypeOptions] = useState([{ id: 0, name: "Asset Types Not Found", type: "NA" }]);
     const [tenantsOptions, setTenantsOptions] = useState([{ id: 0, name: "Tenants Not Found" }]);
-    const isAddMode = !props.id;
+    const isAddMode = !assetId;
     const [blocking, setBlocking] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -32,7 +34,7 @@ function AssetsFormComponent(props) {
     const [selectedThresholds, setSelectedThresholds] = useState([]);
     const [tenantId, setTenantId] = useState(0);
 
-    const initialValues = props.asset || {
+    const initialValues = assetInfo || {
         id: 0,
         label: "",
         description: "",
@@ -62,19 +64,21 @@ function AssetsFormComponent(props) {
                 setTenantsOptions(tenantsOptionsR);
             });
         } else {
-            apiService.getByEndpoint("tenant_new/" + props.asset.tenant.id).then(response => {
-                const respTenantNews = response.tenants_new || [];
-                if (respTenantNews[0] != undefined) {
-                    setTenantsOptions([{ id: props.asset.tenant.id, name: respTenantNews[0].name }]);
-                }
-            });
+            if (!isLoading) {
+                apiService.getByEndpoint("tenant_new/" + assetInfo.tenant.id).then(response => {
+                    const respTenantNews = response.tenants_new || [];
+                    if (respTenantNews[0] != undefined) {
+                        setTenantsOptions([{ id: assetInfo.tenant.id, name: respTenantNews[0].name }]);
+                    }
+                });
+            }
         }
 
-        if (props.asset !== undefined) {
-            props.asset.threshold_ids.forEach(id => {
-                apiServiceV2.get("v2/thresholds/"+ id).then(response => {
+        if (assetInfo !== undefined) {
+            assetInfo.threshold_ids.forEach(id => {
+                apiServiceV2.get("v2/thresholds/" + id).then(response => {
                     const thresholdsSelected = selectedThresholds;
-                    thresholdsSelected.push({id: response.threshold.id, label : response.threshold.label});
+                    thresholdsSelected.push({ id: response.threshold.id, label: response.threshold.label });
                     setSelectedThresholds([...thresholdsSelected]);
                 });
             });
@@ -105,7 +109,7 @@ function AssetsFormComponent(props) {
             });
         } else {
             apiServiceV2
-                .getByLimitOffsetSearchTenant("v2/thresholds", 50, 0, query, props.asset.tenant.id)
+                .getByLimitOffsetSearchTenant("v2/thresholds", 50, 0, query, assetInfo.tenant.id)
                 .then(response => {
                     const thresholds =
                         typeof response.thresholds !== undefined && Array.isArray(response.thresholds)
@@ -138,7 +142,7 @@ function AssetsFormComponent(props) {
         let error;
         let type;
 
-        ruleTypeOptions.forEach(function(options) {
+        ruleTypeOptions.forEach(function (options) {
             if (options["id"] === initialValues.asset_type.id) {
                 type = options["type"];
             }
@@ -237,6 +241,8 @@ function AssetsFormComponent(props) {
                     setFieldValue("description", "", false);
                     setFieldValue("devices", [], false);
                     setSelectedThresholds([]);
+                } else {
+                    onAssetChange()
                 }
             })
             .catch(err => {
@@ -248,7 +254,7 @@ function AssetsFormComponent(props) {
     };
 
     return (
-        <BlockUi tag="div" blocking={blocking}>
+        <BlockUi tag="div" blocking={blocking || isLoading}>
             <Formik
                 enableReinitialize
                 initialValues={initialValues}
