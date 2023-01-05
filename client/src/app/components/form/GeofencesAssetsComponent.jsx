@@ -2,14 +2,11 @@ import React, { useEffect, useState } from "react";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
-import { useOutletContext } from 'react-router-dom'
 import MenuItem from "@mui/material/MenuItem";
 import apiServiceV2 from "../../services/v2/apiServiceV2";
 import { HistoryList } from "../lists/history/HistoryList";
 
-export default function GeofencesAssetsComponent() {
-
-    const { id: geofenceId } = useOutletContext()
+export default function GeofencesAssetsComponent(props) {
     const [containersOptions, setContainersOptions] = useState([{ id: 0, label: "Containers Not Found" }]);
     const [selectedContainer, setselectedContainer] = useState(0);
 
@@ -61,7 +58,7 @@ export default function GeofencesAssetsComponent() {
                 key={selectedContainer}
                 title={"Assets Inside Geofence"}
                 container_id={selectedContainer}
-                endpoint={"v2/geofences/" + geofenceId + "/assets"}
+                endpoint={"v2/geofences/" + props.id + "/assets"}
                 dataField={"assets_tracking"}
             ></HistoryList>
         </div>

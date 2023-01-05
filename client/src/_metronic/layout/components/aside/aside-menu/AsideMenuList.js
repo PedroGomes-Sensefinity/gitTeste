@@ -7,17 +7,13 @@ import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { checkIsActive, toAbsoluteUrl } from "../../../../_helpers";
 import ReactGA from 'react-ga';
-import templates from "../../../../../app/utils/links";
-
 
 export function AsideMenuList({ layoutProps }) {
 
   const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
-  const location = useLocation()
-
+  const location = useLocation();
   const getMenuItemActive = (url, hasSubmenu = false) => {
-    const match = checkIsActive(location.pathname, url)
-    return match
+    return checkIsActive(location, url)
       ? ` ${!hasSubmenu &&
       "menu-item-active"} menu-item-open menu-item-not-hightlighted`
       : "";
@@ -33,11 +29,10 @@ export function AsideMenuList({ layoutProps }) {
       <ul className={`menu-nav ${layoutProps.ulClasses}`}>
         {/*begin::1 Level*/}
         <li
-          className={`menu-item ${getMenuItemActive("/dashboard/*", true)}`}
+          className={`menu-item ${getMenuItemActive("/dashboard", false)}`}
           aria-haspopup="true"
         >
-          <NavLink className='menu-link menu-toggle' to={templates.dashboardDefault
-          }>
+          <NavLink className='menu-link menu-toggle' to="/dashboard">
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Display1.svg")} />
             </span>
@@ -57,8 +52,7 @@ export function AsideMenuList({ layoutProps }) {
                 className={`menu-item ${getMenuItemActive("/dashboard/default")}`}
                 aria-haspopup="true"
               >
-                <NavLink className="menu-link" to={templates.dashboardDefault
-                }>
+                <NavLink className="menu-link" to="/dashboard/default">
                   <i className="menu-bullet menu-bullet-dot">
                     <span />
                   </i>
@@ -72,8 +66,7 @@ export function AsideMenuList({ layoutProps }) {
                   className={`menu-item ${getMenuItemActive("/dashboard/containers")}`}
                   aria-haspopup="true"
                 >
-                  <NavLink className="menu-link" to={templates.dashboardsContainers
-                  }>
+                  <NavLink className="menu-link" to="/dashboard/containers">
                     <i className="menu-bullet menu-bullet-dot">
                       <span />
                     </i>
@@ -88,8 +81,7 @@ export function AsideMenuList({ layoutProps }) {
                   className={`menu-item ${getMenuItemActive("/dashboard/route")}`}
                   aria-haspopup="true"
                 >
-                  <NavLink className="menu-link" to={templates.dashboardsRoutes
-                  }>
+                  <NavLink className="menu-link" to="/dashboard/route">
                     <i className="menu-bullet menu-bullet-dot">
                       <span />
                     </i>
@@ -106,11 +98,10 @@ export function AsideMenuList({ layoutProps }) {
         {/*begin::1 Level*/}
         {permissions.canViewTenants &&
           <li
-            className={`menu-item ${getMenuItemActive("/tenants/*", false)}`}
+            className={`menu-item ${getMenuItemActive("/tenants", false)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link" to={templates.tenantsList
-            }>
+            <NavLink className="menu-link" to="/tenants/list">
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Files/User-folder.svg")} />
               </span>
@@ -123,10 +114,9 @@ export function AsideMenuList({ layoutProps }) {
         {/*begin::1 Level*/}
         {permissions.canViewUsers &&
           <li
-            className={`menu-item ${getMenuItemActive("/users/*", true)}`}
+            className={`menu-item ${getMenuItemActive("/users", true)}`}
             aria-haspopup="true">
-            <NavLink className="menu-link menu-toggle" to={templates.usersList
-            }>
+            <NavLink className="menu-link menu-toggle" to="/users/list">
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Files/User-folder.svg")} />
               </span>
@@ -138,11 +128,10 @@ export function AsideMenuList({ layoutProps }) {
         {/*begin::1 Level*/}
         {permissions.canViewProfiles &&
           <li
-            className={`menu-item ${getMenuItemActive("/profiles/*", true)}`}
+            className={`menu-item ${getMenuItemActive("/profiles", true)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link menu-toggle" to={templates.profilesList
-            }>
+            <NavLink className="menu-link menu-toggle" to="/profiles/list">
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Communication/Group.svg")} />
               </span>
@@ -155,11 +144,10 @@ export function AsideMenuList({ layoutProps }) {
         {/*begin::1 Level*/}
         {permissions.canViewAssets &&
           <li
-            className={`menu-item ${getMenuItemActive("/assets/*", true)}`}
+            className={`menu-item ${getMenuItemActive("/assets", true)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link menu-toggle" to={templates.assetsList
-            }>
+            <NavLink className="menu-link menu-toggle" to="/assets/list">
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Communication/Group.svg")} />
               </span>
@@ -170,7 +158,7 @@ export function AsideMenuList({ layoutProps }) {
         {/*begin::1 Level*/}
         {permissions.canViewDevices &&
           <li
-            className={`menu-item ${getMenuItemActive("/devices/*", true)}`}
+            className={`menu-item ${getMenuItemActive("/devices", true)}`}
             aria-haspopup="true"
           >
             <NavLink className="menu-link menu-toggle" to="/devices">
@@ -192,8 +180,7 @@ export function AsideMenuList({ layoutProps }) {
                   className={`menu-item ${getMenuItemActive("/devices/list")}`}
                   aria-haspopup="true"
                 >
-                  <NavLink className="menu-link" to={templates.deviceList
-                  }>
+                  <NavLink className="menu-link" to="/devices/list">
                     <i className="menu-bullet menu-bullet-dot">
                       <span />
                     </i>
@@ -207,8 +194,7 @@ export function AsideMenuList({ layoutProps }) {
                     className={`menu-item ${getMenuItemActive("/devices/provision")}`}
                     aria-haspopup="true"
                   >
-                    <NavLink className="menu-link" to={templates.deviceProvision
-                    }>
+                    <NavLink className="menu-link" to="/devices/provision">
                       <i className="menu-bullet menu-bullet-dot">
                         <span />
                       </i>
@@ -223,8 +209,7 @@ export function AsideMenuList({ layoutProps }) {
                     className={`menu-item ${getMenuItemActive("/device/upload")}`}
                     aria-haspopup="true"
                   >
-                    <NavLink className="menu-link" to={templates.deviceUpload
-                    }>
+                    <NavLink className="menu-link" to="/devices/upload">
                       <i className="menu-bullet menu-bullet-dot">
                         <span />
                       </i>
@@ -242,11 +227,10 @@ export function AsideMenuList({ layoutProps }) {
         {/*begin::1 Level*/}
         {permissions.canViewBoardFamilies &&
           <li
-            className={`menu-item ${getMenuItemActive("/board-families/*", true)}`}
+            className={`menu-item ${getMenuItemActive("/board-families", true)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link menu-toggle" to={templates.boardFamilyList
-            }>
+            <NavLink className="menu-link menu-toggle" to="/board-families/list">
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Router2.svg")} />
               </span>
@@ -259,11 +243,10 @@ export function AsideMenuList({ layoutProps }) {
         {/*begin::1 Level*/}
         {permissions.canViewGroups &&
           <li
-            className={`menu-item ${getMenuItemActive("/groups/*", false)}`}
+            className={`menu-item ${getMenuItemActive("/groups", false)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link" to={templates.groupList
-            }>
+            <NavLink className="menu-link" to="/groups/list">
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Layers.svg")} />
               </span>
@@ -275,10 +258,10 @@ export function AsideMenuList({ layoutProps }) {
         {/*begin::1 Level*/}
         {(permissions.canViewLocations || permissions.canViewSubLocations) &&
           <li
-            className={`menu-item ${getMenuItemActive("/locations/*", true) || getMenuItemActive("/sublocations/*", true)}`}
+            className={`menu-item ${getMenuItemActive("/locations", true) || getMenuItemActive("/sublocations", true)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link menu-toggle" to="/locations/*">
+            <NavLink className="menu-link menu-toggle" to="/locations">
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Map/Compass.svg")} />
               </span>
@@ -298,8 +281,7 @@ export function AsideMenuList({ layoutProps }) {
                     className={`menu-item ${getMenuItemActive("/locations/list")}`}
                     aria-haspopup="true"
                   >
-                    <NavLink className="menu-link" to={templates.locationsList
-                    }>
+                    <NavLink className="menu-link" to="/locations/list">
                       <i className="menu-bullet menu-bullet-dot">
                         <span />
                       </i>
@@ -314,8 +296,7 @@ export function AsideMenuList({ layoutProps }) {
                     className={`menu-item ${getMenuItemActive("/sublocations/list")}`}
                     aria-haspopup="true"
                   >
-                    <NavLink className="menu-link" to={templates.subLocationsList
-                    }>
+                    <NavLink className="menu-link" to="/sublocations/list">
                       <i className="menu-bullet menu-bullet-dot">
                         <span />
                       </i>
@@ -333,7 +314,7 @@ export function AsideMenuList({ layoutProps }) {
         {/*begin::1 Level*/}
         {permissions.canViewRoutes &&
           <li
-            className={`menu-item ${getMenuItemActive("/routes/*", true)}`}
+            className={`menu-item ${getMenuItemActive("/routes", true)}`}
             aria-haspopup="true"
           >
             <NavLink className="menu-link menu-toggle" to="/routes">
@@ -357,8 +338,7 @@ export function AsideMenuList({ layoutProps }) {
                   )}`}
                   aria-haspopup="true"
                 >
-                  <NavLink className="menu-link" to={templates.routesList
-                  }>
+                  <NavLink className="menu-link" to="/routes/list">
                     <i className="menu-bullet menu-bullet-dot">
                       <span />
                     </i>
@@ -371,8 +351,7 @@ export function AsideMenuList({ layoutProps }) {
                   )}`}
                   aria-haspopup="true"
                 >
-                  <NavLink className="menu-link" to={templates.routesCompletion
-                  }>
+                  <NavLink className="menu-link" to="/routes/completion">
                     <i className="menu-bullet menu-bullet-dot">
                       <span />
                     </i>
@@ -387,11 +366,10 @@ export function AsideMenuList({ layoutProps }) {
         {/*begin::1 Level*/}
         {permissions.canViewGeofences &&
           <li
-            className={`menu-item ${getMenuItemActive("/geofences/*", true)}`}
+            className={`menu-item ${getMenuItemActive("/geofences", true)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link menu-toggle" to={templates.geofencesList
-            }>
+            <NavLink className="menu-link menu-toggle" to="/geofences/list">
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Select.svg")} />
               </span>
@@ -402,11 +380,10 @@ export function AsideMenuList({ layoutProps }) {
         {/*begin::1 Level*/}
         {permissions.canViewThresholds &&
           <li
-            className={`menu-item ${getMenuItemActive("/thresholds/*", false)}`}
+            className={`menu-item ${getMenuItemActive("/thresholds", false)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link" to={templates.thresholdsList
-            }>
+            <NavLink className="menu-link" to="/thresholds/list">
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Diagnostics.svg")} />
               </span>
@@ -419,11 +396,10 @@ export function AsideMenuList({ layoutProps }) {
         {/*begin::1 Level*/}
         {permissions.canViewAlarms &&
           <li
-            className={`menu-item ${getMenuItemActive("/alarms/*", false)}`}
+            className={`menu-item ${getMenuItemActive("/alarms", false)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link" to={templates.alarmsList
-            }>
+            <NavLink className="menu-link" to="/alarms/list">
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Code/Warning-1-circle.svg")} />
               </span>
@@ -436,11 +412,10 @@ export function AsideMenuList({ layoutProps }) {
         {/*begin::1 Level*/}
         {permissions.canViewNotificationTemplates &&
           <li
-            className={`menu-item ${getMenuItemActive("/notification-templates/*", false)}`}
+            className={`menu-item ${getMenuItemActive("/notification-templates", false)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link" to={templates.notificationTemplatesList
-            }>
+            <NavLink className="menu-link" to="/notification-templates/list">
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Files/File.svg")} />
               </span>
@@ -451,11 +426,10 @@ export function AsideMenuList({ layoutProps }) {
         {/*end::1 Level*/}
         {permissions.canViewFloorMaps &&
           <li
-            className={`menu-item ${getMenuItemActive("/floor-maps/*", false)}`}
+            className={`menu-item ${getMenuItemActive("/floor-maps", false)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link" to={templates.floorMapsList
-            }>
+            <NavLink className="menu-link" to="/floor-maps/list">
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/Home/Home.svg")} />
               </span>
@@ -465,11 +439,10 @@ export function AsideMenuList({ layoutProps }) {
         }
         {permissions.canViewImpacts &&
           <li
-            className={`menu-item ${getMenuItemActive("/impacts/*", false)}`}
+            className={`menu-item ${getMenuItemActive("/impacts", false)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link" to={templates.impacts
-            }>
+            <NavLink className="menu-link" to="/impacts">
               <span className="svg-icon menu-icon">
                 <SVG src={toAbsoluteUrl("/media/svg/icons/General/Attachment2.svg")} />
               </span>
@@ -482,8 +455,7 @@ export function AsideMenuList({ layoutProps }) {
           className={`menu-item ${getMenuItemActive("/operation/tracking", false)}`}
           aria-haspopup="true"
         >
-          <NavLink className="menu-link" to={templates.operationTracking
-          }>
+          <NavLink className="menu-link" to="/operation/tracking">
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/General/Attachment2.svg")} />
             </span>

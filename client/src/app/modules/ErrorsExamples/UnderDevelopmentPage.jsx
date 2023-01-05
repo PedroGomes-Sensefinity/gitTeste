@@ -1,8 +1,9 @@
 import React from "react";
-import "../../../_metronic/_assets/sass/pages/error/error-3.scss";
 import { toAbsoluteUrl } from "../../../_metronic/_helpers";
+import { Layout } from "../../../_metronic/layout";
+import "../../../_metronic/_assets/sass/pages/error/error-3.scss";
 
-export function UnderDevelopmentPage() {
+export default function UnderDevelopmentPage() {
   return (
       <div className="d-flex flex-column flex-root">
         <div

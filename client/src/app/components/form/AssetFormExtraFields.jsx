@@ -4,21 +4,18 @@ import apiService from "../../services/apiService";
 import apiServiceV2 from "../../services/v2/apiServiceV2";
 import assetsServiceV2 from "../../services/v2/assetsServiceV2";
 import toaster from "../../utils/toaster";
-import { useOutletContext } from "react-router-dom";
 
 export default function AssetFormExtraFields(props) {
-
-    const { id: assetId, isLoading } = useOutletContext()
-
     const schemaDefault = {
         title: "You don't have Extra Fields for this Asset Type!",
         type: "object"
     };
+    const id = props.id;
     const [schema, setSchema] = useState(schemaDefault);
     const [asset, setAsset] = useState({});
 
     useEffect(() => {
-        let endpoint = "v2/assets/" + assetId;
+        let endpoint = "v2/assets/" + id;
         apiServiceV2.get(endpoint).then(response => {
             setAsset(response.asset);
             if (
@@ -55,7 +52,7 @@ export default function AssetFormExtraFields(props) {
             .catch(err => {
                 toaster.notify("error", err.status);
             });
-
+  
     };
     const pStyle = {
         padding: "120px"

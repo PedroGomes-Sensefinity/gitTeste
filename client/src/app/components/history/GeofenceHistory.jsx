@@ -5,11 +5,8 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import apiServiceV2 from "../../services/v2/apiServiceV2";
 import { HistoryList } from "../lists/history/HistoryList";
-import { useOutletContext } from "react-router-dom";
 
-export default function GeofenceHistory() {
-
-    const { id: geofenceId } = useOutletContext()
+export default function GeofenceHistory(props) {
     const [containersOptions, setContainersOptions] = useState([{ id: 0, label: "Containers Not Found" }]);
     const [selectedContainer, setselectedContainer] = useState(0);
 
@@ -73,7 +70,7 @@ export default function GeofenceHistory() {
                 key={selectedContainer}
                 title={"Geofence History"}
                 container_id={selectedContainer}
-                endpoint={"v2/geofences/" + geofenceId + "/history"}
+                endpoint={"v2/geofences/" + props.id + "/history"}
                 dataField={"assets_tracking"}
             ></HistoryList>
         </div>

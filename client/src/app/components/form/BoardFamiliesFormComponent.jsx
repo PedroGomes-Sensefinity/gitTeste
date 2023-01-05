@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import BlockUi from "react-block-ui";
 import { Form } from 'react-bootstrap';
 import { injectIntl } from 'react-intl';
-import { Link, useOutletContext } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import apiService from '../../services/apiService';
 import boardFamiliesService from '../../services/boardFamiliesService';
@@ -21,10 +21,10 @@ const useStyles = makeStyles((theme) => ({
 
 function BoardFamiliesFormComponent(props) {
     const intl = props.intl
-    const { boardFamilyId: boardId } = useOutletContext() || props
-    const isAddMode = !boardId
+    const boardId = props.id
+    const isAddMode = !props.id
     const [boardFamilyInfo, setBoardFamilyInfo] = useState({})
-    const [blocking, setBlocking] = useState(true)
+    const [blocking, setBlocking] = useState(false)
 
     const initialValues = {
         id: boardFamilyInfo.id || '',
@@ -39,18 +39,15 @@ function BoardFamiliesFormComponent(props) {
     const classes = useStyles();
 
     useEffect(() => {
-        if (!isAddMode) {
+        if (!isAddMode && boardId !== 'new') {
             apiService
                 .getById('board_families', boardId)
                 .then((response) => {
                     const respBoardFamilies = response.board_families || [];
                     if (respBoardFamilies.length > 0) {
                         setBoardFamilyInfo(respBoardFamilies[0]);
-                        setBlocking(false)
                     }
                 });
-        } else {
-            setBlocking(false)
         }
     }, []);
 

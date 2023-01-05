@@ -10,7 +10,6 @@ import apiService from "../../services/apiService";
 import deviceThresholdService from "../../services/deviceThresholdService";
 import toaster from "../../utils/toaster";
 import { useSelector } from "react-redux";
-import { useOutletContext } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
     headerMarginTop: {
@@ -20,7 +19,7 @@ const useStyles = makeStyles(theme => ({
 
 function DeviceThresholdComponent(props) {
     const intl = props.intl;
-    const { deviceId: deviceId } = useOutletContext()
+    const deviceId = props.entity;
     const [selectedThresholds, setSelectedThresholds] = useState([]);
     const selectedThresholdIds = selectedThresholds.map(t => t.id);
     const [thresholdOptions, setThresholdOptions] = useState([]);
@@ -130,7 +129,7 @@ function DeviceThresholdComponent(props) {
                                         <label>Threshold</label>
                                         <div>
                                             <AsyncTypeahead
-                                                disabled={!permissions.canEditDevices}
+                                                disabled={!permissions.canEditDevices }
                                                 id="typeahead-threshold"
                                                 labelKey="label"
                                                 size="lg"
@@ -150,7 +149,7 @@ function DeviceThresholdComponent(props) {
                                         <label>Group Thresholds</label>
                                         <div>
                                             <Typeahead
-                                                disabled={!permissions.canEditDevices}
+                                                disabled={!permissions.canEditDevices }
                                                 id="typeahead-threshold-group"
                                                 labelKey="label"
                                                 size="lg"

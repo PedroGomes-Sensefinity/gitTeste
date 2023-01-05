@@ -4,7 +4,7 @@ import { Formik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import BlockUi from "react-block-ui";
 import { injectIntl } from 'react-intl';
-import { Link, useOutletContext } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import apiService from '../../services/apiService';
 import routesService from "../../services/routesService";
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 
 function RoutesMapComponent(props) {
     const intl = props.intl
-    const { routeId } = useOutletContext()
+    const routeId = props.id
     const [route, setRoute] = useState({})
     const [entity, setEntity] = useState({})
     const [geofence, setGeofence] = useState({})

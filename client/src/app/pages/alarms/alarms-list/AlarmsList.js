@@ -7,7 +7,6 @@ import notificationService from "../../../services/notificationService";
 
 import { useLang } from '../../../../_metronic/i18n/Metronici18n';
 import TableGrid from '../../../components/table-grid/TableGrid';
-import { Layout } from '../../../../_metronic/layout';
 
 export function AlarmsList() {
     const [, setTimefilter] = React.useState();
@@ -116,33 +115,31 @@ export function AlarmsList() {
     }
 
     return (
-        <Layout>
-            <Card>
-                <CardContent>
-                    <div className='row'>
-                        <div className='col-xl-2 col-lg-2'>
-                            <Form>
-                                <Form.Group controlId='timefilter'>
-                                    <Form.Label>Time filter</Form.Label>
-                                    <Form.Control as='select' size='sm' name="timefilter" onChange={onChangeTimefilter}>
-                                        {timefilterOptions.map((filter) => (
-                                            <option value={filter.id} key={filter.id}>
-                                                {filter.name}
-                                            </option>
-                                        ))}
-                                    </Form.Control>
-                                </Form.Group>
-                            </Form>
-                        </div>
+        <Card>
+            <CardContent>
+                <div className='row'>
+                    <div className='col-xl-2 col-lg-2'>
+                        <Form>
+                            <Form.Group controlId='timefilter'>
+                                <Form.Label>Time filter</Form.Label>
+                                <Form.Control as='select' size='sm' name="timefilter" onChange={onChangeTimefilter}>
+                                    {timefilterOptions.map((filter) => (
+                                        <option value={filter.id} key={filter.id}>
+                                            {filter.name}
+                                        </option>
+                                    ))}
+                                </Form.Control>
+                            </Form.Group>
+                        </Form>
                     </div>
-                    <TableGrid
-                        actions={[]}
-                        title=''
-                        columns={columns}
-                        data={data}
-                    />
-                </CardContent>
-            </Card>
-        </Layout>
+                </div>
+                <TableGrid
+                    actions={[]}
+                    title=''
+                    columns={columns}
+                    data={data}
+                />
+            </CardContent>
+        </Card>
     );
 }

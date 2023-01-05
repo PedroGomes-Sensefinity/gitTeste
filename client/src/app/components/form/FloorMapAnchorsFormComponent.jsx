@@ -9,7 +9,6 @@ import BlockUi from "react-block-ui";
 import Table from 'react-bootstrap/Table';
 import { injectIntl } from 'react-intl';
 import NumberFormat from 'react-number-format';
-import { useOutletContext } from 'react-router-dom';
 import * as Yup from 'yup';
 import apiService from '../../services/apiService';
 import floorMapService from '../../services/floorMapService';
@@ -24,9 +23,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 function FloorMapAnchorsFormComponent(props) {
     const intl = props.intl
-
-    const { floorMapId } = useOutletContext()
-    const isAddMode = !floorMapId
+    const floorMapId = props.id
+    const isAddMode = !props.id
     const [floormap, setFloorMap] = useState({})
     const [listAnchors, setListAnchors] = useState([])
     const [blocking, setBlocking] = useState(false)

@@ -4,7 +4,7 @@ import { ErrorMessage, Formik } from 'formik';
 import React, { useEffect, useState } from "react";
 import BlockUi from "react-block-ui";
 import { injectIntl } from "react-intl";
-import { Link, useOutletContext } from "react-router-dom";
+import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import apiService from "../../services/apiService";
 import tenantsService from "../../services/tenantsService";
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 
 function TenantsPersonalizationComponent(props) {
     const intl = props.intl
-    const { tenantId } = useOutletContext()
+    const tenantId = props.id
     const isAddMode = !tenantId || tenantId === 'new'
     const [blocking, setBlocking] = useState(false)
     const [logoUrl, setLogoUrl] = useState('')

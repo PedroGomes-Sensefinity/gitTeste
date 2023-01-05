@@ -15,7 +15,6 @@ import deviceService from "../../services/deviceService";
 import { getInputClasses } from "../../utils/formik";
 import toaster from "../../utils/toaster";
 import { useSelector } from "react-redux";
-import { useOutletContext } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
     headerMarginTop: {
@@ -25,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 
 function DeviceConfigMessageComponent(props) {
     const intl = props.intl;
-    const { deviceId: deviceId } = useOutletContext()
+    const deviceId = props.entity;
     const [templates, setTemplates] = useState([]);
     const [pendingConfigMessages, setPendingConfigMessages] = useState([]);
     const [isModalVisible, setModalVisible] = useState(false);
@@ -143,7 +142,7 @@ function DeviceConfigMessageComponent(props) {
                                             <label>Message</label>
                                             <div>
                                                 <Field
-                                                    disabled={!permissions.canEditDevices}
+                                                    disabled={!permissions.canEditDevices }
                                                     as="textarea"
                                                     rows="7"
                                                     className={`form-control form-control-lg form-control-solid ${getInputClasses(

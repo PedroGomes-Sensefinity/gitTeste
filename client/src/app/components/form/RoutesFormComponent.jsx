@@ -4,7 +4,7 @@ import { ErrorMessage, Field, Formik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import BlockUi from "react-block-ui";
 import { injectIntl } from 'react-intl';
-import { Link, useOutletContext } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import apiService from '../../services/apiService';
 import routesService from "../../services/routesService";
@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 function RoutesFormComponent(props) {
     const intl = props.intl
-    const { routeId } = useOutletContext() || props
+    const routeId = props.id
     const isAddMode = !routeId
     const [route, setRoute] = useState({})
     const [blocking, setBlocking] = useState(false)

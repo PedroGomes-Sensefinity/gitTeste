@@ -13,7 +13,10 @@ import {
 export function ProfileCard() {
   const user = useSelector(({ auth }) => auth.user, shallowEqual);
 
-  console.log(user)
+  useEffect(() => {
+    return () => {};
+  }, [user]);
+
   return (
     <>
       {user && (

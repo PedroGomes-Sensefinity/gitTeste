@@ -1,25 +1,27 @@
 import React, { useEffect, useState } from "react";
+import "../../utils/yup-validations";
 import BlockUi from "react-block-ui";
-import { OverlayTrigger, Tooltip } from "react-bootstrap";
+import { injectIntl } from "react-intl";
 import { BsBatteryFull, BsClock, BsFillCloudArrowUpFill } from "react-icons/bs";
 import {
-    MdBatterySaver, MdBorderOuter, MdLocationOn, MdOutlineWarningAmber,
+    MdBatterySaver,
+    MdOutlineWarningAmber,
     MdPower,
-    MdWifiTethering
+    MdWifiTethering,
+    MdLocationOn,
+    MdNavigation,
+    MdBorderOuter
 } from "react-icons/md";
-import { injectIntl } from "react-intl";
-import { useSelector } from "react-redux";
-import { useOutletContext } from "react-router-dom";
-import deviceService from "../../services/deviceService";
-import geoCoding from "../../services/geocoding";
-import apiServiceV2 from "../../services/v2/apiServiceV2";
-import utils from "../../utils/utils";
-import "../../utils/yup-validations";
 import GeoPointMap from "../geo-point-map/GeoPointMap";
+import apiService from "../../services/apiService";
+import apiServiceV2 from "../../services/v2/apiServiceV2";
+import geoCoding from "../../services/geocoding";
+import deviceService from "../../services/deviceService";
+import utils from "../../utils/utils";
+import { OverlayTrigger, Tooltip } from "react-bootstrap";
+import { useSelector } from "react-redux";
 
 function DeviceDashboard(props) {
-    const context = useOutletContext()
-    const deviceId = context.deviceId || props.deviceId
     const [blocking, setBlocking] = useState(true);
     const [device, setDevice] = useState({});
     const [dashboard, setDashboard] = useState({});
@@ -34,14 +36,14 @@ function DeviceDashboard(props) {
 
     function initDashboard() {
         Promise.all([
-            apiServiceV2.get("v2/devices/" + deviceId),
-            deviceService.dashboard(deviceId),
-            deviceService.getPendingConfig(deviceId)
+            apiServiceV2.get("v2/devices/" + props.id),
+            deviceService.dashboard(props.id),
+            deviceService.getPendingConfig(props.id)
         ]).then(allResponses => {
             const device = allResponses[0].device;
             let dashboard = allResponses[1];
             const pendingConfigMessages = allResponses[2];
-
+            
             if (dashboard.last_geofence_json != undefined) {
                 const shapes = JSON.parse(dashboard.last_geofence_json);
                 const geofencesArr = [];
@@ -83,41 +85,41 @@ function DeviceDashboard(props) {
             {permissions.canViewContainerDashboard && (
                 <div className="row mt-3">
                     <div className="col-xl-3 col-lg-3">
-                        <div style={{ width: '100%', height: '100%' }} className="card card-custom">
+                        <div style={{ width: '100%', height: '100%'}} className="card card-custom">
                             <div className="card-header">
                                 <div className="card-title">
                                     <h3 className="card-label">Last Location/Sublocation</h3>
                                 </div>
                             </div>
-                            <div style={{ textAlign: "center" }} className="card-body">
-
-                                <h1>
-                                    {utils.either(dashboard.last_location, "In Transit")}
-                                </h1>
-                                <h1>
-                                    {utils.either(dashboard.last_sublocation, "In Transit")} (
-                                    {utils.either(dashboard.last_port_code, "No Port Code")})
-                                </h1>
+                            <div style={{textAlign: "center"}} className="card-body">
+                                
+                                    <h1>
+                                        {utils.either(dashboard.last_location, "In Transit")}
+                                    </h1>
+                                    <h1>
+                                        {utils.either(dashboard.last_sublocation, "In Transit")} (
+                                        {utils.either(dashboard.last_port_code, "No Port Code")})
+                                    </h1>
                             </div>
                         </div>
                     </div>
                     <div className="col-xl-3 col-lg-3">
-                        <div style={{ width: '100%', height: '100%' }} className="card card-custom">
+                        <div style={{ width: '100%', height: '100%'}} className="card card-custom">
                             <div className="card-header">
                                 <div className="card-title">
                                     <h3 className="card-label">Reverse Geocoding</h3>
                                 </div>
                             </div>
                             <div className="card-body">
-                                <h1 style={{ textAlign: "center", textSize: "20px" }}>{utils.either(
+                                    <h1 style={{textAlign: "center", textSize: "20px"}}>{utils.either(
                                     geoCodingText,
                                     "Not possible to convert geographic coordinates to address!"
-                                )}</h1>
+                                )}</h1>  
                             </div>
                         </div>
                     </div>
                     <div className="col-xl-3 col-lg-3">
-                        <div style={{ width: '100%', height: '100%' }} className="card card-custom">
+                        <div style={{ width: '100%', height: '100%'}} className="card card-custom">
                             <div className="card-header">
                                 <div className="card-title">
                                     <h3 className="card-label">Last Geofence</h3>
@@ -140,14 +142,14 @@ function DeviceDashboard(props) {
                         </div>
                     </div>
                     <div className="col-xl-3 col-lg-3" >
-                        <div style={{ width: '100%', height: '100%' }} className="card card-custom">
+                        <div  style={{ width: '100%', height: '100%'}}  className="card card-custom">
                             <div className="card-header">
                                 <div className="card-title">
                                     <h3 className="card-label">Long Standing</h3>
                                 </div>
                             </div>
                             <div className="card-body">
-                                <h1 style={{ textAlign: "center" }}>{utils.either(dashboard.long_standing, "0")} Days</h1>
+                                    <h1 style={{textAlign: "center"}}>{utils.either(dashboard.long_standing, "0")} Days</h1>  
                             </div>
                         </div>
                     </div>

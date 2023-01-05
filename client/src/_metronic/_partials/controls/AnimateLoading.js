@@ -1,22 +1,6 @@
 import React from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { ProgressBar } from "react-bootstrap";
-
-function withRouter(Component) {
-  function ComponentWithRouterProp(props) {
-    let location = useLocation();
-    let navigate = useNavigate();
-    let params = useParams();
-    return (
-      <Component
-        {...props}
-        router={{ location, navigate, params }}
-      />
-    );
-  }
-
-  return ComponentWithRouterProp;
-}
+import {withRouter} from "react-router-dom";
+import {ProgressBar} from "react-bootstrap";
 
 // TODO: Should be rewrited to pure function
 class AnimateLoading extends React.Component {
@@ -28,7 +12,7 @@ class AnimateLoading extends React.Component {
   };
 
   componentDidUpdate(nextProps) {
-    if (this.props.router.location.pathname !== nextProps.router.location.pathname) {
+    if (this.props.location.pathname !== nextProps.location.pathname) {
       this.animate();
       this.scrollToTop();
     }
@@ -72,7 +56,7 @@ class AnimateLoading extends React.Component {
         style={{ height: "3px", width: "100%" }}
       >
         {this.state.width > 0 && (
-          <ProgressBar variant="info" now={this.state.width} style={{ height: "3px" }} />
+          <ProgressBar variant="info" now={this.state.width} style={{ height: "3px" }}  />
         )}
       </div>
     );

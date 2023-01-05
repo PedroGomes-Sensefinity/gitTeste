@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import TableGridHistory from '../../table-grid/TableGridHistory';
 
 export function HistoryList(props) {

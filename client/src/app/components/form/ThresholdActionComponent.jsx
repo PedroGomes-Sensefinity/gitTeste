@@ -5,7 +5,6 @@ import React, { useCallback, useState } from 'react';
 import BlockUi from "react-block-ui";
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { injectIntl } from 'react-intl';
-import { useOutletContext } from 'react-router-dom';
 import * as Yup from 'yup';
 import apiService from '../../services/apiService';
 import thresholdService from '../../services/thresholdService';
@@ -22,11 +21,12 @@ const useStyles = makeStyles((theme) => ({
 
 function ThresholdActionComponent(props) {
 
-    const { thresholdInfo: threshold, onChange: onThresholdChange, isLoading } = useOutletContext()
+    const threshold = props.threshold
+    const onThresholdChange = props.onChange
     const [options, setOptions] = useState([]);
     const [selectedIds, setSelectedIds] = useState(threshold.rule.what.map(r => r.id) || []);
     const [selected, setSelected] = useState(threshold.rule.what);
-    const [loading, setLoading] = useState(isLoading);
+    const [loading, setLoading] = useState(false);
     const [blocking, setBlocking] = useState(false);
     const initialValues = {
         action: '',
@@ -34,7 +34,7 @@ function ThresholdActionComponent(props) {
     const classes = useStyles()
     const handleSearch = (query) => {
         setLoading(true)
-        apiServiceV2.getByLimitOffsetSearchTenant("v2/notification-templates", 50, 0, query, threshold.tenant.id).then((response) => {
+        apiServiceV2.getByLimitOffsetSearchTenant("v2/notification-templates",50, 0, query,threshold.tenant.id).then((response) => {
             const data = (typeof response.notification_templates !== undefined && Array.isArray(response.notification_templates))
                 ? filterOptionsBySelected(response.notification_templates)
                 : [];

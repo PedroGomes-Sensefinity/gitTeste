@@ -17,13 +17,13 @@ import Select from "@mui/material/Select";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
+
 import { LocationsList } from "../../../components/lists/locations/LocationsList";
 import { LongStandingList } from "../../../components/lists/longStanding/LongStandingList";
 import Progress from "../../../utils/Progress/Progress";
 import toaster from "../../../utils/toaster";
 import { HistoryList } from "../../../components/lists/history/HistoryList";
 
-// General Styles
 const style = {
     position: "absolute",
     bgcolor: "background.paper",
@@ -53,7 +53,7 @@ const OVERLAY_STYLE = {
 };
 
 export function ContainersDashboard() {
-    //Specific Styles
+    //Styles
     const locationStyle = { fontWeight: "bold", textAlign: "center", cursor: "pointer", borderColor: "#808080" };
     const geofencesStyle = { backgroundColor: "#D8D8D8" };
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -80,7 +80,9 @@ export function ContainersDashboard() {
         borderRight: "2px solid black"
     };
 
-    //Dashboard Data
+    const [blocking, setBlocking] = useState(false);
+
+    //Should be a object to reduce useState use
     const [locationDataDashboard, setLocationDataDashboard] = useState({
         Madeira: 0,
         Açores: 0,
@@ -89,6 +91,7 @@ export function ContainersDashboard() {
         Outros: 0,
         "In Transit": 0
     });
+
     const [ports, setPorts] = useState(["PORT"]);
     const [intervalData, setIntervalData] = useState({
         data15: [0],
@@ -97,30 +100,31 @@ export function ContainersDashboard() {
         data60_90: [0],
         data90: [0]
     });
+    const [data15, setData15] = useState([0]);
+    const [data15_30, setData15_30] = useState([0]);
+    const [data30_60, setData30_60] = useState([0]);
+    const [data60_90, setData60_90] = useState([0]);
+    const [, setData90] = useState([0]);
 
-    //Container States
+    //Selected
     const [containersOptions, setContainersOptions] = useState([{ id: 0, label: "Containers Not Found" }]);
     const [selectedContainer, setselectedContainer] = useState(0);
-    const [containerId, setContainerId] = React.useState(0);
 
-    //Selected States (use to ask for specific information)
     const [selectedLocation, setSelectedLocation] = React.useState("");
     const [selectedPortCode, setSelectedPortCode] = React.useState("");
     const [selectedInterval, setSelectedInterval] = React.useState("");
-    //Modals States
+
+    const [containerId, setContainerId] = React.useState(0);
+
     const [openLocation, setOpenLocation] = React.useState(false);
     const [openGeofences, setOpenGeofences] = React.useState(false);
-    const [openLongStanding, setOpenLongStanding] = React.useState(false);
-    // Button States (Block report)
     const [buttonDisabled, setButtonDisabled] = React.useState(false);
     const [buttonLabel, setButtonLabel] = React.useState("Generate Report");
     const [showProgress, setShowProgress] = React.useState(false);
 
-    //Default States
-    const [blocking, setBlocking] = useState(false);
-
     //handlers for pop ups (modal)
     const handleOpenLocation = m => {
+        console.log(m);
         setSelectedLocation(m);
         setOpenLocation(true);
     };
@@ -135,11 +139,6 @@ export function ContainersDashboard() {
         setOpenGeofences(false);
     };
 
-    const handleCloseLongStanding = () => {
-        setOpenLongStanding(false);
-    };
-
-    //Report Functions
     const downloadFile = (data, fileName, fileType) => {
         const blob = new Blob([data], { type: fileType });
 
@@ -266,6 +265,12 @@ export function ContainersDashboard() {
             });
     };
 
+    const [openLongStanding, setOpenLongStanding] = React.useState(false);
+
+    const handleCloseLongStanding = () => {
+        setOpenLongStanding(false);
+    };
+
     //Handler to selection on table
     function handleTable(e) {
         if (e.target.cellIndex - 1 < 0) {
@@ -364,14 +369,11 @@ export function ContainersDashboard() {
                         }
                         if (ports.length !== 0) {
                             setPorts(ports_R);
-                            const intervalData_R = {
-                                data15: data15_R,
-                                data15_30: data15_30_R,
-                                data30_60: data30_60_R,
-                                data60_90: data60_90_R,
-                                data90: data90_R
-                            };
-                            setIntervalData(intervalData_R);
+                            setData15(data15_R);
+                            setData15_30(data15_30_R);
+                            setData30_60(data30_60_R);
+                            setData60_90(data60_90_R);
+                            setData90(data90_R);
                         }
                         setBlocking(false);
                     });
@@ -451,19 +453,16 @@ export function ContainersDashboard() {
                 }
 
                 setPorts(ports_R);
-                const intervalData_R = {
-                    data15: data15_R,
-                    data15_30: data15_30_R,
-                    data30_60: data30_60_R,
-                    data60_90: data60_90_R,
-                    data90: data90_R
-                };
-                setIntervalData(intervalData_R);
+                setData15(data15_R);
+                setData15_30(data15_30_R);
+                setData30_60(data30_60_R);
+                setData60_90(data60_90_R);
+                setData90(data90_R);
                 setBlocking(false);
             });
     }
 
-    //Modals:
+    //Modal:
     const locationsModal = (
         <Modal
             hideBackdrop
@@ -700,7 +699,7 @@ export function ContainersDashboard() {
                                         <TableCell style={sticky} component="th" scope="row">
                                             &#60; 15
                                         </TableCell>
-                                        {intervalData["data15"].map(data15i => (
+                                        {data15.map(data15i => (
                                             <StyledTableCell align="center">{data15i}</StyledTableCell>
                                         ))}
                                     </TableRow>
@@ -708,7 +707,7 @@ export function ContainersDashboard() {
                                         <TableCell style={sticky} component="th" scope="row">
                                             15-30
                                         </TableCell>
-                                        {intervalData["data15_30"].map(data15_30i => (
+                                        {data15_30.map(data15_30i => (
                                             <StyledTableCell align="center">{data15_30i}</StyledTableCell>
                                         ))}
                                     </TableRow>
@@ -716,7 +715,7 @@ export function ContainersDashboard() {
                                         <TableCell style={sticky} component="th" scope="row">
                                             30-60
                                         </TableCell>
-                                        {intervalData["data30_60"].map(data30_60i => (
+                                        {data30_60.map(data30_60i => (
                                             <StyledTableCell align="center">{data30_60i}</StyledTableCell>
                                         ))}
                                     </TableRow>
@@ -724,7 +723,7 @@ export function ContainersDashboard() {
                                         <TableCell style={sticky} component="th" scope="row">
                                             60-90
                                         </TableCell>
-                                        {intervalData["data60_90"].map(data60_90i => (
+                                        {data60_90.map(data60_90i => (
                                             <StyledTableCell align="center">{data60_90i}</StyledTableCell>
                                         ))}
                                     </TableRow>
@@ -732,7 +731,7 @@ export function ContainersDashboard() {
                                         <TableCell style={sticky} component="th" scope="row">
                                             &#62; 90
                                         </TableCell>
-                                        {intervalData["data90"].map(data90i => (
+                                        {data90.map(data90i => (
                                             <StyledTableCell align="center">{data90i}</StyledTableCell>
                                         ))}
                                     </TableRow>

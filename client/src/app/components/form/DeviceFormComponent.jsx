@@ -5,7 +5,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import BlockUi from "react-block-ui";
 import { AsyncTypeahead, Typeahead } from 'react-bootstrap-typeahead';
 import { injectIntl } from 'react-intl';
-import { Link, useOutletContext } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import apiService from '../../services/apiService';
 import deviceService from '../../services/deviceService';
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 
 function DeviceFormComponent(props) {
     const intl = props.intl
-    const { deviceId } = useOutletContext() || props
+    const deviceId = props.entity
     const isAddMode = !deviceId
 
     const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
@@ -64,8 +64,6 @@ function DeviceFormComponent(props) {
         check_longstanding: device.check_longstanding || false
     };
 
-    console.log(device)
-
     useEffect(() => {
         setBlocking(true)
 
@@ -80,9 +78,8 @@ function DeviceFormComponent(props) {
 
             setBoardFamilies(respBoardFamilies);
             setTenant(respTenant);
-            if (!isAddMode) {
+            if (!isAddMode && deviceId !== 'new') {
                 apiService.getById('device', deviceId).then((response) => {
-                    console.log(response)
                     const respDevices = response.devices || []
                     if (respDevices.length > 0) {
                         const device = respDevices[0];
@@ -147,8 +144,10 @@ function DeviceFormComponent(props) {
     };
 
     const makeGroupLabel = (group) => {
+        console.log('making group label from')
+            console.log(group)
         const parentParent = (group.parent_label !== undefined && group.parent_parent_id !== 0) ? "../" : "";
-        const parent = (group.parent_label !== undefined && group.parent_label !== "") ? `${group.parent_label}/` : "";
+        const parent = (group.parent_label !== undefined && group.parent_label !== "" ) ? `${group.parent_label}/` : "";
         return `${parentParent}${parent}${group.label}`;
     }
 
@@ -277,6 +276,7 @@ function DeviceFormComponent(props) {
                 handleSubmit,
                 values
             }) => {
+                console.log(values)
                 return (
                     <form
                         className='card card-custom'
@@ -296,7 +296,7 @@ function DeviceFormComponent(props) {
                                 </span>
                             </div>
                             <div className='card-toolbar'>
-                                {permissions.canEditDevices && <button
+                            {permissions.canEditDevices && <button
                                     type='submit'
                                     className='btn btn-success mr-2'
                                     disabled={

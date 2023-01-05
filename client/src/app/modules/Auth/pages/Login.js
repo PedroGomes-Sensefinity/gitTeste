@@ -1,15 +1,14 @@
 import { useFormik } from 'formik';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import ReactGA from 'react-ga';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import { toAbsoluteUrl } from '../../../../_metronic/_helpers';
+import history from '../../../history';
 import { login, setTenantLogo, setToken, setUser } from '../../../services/authService';
 import toaster from '../../../utils/toaster';
-import { actions } from '../_redux/authRedux';
 
 /*
   INTL (i18n) docs:
@@ -28,7 +27,6 @@ const initialValues = {
 
 function Login(props) {
     const { intl } = props;
-    const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
     const LoginSchema = Yup.object().shape({
         email: Yup.string()
@@ -74,8 +72,8 @@ function Login(props) {
         validationSchema: LoginSchema,
         onSubmit: (values, { setStatus, setSubmitting }) => {
             enableLoading();
-            ReactGA.event({ category: "Button", action: "Login " + values.email.replace("@", "_") })
-
+            ReactGA.event({category: "Button",action: "Login " + values.email.replace("@","_")})
+            
             setTimeout(() => {
                 login(values.email, values.password)
                     .then((response) => response.data)
@@ -99,7 +97,8 @@ function Login(props) {
                         setToken(tenant.hash);
                         setUser(user);
                         setTenantLogo(user.tenantLogo);
-                        dispatch(actions.fulfillUser(user))
+                        history.push("/");
+
                         disableLoading();
                     })
                     .catch(() => {
@@ -202,7 +201,7 @@ function Login(props) {
                         to='/auth/forgot-password'
                         className='text-dark-50 text-hover-primary my-3 mr-2'
                         id='kt_login_forgot'>Forgot my password
-                        {/*<FormattedMessage id="Forgot my password" />*/}
+                         {/*<FormattedMessage id="Forgot my password" />*/}
                     </Link>
                     <button
                         id='kt_login_signin_submit'

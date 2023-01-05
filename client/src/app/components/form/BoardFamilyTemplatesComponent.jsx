@@ -7,7 +7,6 @@ import { ErrorMessage, Field, Formik } from 'formik';
 import React, { useEffect, useState } from "react";
 import { Container, Modal } from 'react-bootstrap';
 import { injectIntl } from "react-intl";
-import { useOutletContext } from "react-router-dom";
 import * as Yup from 'yup';
 import boardFamilyTemplatesService from "../../services/boardFamilyTemplatesService";
 import { getInputClasses } from '../../utils/formik';
@@ -26,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 function BoardFamilyTemplatesComponent(props) {
     const intl = props.intl
-    const { boardFamilyId } = useOutletContext()
+    const boardFamilyId = props.id
     const classes = useStyles()
     const [templates, setTemplates] = useState([])
     const [data, setData] = useState({ board_family_id: boardFamilyId })

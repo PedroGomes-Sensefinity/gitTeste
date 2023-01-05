@@ -1,5 +1,4 @@
 import * as utils from "./LocalStorageHelpers";
-import { matchPath } from 'react-router';
 
 const localStorageLastLocationKey = "metronic-lastLocation";
 
@@ -32,10 +31,10 @@ export function forgotLastLocation() {
 }
 
 export function getLastLocation() {
-    const defaultLocation = { pathname: "/", title: "Dashboard" };
+    const defaultLocation = { pathname: "/", title: "Dashboard"};
     const localStorateLocations = utils.getStorage(localStorageLastLocationKey);
     if (!localStorateLocations) {
-        return { pathname: "/", title: "Dashboard" };
+        return { pathname: "/", title: "Dashboard"};
     }
 
     try {
@@ -52,6 +51,18 @@ export function getCurrentUrl(location) {
 }
 
 export function checkIsActive(location, url) {
-    const result = matchPath({ path: url }, location)
-    return result !== null
+    const current = getCurrentUrl(location);
+    if (!current || !url) {
+        return  false;
+    }
+
+    if (current === url) {
+        return  true;
+    }
+
+    if (current.indexOf(url) > -1) {
+        return true;
+    }
+
+    return false;
 }

@@ -3,12 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
 import TableGrid from '../table-grid/TableGrid';
 import deviceThresholdService from '../../services/deviceThresholdService';
-import { useOutletContext } from "react-router-dom";
 
 function ThresholdDevicesComponent(props) {
-    const { thresholdId, isLoading } = useOutletContext()
+    const thresholdId = props.id
     const [devices, setDevices] = useState([])
-    const [loading, setLoading] = useState(isLoading)
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         setLoading(true)

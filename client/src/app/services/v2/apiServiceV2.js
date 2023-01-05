@@ -14,7 +14,7 @@ const apiServiceV2 = {
                     resolve(data);
                 })
                 .catch(function (err) {
-                    reject(err.response);
+                    reject(err.response.data);
                 });
         });
     },
