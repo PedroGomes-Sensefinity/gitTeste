@@ -1,21 +1,27 @@
-import React, { useRef } from 'react'
-import { useGLTF } from '@react-three/drei'
+import React, { useState } from 'react'
+import { Suspense } from 'react'
+import { useLoader } from '@react-three/fiber'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls } from '@react-three/drei'
 
 export default function Container(props) {
-  const { nodes, materials } = useGLTF('/media/3d/container/container_b.gltf')
-  return (
-    <group {...props} dispose={null}>
-      <group rotation={[-Math.PI / 2, 0, 0]}>
-        <group rotation={[Math.PI / 2, 0, 0]} scale={0.01}>
-          <group rotation={[Math.PI / 2, 0, 0]}>
-            <mesh geometry={nodes.Container_UV_Shell001_0.geometry} material={materials['UV_Shell.001']} />
-            <mesh geometry={nodes.Container_UV_Shell002_0.geometry} material={materials['UV_Shell.002']} />
-            <mesh geometry={nodes.Container_UV_Shell003_0.geometry} material={materials['UV_Shell.003']} />
-          </group>
-        </group>
-      </group>
-    </group>
-  )
-}
 
-useGLTF.preload('/media/3d/container/container_b.gltf')
+    const gltf = useLoader(GLTFLoader, props.file)
+
+
+    return (
+        <Canvas >
+            <ambientLight intensity={1} />
+            <spotLight position={[10, 10, 10]} penumbra={1} />
+            <pointLight position={[10, 10, 10]} />
+            <spotLight position={[-10, -10, -10]} penumbra={1} />
+            <pointLight position={[-10, -10, -10]} />
+            {/*<primitive object={Line(0, 0, 12, "#DD1C1C")} />*/}
+            <Suspense fallback={null}>
+                <primitive position={[0.30, -1.95, -3]} object={gltf.scene} />
+            </Suspense>
+            <OrbitControls />
+        </Canvas>
+    )
+}
