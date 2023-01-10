@@ -40,22 +40,22 @@ export function Impacts() {
     console.log(e.target.value)
     switch (e.target.value) {
       case 1:
-        setSelectedContainer("/media/3d/container/R/containerR.gltf")
+        setSelectedContainer("/media/3d/container/F/containerF.gltf")
         break
       case 2:
-        setSelectedContainer("/media/3d/container/R/containerR.gltf")
+        setSelectedContainer("/media/3d/container/B/containerB.gltf")
         break
       case 3:
-        setSelectedContainer("/media/3d/container/R/containerR.gltf")
+        setSelectedContainer("/media/3d/container/L/containerL.gltf")
         break
       case 4:
         setSelectedContainer("/media/3d/container/R/containerR.gltf")
         break
       case 5:
-        setSelectedContainer("/media/3d/container/R/containerR.gltf")
+        setSelectedContainer("/media/3d/container/T/containerT.gltf")
         break
       case 6:
-        setSelectedContainer("/media/3d/container/R/containerR.gltf")
+        setSelectedContainer("/media/3d/container/D/containerD.gltf")
         break
     }
 
