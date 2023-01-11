@@ -1,14 +1,10 @@
-import React, { useState, useEffect } from 'react'
-import * as THREE from "three";
 import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import { Suspense } from 'react'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
-import { Canvas } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
+import Select from "@mui/material/Select";
+import React, { useState } from 'react';
+import * as THREE from "three";
+import Container from './Container';
 
 function Line(x, y, z, color) {
   const material = new THREE.LineBasicMaterial({ color: color, linewidth: 50 });
@@ -21,7 +17,9 @@ function Line(x, y, z, color) {
 }
 
 
-export function Impacts() {
+export function Impacts(props)   {
+
+  const impactVector = props
 
   const [linePos, setLinePos] = useState({ x: 0, y: 0, z: 0 })
   const viewOptions = [
@@ -37,7 +35,6 @@ export function Impacts() {
 
   function onChangeOption(e) {
     setSelectedOption(e.target.value);
-    console.log(e.target.value)
     switch (e.target.value) {
       case 1:
         setSelectedContainer("/media/3d/container/F/containerF.gltf")

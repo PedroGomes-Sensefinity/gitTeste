@@ -193,14 +193,14 @@ function TrackingOperation() {
         fields["geofence"] = JSON.stringify(data);
         fields["asset_ids"] = selectedAssetsId;
         fields["tenant_id"] = parseInt(fields["tenant"].id);
-        
-        operationsServiceV2.save("tracking", fields).then(r =>{
-            console.log(r)
+
+        operationsServiceV2.save("tracking", fields).then(r => {
+            const thresholdId = r.id
             setBlocking(false);
             setSubmitting(false);
-            history.push('/thresholds/list')
-        }).catch( r => {
-            console.log(r)
+            history.push(`/thresholds/${thresholdId}/edit`)
+        }).catch(r => {
+
             setBlocking(false);
             setSubmitting(false);
         })

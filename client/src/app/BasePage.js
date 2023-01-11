@@ -42,7 +42,7 @@ import { LocationsForm } from "./pages/locations/locations-form/LocationsForm";
 import { SubLocationsList } from "./pages/locations/sublocations-list/SublocationsList";
 import { SubLocationsForm } from "./pages/locations/sublocation-form/SubLocationsForm";
 import { ErrorPage1 } from "./modules/ErrorsExamples/ErrorPage1";
-import { Impacts } from "./pages/impacts/Impacts";
+import { ImpactsList } from "./pages/impacts/impacts-list/ImpactsList";
 import { DashboardsContainers } from "./pages/dashboards/containers/DashboardsContainers";
 import {DashboardsRoutes} from "./pages/dashboards/routes/DashboardsRoutes";
 import TrackingOperation from "./components/form/TrackingOperation";
@@ -182,7 +182,7 @@ export default function BasePage() {
         ]}
         { /* what's new Page*/}
         <ContentRoute key="/whatsnew" path="/whatsnew" component={News} />,
-        <ContentRoute key="/impacts" path="/impacts" component={Impacts} />,
+        <ContentRoute key="/impacts" path="/impacts" component={ImpactsList} />,
         <ContentRoute key="/operation/tracking" path="/operation/tracking" component={TrackingOperation} />,
 
         <ContentRoute key="/*" path="/*" component={ErrorPage1} />,
