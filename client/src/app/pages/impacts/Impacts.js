@@ -1,23 +1,27 @@
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import * as THREE from "three";
-import Container from './Container';
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import { Suspense } from 'react'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls } from '@react-three/drei'
 
 function Line(x, y, z, color) {
   const material = new THREE.LineBasicMaterial({ color: color, linewidth: 50 });
   const points = [];
   points.push(new THREE.Vector3(0, 1, 0));
-  points.push(new THREE.Vector3(x, y +1, z));
+  points.push(new THREE.Vector3(x, y + 1, z));
   const geometry = new THREE.BufferGeometry().setFromPoints(points);
   const line = new THREE.Line(geometry, material);
   return line
 }
 
 
-export function Impacts(props)   {
+export function Impacts(props) {
 
   const impactVector = props
 
@@ -105,7 +109,7 @@ export function Impacts(props)   {
           <Suspense fallback={null}>
             <primitive object={scene} />
           </Suspense>
-          <OrbitControls/>
+          <OrbitControls />
         </Canvas>
       </div>
     </div>

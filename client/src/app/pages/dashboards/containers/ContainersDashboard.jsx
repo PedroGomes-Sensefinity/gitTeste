@@ -1,27 +1,27 @@
-import React, { useEffect, useState } from "react";
-import apiService from "../../../services/apiService";
-import apiServiceV2 from "../../../services/v2/apiServiceV2";
-import BlockUi from "react-block-ui";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Modal from "@mui/material/Modal";
+import Select from "@mui/material/Select";
+import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { styled } from "@mui/material/styles";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import React, { useEffect, useState } from "react";
+import BlockUi from "react-block-ui";
 import { injectIntl } from "react-intl";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-import Button from "@mui/material/Button";
+import { HistoryList } from "../../../components/lists/history/HistoryList";
 import { LocationsList } from "../../../components/lists/locations/LocationsList";
 import { LongStandingList } from "../../../components/lists/longStanding/LongStandingList";
+import apiService from "../../../services/apiService";
+import apiServiceV2 from "../../../services/v2/apiServiceV2";
 import Progress from "../../../utils/Progress/Progress";
 import toaster from "../../../utils/toaster";
-import { HistoryList } from "../../../components/lists/history/HistoryList";
 import { ImpactsList } from "../../impacts/impacts-list/ImpactsList";
 
 // General Styles
@@ -568,7 +568,7 @@ export function ContainersDashboard() {
                 >
                     X
                 </Button>
-                <ImpactsList />
+                <ImpactsList container={containerId} />
             </Box>
         </Modal>
 

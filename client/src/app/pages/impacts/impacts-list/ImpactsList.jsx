@@ -41,10 +41,8 @@ const OVERLAY_STYLE = {
     overflowX: "auto"
 };
 
-export function ImpactsList() {
-
-    const [containersOptions, setContainersOptions] = useState([{ id: 0, label: "Containers Not Found" }]);
-    const [selectedContainer, setselectedContainer] = useState(0);
+export function ImpactsList(props) {
+    const selectedContainer = props.container
 
     const [modalOpen, setModalOpen] = useState(false)
     const [modalData, setModalData] = useState({ x: 0, y: 0, z: 0, magnitude: 0 })
@@ -78,23 +76,6 @@ export function ImpactsList() {
         }
     ];
 
-    useEffect(() => {
-        apiServiceV2.get("v2/tenants/containers").then(response => {
-            const respContainers = response.containers || [];
-
-            const containersOptionsR = respContainers.map(container => {
-                return { id: container.id, label: container.label };
-            });
-
-            setContainersOptions(containersOptionsR);
-            setselectedContainer(containersOptionsR[0].id);
-        });
-    }, []);
-
-    function onChangeContainer(e) {
-        setselectedContainer(e.target.value);
-        console.log(e.target.value);
-    }
 
     const handleModalClose = () => {
         setModalOpen(false)
@@ -136,17 +117,9 @@ export function ImpactsList() {
                             X
                         </Button>
                         {/*Uncomment line below for container*/}
-                        {/*<Impacts  {...modalData}  /> */}
+                        <Impacts {...modalData} />
                     </Box>
                 </Modal>
-                <FormControl style={{ margin: "15px" }}>
-                    <InputLabel id="select-container">Group</InputLabel>
-                    <Select labelId="select-container" value={selectedContainer} onChange={onChangeContainer}>
-                        {containersOptions.map(c => (
-                            <MenuItem value={c.id}>{c.label}</MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
                 <HistoryList
                     actions={actions}
                     columns={columns}
