@@ -22,6 +22,7 @@ import { LongStandingList } from "../../../components/lists/longStanding/LongSta
 import Progress from "../../../utils/Progress/Progress";
 import toaster from "../../../utils/toaster";
 import { HistoryList } from "../../../components/lists/history/HistoryList";
+import { ImpactsList } from "../../impacts/impacts-list/ImpactsList";
 
 // General Styles
 const style = {
@@ -101,20 +102,21 @@ export function ContainersDashboard() {
     //Container States
     const [containersOptions, setContainersOptions] = useState([{ id: 0, label: "Containers Not Found" }]);
     const [selectedContainer, setselectedContainer] = useState(0);
-    const [containerId, setContainerId] = React.useState(0);
+    const [containerId, setContainerId] = useState(0);
 
     //Selected States (use to ask for specific information)
-    const [selectedLocation, setSelectedLocation] = React.useState("");
-    const [selectedPortCode, setSelectedPortCode] = React.useState("");
-    const [selectedInterval, setSelectedInterval] = React.useState("");
+    const [selectedLocation, setSelectedLocation] = useState("");
+    const [selectedPortCode, setSelectedPortCode] = useState("");
+    const [selectedInterval, setSelectedInterval] = useState("");
     //Modals States
-    const [openLocation, setOpenLocation] = React.useState(false);
-    const [openGeofences, setOpenGeofences] = React.useState(false);
-    const [openLongStanding, setOpenLongStanding] = React.useState(false);
+    const [openLocation, setOpenLocation] = useState(false);
+    const [openImpacts, setOpenImpacts] = useState(false);
+    const [openGeofences, setOpenGeofences] = useState(false);
+    const [openLongStanding, setOpenLongStanding] = useState(false);
     // Button States (Block report)
-    const [buttonDisabled, setButtonDisabled] = React.useState(false);
-    const [buttonLabel, setButtonLabel] = React.useState("Generate Report");
-    const [showProgress, setShowProgress] = React.useState(false);
+    const [buttonDisabled, setButtonDisabled] = useState(false);
+    const [buttonLabel, setButtonLabel] = useState("Generate Report");
+    const [showProgress, setShowProgress] = useState(false);
 
     //Default States
     const [blocking, setBlocking] = useState(false);
@@ -127,6 +129,10 @@ export function ContainersDashboard() {
     const handleOpenGeofences = () => {
         setOpenGeofences(true);
     };
+
+    const handleOpenImpacts = () => {
+        setOpenImpacts(true);
+    };
     const handleCloseLocation = () => {
         setOpenLocation(false);
     };
@@ -137,6 +143,10 @@ export function ContainersDashboard() {
 
     const handleCloseLongStanding = () => {
         setOpenLongStanding(false);
+    };
+
+    const handleCloseImpacts = () => {
+        setOpenImpacts(false);
     };
 
     //Report Functions
@@ -182,10 +192,10 @@ export function ContainersDashboard() {
             apiServiceV2
                 .get(
                     "v2/reports/generate?container_id=" +
-                        containerId +
-                        "&filter=" +
-                        selectedLocation +
-                        "&type=locations_in_transit&file_format=csv"
+                    containerId +
+                    "&filter=" +
+                    selectedLocation +
+                    "&type=locations_in_transit&file_format=csv"
                 )
                 .then(response => {
                     setTimeout(() => {
@@ -203,10 +213,10 @@ export function ContainersDashboard() {
             apiServiceV2
                 .get(
                     "v2/reports/generate?container_id=" +
-                        containerId +
-                        "&filter=" +
-                        selectedLocation +
-                        "&type=locations&file_format=csv"
+                    containerId +
+                    "&filter=" +
+                    selectedLocation +
+                    "&type=locations&file_format=csv"
                 )
                 .then(response => {
                     setTimeout(() => {
@@ -310,6 +320,7 @@ export function ContainersDashboard() {
                 apiService
                     .getByEndpointDashboard("dashboards/containers/locations?container_id=" + containersOptionsR[0].id)
                     .then(response => {
+                        console.log(response)
                         const locations = {};
                         if (response.locations["Madeira"] !== undefined) {
                             locations["Madeira"] = response.locations["Madeira"];
@@ -378,7 +389,7 @@ export function ContainersDashboard() {
             }
         });
 
-        apiService.getByEndpointDashboard("dashboards/containers").then(response => {});
+        apiService.getByEndpointDashboard("dashboards/containers").then(response => { });
     }, []);
 
     //Handle container changes
@@ -538,6 +549,31 @@ export function ContainersDashboard() {
         </Modal>
     );
 
+    const impactsModal = (
+        <Modal
+            hideBackdrop
+            open={openImpacts}
+            onClose={handleCloseImpacts}
+            style={OVERLAY_STYLE}
+            aria-labelledby="child-modal-title"
+            aria-describedby="child-modal-description"
+        >
+            <Box sx={{ ...style, width: "90%", height: "90%" }}>
+                <Button
+                    size="small"
+                    onClick={handleCloseImpacts}
+                    type="button"
+                    style={{ margin: "15px" }}
+                    className={`btn btn-danger mr-1 d-block mr-0 ml-auto`}
+                >
+                    X
+                </Button>
+                <ImpactsList />
+            </Box>
+        </Modal>
+
+    )
+
     const columnsGeofences = [
         { field: "asset_label", title: "Label" },
         { field: "timestamp", title: "Location Timestamp" },
@@ -584,6 +620,7 @@ export function ContainersDashboard() {
             {locationsModal}
             {longStandingModal}
             {geofencesModal}
+            {impactsModal}
             <FormControl style={{ margin: "15px" }}>
                 <InputLabel id="select-container">Group</InputLabel>
                 <Select labelId="select-container" value={selectedContainer} label="Age" onChange={onChangeContainer}>
@@ -741,35 +778,44 @@ export function ContainersDashboard() {
                         </TableContainer>
                     </div>
                 </div>
-                <div className="row mt-3">
-                    <div className="col-xl-6 col-lg-6">
-                        <div className="card card-custom" style={geofencesStyle}>
-                            <div className="card-header">
-                                <div className="card-title">
-                                    <h3 className="card-label">Alertas De Impacto</h3>
-                                </div>
-                            </div>
-                            <div className="card-body" style={locationStyle}>
-                                <h3>Coming Soon</h3>
+            </div>
+            <div className="row mt-3">
+                <div className="col-sm-2 col-sm-2">
+                    <div className="card card-custom" >
+                        <div className="card-header">
+                            <div className="card-title">
+                                <h3 className="card-label">Alertas de Impactos</h3>
                             </div>
                         </div>
+                        <div className="card-body" style={{ margin: "auto" }}>
+                            <button
+                                type="submit"
+                                className="btn btn-success mr-2"
+                                onClick={() => {
+                                    console.log('opening impacts')
+                                    handleOpenImpacts()
+                                }}
+                            >
+                                Ver Impactos
+                            </button>
+                        </div>
                     </div>
-                    <div className="col-xl-6 col-lg-6">
-                        <div className="card card-custom">
-                            <div className="card-header">
-                                <div className="card-title">
-                                    <h3 className="card-label">Entradas / Saídas Geofences</h3>
-                                </div>
+                </div>
+                <div className="col-sm-2 col-sm-2">
+                    <div className="card card-custom">
+                        <div className="card-header">
+                            <div className="card-title">
+                                <h3 className="card-label">Entradas / Saídas Geofences</h3>
                             </div>
-                            <div className="card-body" style={{ margin: "auto" }}>
-                                <button
-                                    type="submit"
-                                    className="btn btn-success mr-2"
-                                    onClick={() => handleOpenGeofences()}
-                                >
-                                    Abrir Histórico
-                                </button>
-                            </div>
+                        </div>
+                        <div className="card-body" style={{ margin: "auto" }}>
+                            <button
+                                type="submit"
+                                className="btn btn-success mr-2"
+                                onClick={() => handleOpenGeofences()}
+                            >
+                                Abrir Histórico
+                            </button>
                         </div>
                     </div>
                 </div>

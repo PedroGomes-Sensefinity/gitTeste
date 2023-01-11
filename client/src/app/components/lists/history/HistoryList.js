@@ -4,6 +4,7 @@ import TableGridHistory from '../../table-grid/TableGridHistory';
 export function HistoryList(props) {
     return(
         <TableGridHistory
+        actions={props.actions || []}
         title={props.title}
         columns={props.columns}
         filter={props.filter}
