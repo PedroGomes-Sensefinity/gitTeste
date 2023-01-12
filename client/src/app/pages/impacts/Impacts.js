@@ -20,8 +20,8 @@ function Line(x, y, z, color) {
   return line
 }
 
-
 export function Impacts(props) {
+  console.log(props)
   const viewOptions = [
     { id: 1, label: "Container Front" },
     { id: 2, label: "Container Back" },

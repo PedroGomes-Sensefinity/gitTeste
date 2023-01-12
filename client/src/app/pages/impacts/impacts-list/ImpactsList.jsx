@@ -82,7 +82,7 @@ export function ImpactsList(props) {
     }
 
     const onModalOpen = (rowData) => {
-        setModalData({ x: rowData.x, y: rowData.y, z: rowData.y, magnitude: rowData.magnitude })
+        setModalData({ x: rowData.x, y: rowData.y, z: rowData.z, magnitude: rowData.magnitude })
         setModalOpen(true)
     }
 
