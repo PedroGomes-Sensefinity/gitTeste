@@ -11,10 +11,10 @@ import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 
 function Line(x, y, z, color) {
-  const material = new THREE.LineBasicMaterial({ color: color, linewidth: 50 });
+  const material = new THREE.LineBasicMaterial({ color: color, linewidth: 100 });
   const points = [];
-  points.push(new THREE.Vector3(0, 1, 0));
-  points.push(new THREE.Vector3(x, y + 1, z));
+  points.push(new THREE.Vector3(0, 0, 0));
+  points.push(new THREE.Vector3(x, y, z));
   const geometry = new THREE.BufferGeometry().setFromPoints(points);
   const line = new THREE.Line(geometry, material);
   return line
@@ -22,10 +22,6 @@ function Line(x, y, z, color) {
 
 
 export function Impacts(props) {
-
-  const impactVector = props
-
-  const [linePos, setLinePos] = useState({ x: 0, y: 0, z: 0 })
   const viewOptions = [
     { id: 1, label: "Container Front" },
     { id: 2, label: "Container Back" },
@@ -74,7 +70,6 @@ export function Impacts(props) {
     selectedContainer,
     function (gltf) {
       scene.add(gltf.scene);
-      scene.translateY(1)
     },
     // loading is progressing
     function (xhr) {
@@ -105,7 +100,7 @@ export function Impacts(props) {
           <pointLight position={[20, 20, 20]} />
           <spotLight position={[-20, -20, -20]} penumbra={1} />
           <pointLight position={[-20, -20, -20]} />
-          <primitive object={Line(2, 1, 1, "#DD1C1C")} />
+          <primitive object={Line(props.y, -props.x, props.z, "#DD1C1C")} />
           <Suspense fallback={null}>
             <primitive object={scene} />
           </Suspense>

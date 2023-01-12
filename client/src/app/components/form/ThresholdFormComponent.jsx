@@ -79,7 +79,7 @@ function ThresholdFormComponent(props) {
                 });
                 setTenantsOptions(tenantsOptionsR);
             });
-        }else{
+        } else {
             setTenantsOptions([{ id: threshold.tenant.id, name: threshold.tenant.name }]);
         }
         apiService.get("route", 100, 0).then(response => {
@@ -201,16 +201,14 @@ function ThresholdFormComponent(props) {
             ? intl.formatMessage({ id: "THRESHOLD.CREATED" })
             : intl.formatMessage({ id: "THRESHOLD.UPDATED" });
 
-        
-
         if (isAddMode) {
-            threshold["id"] = 0
+            threshold["id"] = 0;
             threshold["tenant_id"] = parseInt(fields.tenant.id);
-        }else{
-            threshold["id"] = parseInt(threshold["id"])
+        } else {
+            threshold["id"] = parseInt(threshold["id"]);
         }
 
-        console.log(threshold)
+        console.log(threshold);
 
         thresholdServiceV2[method](threshold)
             .then(response => {
@@ -227,6 +225,28 @@ function ThresholdFormComponent(props) {
             .finally(() => {
                 setBlocking(false);
                 setSubmitting(false);
+            });
+    };
+
+    const addThresholdToAllAssets = () => {
+        apiServiceV2
+            .post("v2/operations/thresholds/" + thresholdId + "/assets", undefined)
+            .then(response => {
+                toaster.notify("success", "Success");
+            })
+            .catch(err => {
+                toaster.notify("error", err.data.detail);
+            });
+    };
+
+    const removeThresholdToAllAssets = () => {
+        apiServiceV2
+            .post("v2/operations/thresholds/" + thresholdId + "/assets", undefined)
+            .then(response => {
+                toaster.notify("success", "Success");
+            })
+            .catch(err => {
+                toaster.notify("error", err.data.detail);
             });
     };
 
@@ -277,41 +297,41 @@ function ThresholdFormComponent(props) {
                             <div className="form">
                                 <div className="card-body">
                                     <div className="form-group row">
-                                            <div className="col-xl-12 col-lg-12">
-                                                <label className={`required`}>Tenant</label>
-                                                <Field
-                                                    disabled={!isAddMode}
-                                                    validate={validateTenant}
-                                                    type={"number"}
-                                                    as="select"
-                                                    className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                        { errors, touched },
-                                                        "tenant.id"
-                                                    )}`}
-                                                    name="tenant.id"
-                                                    placeholder=""
-                                                    {...getFieldProps("tenant.id")}
-                                                    onChange={e => {
-                                                        setFieldValue("tenant.id", e.target.value);
-                                                        handleChangeTenant(e);
-                                                    }}
-                                                >
-                                                    {isAddMode && <option key="" value=""></option>}
-                                                    {tenantsOptions.map(e => {
-                                                        return (
-                                                            <option key={e.id} value={e.id}>
-                                                                {e.name}
-                                                            </option>
-                                                        );
-                                                    })}
-                                                </Field>
-                                                <ErrorMessage
-                                                    name="tenant_id"
-                                                    component="div"
-                                                    className="invalid-feedback"
-                                                />
-                                            </div>
+                                        <div className="col-xl-12 col-lg-12">
+                                            <label className={`required`}>Tenant</label>
+                                            <Field
+                                                disabled={!isAddMode}
+                                                validate={validateTenant}
+                                                type={"number"}
+                                                as="select"
+                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                    { errors, touched },
+                                                    "tenant.id"
+                                                )}`}
+                                                name="tenant.id"
+                                                placeholder=""
+                                                {...getFieldProps("tenant.id")}
+                                                onChange={e => {
+                                                    setFieldValue("tenant.id", e.target.value);
+                                                    handleChangeTenant(e);
+                                                }}
+                                            >
+                                                {isAddMode && <option key="" value=""></option>}
+                                                {tenantsOptions.map(e => {
+                                                    return (
+                                                        <option key={e.id} value={e.id}>
+                                                            {e.name}
+                                                        </option>
+                                                    );
+                                                })}
+                                            </Field>
+                                            <ErrorMessage
+                                                name="tenant_id"
+                                                component="div"
+                                                className="invalid-feedback"
+                                            />
                                         </div>
+                                    </div>
                                     <div className="form-group row">
                                         <div className="col-xl-6 col-lg-6">
                                             <label>Label</label>
@@ -599,6 +619,24 @@ function ThresholdFormComponent(props) {
                     );
                 }}
             </Formik>
+
+            {typeof thresholdId !== "undefined" && (
+                <div className={`card-header py-3 ` + classes.headerMarginTop}>
+                    <div className="card-title align-items-start flex-column">
+                        <h3 className="card-label font-weight-bolder text-dark">Threshold Operations</h3>
+                    </div>
+                    <div className="card-toolbar">
+                        <div>
+                            <button onClick={addThresholdToAllAssets} className="btn btn-warning mr-2">
+                                Add Threshold To All My Assets
+                            </button>
+                            <button onClick={removeThresholdToAllAssets} className="btn btn-danger mr-2">
+                                Remove Threshold From All My Assets
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </BlockUi>
     );
 }

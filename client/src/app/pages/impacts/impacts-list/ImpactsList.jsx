@@ -59,7 +59,7 @@ export function ImpactsList(props) {
         },
         {
             field: "device.label",
-            title: "Device ID"
+            title: "Device Label"
         },
         {
             field: 'x',
