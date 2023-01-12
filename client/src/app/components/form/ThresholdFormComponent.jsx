@@ -241,7 +241,7 @@ function ThresholdFormComponent(props) {
 
     const removeThresholdToAllAssets = () => {
         apiServiceV2
-            .post("v2/operations/thresholds/" + thresholdId + "/assets", undefined)
+            .delete("v2/operations/thresholds/" + thresholdId + "/assets")
             .then(response => {
                 toaster.notify("success", "Success");
             })
