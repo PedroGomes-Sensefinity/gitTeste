@@ -34,6 +34,22 @@ const apiServiceV2 = {
                 });
         });
     },
+    delete: function (endpoint, data) {
+        return new Promise(function (resolve, reject) {
+            axios
+                .delete(`${process.env.REACT_APP_REST_API_URL}${endpoint}`, data)
+                .then((response) => {
+                    let data = [];
+                    if (response.status === 200) {
+                        data = response.data.data;
+                    }
+                    resolve(data);
+                })
+                .catch(function (err) {
+                    reject(err.response.data);
+                });
+        });
+    },
 
     getByLimitOffset: function (endpoint, limit, offset) {
         return new Promise(function (resolve, reject) {

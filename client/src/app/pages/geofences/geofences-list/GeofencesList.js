@@ -1,13 +1,12 @@
 import { Button, Card, CardContent } from '@material-ui/core';
-import React, { useMemo } from 'react';
 import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from '@material-ui/icons/Edit';
+import React, { useMemo } from 'react';
 import { MdSpaceDashboard } from "react-icons/md";
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import TableGridV2 from '../../../components/table-grid/TableGridV2';
-import SelectableTableGrid from '../../../components/table-grid/SelectableTableGrid';
+import { GeofencesTableGrid } from '../../../components/table-grid/GeofencesTableGrid';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -77,11 +76,9 @@ export function GeofencesList() {
                     <AddIcon className={classes.leftIcon} />
                     New Geofence
                 </Button> : <></>}
-            <SelectableTableGrid
+            <GeofencesTableGrid
                 actions={actions}
                 columns={columns}
-                endpoint={'/v2/geofences'}
-                dataField='geofences'
             />
         </CardContent>
     </Card>

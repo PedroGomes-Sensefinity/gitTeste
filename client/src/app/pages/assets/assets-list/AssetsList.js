@@ -6,6 +6,7 @@ import React, { useMemo } from 'react';
 import { MdSpaceDashboard } from "react-icons/md";
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { AssetTableGrid } from '../../../components/table-grid/AssetsTableGrid';
 import TableGridV2 from '../../../components/table-grid/TableGridV2';
 
 const useStyles = makeStyles((theme) => ({
@@ -69,12 +70,9 @@ export function AssetsList() {
                     <AddIcon className={classes.leftIcon} />
                     New Asset
                 </Button> : <></>}
-            <TableGridV2
+            <AssetTableGrid
                 actions={actions}
-                title=''
                 columns={columns}
-                endpoint={'/v2/assets'}
-                dataField='assets'
             />
         </CardContent>
     </Card>
