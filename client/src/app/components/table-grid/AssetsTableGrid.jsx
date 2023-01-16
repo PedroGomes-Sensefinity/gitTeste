@@ -7,23 +7,23 @@ import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import apiServiceV2 from '../../services/v2/apiServiceV2';
 import { SelectableTableGrid } from './SelectableTableGrid';
 import toaster from '../../utils/toaster';
-import { IconButton } from '@material-ui/core';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 function AssetTableToolbar(props) {
-    const { selected: selectedAssets, triggerRefetch } = props;
+    const { selected: selectedAssets, triggerRefetch, tenantID } = props;
     const [thesholdOptions, setThresholdOptions] = useState([])
     const [isLoading, setLoading] = useState(false)
     const [selectedThreshold, setSelectedThreshold] = useState([])
 
     useEffect(() => {
-        apiServiceV2.get("v2/thresholds")
+        apiServiceV2.get(`v2/thresholds?tenant_id=${tenantID}`)
             .then(response => {
                 const thresholds = response.thresholds || []
+                console.log(thresholds)
                 setThresholdOptions(thresholds)
             })
-    }, [])
+    }, [tenantID])
 
     const onChangeThreshold = (opt) => {
         setSelectedThreshold(opt)
@@ -31,7 +31,11 @@ function AssetTableToolbar(props) {
 
     const onSearchThreshold = (query) => {
         setLoading(true)
-        apiServiceV2.getByLimitOffsetSearch("v2/thresholds", 50, 0, query).then((response) => {
+        let promise = tenantID === 0 ?
+            apiServiceV2.getByLimitOffsetSearch("v2/thresholds", 50, 0, query)
+            : apiServiceV2.getByLimitOffsetSearchTenant("v2/thresholds", 50, 0, query, tenantID)
+
+        promise.then((response) => {
             const thresholds = response.thresholds || []
             setThresholdOptions(thresholds)
             setLoading(false)
@@ -47,10 +51,10 @@ function AssetTableToolbar(props) {
                 toaster.notify('success', `Threshold added to assets`);
                 triggerRefetch()
             }).catch(() => { });
-            
-        }, [selectedThreshold, selectedAssets])
 
-    const onThresholdDekete = useCallback(() => {
+    }, [selectedThreshold, selectedAssets])
+
+    const onThresholdDelete = useCallback(() => {
         const body = {
             asset_ids: selectedAssets.map((asset => asset.id))
         }
@@ -59,7 +63,7 @@ function AssetTableToolbar(props) {
                 toaster.notify('success', `Threshold removed from assets`);
                 triggerRefetch()
             }).catch(() => { });
-            
+
     }, [selectedThreshold, selectedAssets])
 
     return <Toolbar>
@@ -78,6 +82,7 @@ function AssetTableToolbar(props) {
                     id='threshold-action'
                     labelKey='label'
                     isLoading={isLoading}
+                    disabled={tenantID === 0}
                     size="lg"
                     clearButton={true}
                     placeholder='Search Thresholds...'
@@ -92,7 +97,7 @@ function AssetTableToolbar(props) {
                     Add Threshold
                 </Button>
 
-                <Button style={{ margin: "0px 10px 10px 10px" }} onClick={onThresholdDekete} disabled={!selectedThreshold.length} variant='contained' color='error' startIcon={<DeleteIcon />} >Remove Threshold
+                <Button style={{ margin: "0px 10px 10px 10px" }} onClick={onThresholdDelete} disabled={!selectedThreshold.length} variant='contained' color='error' startIcon={<DeleteIcon />} >Remove Threshold
                 </Button>
             </>
         )
@@ -107,8 +112,8 @@ export const AssetTableGrid = ({ actions, columns }) => {
         columns={columns}
         endpoint={'/v2/assets'}
         dataField='assets'
-        toolbar={AssetTableToolbar}
-    />
+        toolbar={AssetTableToolbar}    />
+
 
 }
 

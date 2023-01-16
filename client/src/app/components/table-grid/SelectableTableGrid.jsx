@@ -1,3 +1,4 @@
+import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
@@ -14,12 +15,13 @@ import apiServiceV2 from '../../services/v2/apiServiceV2';
 import { SearchBar } from '../text-fields/SearchBar';
 
 function SelectableTableHead(props) {
-    const { onSelectAllClick, numSelected, rowCount, columns, actions } = props;
+    const { onSelectAllClick, numSelected, rowCount, columns, actions, disabled } = props;
 
     return <TableHead>
         <TableRow>
             <TableCell padding="checkbox">
                 <Checkbox
+                    disabled={disabled}
                     color="primary"
                     indeterminate={numSelected > 0 && numSelected < rowCount}
                     checked={rowCount > 0 && numSelected === rowCount}
@@ -50,26 +52,32 @@ export function SelectableTableGrid(props) {
     const [searchQuery, setSearchQuery] = useState("")
     const [count, setCount] = useState(0)
 
+
+    const [tenantID, setTenantId] = useState(0)
+    const [tenantsOptions, setTenantsOptions] = useState([])
+    const selectDisabled = tenantID === 0
+
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [rows, setRows] = useState([]);
     const [isLoading, setLoading] = useState(true);
     const [refetch, setRefetch] = useState(true);
-    const toolbar = props.toolbar
 
     useEffect(() => {
         setLoading(true)
-        let method = 'getByLimitOffsetSearch'
-        let params = [endpoint, rowsPerPage, page * rowsPerPage, searchQuery]
+        let method = tenantID === 0 ? 'getByLimitOffsetSearch' : 'getByLimitOffsetSearchTenant'
+        let params = [endpoint, rowsPerPage, page * rowsPerPage, searchQuery, tenantID]
+
         apiServiceV2[method](...params)
             .then((result) => {
 
                 const newData = result[dataField] || []
                 const newCount = result.total || 0
+                console.log(newCount)
                 setRows(newData)
                 setCount(newCount)
                 setLoading(false)
             });
-    }, [rowsPerPage, page, refetch, searchQuery])
+    }, [rowsPerPage, page, refetch, searchQuery, tenantID])
 
 
     useEffect(() => {
@@ -82,6 +90,22 @@ export function SelectableTableGrid(props) {
             clearTimeout(timer)
         }
     }, [query])
+
+
+    useEffect(() => {
+        apiServiceV2.get("v2/tenants/children").then(response => {
+            const respTenants = response.tenants_new || [];
+
+            const tenantsOptionsR = respTenants.map(tenant => {
+                return { id: tenant.id, name: tenant.name };
+            });
+            setTenantsOptions(tenantsOptionsR);
+        })
+    }, [])
+
+    const onChangeTenant = (evt) => {
+        setTenantId(evt.target.value)
+    }
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
@@ -134,10 +158,21 @@ export function SelectableTableGrid(props) {
 
     return (
         <>
+            <FormControl style={{ margin: "15px" }}>
+                <InputLabel id="select-container">Tenant</InputLabel>
+                <Select labelId="select-container" value={tenantID} onChange={onChangeTenant}>
+                    {[<MenuItem key={''} value={0} >Select a Tenant</MenuItem>, ...tenantsOptions.map(tenant => <MenuItem
+                        key={tenant.id}
+                        value={tenant.id}>
+                        {tenant.name}
+                    </MenuItem>
+                    )]}
+                </Select>
+            </FormControl>
             <div className="d-flex flex-row-reverse">
                 <SearchBar query={query} onQueryChange={onQueryChange} clearIcon />
             </div>
-            <props.toolbar selected={selected} triggerRefetch={triggerRefetch} />
+            <props.toolbar selected={selected} triggerRefetch={triggerRefetch} tenantID={tenantID} />
             <BlockUi blocking={isLoading}>
                 <TableContainer>
                     <Table>
@@ -148,6 +183,7 @@ export function SelectableTableGrid(props) {
                             onSelectAllClick={handleSelectAllClick}
                             rowCount={rows.length}
                             query={query}
+                            disabled={selectDisabled}
                             onQueryChange={onQueryChange}
                         />
                         <TableBody>
@@ -168,6 +204,7 @@ export function SelectableTableGrid(props) {
                                                 onClick={(event) => handleClick(event, row)}
                                                 color="primary"
                                                 checked={isItemSelected}
+                                                disabled={selectDisabled}
                                             />
                                         </TableCell>
 
