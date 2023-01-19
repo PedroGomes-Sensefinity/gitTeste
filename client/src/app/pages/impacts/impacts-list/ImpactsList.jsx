@@ -63,17 +63,34 @@ export function ImpactsList(props) {
         },
         {
             field: 'x',
-            title: 'X Value'
+            title: 'X Value (mg)'
         }, {
             field: 'y',
-            title: 'Y Value'
+            title: 'Y Value (mg)'
         }, {
             field: 'z',
-            title: 'Z Value'
-        }, {
+            title: 'Z Value (mg)'
+        }, 
+        {
             field: 'magnitude',
             title: 'Magnitude'
-        }
+        },
+        {
+            field: 'faces',
+            title: 'Faces'
+        },
+        {
+            field: 'reverse_geocoding',
+            title: 'Location Impact'
+        },
+        {
+            field: 'latitude',
+            title: 'Latitude'
+        },
+        {
+            field: 'longitude',
+            title: 'Longitude'
+        },
     ];
 
 
