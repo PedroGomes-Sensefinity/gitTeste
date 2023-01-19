@@ -116,6 +116,7 @@ export function ContainersDashboard() {
     // Button States (Block report)
     const [buttonDisabled, setButtonDisabled] = useState(false);
     const [buttonLabel, setButtonLabel] = useState("Generate Report");
+    const [buttonLabel24, setButtonLabel24] = useState("Generate Report for Last 24 Hours");
     const [showProgress, setShowProgress] = useState(false);
 
     //Default States
@@ -192,10 +193,10 @@ export function ContainersDashboard() {
             apiServiceV2
                 .get(
                     "v2/reports/generate?container_id=" +
-                    containerId +
-                    "&filter=" +
-                    selectedLocation +
-                    "&type=locations_in_transit&file_format=csv"
+                        containerId +
+                        "&filter=" +
+                        selectedLocation +
+                        "&type=locations_in_transit&file_format=csv"
                 )
                 .then(response => {
                     setTimeout(() => {
@@ -213,10 +214,10 @@ export function ContainersDashboard() {
             apiServiceV2
                 .get(
                     "v2/reports/generate?container_id=" +
-                    containerId +
-                    "&filter=" +
-                    selectedLocation +
-                    "&type=locations&file_format=csv"
+                        containerId +
+                        "&filter=" +
+                        selectedLocation +
+                        "&type=locations&file_format=csv"
                 )
                 .then(response => {
                     setTimeout(() => {
@@ -231,6 +232,48 @@ export function ContainersDashboard() {
                     setShowProgress(false);
                 });
         }
+    };
+
+    const getImpactsReport = () => {
+        setShowProgress(true);
+        setButtonDisabled(true);
+        setButtonLabel24("Generating Report...");
+        let url = "v2/reports/generate?container_id=" + containerId + "&file_format=csv" + "&type=impacts";
+        apiServiceV2
+            .get(url)
+            .then(response => {
+                setTimeout(() => {
+                    setButtonLabel24("Downloading...");
+                    getReportFromElastic(response.report.path, selectedPortCode);
+                }, 50000);
+            })
+            .catch(r => {
+                toaster.notify("error", "Error on Generate Report!");
+                setButtonDisabled(false);
+                setButtonLabel24("Generate Report for the Last 24 Hours");
+                setShowProgress(false);
+            });
+    };
+
+    const getGeofencesReport = () => {
+        setShowProgress(true);
+        setButtonDisabled(true);
+        setButtonLabel24("Generating Report...");
+        let url = "v2/reports/generate?container_id=" + containerId + "&file_format=csv" + "&type=geofences";
+        apiServiceV2
+            .get(url)
+            .then(response => {
+                setTimeout(() => {
+                    setButtonLabel24("Downloading...");
+                    getReportFromElastic(response.report.path, selectedPortCode);
+                }, 50000);
+            })
+            .catch(r => {
+                toaster.notify("error", "Error on Generate Report!");
+                setButtonDisabled(false);
+                setButtonLabel24("Generate Report for the Last 24 Hours");
+                setShowProgress(false);
+            });
     };
 
     const getLongStandingReport = () => {
@@ -320,7 +363,7 @@ export function ContainersDashboard() {
                 apiService
                     .getByEndpointDashboard("dashboards/containers/locations?container_id=" + containersOptionsR[0].id)
                     .then(response => {
-                        console.log(response)
+                        console.log(response);
                         const locations = {};
                         if (response.locations["Madeira"] !== undefined) {
                             locations["Madeira"] = response.locations["Madeira"];
@@ -389,7 +432,7 @@ export function ContainersDashboard() {
             }
         });
 
-        apiService.getByEndpointDashboard("dashboards/containers").then(response => { });
+        apiService.getByEndpointDashboard("dashboards/containers").then(response => {});
     }, []);
 
     //Handle container changes
@@ -569,10 +612,20 @@ export function ContainersDashboard() {
                     X
                 </Button>
                 <ImpactsList container={containerId} />
+                <Button
+                    size="small"
+                    onClick={getImpactsReport}
+                    type="button"
+                    disabled={buttonDisabled}
+                    style={{ margin: "15px" }}
+                    className={`btn btn-primary mr-3`}
+                >
+                    {buttonLabel24}
+                </Button>
+                {showProgress && <Progress time={0.75} />}
             </Box>
         </Modal>
-
-    )
+    );
 
     const columnsGeofences = [
         { field: "asset_label", title: "Label" },
@@ -611,6 +664,17 @@ export function ContainersDashboard() {
                     endpoint={"v2/geofences/history"}
                     dataField={"assets_tracking"}
                 ></HistoryList>
+                <Button
+                    size="small"
+                    onClick={getGeofencesReport}
+                    type="button"
+                    disabled={buttonDisabled}
+                    style={{ margin: "15px" }}
+                    className={`btn btn-primary mr-3`}
+                >
+                    {buttonLabel24}
+                </Button>
+                {showProgress && <Progress time={0.75} />}
             </Box>
         </Modal>
     );
@@ -781,7 +845,7 @@ export function ContainersDashboard() {
             </div>
             <div className="row mt-3">
                 <div className="col-sm-2 col-sm-2">
-                    <div className="card card-custom" >
+                    <div className="card card-custom">
                         <div className="card-header">
                             <div className="card-title">
                                 <h3 className="card-label">Alertas de Impactos</h3>
@@ -792,8 +856,8 @@ export function ContainersDashboard() {
                                 type="submit"
                                 className="btn btn-success mr-2"
                                 onClick={() => {
-                                    console.log('opening impacts')
-                                    handleOpenImpacts()
+                                    console.log("opening impacts");
+                                    handleOpenImpacts();
                                 }}
                             >
                                 Ver Impactos
