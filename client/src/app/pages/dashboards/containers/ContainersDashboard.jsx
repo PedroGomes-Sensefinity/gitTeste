@@ -175,6 +175,7 @@ export function ContainersDashboard() {
                     downloadFile(response.report_result.result, "report_" + Fname + ".csv", "csv");
                     setButtonDisabled(false);
                     setButtonLabel("Generate Report");
+                    setButtonLabel24("Generate Report for the Last 24 Hours");
                     setShowProgress(false);
                 }
             })
@@ -182,6 +183,7 @@ export function ContainersDashboard() {
                 toaster.notify("error", "Error on Generate Report!");
                 setButtonDisabled(false);
                 setButtonLabel("Generate Report");
+                setButtonLabel24("Generate Report for the Last 24 Hours");
                 setShowProgress(false);
             });
     };
