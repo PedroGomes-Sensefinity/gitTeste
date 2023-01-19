@@ -246,7 +246,7 @@ export function ContainersDashboard() {
             .then(response => {
                 setTimeout(() => {
                     setButtonLabel24("Downloading...");
-                    getReportFromElastic(response.report.path, selectedPortCode);
+                    getReportFromElastic(response.report.path, "impacts");
                 }, 50000);
             })
             .catch(r => {
@@ -267,7 +267,7 @@ export function ContainersDashboard() {
             .then(response => {
                 setTimeout(() => {
                     setButtonLabel24("Downloading...");
-                    getReportFromElastic(response.report.path, selectedPortCode);
+                    getReportFromElastic(response.report.path, "geofences");
                 }, 50000);
             })
             .catch(r => {
