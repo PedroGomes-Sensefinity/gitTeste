@@ -17,12 +17,12 @@ const CLIENT_BUILD_PATH = path.join(__dirname, '../../client/build');
 // App
 const app = express();
 
-app.get('/*.js', (req, res) => {
+app.get('*.js', (req, res) => {
   req.url = req.url + '.gz';
   res.set('Content-Encoding', 'gzip');
 });
 
-app.get('/*.css', (req, res) => {
+app.get('*.css', (req, res) => {
   req.url = req.url + '.gz';
   res.set('Content-Encoding', 'gzip');
 });
