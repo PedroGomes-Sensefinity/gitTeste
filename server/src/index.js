@@ -8,6 +8,8 @@ const axios = require('axios');
 const multiparty = require('multiparty');
 const fs = require('fs');
 const FormData = require("form-data");
+var express = require("express");
+var expressStaticGzip = require("express-static-gzip");
 
 // Handling Constants
 const PORT = process.env.PORT || 8081;
@@ -24,7 +26,8 @@ var allowedOrigins = [process.env.SERVICE_REST_ALLOW_CORS_ORIGIN];
 
 app.use(cors());
 
-
+app.use("*.js", expressStaticGzip(CLIENT_BUILD_PATH));
+app.use("*.css", expressStaticGzip(CLIENT_BUILD_PATH));
 
 // Return of logo image specific for current infrastructure
 app.get('/api/logo.png', (req, res) => {
@@ -196,11 +199,6 @@ app.all('/api/*', (req, res) => {
 
 });
 
-app.get('*.js', function (req, res, next) {
-  req.url = req.url + '.gz';
-  res.set('Content-Encoding', 'gzip');
-  next();
-});
 
 // All remaining requests return the React app, so it can handle routing.
 app.get('*', function(request, response) {
