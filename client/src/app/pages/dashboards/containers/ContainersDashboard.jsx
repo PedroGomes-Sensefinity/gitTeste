@@ -73,6 +73,8 @@ export function ContainersDashboard() {
         }
     }));
 
+    console.log("Test 01")
+
     const sticky = {
         position: "sticky",
         left: 0,
