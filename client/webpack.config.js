@@ -14,8 +14,6 @@ const themeName = "metronic";
 const rootPath = path.resolve(__dirname);
 const distPath = rootPath + "/src";
 
-varCompressionPlugin = require('compression-webpack-plugin');
-
 const entries = {
 	"sass/style.react": "./src/index.scss"
 };
@@ -82,16 +80,3 @@ const mainConfig = function () {
 module.exports = function () {
 	return [mainConfig()];
 };
-
-module.exports = function (webpackEnv) {
-	return {
-		plugins: [
-			new CompressionPlugin({
-				algorithm: "gzip",
-				test: /\.js$|\.css$|\.html$/,
-				threshold: 10240,
-				minRatio: 0.8
-			}),
-		]
-	}
-}
