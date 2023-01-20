@@ -8,7 +8,6 @@ const axios = require('axios');
 const multiparty = require('multiparty');
 const fs = require('fs');
 const FormData = require("form-data");
-var expressStaticGzip = require("express-static-gzip");
 
 // Handling Constants
 const PORT = process.env.PORT || 8081;
@@ -18,8 +17,15 @@ const CLIENT_BUILD_PATH = path.join(__dirname, '../../client/build');
 // App
 const app = express();
 
-app.use("*.js", expressStaticGzip(CLIENT_BUILD_PATH));
-app.use("*.css", expressStaticGzip(CLIENT_BUILD_PATH));
+app.get('/*.js', (req, res) => {
+  req.url = req.url + '.gz';
+  res.set('Content-Encoding', 'gzip');
+});
+
+app.get('/*.css', (req, res) => {
+  req.url = req.url + '.gz';
+  res.set('Content-Encoding', 'gzip');
+});
 
 // Static files
 app.use(express.static(CLIENT_BUILD_PATH));
@@ -27,6 +33,8 @@ app.use(express.static(CLIENT_BUILD_PATH));
 var allowedOrigins = [process.env.SERVICE_REST_ALLOW_CORS_ORIGIN];
 
 app.use(cors());
+
+
 
 // Return of logo image specific for current infrastructure
 app.get('/api/logo.png', (req, res) => {
@@ -198,12 +206,10 @@ app.all('/api/*', (req, res) => {
 
 });
 
-
 // All remaining requests return the React app, so it can handle routing.
 app.get('*', function(request, response) {
   response.sendFile(path.join(CLIENT_BUILD_PATH, 'index.html'));
 });
-
 
 app.listen(PORT, HOST);
 console.log(`Running on http://${HOST}:${PORT}`);
