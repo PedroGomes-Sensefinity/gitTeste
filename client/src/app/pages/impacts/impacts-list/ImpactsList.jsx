@@ -73,7 +73,7 @@ export function ImpactsList(props) {
         }, 
         {
             field: 'magnitude',
-            title: 'Magnitude'
+            title: 'Magnitude (mg)'
         },
         {
             field: 'faces',
