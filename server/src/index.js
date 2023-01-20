@@ -19,15 +19,15 @@ const CLIENT_BUILD_PATH = path.join(__dirname, '../../client/build');
 // App
 const app = express();
 
+app.use("*.js", expressStaticGzip(CLIENT_BUILD_PATH));
+app.use("*.css", expressStaticGzip(CLIENT_BUILD_PATH));
+
 // Static files
 app.use(express.static(CLIENT_BUILD_PATH));
 
 var allowedOrigins = [process.env.SERVICE_REST_ALLOW_CORS_ORIGIN];
 
 app.use(cors());
-
-app.use("*.js", expressStaticGzip(CLIENT_BUILD_PATH));
-app.use("*.css", expressStaticGzip(CLIENT_BUILD_PATH));
 
 // Return of logo image specific for current infrastructure
 app.get('/api/logo.png', (req, res) => {
