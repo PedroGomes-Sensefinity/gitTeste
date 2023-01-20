@@ -9,6 +9,8 @@ const multiparty = require('multiparty');
 const fs = require('fs');
 const FormData = require("form-data");
 
+const compression = require('compression')
+
 // Handling Constants
 const PORT = process.env.PORT || 8081;
 const HOST = '0.0.0.0';
@@ -16,16 +18,7 @@ const CLIENT_BUILD_PATH = path.join(__dirname, '../../client/build');
 
 // App
 const app = express();
-
-app.get('*.js', (req, res) => {
-  req.url = req.url + '.gz';
-  res.set('Content-Encoding', 'gzip');
-});
-
-app.get('*.css', (req, res) => {
-  req.url = req.url + '.gz';
-  res.set('Content-Encoding', 'gzip');
-});
+app.use(compression())
 
 // Static files
 app.use(express.static(CLIENT_BUILD_PATH));
