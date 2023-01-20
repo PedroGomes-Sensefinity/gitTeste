@@ -8,7 +8,6 @@ const axios = require('axios');
 const multiparty = require('multiparty');
 const fs = require('fs');
 const FormData = require("form-data");
-var express = require("express");
 var expressStaticGzip = require("express-static-gzip");
 
 // Handling Constants
