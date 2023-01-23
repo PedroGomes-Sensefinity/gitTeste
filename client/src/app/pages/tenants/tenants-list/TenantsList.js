@@ -6,6 +6,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import TableGrid from '../../../components/table-grid/TableGrid';
+import { injectIntl } from "react-intl";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -71,3 +72,5 @@ export function TenantsList() {
         </Card>
     );
 }
+
+export default injectIntl(TenantsList);

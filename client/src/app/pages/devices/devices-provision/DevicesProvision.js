@@ -5,6 +5,7 @@ import DoneIcon from '@material-ui/icons/Done';
 import BlockUi from 'react-block-ui';
 import { getInputClasses } from '../../../utils/formik';
 import deviceService from '../../../services/deviceService';
+import { injectIntl } from "react-intl";
 
 export function DevicesProvision() {
     const [blocking, setBlocking] = useState(false);
@@ -113,3 +114,5 @@ export function DevicesProvision() {
         </BlockUi>
     );
 }
+
+export default injectIntl(DevicesProvision);

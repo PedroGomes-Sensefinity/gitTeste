@@ -8,7 +8,6 @@ import { injectIntl } from "react-intl";
 import BlockUi from "react-block-ui";
 import { KibanaDashboard } from "../KibanaDashboard";
 import apiServiceV2 from "../../../services/v2/apiServiceV2";
-
 export function DashboardsContainers() {
     const [value, setValue] = useState(0);
     const [dashboards, setDashboards] = useState([{}]);

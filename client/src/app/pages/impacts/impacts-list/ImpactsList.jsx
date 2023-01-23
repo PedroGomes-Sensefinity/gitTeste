@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import { Impacts } from "../Impacts";
 import { HistoryList } from "../../../components/lists/history/HistoryList";
 import apiServiceV2 from "../../../services/v2/apiServiceV2";
+import { injectIntl } from "react-intl";
 
 // General Styles
 const style = {
@@ -150,3 +151,5 @@ export function ImpactsList(props) {
         </Card>
     );
 }
+
+export default injectIntl(ImpactsList);

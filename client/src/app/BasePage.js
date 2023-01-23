@@ -1,54 +1,53 @@
-import React, { Suspense } from "react";
+import React, { Suspense, lazy } from "react";
 import { useSelector } from "react-redux";
 import { Redirect, Switch } from "react-router-dom";
 import { ContentRoute, LayoutSplashScreen } from "../_metronic/layout";
-import { AlarmsForm } from "./pages/alarms/alarms-form/AlarmsForm";
-import { AlarmsList } from "./pages/alarms/alarms-list/AlarmsList";
-import { AssetsForm } from "./pages/assets/assets-form/AssetsForm";
-import { CreateAsset } from "./pages/assets/assets-form/CreateAsset";
-import { AssetsList } from "./pages/assets/assets-list/AssetsList";
-import { BoardFamiliesForm } from "./pages/board-families/form/BoardFamiliesForm";
-import { BoardFamiliesList } from "./pages/board-families/list/BoardFamiliesList";
-import { Dashboard } from "./pages/dashboards/Dashboard";
-import { CreateDevice } from "./pages/devices/device/CreateDevice";
-import { Device } from "./pages/devices/device/Device";
-import { DevicesList } from "./pages/devices/devices-list/DevicesList";
-import { DevicesProvision } from "./pages/devices/devices-provision/DevicesProvision";
-import { DevicesUpload } from "./pages/devices/devices-upload/DevicesUpload";
-import { FloorMapsForm } from "./pages/floor-maps/form/FloorMapsForm";
-import { FloorMapsList } from "./pages/floor-maps/list/FloorMapsList";
-import { GeofencesForm } from "./pages/geofences/geofences-form/GeofencesForm";
-import { CreateGeofence } from "./pages/geofences/geofences-form/CreateGeofence";
-import { GroupsForm } from "./pages/groups/groups-form/GroupsForm";
-import { GroupsList } from "./pages/groups/groups-list/GroupsList";
-import { News } from "./pages/news/News";
-import { NotificationTemplatesForm } from "./pages/notification-templates/notifications-templates-form/NotificationTemplatesForm";
-import { NotificationTemplatesList } from "./pages/notification-templates/notifications-templates-list/NotificationTemplatesList";
-import { ProfilesForm } from "./pages/profiles/profiles-form/ProfilesForm";
-import { ProfilesList } from "./pages/profiles/profiles-list/ProfilesList";
-import { RoutesForm } from "./pages/routes/routes-form/RoutesForm";
-import { RouteCompletion } from "./pages/routes/routes-list/RouteCompletion";
-import { RoutesList } from "./pages/routes/routes-list/RoutesList";
-import { TenantsForm } from "./pages/tenants/tenants-form/TenantsForm";
-import { TenantsList } from "./pages/tenants/tenants-list/TenantsList";
-import { ThresholdsForm } from "./pages/thresholds/thresholds-form/ThresholdsForm";
-import { ThresholdsList } from "./pages/thresholds/thresholds-list/ThresholdsList";
-import { UsersForm } from "./pages/users/users-form/UsersForm";
-import { UsersList } from "./pages/users/users-list/UsersList";
-import { GeofencesList } from "./pages/geofences/geofences-list/GeofencesList";
-import { CreateThreshold } from "./pages/thresholds/thresholds-form/CreateThreshold";
-import { LocationsList } from "./pages/locations/locations-list/LocationsList";
-import { LocationsForm } from "./pages/locations/locations-form/LocationsForm";
-import { SubLocationsList } from "./pages/locations/sublocations-list/SublocationsList";
-import { SubLocationsForm } from "./pages/locations/sublocation-form/SubLocationsForm";
-import { ErrorPage1 } from "./modules/ErrorsExamples/ErrorPage1";
-import { ImpactsList } from "./pages/impacts/impacts-list/ImpactsList";
-import { DashboardsContainers } from "./pages/dashboards/containers/DashboardsContainers";
-import {DashboardsRoutes} from "./pages/dashboards/routes/DashboardsRoutes";
-import TrackingOperation from "./components/form/TrackingOperation";
-import { Impacts } from "./pages/impacts/Impacts";
+import { ErrorPage1 } from './modules/ErrorsExamples/ErrorPage1';
 
-
+const AlarmsForm = lazy(() => import("./pages/alarms/alarms-form/AlarmsForm"));
+const AlarmsList = lazy(() => import('./pages/alarms/alarms-list/AlarmsList'));
+const AssetsForm = lazy(() => import('./pages/assets/assets-form/AssetsForm'));
+const CreateAsset = lazy(() => import('./pages/assets/assets-form/CreateAsset'));
+const AssetsList = lazy(() => import('./pages/assets/assets-list/AssetsList'));
+const BoardFamiliesForm = lazy(() => import('./pages/board-families/form/BoardFamiliesForm'));
+const BoardFamiliesList = lazy(() => import('./pages/board-families/list/BoardFamiliesList'));
+const Dashboard = lazy(() => import('./pages/dashboards/Dashboard'));
+const CreateDevice = lazy(() => import('./pages/devices/device/CreateDevice'));
+const Device = lazy(() => import('./pages/devices/device/Device'));
+const DevicesList = lazy(() => import('./pages/devices/devices-list/DevicesList'));;
+const DevicesProvision = lazy(() => import('./pages/devices/devices-provision/DevicesProvision'));
+const DevicesUpload = lazy(() => import('./pages/devices/devices-upload/DevicesUpload'));
+const FloorMapsForm = lazy(() => import('./pages/floor-maps/form/FloorMapsForm'));
+const FloorMapsList = lazy(() => import('./pages/floor-maps/list/FloorMapsList'));
+const GeofencesForm = lazy(() => import('./pages/geofences/geofences-form/GeofencesForm'));
+const CreateGeofence = lazy(() => import('./pages/geofences/geofences-form/CreateGeofence'));
+const GroupsForm = lazy(() => import('./pages/groups/groups-form/GroupsForm'));
+const GroupsList = lazy(() => import('./pages/groups/groups-list/GroupsList'));
+const News = lazy(() => import('./pages/news/News'));
+const NotificationTemplatesForm = lazy(() => import('./pages/notification-templates/notifications-templates-form/NotificationTemplatesForm'));
+const NotificationTemplatesList = lazy(() => import('./pages/notification-templates/notifications-templates-list/NotificationTemplatesList'));
+const ProfilesForm = lazy(() => import('./pages/profiles/profiles-form/ProfilesForm'));
+const ProfilesList = lazy(() => import('./pages/profiles/profiles-list/ProfilesList'));
+const RoutesForm = lazy(() => import('./pages/routes/routes-form/RoutesForm'));
+const RouteCompletion = lazy(() => import('./pages/routes/routes-list/RouteCompletion'));
+const RoutesList = lazy(() => import('./pages/routes/routes-list/RoutesList'));
+const TenantsForm = lazy(() => import('./pages/tenants/tenants-form/TenantsForm'));
+const TenantsList = lazy(() => import('./pages/tenants/tenants-list/TenantsList'));
+const ThresholdsForm = lazy(() => import('./pages/thresholds/thresholds-form/ThresholdsForm'));
+const ThresholdsList = lazy(() => import('./pages/thresholds/thresholds-list/ThresholdsList'));
+const UsersForm = lazy(() => import('./pages/users/users-form/UsersForm'));
+const UsersList = lazy(() => import('./pages/users/users-list/UsersList'));
+const GeofencesList = lazy(() => import('./pages/geofences/geofences-list/GeofencesList'));
+const CreateThreshold = lazy(() => import('./pages/thresholds/thresholds-form/CreateThreshold'));
+const LocationsList = lazy(() => import('./pages/locations/locations-list/LocationsList'));
+const LocationsForm = lazy(() => import('./pages/locations/locations-form/LocationsForm'));
+const SubLocationsList = lazy(() => import('./pages/locations/sublocations-list/SublocationsList'));
+const SubLocationsForm = lazy(() => import('./pages/locations/sublocation-form/SubLocationsForm'));
+const ImpactsList = lazy(() => import('./pages/impacts/impacts-list/ImpactsList'));
+const DashboardsContainers = lazy(() => import('./pages/dashboards/containers/DashboardsContainers'));
+const DashboardsRoutes = lazy(() => import('./pages/dashboards/routes/DashboardsRoutes'));
+const TrackingOperation = lazy(() => import('./components/form/TrackingOperation'));
+const Impacts = lazy(() => import('./pages/impacts/Impacts'));
 
 /*const UserProfilepage = lazy(() =>
   import("./modules/UserProfile/UserProfilePage")
@@ -176,7 +175,7 @@ export default function BasePage() {
           <ContentRoute key="/locations/new" path="/locations/new" component={LocationsForm} />
         ]}
         { /* Sublocations Routes*/}
-        {permissions.canViewSubLocations && [          
+        {permissions.canViewSubLocations && [
           <ContentRoute key="/sublocations/edit/:id" path="/sublocations/edit/:id" component={SubLocationsForm} />,
           <ContentRoute key="/sublocations/list" path="/sublocations/list" component={SubLocationsList} />,
           <ContentRoute key="/sublocations/new" path="/sublocations/new" component={SubLocationsForm} />,

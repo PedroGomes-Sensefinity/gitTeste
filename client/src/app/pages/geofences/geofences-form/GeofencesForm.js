@@ -7,6 +7,7 @@ import { useHistory } from "react-router-dom";
 import apiServiceV2 from '../../../services/v2/apiServiceV2';
 import GeofenceHistory from '../../../components/history/GeofenceHistory';
 import GeofencesAssetsComponent from '../../../components/form/GeofencesAssetsComponent';
+import { injectIntl } from "react-intl";
 
 export function GeofencesForm({ match, location }) {
     const { id: geofenceId } = match.params;
@@ -86,3 +87,5 @@ export function GeofencesForm({ match, location }) {
         </BlockUi>
     </div>
 }
+
+export default injectIntl(GeofencesForm);

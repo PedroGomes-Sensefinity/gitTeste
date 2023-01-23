@@ -3,6 +3,7 @@ import TenantsFormComponent from "../../../components/form/TenantsComponent";
 import {Paper, Tab, Tabs} from "@material-ui/core";
 import {TabContainer} from "react-bootstrap";
 import TenantsPersonalizationComponent from "../../../components/form/TenantsPersonalizationComponent";
+import { injectIntl } from "react-intl";
 
 export function TenantsForm({match}) {
     const {id} = match.params;
@@ -34,3 +35,5 @@ export function TenantsForm({match}) {
         </div>
     )
 }
+
+export default injectIntl(TenantsForm);

@@ -2,6 +2,7 @@ import React from "react"
 import { Paper, Tab, Tabs } from "@material-ui/core"
 import { TabContainer } from "react-bootstrap";
 import ThresholdFormComponent from "../../../components/form/ThresholdFormComponent";
+import { injectIntl } from "react-intl";
 
 export function CreateThreshold() {
 
@@ -16,3 +17,5 @@ export function CreateThreshold() {
         </TabContainer>
     </div>
 }
+
+export default injectIntl(CreateThreshold);

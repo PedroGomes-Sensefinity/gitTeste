@@ -6,6 +6,7 @@ import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { DropzoneArea } from 'material-ui-dropzone';
 import toaster from '../../../utils/toaster';
 import { useIntl } from "react-intl";
+import { injectIntl } from "react-intl";
 
 export function DevicesUpload(props) {
     const intl = useIntl();
@@ -34,7 +35,7 @@ export function DevicesUpload(props) {
         event.preventDefault();
 
         if (typeof file === "undefined") {
-            toaster.notify('error', intl.formatMessage({id: 'UPLOAD.FILE_EMPTY'}));
+            toaster.notify('error', intl.formatMessage({ id: 'UPLOAD.FILE_EMPTY' }));
             return false;
         }
 
@@ -44,8 +45,8 @@ export function DevicesUpload(props) {
         const formData = new FormData();
         formData.append('devices', file);
 
-        deviceService.upload(formData).then((r) => {    
-            toaster.notify('success', intl.formatMessage({id: 'UPLOAD.SUCCESS'}));
+        deviceService.upload(formData).then((r) => {
+            toaster.notify('success', intl.formatMessage({ id: 'UPLOAD.SUCCESS' }));
             setBlocking(false);
             setSubmitting(false);
             setTimestamp((new Date()).getTime())
@@ -105,3 +106,4 @@ export function DevicesUpload(props) {
         </BlockUi>
     );
 }
+export default injectIntl(DevicesUpload);

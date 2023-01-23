@@ -1,6 +1,7 @@
 import React from "react";
 import UserFormComponent from "../../../components/form/UserFormComponent";
 import PermissionGate from "../../../modules/Permission/permissionGate";
+import { injectIntl } from "react-intl";
 
 export function UsersForm({match}) {
     const {id} = match.params;
@@ -11,3 +12,5 @@ export function UsersForm({match}) {
         </PermissionGate>
     );
 }
+
+export default injectIntl(UsersForm);

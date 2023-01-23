@@ -3,7 +3,7 @@ import React from "react";
 import { TabContainer } from "react-bootstrap";
 import DeviceFormComponent from "../../../components/form/DeviceFormComponent";
 import PermissionGate from "../../../modules/Permission/permissionGate";
-
+import { injectIntl } from "react-intl";
 
 export function CreateDevice() {
     return (
@@ -21,3 +21,5 @@ export function CreateDevice() {
         </PermissionGate>
     )
 }
+
+export default injectIntl(CreateDevice);

@@ -7,6 +7,7 @@ import { toAbsoluteUrl } from '../../../_metronic/_helpers';
 import apiService from '../../services/apiService';
 import notificationService from '../../services/notificationService';
 import { useSelector } from 'react-redux';
+import { injectIntl } from "react-intl";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -173,3 +174,6 @@ export function Dashboard() {
         </div>
     );
 }
+
+
+export default injectIntl(Dashboard);

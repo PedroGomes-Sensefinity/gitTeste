@@ -9,7 +9,7 @@ import { useHistory } from 'react-router-dom';
 import ChangePasswordFormComponent from "../../../components/form/ChangePasswordFormComponent";
 import GenericModalComponent from '../../../components/modal/GenericModalComponent';
 import TableGrid from '../../../components/table-grid/TableGrid';
-
+import { injectIntl } from "react-intl";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -104,3 +104,5 @@ export function UsersList() {
         </Card>
     );
 }
+
+export default injectIntl(UsersList);

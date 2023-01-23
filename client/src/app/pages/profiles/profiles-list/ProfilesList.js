@@ -8,6 +8,7 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import { useSelector } from 'react-redux';
 import TableGrid from '../../../components/table-grid/TableGrid';
+import { injectIntl } from "react-intl";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -73,3 +74,5 @@ export function ProfilesList() {
         </Card>
     );
 }
+
+export default injectIntl(ProfilesList);

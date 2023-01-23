@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { injectIntl } from "react-intl";
 
 import { Card, CardContent } from '@material-ui/core';
 import moment from 'moment';
@@ -143,3 +144,5 @@ export function AlarmsList() {
         </Card>
     );
 }
+
+export default injectIntl(AlarmsList);

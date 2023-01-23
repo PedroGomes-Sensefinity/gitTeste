@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import TableGridV2 from '../../../components/table-grid/TableGridV2';
 import apiService from '../../../services/apiService';
+import { injectIntl } from "react-intl";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -84,3 +85,5 @@ export function ThresholdsList() {
         </Card>
     );
 }
+
+export default injectIntl(ThresholdsList);

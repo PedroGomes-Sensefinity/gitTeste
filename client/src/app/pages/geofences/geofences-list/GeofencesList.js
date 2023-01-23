@@ -7,7 +7,7 @@ import { MdSpaceDashboard } from "react-icons/md";
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { GeofencesTableGrid } from '../../../components/table-grid/GeofencesTableGrid';
-
+import { injectIntl } from "react-intl";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -83,3 +83,5 @@ export function GeofencesList() {
         </CardContent>
     </Card>
 }
+
+export default injectIntl(GeofencesList);

@@ -3,6 +3,7 @@ import {Paper, Tab, Tabs} from "@material-ui/core";
 import {TabContainer} from "react-bootstrap";
 import RoutesFormComponent from "../../../components/form/RoutesFormComponent";
 import RoutesMapComponent from "../../../components/form/RoutesMapComponent";
+import { injectIntl } from "react-intl";
 
 export function RoutesForm({match}) {
     const {id} = match.params;
@@ -29,3 +30,5 @@ export function RoutesForm({match}) {
         </div>
     );
 }
+
+export default injectIntl(RoutesForm);

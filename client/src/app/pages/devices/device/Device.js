@@ -7,6 +7,7 @@ import DeviceDashboard from "../../../components/form/DeviceDashboard";
 import DeviceFormComponent from "../../../components/form/DeviceFormComponent";
 import DeviceThresholdComponent from "../../../components/form/DeviceThresholdComponent";
 import PermissionGate from "../../../modules/Permission/permissionGate";
+import { injectIntl } from "react-intl";
 
 export function Device({ match }) {
     const { id } = match.params;
@@ -46,3 +47,5 @@ export function Device({ match }) {
         </PermissionGate>
     )
 }
+
+export default injectIntl(Device);

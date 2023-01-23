@@ -4,6 +4,7 @@ import { Card, CardContent } from '@material-ui/core';
 import moment from 'moment';
 import Form from 'react-bootstrap/Form';
 import TableGrid from '../../../components/table-grid/TableGrid';
+import { injectIntl } from "react-intl";
 
 export function RouteCompletion() {
     const [timefilter, setTimefilter] = React.useState();
@@ -121,3 +122,6 @@ export function RouteCompletion() {
         </Card>
     );
 }
+
+
+export default injectIntl(RouteCompletion);

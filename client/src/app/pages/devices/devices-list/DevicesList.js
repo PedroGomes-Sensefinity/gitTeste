@@ -7,6 +7,7 @@ import { MdSpaceDashboard } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { Link, useHistory } from 'react-router-dom';
 import TableGrid from '../../../components/table-grid/TableGrid';
+import { injectIntl } from "react-intl";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -96,3 +97,5 @@ export function DevicesList() {
         </Card>
     );
 }
+
+export default injectIntl(DevicesList);

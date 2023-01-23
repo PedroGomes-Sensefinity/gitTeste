@@ -3,7 +3,7 @@ import React from "react";
 import { TabContainer } from "react-bootstrap";
 import GeofencingComponent from "../../../components/form/GeofencingComponent";
 import PermissionGate from "../../../modules/Permission/permissionGate";
-
+import { injectIntl } from "react-intl";
 
 export function CreateGeofence() {
     return (
@@ -21,3 +21,5 @@ export function CreateGeofence() {
         </PermissionGate>
     )
 }
+
+export default injectIntl(CreateGeofence);

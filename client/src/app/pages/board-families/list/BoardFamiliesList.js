@@ -8,6 +8,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import { useHistory } from 'react-router-dom';
 import TableGrid from '../../../components/table-grid/TableGrid';
 import { useSelector } from 'react-redux';
+import { injectIntl } from "react-intl";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -78,3 +79,5 @@ export function BoardFamiliesList() {
         </Card>
     );
 }
+
+export default injectIntl(BoardFamiliesList);

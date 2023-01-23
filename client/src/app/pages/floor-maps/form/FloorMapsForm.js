@@ -4,6 +4,7 @@ import {TabContainer} from "react-bootstrap";
 import FloorMapFormComponent from "../../../components/form/FloorMapFormComponent";
 import FloorMapAnchorsFormComponent from "../../../components/form/FloorMapAnchorsFormComponent";
 import FloorMapMapFormComponent from "../../../components/form/FloorMapMapFormComponent";
+import { injectIntl } from "react-intl";
 
 export function FloorMapsForm({match}) {
     const {id} = match.params;
@@ -37,3 +38,4 @@ export function FloorMapsForm({match}) {
         </div>
     )
 }
+export default injectIntl(FloorMapsForm);

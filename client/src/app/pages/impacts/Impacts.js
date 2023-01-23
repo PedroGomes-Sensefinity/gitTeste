@@ -9,6 +9,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
+import { injectIntl } from "react-intl";
 
 function Line(x, y, z, color) {
   const material = new THREE.LineBasicMaterial({ color: color, linewidth: 100 });
@@ -111,3 +112,5 @@ export function Impacts(props) {
 
   )
 }
+
+export default injectIntl(Impacts);

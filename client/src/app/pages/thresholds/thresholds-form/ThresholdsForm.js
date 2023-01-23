@@ -9,6 +9,7 @@ import ThresholdFormComponent from "../../../components/form/ThresholdFormCompon
 import ThresholdGeofencesComponent from "../../../components/form/ThresholdGeofencesComponent";
 import ThresholdGroupsComponent from "../../../components/form/ThresholdGroupsComponent";
 import apiServiceV2 from "../../../services/v2/apiServiceV2";
+import { injectIntl } from "react-intl";
 
 export function ThresholdsForm({ match }) {
     const { id } = match.params;
@@ -71,3 +72,5 @@ export function ThresholdsForm({ match }) {
         </BlockUi>
     );
 }
+
+export default injectIntl(ThresholdsForm);

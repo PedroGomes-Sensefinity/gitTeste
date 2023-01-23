@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { AssetTableGrid } from '../../../components/table-grid/AssetsTableGrid';
 import TableGridV2 from '../../../components/table-grid/TableGridV2';
+import { injectIntl } from "react-intl";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -77,3 +78,5 @@ export function AssetsList() {
         </CardContent>
     </Card>
 }
+
+export default injectIntl(AssetsList);

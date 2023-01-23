@@ -2,6 +2,7 @@ import { Paper, Tab, Tabs } from "@material-ui/core";
 import React from "react";
 import { TabContainer } from "react-bootstrap";
 import LocationFormComponent from "../../../components/form/LocationFormComponent";
+import { injectIntl } from "react-intl";
 
 export function LocationsForm({match}) {
     const {id} = match.params;
@@ -18,3 +19,5 @@ export function LocationsForm({match}) {
         </div>
     );
 }
+
+export default injectIntl(LocationsForm);

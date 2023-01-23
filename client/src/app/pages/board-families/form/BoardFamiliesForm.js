@@ -2,6 +2,7 @@ import { Paper, Tab, Tabs } from "@material-ui/core";
 import React, { useMemo } from "react";
 import { TabContainer } from "react-bootstrap";
 import BoardFamiliesFormComponent from "../../../components/form/BoardFamiliesFormComponent";
+import { injectIntl } from "react-intl";
 
 export function BoardFamiliesForm({ match }) {
     const { id } = match.params;
@@ -34,3 +35,5 @@ export function BoardFamiliesForm({ match }) {
         </div>
     )
 }
+
+export default injectIntl(BoardFamiliesForm);

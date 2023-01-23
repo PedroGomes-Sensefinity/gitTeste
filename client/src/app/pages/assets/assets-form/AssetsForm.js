@@ -10,6 +10,7 @@ import AssetsFormComponent from "../../../components/form/AssetsFormComponent";
 import apiService from '../../../services/apiService';
 import apiServiceV2 from '../../../services/v2/apiServiceV2';
 import DeviceSelector from "./DeviceSelector";
+import { injectIntl } from "react-intl";
 
 
 export function AssetsForm({ match, location }) {
@@ -121,3 +122,6 @@ export function AssetsForm({ match, location }) {
         </BlockUi>
     </div>
 }
+
+
+export default injectIntl(AssetsForm);

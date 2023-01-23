@@ -2,6 +2,7 @@ import React from "react"
 import {Paper, Tab, Tabs} from "@material-ui/core"
 import { TabContainer } from "react-bootstrap";
 import AssetsFormComponent from "../../../components/form/AssetsFormComponent";
+import { injectIntl } from "react-intl";
 
 
 export function CreateAsset() {
@@ -17,3 +18,5 @@ export function CreateAsset() {
             </TabContainer>
         </div>
 }
+
+export default injectIntl(CreateAsset);
