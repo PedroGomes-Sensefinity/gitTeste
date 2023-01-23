@@ -7,6 +7,7 @@
     "start": "react-scripts start -o",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "postbuild": "purgecss --css build/static/css/*.css --content build/index.html build/static/js/*.js --output build/static/css",
     "eject": "react-scripts eject",
     "lint": "eslint src",
     "format": "prettier --write \"src/**/*.{js,css,scss,html}\"",
