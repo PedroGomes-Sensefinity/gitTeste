@@ -6,8 +6,8 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const axios = require('axios');
 const multiparty = require('multiparty');
+const fs = require('fs');
 const FormData = require("form-data");
-var spdy = require('spdy'), fs = require('fs');
 
 const compression = require('compression')
 
@@ -204,16 +204,5 @@ app.get('*', function(request, response) {
   response.sendFile(path.join(CLIENT_BUILD_PATH, 'index.html'));
 });
 
-spdy.createServer(
-  {
-    key: fs.readFileSync("./cert/localhost-privkey.pem"),
-    cert: fs.readFileSync("./cert/localhost-cert.pem")
-  },
-  app
-).listen(PORT, (err) => {
-  if(err){
-    throw new Error(err)
-  }
-  console.log("Listening...")
-})
-
+app.listen(PORT, HOST);
+console.log(`Running on http://${HOST}:${PORT}`);
