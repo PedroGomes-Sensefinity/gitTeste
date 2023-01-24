@@ -10,7 +10,6 @@ export function KibanaDashboard(props) {
             id={date.toString()}
             height="100%"
             width="1080"
-            scrolling="no"
             frameBorder="0"
             style={{ width: "100%", overflow: "auto" }}
             src={props.url}
