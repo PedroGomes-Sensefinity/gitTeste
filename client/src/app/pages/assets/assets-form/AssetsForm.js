@@ -48,6 +48,9 @@ export function AssetsForm({ match, location }) {
                 history.push(`${baseURL}#history`)
                 return
             case 4:
+                history.push(`${baseURL}#impacts`)
+                return
+            case 5:
                 history.push(`${baseURL}#extra-fields`)
                 return
         }
@@ -59,7 +62,8 @@ export function AssetsForm({ match, location }) {
             case '#edit': return 1
             case '#devices': return 2
             case '#history': return 3
-            case '#extra-fields': return 4
+            case '#impacts': return 4
+            case '#extra-fields': return 5
         }
     }, [location.hash])
 
@@ -76,8 +80,10 @@ export function AssetsForm({ match, location }) {
             case 2:
                 return <AssetDevicesComponent id={assetId} asset={assetInfo} onAssetChange={onAssetChange} />
             case 3:
-                return <AssetHistory id={assetId}  asset={assetInfo}/>
+                return <AssetHistory id={assetId} asset={assetInfo} />
             case 4:
+                return <AssetHistory id={assetId} asset={assetInfo} />
+            case 5:
                 return <AssetFormExtraFields id={assetId} />
         }
     }, [value, assetInfo, isLoading]);
@@ -112,6 +118,7 @@ export function AssetsForm({ match, location }) {
                 <Tab label="Asset Info" />
                 <Tab label="Devices" disabled={typeof assetId === 'undefined'} />
                 <Tab label="History" disabled={typeof assetId === 'undefined'} />
+                <Tab label="Impacts" disabled={typeof assetId === 'undefined'} />
                 <Tab label="Extra Fields" disabled={typeof assetId === 'undefined' || hasMetadataSchema === false} />
             </Tabs>
         </Paper>
