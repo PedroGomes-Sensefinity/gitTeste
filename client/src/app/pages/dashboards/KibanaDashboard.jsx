@@ -1,10 +1,13 @@
 import React from "react";
 
 export function KibanaDashboard(props) {
-    
+    // Use date to prevent cache!
+    const date = new Date();
+
     return (
         <iframe
-            id="elasticFrame"
+            name={date.toString()}
+            id={date.toString()}
             height="100%"
             width="1080"
             scrolling="no"
