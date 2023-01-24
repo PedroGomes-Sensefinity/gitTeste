@@ -6,7 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 import apiServiceV2 from "../../services/v2/apiServiceV2";
 import { HistoryList } from "../lists/history/HistoryList";
 
-export default function AssetHistory(props) {
+export default function AssetImpacts(props) {
     const [containersOptions, setContainersOptions] = useState([{ id: 0, label: "Containers Not Found" }]);
     const [selectedContainer, setselectedContainer] = useState(0);
 

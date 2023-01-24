@@ -11,6 +11,7 @@ import apiService from '../../../services/apiService';
 import apiServiceV2 from '../../../services/v2/apiServiceV2';
 import DeviceSelector from "./DeviceSelector";
 import { injectIntl } from "react-intl";
+import AssetImpacts from "../../../components/history/AssetImpacts";
 
 
 export function AssetsForm({ match, location }) {
@@ -82,7 +83,7 @@ export function AssetsForm({ match, location }) {
             case 3:
                 return <AssetHistory id={assetId} asset={assetInfo} />
             case 4:
-                return <AssetHistory id={assetId} asset={assetInfo} />
+                return <AssetImpacts id={assetId} asset={assetInfo} />
             case 5:
                 return <AssetFormExtraFields id={assetId} />
         }
