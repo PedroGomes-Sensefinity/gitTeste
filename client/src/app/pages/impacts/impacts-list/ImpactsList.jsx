@@ -64,17 +64,17 @@ export function ImpactsList(props) {
         },
         {
             field: 'x',
-            title: 'X Value (mg)'
+            title: 'X Value (g)'
         }, {
             field: 'y',
-            title: 'Y Value (mg)'
+            title: 'Y Value (g)'
         }, {
             field: 'z',
-            title: 'Z Value (mg)'
+            title: 'Z Value (g)'
         }, 
         {
             field: 'magnitude',
-            title: 'Magnitude (mg)'
+            title: 'Magnitude (g)'
         },
         {
             field: 'faces',

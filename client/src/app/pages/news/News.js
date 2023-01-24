@@ -7,6 +7,10 @@ import { injectIntl } from "react-intl";
 
 const versions = [
     {
+        versionNumber: "V.0.3.0", date: "24/01/2023", changes:
+            ["1. Improvements on load speed - The website can load faster!"]
+    },
+    {
         versionNumber: "V.0.2.4", date: "13/01/2023", changes:
             ["1. Access to Threshold unlocked. You can see all Assets and Geofences Associated with one Threshold.", "2. Implementation of Operations on Thresholds. It's now possible to add one Threshold to All Assets", "3. Impact Lists available on Containers Dashboard with new 3D Impact visualization"]
     },
