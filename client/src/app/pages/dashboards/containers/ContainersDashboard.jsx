@@ -73,7 +73,7 @@ export function ContainersDashboard() {
         }
     }));
 
-    console.log("Test 01")
+    console.log("Test 01");
 
     const sticky = {
         position: "sticky",
@@ -413,12 +413,20 @@ export function ContainersDashboard() {
                         const data60_90_R = [];
                         const data90_R = [];
                         for (const longStanding of response) {
-                            ports_R.push(longStanding.port_code);
-                            data15_R.push(longStanding.interval_count.less15);
-                            data15_30_R.push(longStanding.interval_count.interval15_30);
-                            data30_60_R.push(longStanding.interval_count.interval30_60);
-                            data60_90_R.push(longStanding.interval_count.interval60_90);
-                            data90_R.push(longStanding.interval_count.more90);
+                            if (
+                                longStanding.interval_count.less15 !== 0 ||
+                                longStanding.interval_count.interval15_30 !== 0 ||
+                                longStanding.interval_count.interval30_60 !== 0 ||
+                                longStanding.interval_count.interval60_90 !== 0 ||
+                                longStanding.interval_count.more90 !== 0
+                            ) {
+                                ports_R.push(longStanding.port_code);
+                                data15_R.push(longStanding.interval_count.less15);
+                                data15_30_R.push(longStanding.interval_count.interval15_30);
+                                data30_60_R.push(longStanding.interval_count.interval30_60);
+                                data60_90_R.push(longStanding.interval_count.interval60_90);
+                                data90_R.push(longStanding.interval_count.more90);
+                            }
                         }
                         if (ports.length !== 0) {
                             setPorts(ports_R);
