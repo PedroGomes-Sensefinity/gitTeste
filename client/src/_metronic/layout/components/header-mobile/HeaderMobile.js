@@ -45,15 +45,7 @@ export function HeaderMobile() {
                 </>
             )}
 
-            {layoutProps.headerMenuSelfDisplay && (
-                <>
-                  {/*begin::Header Menu Mobile Toggle*/}
-                  <button className="btn p-0 burger-icon ml-4" id="kt_header_mobile_toggle">
-                    <span/>
-                  </button>
-                  {/*end::Header Menu Mobile Toggle*/}
-                </>
-            )}
+           
 
             {/*begin::Topbar Mobile Toggle*/}
             <button
