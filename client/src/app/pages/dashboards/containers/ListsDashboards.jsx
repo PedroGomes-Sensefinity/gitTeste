@@ -4,8 +4,8 @@ import { injectIntl } from "react-intl";
 import { KibanaDashboard } from "../KibanaDashboard";
 import apiServiceV2 from "../../../services/v2/apiServiceV2";
 export function ListDashboards() {
-    const [value, setValue] = useState(0);
-    const [dashboards, setDashboards] = useState([{}]);
+    const [value, setValue] = useState(-1);
+    const [dashboards, setDashboards] = useState([]);
 
     const handleChange = (_event, newValue) => {
         setValue(newValue);
@@ -13,21 +13,31 @@ export function ListDashboards() {
 
     useEffect(() => {
         apiServiceV2.get("v2/tenants/dashboards?search=ContainersList").then(response => {
-            let dashboard = [];
             if (response.dashboards_tenant != undefined) {
-                response.dashboards_tenant.forEach(d => dashboard.push(d));
+                let dashboard = [];
+                response.dashboards_tenant.forEach(d => {
+                    dashboard.push(d);
+                });
+                setDashboards(dashboard);
+                setValue(0);
             }
-            setDashboards(dashboard);
         });
     }, []);
 
     const componentToBeRendered = useMemo(() => {
-        return <KibanaDashboard url={dashboards[value].url} />;
+        console.log(value);
+        console.log(dashboards);
+        console.log(dashboards[value]);
+        if (dashboards[value] === undefined) {
+            return <></>;
+        } else {
+            return <KibanaDashboard url={dashboards[value].url} />;
+        }
     }, [value]);
 
     return (
         <>
-            <Paper square>
+            <Paper key={dashboards} square>
                 <Tabs value={value} indicatorColor="secondary" textColor="secondary" onChange={handleChange}>
                     {dashboards.map(d => (
                         <Tab label={d.name} />
