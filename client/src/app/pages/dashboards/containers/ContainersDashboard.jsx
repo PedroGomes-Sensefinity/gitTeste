@@ -55,6 +55,17 @@ const OVERLAY_STYLE = {
     overflowX: "auto"
 };
 
+const shadeStyle = {
+    margin: "15px",
+    "box-shadow":
+        "rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset"
+};
+
+const redirectStyleShape = {
+    margin: "25px",
+    "box-shadow": "rgba(3, 102, 214, 0.3) 0px 0px 0px 3px"
+};
+
 export function ContainersDashboard() {
     //Specific Styles
     const locationStyle = { fontWeight: "bold", textAlign: "center", cursor: "pointer", borderColor: "#808080" };
@@ -682,7 +693,7 @@ export function ContainersDashboard() {
     );
 
     return (
-        <BlockUi tag="div" blocking={blocking}>
+        <BlockUi className="card card-custom" tag="div" blocking={blocking}>
             {locationsModal}
             {longStandingModal}
             {geofencesModal}
@@ -697,7 +708,7 @@ export function ContainersDashboard() {
             </FormControl>
             <div className="row mt-3">
                 <div className="col-xl-2 col-lg-2">
-                    <div className="card card-custom">
+                    <div className="card card-custom" style={shadeStyle}>
                         <div className="card-header">
                             <div className="card-title">
                                 <h3 className="card-label">Madeira</h3>
@@ -709,7 +720,7 @@ export function ContainersDashboard() {
                     </div>
                 </div>
                 <div className="col-xl-2 col-lg-2">
-                    <div className="card card-custom">
+                    <div className="card card-custom" style={shadeStyle}>
                         <div className="card-header">
                             <div className="card-title">
                                 <h3 className="card-label">Açores</h3>
@@ -721,7 +732,7 @@ export function ContainersDashboard() {
                     </div>
                 </div>
                 <div className="col-xl-2 col-lg-2">
-                    <div className="card card-custom">
+                    <div className="card card-custom" style={shadeStyle}>
                         <div className="card-header">
                             <div className="card-title">
                                 <h3 className="card-label">Cabo Verde</h3>
@@ -737,7 +748,7 @@ export function ContainersDashboard() {
                     </div>
                 </div>
                 <div className="col-xl-2 col-lg-2">
-                    <div className="card card-custom">
+                    <div className="card card-custom" style={shadeStyle}>
                         <div className="card-header">
                             <div className="card-title">
                                 <h3 className="card-label">Continente</h3>
@@ -753,7 +764,7 @@ export function ContainersDashboard() {
                     </div>
                 </div>
                 <div className="col-xl-2 col-lg-2">
-                    <div className="card card-custom">
+                    <div className="card card-custom" style={shadeStyle}>
                         <div className="card-header">
                             <div className="card-title">
                                 <h3 className="card-label">Outros</h3>
@@ -765,7 +776,7 @@ export function ContainersDashboard() {
                     </div>
                 </div>
                 <div className="col-xl-2 col-lg-2">
-                    <div className="card card-custom">
+                    <div className="card card-custom" style={shadeStyle}>
                         <div className="card-header">
                             <div className="card-title">
                                 <h3 className="card-label">Em Trânsito</h3>
@@ -847,12 +858,7 @@ export function ContainersDashboard() {
             </div>
             <div className="row mt-3">
                 <div className="col-sm-2 col-sm-2">
-                    <div className="card card-custom">
-                        <div className="card-header">
-                            <div className="card-title">
-                                <h3 className="card-label">Impactos</h3>
-                            </div>
-                        </div>
+                    <div className="card card-custom" style={redirectStyleShape}>
                         <div className="card-body" style={{ margin: "auto" }}>
                             <Link to="/dashboard/lists/containers" className="btn btn-secondary">
                                 Abrir Impactos
@@ -861,12 +867,7 @@ export function ContainersDashboard() {
                     </div>
                 </div>
                 <div className="col-sm-2 col-sm-2">
-                    <div className="card card-custom">
-                        <div className="card-header">
-                            <div className="card-title">
-                                <h3 className="card-label">Entradas / Saídas Geofences</h3>
-                            </div>
-                        </div>
+                    <div className="card card-custom" style={redirectStyleShape}>
                         <div className="card-body" style={{ margin: "auto" }}>
                             <Link to="/dashboard/lists/containers" className="btn btn-secondary">
                                 Abrir Geofences

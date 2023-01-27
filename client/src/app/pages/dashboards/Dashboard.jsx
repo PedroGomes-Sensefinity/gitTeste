@@ -8,6 +8,7 @@ import apiService from '../../services/apiService';
 import notificationService from '../../services/notificationService';
 import { useSelector } from 'react-redux';
 import { injectIntl } from "react-intl";
+import apiServiceV2 from '../../services/v2/apiServiceV2';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -18,6 +19,11 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+const styleShade = {
+   "box-shadow": "0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)",
+   "margin": "10px"
+}
+
 
 export function Dashboard() {
     const classes = useStyles();
@@ -26,12 +32,17 @@ export function Dashboard() {
     const [groups, setGroups] = useState(0);
     const [thresholds, setThresholds] = useState(0);
     const [alarms, setAlarms] = useState(0);
+
+    //v2
+    const [assets, setAssets] = useState(0)
     const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
 
     useEffect(() => {
         apiService.count('device').then((r) => { if ("affected" in r) setDevices(r.affected) });
         apiService.count('group').then((r) => { if ("affected" in r) setGroups(r.affected) });
         apiService.count('threshold').then((r) => { if ("affected" in r) setThresholds(r.affected) });
+
+        apiServiceV2.get("v2/assets").then((r) => {if ("total" in r) setAssets(r.total)})
         notificationService.count('alarm', 'created', '-', '-').then((r) => {
             if (typeof r.affected !== 'undefined') {
                 setAlarms(r.affected)
@@ -43,8 +54,8 @@ export function Dashboard() {
         <div >
         <div className={'row'} style={{marginBottom: "1rem"}}>
             {permissions.canViewDevices ?
-                <div className={'col-lg-3 col-xxl-3'}>
-                    <div className={'card'}>
+                <div className={'col-lg-3 col-xxl-3'} >
+                    <div className={'card'} style={styleShade}>
                         <div className={'card-body p-0'} style={{ position: 'relative' }}>
                             <div className={'d-flex align-items-center justify-content-between card-spacer flex-grow-1'}>
                                 <span className={'symbol circle symbol-50 symbol-light-success mr-2'}>
@@ -68,7 +79,7 @@ export function Dashboard() {
                 </div> : <></>}
             {permissions.canViewGroups ?
                 <div className={'col-lg-3 col-xxl-3'}>
-                    <div className={'card'}>
+                    <div className={'card'} style={styleShade}>
                         <div className={'card-body p-0'} style={{ position: 'relative' }}>
                             <div className={'d-flex align-items-center justify-content-between card-spacer flex-grow-1'}>
                                 <span className={'symbol circle symbol-50 symbol-light-success mr-2'}>
@@ -92,22 +103,22 @@ export function Dashboard() {
                 </div> : <></>}
             {permissions.canViewThresholds ?
                 <div className={'col-lg-3 col-xxl-3'}>
-                    <div className={'card'}>
+                    <div className={'card'} style={styleShade}>
                         <div className={'card-body p-0'} style={{ position: 'relative' }}>
                             <div className={'d-flex align-items-center justify-content-between card-spacer flex-grow-1'}>
                                 <span className={'symbol circle symbol-50 symbol-light-success mr-2'}>
                                     <span className={'symbol-label'}>
                                         <span className={'svg-icon svg-icon-xl svg-icon-success'}>
-                                            <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Diagnostics.svg")} />
+                                            <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Layers.svg")} />
                                         </span>
                                     </span>
                                 </span>
                                 <div className={'d-flex flex-column text-right'}>
                                     <span className={'text-dark-75 font-weight-bolder font-size-h3'}>
-                                        {thresholds}
+                                        {assets}
                                     </span>
                                     <span className={'text-muted font-weight-bold mt-2'}>
-                                        Thresholds
+                                        Assets
                                     </span>
                                 </div>
                             </div>
@@ -116,7 +127,7 @@ export function Dashboard() {
                 </div> : <></>}
             {permissions.canViewAlarms ?
                 <div className={'col-lg-3 col-xxl-3'}>
-                    <div className={'card'}>
+                    <div className={'card'} style={styleShade}>
                         <div className={'card-body p-0'} style={{ position: 'relative' }}>
                             <div className={'d-flex align-items-center justify-content-between card-spacer flex-grow-1'}>
                                 <span className={'symbol circle symbol-50 symbol-light-success mr-2'}>
@@ -141,7 +152,7 @@ export function Dashboard() {
         </div>
         <div className={'row'}>
                 <div className={'col-lg-3 col-xxl-3'}>
-                    <div className={'card'}>
+                    <div className={'card'} style={styleShade}>
                         <div className={'card-body p-0'} style={{ position: 'relative' }}>
                             <div className={'d-flex align-items-center justify-content-between card-spacer flex-grow-1'}>
                                 <span className={'symbol circle symbol-50 symbol-light-success mr-2'}>
@@ -164,6 +175,10 @@ export function Dashboard() {
                                     <br></br>
                                     <span className={'text-muted font-weight-bold mt-2'}>
                                         Discover the latest updates to the Sensefinty Web Application!
+                                    </span>
+                                    <br></br>
+                                    <span className={'font-weight-bold mt-2'}>
+                                        Last Update : V.0.3.2 - 27/01/2023
                                     </span>
                                 </div>
                             </div>

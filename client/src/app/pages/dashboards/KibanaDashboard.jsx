@@ -8,10 +8,9 @@ export function KibanaDashboard(props) {
         <iframe
             name={date.toString()}
             id={date.toString()}
-            height="100%"
-            width="1080"
+            height="95%"
             frameBorder="0"
-            style={{ width: "100%", overflow: "auto"}}
+            style={{ width: "100%"}}
             src={props.url}
         ></iframe>
     );
