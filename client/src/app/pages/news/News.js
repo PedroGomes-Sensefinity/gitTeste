@@ -7,6 +7,10 @@ import { injectIntl } from "react-intl";
 
 const versions = [
     {
+        versionNumber: "V.0.3.2", date: "27/01/2023", changes:
+            ["1. UI Enhancements", "2. New Impacts Lists - Dashboards - List Dashboards"]
+    },
+    {
         versionNumber: "V.0.3.1", date: "25/01/2023", changes:
             ["1. Multiple fixes on Containers Dashboards", "2. New version of Impacts Dashboard", "3. New Dashboard for Routes", "4. You can now check the Impacts for a single Asset. Go to Assets - Asset - Impacts", "5. Impacts measurement from mg to g", "6. Containers Dashboard only shows Longstandings for Sublocations with Containers"]
     },
