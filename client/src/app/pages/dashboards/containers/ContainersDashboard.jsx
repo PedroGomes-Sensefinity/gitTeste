@@ -625,7 +625,6 @@ export function ContainersDashboard() {
                 >
                     X
                 </Button>
-                <KibanaDashboard url="https://analytics01.sensefinity.com/s/transinsular/app/dashboards#/view/9d65bc50-9cb4-11ed-a4bc-331fcebc452c?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3Anow-1y%2Fd%2Cto%3Anow))&show-query-input=true&show-time-filter=true" />
             </Box>
         </Modal>
     );
