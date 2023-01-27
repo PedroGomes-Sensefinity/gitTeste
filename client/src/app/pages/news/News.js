@@ -7,7 +7,7 @@ import { injectIntl } from "react-intl";
 
 const versions = [
     {
-        versionNumber: "V.0.3.2", date: "27/01/2023", changes:
+        versionNumber: "V.0.3.2 - Latest", date: "27/01/2023", changes:
             ["1. UI Enhancements", "2. New Impacts Lists - Dashboards - List Dashboards"]
     },
     {
@@ -80,15 +80,19 @@ const versions = [
     }
 ]
 
+const shadeStyle = {
+   "box-shadow": "0px 7px 15px 0px rgba(0,0,0,0.13),0px 1px 4px 0px rgba(0,0,0,0.11)"
+}
+
 
 export function News() {
     return (
         <Box sx={{ minWidth: 275, margin: "40px" }}>
             <h1>What's New?</h1>
             {versions.map((version) => (
-                <Card variant="outlined" sx={{ marginBottom: "1rem" }} >
+                <Card variant="outlined" sx={{ marginBottom: "1rem" }}  style={shadeStyle}>
                     <CardContent>
-                        <Typography sx={{ fontSize: 14, backgroundColor: "#90EE90", display: "inline-block", borderRadius: "5px" }} color="text.secondary" gutterBottom>
+                        <Typography sx={{ fontSize: 14, display: "inline-block", borderRadius: "5px" }}  gutterBottom>
                             {version.versionNumber}
                         </Typography>
                         <Typography sx={{ mb: 1.5 }} color="text.secondary">
