@@ -13,7 +13,7 @@ export function ListDashboards() {
 
     useEffect(() => {
         apiServiceV2.get("v2/tenants/dashboards?search=ContainersList").then(response => {
-            const dashboard = []
+            let dashboard = [];
             if (response.dashboards_tenant != undefined) {
                 response.dashboards_tenant.forEach(d => dashboard.push(d));
             }
@@ -22,10 +22,7 @@ export function ListDashboards() {
     }, []);
 
     const componentToBeRendered = useMemo(() => {
-        switch (value) {
-            default:
-                return <KibanaDashboard url={dashboards[value].url} />;
-        }
+        return <KibanaDashboard url={dashboards[value].url} />;
     }, [value]);
 
     return (
