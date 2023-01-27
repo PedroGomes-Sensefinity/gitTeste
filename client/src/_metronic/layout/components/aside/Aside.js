@@ -41,7 +41,7 @@ export function Aside() {
               {/* end::Header Logo */}
             </>
           )}
-          <div>
+          <div style={{"padding":"15px"}}>
             <UserProfileDropdown />
           </div>
           <AsideMenu disableScroll={layoutProps.disableScroll} />
