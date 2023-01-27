@@ -23,6 +23,8 @@ import apiServiceV2 from "../../../services/v2/apiServiceV2";
 import Progress from "../../../utils/Progress/Progress";
 import toaster from "../../../utils/toaster";
 import { ImpactsList } from "../../impacts/impacts-list/ImpactsList";
+import { KibanaDashboard } from "../KibanaDashboard";
+import { Link } from "react-router-dom";
 
 // General Styles
 const style = {
@@ -623,18 +625,7 @@ export function ContainersDashboard() {
                 >
                     X
                 </Button>
-                <ImpactsList container={containerId} />
-                <Button
-                    size="small"
-                    onClick={getImpactsReport}
-                    type="button"
-                    disabled={buttonDisabled}
-                    style={{ margin: "15px" }}
-                    className={`btn btn-primary mr-3`}
-                >
-                    {buttonLabel24}
-                </Button>
-                {showProgress && <Progress time={0.75} />}
+                <KibanaDashboard url="https://analytics01.sensefinity.com/s/transinsular/app/dashboards#/view/9d65bc50-9cb4-11ed-a4bc-331fcebc452c?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3Anow-1y%2Fd%2Cto%3Anow))&show-query-input=true&show-time-filter=true" />
             </Box>
         </Modal>
     );
@@ -860,20 +851,13 @@ export function ContainersDashboard() {
                     <div className="card card-custom">
                         <div className="card-header">
                             <div className="card-title">
-                                <h3 className="card-label">Alertas de Impactos</h3>
+                                <h3 className="card-label">Impactos</h3>
                             </div>
                         </div>
                         <div className="card-body" style={{ margin: "auto" }}>
-                            <button
-                                type="submit"
-                                className="btn btn-success mr-2"
-                                onClick={() => {
-                                    console.log("opening impacts");
-                                    handleOpenImpacts();
-                                }}
-                            >
-                                Ver Impactos
-                            </button>
+                            <Link to="/dashboard/lists/containers" className="btn btn-secondary">
+                                Abrir Impactos
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -885,13 +869,9 @@ export function ContainersDashboard() {
                             </div>
                         </div>
                         <div className="card-body" style={{ margin: "auto" }}>
-                            <button
-                                type="submit"
-                                className="btn btn-success mr-2"
-                                onClick={() => handleOpenGeofences()}
-                            >
-                                Abrir Histórico
-                            </button>
+                            <Link to="/dashboard/lists/containers" className="btn btn-secondary">
+                                Abrir Geofences
+                            </Link>
                         </div>
                     </div>
                 </div>

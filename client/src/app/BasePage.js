@@ -47,6 +47,7 @@ import { DashboardsContainers } from "./pages/dashboards/containers/DashboardsCo
 import { DashboardsRoutes } from "./pages/dashboards/routes/DashboardsRoutes";
 import TrackingOperation from "./components/form/TrackingOperation";
 import { Impacts } from "./pages/impacts/Impacts";
+import { ListDashboards } from "./pages/dashboards/containers/ListsDashboards";
 
 
 
@@ -72,6 +73,7 @@ export default function BasePage() {
         }
         {permissions.canViewContainerDashboard && [
           <ContentRoute key="/dashboard/containers" path="/dashboard/containers" component={DashboardsContainers} />,
+          <ContentRoute key="/dashboard/lists/containers" path="/dashboard/lists/containers" component={ListDashboards} />,
         ]}
         {permissions.canViewRoutesDashboard && [
           <ContentRoute key="/dashboard/route" path="/dashboard/route" component={DashboardsRoutes} />,

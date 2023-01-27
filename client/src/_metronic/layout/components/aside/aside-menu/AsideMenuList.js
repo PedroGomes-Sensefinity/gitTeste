@@ -76,6 +76,21 @@ export function AsideMenuList({ layoutProps }) {
               }
               {/*end::2 Level*/}
               {/*begin::2 Level*/}
+              {permissions.canViewContainerDashboard &&
+                <li
+                  className={`menu-item ${getMenuItemActive("/dashboard/lists/containers")}`}
+                  aria-haspopup="true"
+                >
+                  <NavLink className="menu-link" to="/dashboard/lists/containers">
+                    <i className="menu-bullet menu-bullet-dot">
+                      <span />
+                    </i>
+                    <span className="menu-text">List Dashboards</span>
+                  </NavLink>
+                </li>
+              }
+              {/*end::2 Level*/}
+              {/*begin::2 Level*/}
               {permissions.canViewRoutesDashboard &&
                 <li
                   className={`menu-item ${getMenuItemActive("/dashboard/route")}`}

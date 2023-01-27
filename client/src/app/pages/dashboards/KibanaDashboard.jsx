@@ -11,7 +11,7 @@ export function KibanaDashboard(props) {
             height="100%"
             width="1080"
             frameBorder="0"
-            style={{ width: "100%", overflow: "auto" }}
+            style={{ width: "100%", overflow: "auto"}}
             src={props.url}
         ></iframe>
     );
