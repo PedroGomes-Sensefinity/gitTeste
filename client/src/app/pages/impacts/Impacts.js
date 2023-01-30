@@ -1,6 +1,6 @@
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import * as THREE from "three";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -22,7 +22,22 @@ function Line(x, y, z, color) {
 }
 
 export function Impacts(props) {
-  console.log(props)
+  useEffect(() => {
+    const url = window.location.href
+    let decodedUrl = unescape(url)
+    const myArray = decodedUrl.split("?");
+    if (myArray.length === 2) {
+      const params = new URLSearchParams(myArray[1]);
+      let x = params.get('x');
+      let y = params.get('y');
+      let z = params.get('z');
+      let paramObj = {};
+      for (var value of params.keys()) {
+        paramObj[value] = params.get(value);
+      }
+      setValues(paramObj)
+    }
+  }, []);
   const viewOptions = [
     { id: 1, label: "Container Front" },
     { id: 2, label: "Container Back" },
@@ -33,7 +48,7 @@ export function Impacts(props) {
   ]
   const [selectedOption, setSelectedOption] = useState(0);
   const [selectedContainer, setSelectedContainer] = useState("/media/3d/container/R/containerR.gltf")
-
+  const [values, setValues] = useState({x:0, y:0, z:0})
   function onChangeOption(e) {
     setSelectedOption(e.target.value);
     switch (e.target.value) {
@@ -101,7 +116,7 @@ export function Impacts(props) {
           <pointLight position={[20, 20, 20]} />
           <spotLight position={[-20, -20, -20]} penumbra={1} />
           <pointLight position={[-20, -20, -20]} />
-          <primitive object={Line(props.y, -props.x, props.z, "#DD1C1C")} />
+          <primitive object={Line(values.x,values.y,values.x, "#DD1C1C")} />
           <Suspense fallback={null}>
             <primitive object={scene} />
           </Suspense>
