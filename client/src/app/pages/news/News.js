@@ -81,7 +81,7 @@ const versions = [
 ]
 
 const shadeStyle = {
-   "box-shadow": "0px 7px 15px 0px rgba(0,0,0,0.13),0px 1px 4px 0px rgba(0,0,0,0.11)"
+    "box-shadow": "0px 7px 15px 0px rgba(0,0,0,0.13),0px 1px 4px 0px rgba(0,0,0,0.11)"
 }
 
 
@@ -90,9 +90,9 @@ export function News() {
         <Box sx={{ minWidth: 275, margin: "40px" }}>
             <h1>What's New?</h1>
             {versions.map((version) => (
-                <Card variant="outlined" sx={{ marginBottom: "1rem" }}  style={shadeStyle}>
+                <Card variant="outlined" sx={{ marginBottom: "1rem" }} style={shadeStyle}>
                     <CardContent>
-                        <Typography sx={{ fontSize: 14, display: "inline-block", borderRadius: "5px" }}  gutterBottom>
+                        <Typography sx={{ fontSize: 14, display: "inline-block", borderRadius: "5px" }} gutterBottom>
                             {version.versionNumber}
                         </Typography>
                         <Typography sx={{ mb: 1.5 }} color="text.secondary">
