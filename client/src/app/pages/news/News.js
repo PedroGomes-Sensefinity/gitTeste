@@ -12,7 +12,7 @@ const versions = [
     },
     {
         versionNumber: "V.0.3.1", date: "25/01/2023", changes:
-            ["1. Multiple fixes on Containers Dashboards", "2. New version of Impacts Dashboard", "3. New Dashboard for Routes", "4. You can now check the Impacts for a single Asset. Go to Assets - Asset - Impacts", "5. Impacts measurement from mg to g", "6. Containers Dashboard only shows Longstandings for Sublocations with Containers"]
+            ["1. Multiple fixes on Containers Dashboards",  "2. New Dashboard for Routes", "3. You can now check the Impacts for a single Asset. Go to Assets - Asset - Impacts", "4. Impacts measurement from mg to g", "5. Containers Dashboard only shows Longstandings for Sublocations with Containers"]
     },
     {
         versionNumber: "V.0.3.0", date: "24/01/2023", changes:
