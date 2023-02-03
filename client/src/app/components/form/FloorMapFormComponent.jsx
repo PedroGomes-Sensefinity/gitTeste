@@ -4,14 +4,15 @@ import * as Yup from "yup";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
 import floorMapService from "../../services/floorMapService";
-import apiService from "../../services/apiService";
 import DoneIcon from "@material-ui/icons/Done";
 import { getInputClasses } from "../../utils/formik";
 import "../../utils/yup-validations";
 import BlockUi from "react-block-ui";
 import toaster from "../../utils/toaster";
 import { injectIntl } from "react-intl";
-import ImageMarker, { Marker, MarkerComponentProps } from "react-image-marker";
+import ImageMarker from "react-image-marker";
+import { AsyncTypeahead } from "react-bootstrap-typeahead";
+import apiServiceV2 from "../../services/v2/apiServiceV2";
 
 const useStyles = makeStyles(theme => ({
     headerMarginTop: {
@@ -19,6 +20,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
+// Market to Show Anchors
 const CustomMarker = props => {
     return (
         <p style={{ backgroundColor: "green", color: "white", borderRadius: "50%", fontSize: "20px" }}>
@@ -28,6 +30,7 @@ const CustomMarker = props => {
     );
 };
 
+//Upload vars
 const FILE_SIZE = 2; // MB
 const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/gif", "image/svg", "image/png"];
 
@@ -41,45 +44,63 @@ function FloorMapFormComponent(props) {
     const [image, setImage] = useState(undefined);
     const [markers, setMarkers] = useState([]);
 
-    useEffect(() => {
-        if (!isAddMode && floorMapId !== "new") {
-            apiService.getById("floormaps", floorMapId).then(response => {
-                const respFloorMap = response.floormaps || [];
-                if (respFloorMap.length > 0) setFloorMap(respFloorMap[0]);
-            });
-        }
-    }, []);
+    //Devices:
+    const [devicesSearch, setDevicesSearch] = useState([]);
+
+    useEffect(() => {}, []);
+
+    const handleSearchDevice = query => {
+        apiServiceV2.getByLimitOffsetSearchTenant("v2/devices", 50, 0, query, 1).then(response => {
+            const respDevices = response.devices || [];
+            console.log(respDevices)
+            setDevicesSearch(respDevices);
+        });
+    };
+
+    const filterBy = () => true;
 
     const initialValues = {
         id: floorMapId,
         label: floorMapInfo.label || "",
         description: floorMapInfo.description || "",
         length: floorMapInfo.length || 0,
-        breadth: floorMapInfo.breadth || 0,
-        anchors: floorMapInfo.anchors || [
-            {
-                Label: "",
-                Description: "",
-                x: 0,
-                y: 0,
-                z: 0
-            }
-        ]
+        width: floorMapInfo.width || 0,
+        path_loss: floorMapInfo.path_loss || 0,
+        environment_constant: floorMapInfo.environment_constant || 0,
+        anchors: floorMapInfo.anchors || []
     };
 
     const validationSchema = Yup.object().shape({
-        label: Yup.string().max(50).required("Label is required"),
-        length: Yup.number().min(1).required("This field is requried"),
-        breadth: Yup.number().min(1).required("This field is requried"),
+        label: Yup.string()
+            .max(50)
+            .required("Label is required"),
+        length: Yup.number()
+            .min(1)
+            .required("This field is required"),
+        width: Yup.number()
+            .min(1)
+            .required("This field is required"),
+        path_loss: Yup.number()
+            .min(0)
+            .max(5)
+            .required("This field is required"),
+        environment_constant: Yup.number()
+            .min(1)
+            .required("This field is required"),
         description: Yup.string().max(255, "Description is too long. Max 255 characters.")
     });
 
     const save = (fields, { setSubmitting, resetForm }) => {
         setBlocking(true);
         let method = isAddMode ? "save" : "update";
-
-        fields["floorMap_url"] = image
-        console.log(fields);
+        if (image === undefined || image === "") {
+            toaster.notify("error", "You need to upload a floor map!");
+            setBlocking(false);
+            return;
+        }
+        fields["attachment_url"] = image;
+        console.log(JSON.stringify(fields));
+        setBlocking(false);
     };
 
     const upload = (file, { setFieldValue }) => {
@@ -104,12 +125,13 @@ function FloorMapFormComponent(props) {
     };
 
     const addAnchorsToMap = values => {
-        if (values.length === 0 || values.breadth === 0) {
+        if (values.length === 0 || values.width === 0) {
+            toaster.notify("error", "You need to set Length and Width first!");
             return;
         }
         const markers = [];
         values.anchors.forEach(element =>
-            markers.push({ top: (element.x * 100) / values.length - 1, left: (element.y * 100) / values.breadth - 1 })
+            markers.push({ top: (element.x * 100) / values.length - 1, left: (element.y * 100) / values.width - 1 })
         );
         setMarkers(markers);
         console.log(markers);
@@ -226,7 +248,19 @@ function FloorMapFormComponent(props) {
                                             <span>Max file size: {FILE_SIZE}MB</span>
                                             <ErrorMessage name="plant" component="div" className="invalid-feedback" />
                                         </div>
-                                        <div className="col-xl-6 col-lg-6">
+
+                                        <div
+                                            style={{ padding: "30px" }}
+                                            className="card-title align-items-start flex-column col-xl-12 col-lg-12"
+                                        >
+                                            <h3 className="card-label font-weight-bolder text-dark">
+                                                Floor map Characterization
+                                            </h3>
+                                            <span className="text-muted font-weight-bold font-size-sm mt-1">
+                                                This information will be used to increase accuracy!
+                                            </span>
+                                        </div>
+                                        <div className="col-xl-3 col-lg-3">
                                             <label className={`required`}>Length</label>
                                             <div>
                                                 <Field
@@ -246,21 +280,61 @@ function FloorMapFormComponent(props) {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="col-xl-6 col-lg-6">
-                                            <label className={`required`}>Breadth</label>
+                                        <div className="col-xl-3 col-lg-3">
+                                            <label className={`required`}>Width</label>
                                             <div>
                                                 <Field
                                                     as="input"
                                                     className={`form-control form-control-lg form-control-solid required ${getInputClasses(
                                                         { errors, touched },
-                                                        "breadth"
+                                                        "width"
                                                     )}`}
                                                     name="label"
-                                                    placeholder="Set the Floor map Breadth"
-                                                    {...getFieldProps("breadth")}
+                                                    placeholder="Set the Floor map width"
+                                                    {...getFieldProps("width")}
                                                 />
                                                 <ErrorMessage
-                                                    name="breadth"
+                                                    name="width"
+                                                    component="div"
+                                                    className="invalid-feedback"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-xl-3 col-lg-3">
+                                            <label className={`required`}>Path Loss (n) (0-5)</label>
+                                            <div>
+                                                <Field
+                                                    as="input"
+                                                    className={`form-control form-control-lg form-control-solid required ${getInputClasses(
+                                                        { errors, touched },
+                                                        "path_loss"
+                                                    )}`}
+                                                    name="path_loss"
+                                                    placeholder="Set the Floor map Path Loss"
+                                                    {...getFieldProps("path_loss")}
+                                                />
+                                                <ErrorMessage
+                                                    name="path_loss"
+                                                    component="div"
+                                                    className="invalid-feedback"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-xl-3 col-lg-3">
+                                            <label className={`required`}>Environment Constant (C)</label>
+                                            <div>
+                                                <Field
+                                                    as="input"
+                                                    className={`form-control form-control-lg form-control-solid required ${getInputClasses(
+                                                        { errors, touched },
+                                                        "environment_constant"
+                                                    )}`}
+                                                    name="environment_constant"
+                                                    placeholder="Set the Floor map Environment Constant"
+                                                    {...getFieldProps("environment_constant")}
+                                                />
+                                                <ErrorMessage
+                                                    name="environment_constant"
                                                     component="div"
                                                     className="invalid-feedback"
                                                 />
@@ -269,7 +343,9 @@ function FloorMapFormComponent(props) {
                                     </div>
                                 </div>
                             </div>
-                            {image != undefined && <ImageMarker src={image} markers={markers} markerComponent={CustomMarker} />}
+                            {image != undefined && (
+                                <ImageMarker src={image} markers={markers} markerComponent={CustomMarker} />
+                            )}
                             {/* end::Form */}
                             {/* begin::Form */}
                             <div className="form">
@@ -282,35 +358,64 @@ function FloorMapFormComponent(props) {
                                                         {values.anchors.length > 0 &&
                                                             values.anchors.map((notification, index) => (
                                                                 <div className="row" key={index}>
-                                                                    <div
-                                                                        className="col-xl-1 col-lg-1"
-                                                                        style={{ display: "flex", margin: "5px" }}
-                                                                    >
-                                                                        <button
-                                                                            type="button"
-                                                                            className="btn btn-secondary"
-                                                                            onClick={() => remove(index)}
-                                                                        >
-                                                                            Remove Anchor
-                                                                        </button>
-                                                                    </div>
-                                                                    <div className="col-xl-3 col-lg-3">
-                                                                        <label htmlFor={`anchors.${index}.name`}>
+                                                                    <div className="col-xl-2 col-lg-2">
+                                                                        <label htmlFor={`anchors.${index}.label`}>
                                                                             Label
                                                                         </label>
                                                                         <Field
                                                                             className={`form-control form-control-lg form-control-solid ${getInputClasses(
                                                                                 { errors, touched },
-                                                                                "anchors.name"
+                                                                                "anchors.label"
                                                                             )}`}
-                                                                            name={`anchors.${index}.name`}
+                                                                            name={`anchors.${index}.label`}
                                                                             placeholder="Label"
                                                                             type="text"
                                                                         />
                                                                         <ErrorMessage
-                                                                            name={`anchors.${index}.name`}
+                                                                            name={`anchors.${index}.label`}
                                                                             component="div"
                                                                             className="field-error"
+                                                                        />
+                                                                    </div>
+                                                                    <div className="col-xl-2 col-lg-2">
+                                                                        <label htmlFor={`anchors.${index}.description`}>
+                                                                            Description
+                                                                        </label>
+                                                                        <Field
+                                                                            className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                                                { errors, touched },
+                                                                                "anchors.description"
+                                                                            )}`}
+                                                                            name={`anchors.${index}.description`}
+                                                                            placeholder="Description"
+                                                                            type="text"
+                                                                        />
+                                                                        <ErrorMessage
+                                                                            name={`anchors.${index}.description`}
+                                                                            component="div"
+                                                                            className="field-error"
+                                                                        />
+                                                                    </div>
+                                                                    <div className="col-xl-3 col-lg-3">
+                                                                        <label htmlFor={`anchors.${index}.device_id`}>
+                                                                            Device
+                                                                        </label>
+                                                                        <AsyncTypeahead
+                                                                                                                                                id={`anchors.${index}.device_id`}
+                                                                           
+                                                                            labelKey="label"
+                                                                            size="lg"
+                                                                            onChange={e => {
+                                                                                if (e[0] != undefined) {
+                                                                                    values.anchors[index].device_id =
+                                                                                        e[0].id;
+                                                                                }
+                                                                            }}
+                                                                            options={devicesSearch}
+                                                                            placeholder=""
+                                                                            onSearch={handleSearchDevice}
+                                                                            filterBy={filterBy}
+                                                                            useCache={false}
                                                                         />
                                                                     </div>
                                                                     <div className="col-xl-1 col-lg-1">
@@ -361,10 +466,23 @@ function FloorMapFormComponent(props) {
                                                                             className="field-error"
                                                                         />
                                                                     </div>
+                                                                    <div
+                                                                        className="col-xl-1 col-lg-1"
+                                                                        style={{ display: "flex", margin: "1px" }}
+                                                                    >
+                                                                        <button
+                                                                            type="button"
+                                                                            className="btn btn-secondary"
+                                                                            onClick={() => remove(index)}
+                                                                        >
+                                                                            Remove Anchor
+                                                                        </button>
+                                                                    </div>
                                                                 </div>
                                                             ))}
                                                         <button
                                                             type="button"
+                                                            style={{ margin: "20px" }}
                                                             className="btn btn-success mr-2"
                                                             onClick={() => push({ label: "", x: 0, y: 0, z: 0 })}
                                                         >
@@ -372,6 +490,7 @@ function FloorMapFormComponent(props) {
                                                         </button>
                                                         <button
                                                             type="button"
+                                                            style={{ margin: "20px" }}
                                                             className="btn btn-success mr-2"
                                                             onClick={() => addAnchorsToMap(values)}
                                                         >
