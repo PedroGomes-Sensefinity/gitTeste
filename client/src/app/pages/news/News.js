@@ -8,7 +8,7 @@ import { injectIntl } from "react-intl";
 const versions = [
     {
         versionNumber: "V.0.4.1 - Latest", date: "03/02/2023", changes:
-            ["1. Fixed a bug that would decrease Dashboards load."]
+            ["1. Fixed a bug that would decrease Dashboards load!"]
     },
     {
         versionNumber: "V.0.4.0", date: "01/02/2023", changes:
