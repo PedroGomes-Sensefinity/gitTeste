@@ -12,7 +12,7 @@ const versions = [
     },
     {
         versionNumber: "V.0.4.0", date: "01/02/2023", changes:
-            ["Dashboards Updates!", "1. New Design on all Dashboards", "2. New Filter Options", "3. It's now possible to add Zoom no Maps using the scroll wheel", "4. New Lists with more Data (Impacts Lists)","5. Second Login is on longer required to access the Dashboards!", "6. We added customize labels to Columns Names","7. General Bug fixes"]
+            ["Dashboards Updates!", "1. New Design on all Dashboards", "2. New Filter Options", "3. It's now possible to add Zoom no Maps using the scroll wheel", "4. New Lists with more Data (Impacts Lists)", "5. Second Login is on longer required to access the Dashboards!", "6. We added customize labels to Columns Names", "7. General Bug fixes"]
     },
     {
         versionNumber: "V.0.3.2", date: "27/01/2023", changes:
@@ -20,7 +20,7 @@ const versions = [
     },
     {
         versionNumber: "V.0.3.1", date: "25/01/2023", changes:
-            ["1. Multiple fixes on Containers Dashboards",  "2. New Dashboard for Routes", "3. You can now check the Impacts for a single Asset. Go to Assets - Asset - Impacts", "4. Impacts measurement from mg to g", "5. Containers Dashboard only shows Longstandings for Sublocations with Containers"]
+            ["1. Multiple fixes on Containers Dashboards", "2. New Dashboard for Routes", "3. You can now check the Impacts for a single Asset. Go to Assets - Asset - Impacts", "4. Impacts measurement from mg to g", "5. Containers Dashboard only shows Longstandings for Sublocations with Containers"]
     },
     {
         versionNumber: "V.0.3.0", date: "24/01/2023", changes:
