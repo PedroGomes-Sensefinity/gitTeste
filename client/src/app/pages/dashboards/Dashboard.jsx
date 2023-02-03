@@ -178,7 +178,7 @@ export function Dashboard() {
                                     </span>
                                     <br></br>
                                     <span className={'font-weight-bold mt-2'}>
-                                        Last Update : V.0.4.0 - 01/02/2023 (Major Update on Dashboards!)
+                                        Last Update : V.0.4.1 - 03/02/2023
                                     </span>
                                 </div>
                             </div>
