@@ -1,4 +1,4 @@
-image: docker:latest
+image: docker:20
 variables:
    # When using dind service, you must instruct Docker to talk with
   # the daemon started inside of the service. The daemon is available
@@ -21,7 +21,7 @@ variables:
   REVISION: ui-admin-v2-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
 
 services:
-  - docker:19.03.5-dind
+  - docker:20-dind
 
 stages:
   - build
@@ -34,7 +34,7 @@ build:
   tags: 
     - sense-runner
   image:
-    name: docker:latest
+    name: docker:20
     entrypoint: [""]
   before_script:
     - until docker info; do sleep 1; done
