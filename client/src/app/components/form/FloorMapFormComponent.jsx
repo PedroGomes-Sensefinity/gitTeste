@@ -59,6 +59,14 @@ function FloorMapFormComponent(props) {
             });
             setTenantsOptions(tenantsOptionsR);
         });
+        //Edit Case
+        if (typeof floorMapId !== 'undefined' && floorMapId !== 0) {
+            //Get Geofence Data
+            apiServiceV2.get("v2/floormaps/" + floorMapId).then((response) => {
+                setFloorMap(response.floor_map)
+                setImage(response.floor_map.attachment_url)
+            });
+        }
     }, []);
 
     const handleSearchDevice = query => {
