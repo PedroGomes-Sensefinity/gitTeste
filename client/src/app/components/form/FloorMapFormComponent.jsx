@@ -44,15 +44,27 @@ function FloorMapFormComponent(props) {
     const [image, setImage] = useState(undefined);
     const [markers, setMarkers] = useState([]);
 
+    const [tenantsOptions, setTenantsOptions] = useState([{ id: 0, name: "Tenants Not Found" }]);
+    const [tenantId, setTenantId] = useState(0);
+
     //Devices:
     const [devicesSearch, setDevicesSearch] = useState([]);
 
-    useEffect(() => {}, []);
+    useEffect(() => {
+        apiServiceV2.get("v2/tenants/children").then(response => {
+            const respTenants = response.tenants_new || [];
+
+            const tenantsOptionsR = respTenants.map(tenant => {
+                return { id: tenant.id, name: tenant.name };
+            });
+            setTenantsOptions(tenantsOptionsR);
+        });
+    }, []);
 
     const handleSearchDevice = query => {
         apiServiceV2.getByLimitOffsetSearchTenant("v2/devices", 50, 0, query, 1).then(response => {
             const respDevices = response.devices || [];
-            console.log(respDevices)
+            console.log(respDevices);
             setDevicesSearch(respDevices);
         });
     };
@@ -137,6 +149,22 @@ function FloorMapFormComponent(props) {
         console.log(markers);
     };
 
+    const handleChangeTenant = event => {
+        setTenantId(event.target.value);
+    };
+
+    const validateTenant = value => {
+        let error;
+        if (!isAddMode) {
+            return error;
+        }
+        if (value === undefined || value === "" || value === 0 || isNaN(value)) {
+            error = "Select Tenant";
+            return error;
+        }
+        return error;
+    };
+
     return (
         <BlockUi tag="div" blocking={blocking}>
             <Formik
@@ -188,6 +216,42 @@ function FloorMapFormComponent(props) {
                             {/* begin::Form */}
                             <div className="form">
                                 <div className="card-body">
+                                    <div className="form-group row">
+                                        <div className="col-xl-12 col-lg-12">
+                                            <label className={`required`}>Tenant</label>
+                                            <Field
+                                                disabled={!isAddMode}
+                                                validate={validateTenant}
+                                                type={"number"}
+                                                as="select"
+                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                    { errors, touched },
+                                                    "tenant.id"
+                                                )}`}
+                                                name="tenant.id"
+                                                placeholder=""
+                                                {...getFieldProps("tenant.id")}
+                                                onChange={e => {
+                                                    setFieldValue("tenant.id", e.target.value);
+                                                    handleChangeTenant(e);
+                                                }}
+                                            >
+                                                {isAddMode && <option key="" value=""></option>}
+                                                {tenantsOptions.map(e => {
+                                                    return (
+                                                        <option key={e.id} value={e.id}>
+                                                            {e.name}
+                                                        </option>
+                                                    );
+                                                })}
+                                            </Field>
+                                            <ErrorMessage
+                                                name="tenant_id"
+                                                component="div"
+                                                className="invalid-feedback"
+                                            />
+                                        </div>
+                                    </div>
                                     <div className="form-group row">
                                         <div className="col-xl-6 col-lg-6">
                                             <label className={`required`}>Label</label>
@@ -401,8 +465,7 @@ function FloorMapFormComponent(props) {
                                                                             Device
                                                                         </label>
                                                                         <AsyncTypeahead
-                                                                                                                                                id={`anchors.${index}.device_id`}
-                                                                           
+                                                                            id={`anchors.${index}.device_id`}
                                                                             labelKey="label"
                                                                             size="lg"
                                                                             onChange={e => {
