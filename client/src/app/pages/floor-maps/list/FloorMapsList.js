@@ -5,7 +5,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
-import TableGrid from '../../../components/table-grid/TableGrid';
+import TableGridV2 from '../../../components/table-grid/TableGridV2';
 import { injectIntl } from "react-intl";
 
 const useStyles = makeStyles((theme) => ({
@@ -60,12 +60,12 @@ export function FloorMapsList() {
                             New Floor Map
                         </Button>
                     </Link> : <></>}
-                <TableGrid
+                <TableGridV2
                     actions={actions}
                     title=''
                     columns={columns}
-                    endpoint={'floormaps'}
-                    dataField='floormaps'
+                    endpoint={'/v2/floormaps'}
+                    dataField='floor_maps'
                 />
             </CardContent>
         </Card>
