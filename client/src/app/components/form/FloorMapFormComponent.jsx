@@ -110,8 +110,17 @@ function FloorMapFormComponent(props) {
             setBlocking(false);
             return;
         }
+        fields["tenant_id"] = parseInt(tenantId);
         fields["attachment_url"] = image;
         console.log(JSON.stringify(fields));
+        apiServiceV2
+            .post(`v2/floormaps`, fields)
+            .then(() => {
+                toaster.notify("success", `Floor Map created!`);
+            })
+            .catch(() => {
+                toaster.notify("error", `Floor Map Error`);
+            });
         setBlocking(false);
     };
 
@@ -334,6 +343,8 @@ function FloorMapFormComponent(props) {
                                                         "length"
                                                     )}`}
                                                     name="length"
+                                                    type={"number"}
+                                                    step="any"
                                                     placeholder="Set the Floor map Length"
                                                     {...getFieldProps("length")}
                                                 />
@@ -354,6 +365,8 @@ function FloorMapFormComponent(props) {
                                                         "width"
                                                     )}`}
                                                     name="label"
+                                                    type={"number"}
+                                                    step="any"
                                                     placeholder="Set the Floor map width"
                                                     {...getFieldProps("width")}
                                                 />
@@ -374,6 +387,8 @@ function FloorMapFormComponent(props) {
                                                         "path_loss"
                                                     )}`}
                                                     name="path_loss"
+                                                    type={"number"}
+                                                    step="any"
                                                     placeholder="Set the Floor map Path Loss"
                                                     {...getFieldProps("path_loss")}
                                                 />
@@ -394,6 +409,8 @@ function FloorMapFormComponent(props) {
                                                         "environment_constant"
                                                     )}`}
                                                     name="environment_constant"
+                                                    type={"number"}
+                                                    step="any"
                                                     placeholder="Set the Floor map Environment Constant"
                                                     {...getFieldProps("environment_constant")}
                                                 />
@@ -489,7 +506,8 @@ function FloorMapFormComponent(props) {
                                                                                 "anchors.x"
                                                                             )}`}
                                                                             name={`anchors.${index}.x`}
-                                                                            type="number"
+                                                                            type={"number"}
+                                                                            step="any"
                                                                         />
                                                                         <ErrorMessage
                                                                             name={`anchors.${index}.x`}
@@ -505,7 +523,8 @@ function FloorMapFormComponent(props) {
                                                                                 "anchors.y"
                                                                             )}`}
                                                                             name={`anchors.${index}.y`}
-                                                                            type="number"
+                                                                            type={"number"}
+                                                                            step="any"
                                                                         />
                                                                         <ErrorMessage
                                                                             name={`anchors.${index}.y`}
@@ -521,7 +540,8 @@ function FloorMapFormComponent(props) {
                                                                                 "anchors.z"
                                                                             )}`}
                                                                             name={`anchors.${index}.z`}
-                                                                            type="number"
+                                                                            type={"number"}
+                                                                            step="any"
                                                                         />
                                                                         <ErrorMessage
                                                                             name={`anchors.${index}.z`}
