@@ -21,19 +21,11 @@ export function FloorMapsForm({match}) {
                       indicatorColor="primary"
                       textColor="primary"
                       onChange={handleChange}>
-                    <Tab label="General info" />
-                    { typeof id !== "undefined" && <Tab label="Map"/> }
-                    { typeof id !== "undefined" && <Tab label="Anchors"/> }
+                    <Tab label="General" />
                 </Tabs>
             </Paper>
             <TabContainer>
                 {value === 0 && <FloorMapFormComponent id={id} />}
-            </TabContainer>
-            <TabContainer>
-                {value === 1 &&  <FloorMapMapFormComponent id={id} />}
-            </TabContainer>
-            <TabContainer>
-                {value === 2 &&  <FloorMapAnchorsFormComponent id={id} />}
             </TabContainer>
         </div>
     )
