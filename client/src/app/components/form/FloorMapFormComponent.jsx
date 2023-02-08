@@ -60,20 +60,24 @@ function FloorMapFormComponent(props) {
             setTenantsOptions(tenantsOptionsR);
         });
         //Edit Case
-        if (typeof floorMapId !== 'undefined' && floorMapId !== 0) {
+        if (typeof floorMapId !== "undefined" && floorMapId !== 0) {
             //Get Geofence Data
-            apiServiceV2.get("v2/floormaps/" + floorMapId).then((response) => {
-                setFloorMap(response.floor_map)
-                setImage(response.floor_map.attachment_url)
+            apiServiceV2.get("v2/floormaps/" + floorMapId).then(response => {
+                setFloorMap(response.floor_map);
+                console.log(response.floor_map);
+                setImage(response.floor_map.attachment_url);
             });
         }
     }, []);
 
     const handleSearchDevice = query => {
         apiServiceV2.getByLimitOffsetSearchTenant("v2/devices", 50, 0, query, 1).then(response => {
-            const respDevices = response.devices || [];
-            console.log(respDevices);
-            setDevicesSearch(respDevices);
+            const devices = [];
+            const devicesR = response.devices || [];
+            devicesR.forEach(e => devices.push({ device_id: e.id }));
+            setDevicesSearch(devices);
+
+            console.log(devices);
         });
     };
 
@@ -118,18 +122,33 @@ function FloorMapFormComponent(props) {
             setBlocking(false);
             return;
         }
-        fields["tenant_id"] = parseInt(tenantId);
         fields["attachment_url"] = image;
         console.log(JSON.stringify(fields));
-        apiServiceV2
-            .post(`v2/floormaps`, fields)
-            .then(() => {
-                toaster.notify("success", `Floor Map created!`);
-            })
-            .catch(() => {
-                toaster.notify("error", `Floor Map Error`);
-            });
-        setBlocking(false);
+        if (isAddMode) {
+            fields["tenant_id"] = parseInt(tenantId);
+            apiServiceV2
+                .post(`v2/floormaps`, fields)
+                .then(() => {
+                    toaster.notify("success", `Floor Map created!`);
+                    setBlocking(false);
+                })
+                .catch(() => {
+                    toaster.notify("error", `Floor Map Error`);
+                    setBlocking(false);
+                });
+        } else {
+            fields["id"] = parseInt(fields["id"]);
+            apiServiceV2
+                .put(`v2/floormaps/` + fields.id, fields)
+                .then(() => {
+                    toaster.notify("success", `Floor Map Updates!`);
+                    setBlocking(false);
+                })
+                .catch(() => {
+                    toaster.notify("error", `Floor Map Error`);
+                    setBlocking(false);
+                });
+        }
     };
 
     const upload = (file, { setFieldValue }) => {
@@ -490,20 +509,25 @@ function FloorMapFormComponent(props) {
                                                                             Device
                                                                         </label>
                                                                         <AsyncTypeahead
-                                                                            id={`anchors.${index}.device_id`}
-                                                                            labelKey="label"
+                                                                            id={values.anchors[index].device_id}
+                                                                            labelKey="device_id"
                                                                             size="lg"
                                                                             onChange={e => {
-                                                                                if (e[0] != undefined) {
+                                                                                if (e[0].device_id != "") {
                                                                                     values.anchors[index].device_id =
-                                                                                        e[0].id;
+                                                                                        e[0].device_id;
                                                                                 }
                                                                             }}
+                                                                            defaultInputValue={
+                                                                                values.anchors[index].device_id !== ""
+                                                                                    ? values.anchors[index].device_id
+                                                                                    : ""
+                                                                            }
                                                                             options={devicesSearch}
-                                                                            placeholder=""
                                                                             onSearch={handleSearchDevice}
-                                                                            filterBy={filterBy}
+                                                                            isLoading={false}
                                                                             useCache={false}
+                                                                            filterBy={filterBy}
                                                                         />
                                                                     </div>
                                                                     <div className="col-xl-1 col-lg-1">
@@ -575,7 +599,9 @@ function FloorMapFormComponent(props) {
                                                             type="button"
                                                             style={{ margin: "20px" }}
                                                             className="btn btn-success mr-2"
-                                                            onClick={() => push({ label: "", x: 0, y: 0, z: 0 })}
+                                                            onClick={() =>
+                                                                push({ device_id: "", label: "", x: 0, y: 0, z: 0 })
+                                                            }
                                                         >
                                                             Add Anchor
                                                         </button>

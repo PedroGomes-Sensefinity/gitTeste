@@ -44,7 +44,12 @@ export function FloorMapsList() {
         {
             field: 'label',
             title: 'Label',
+        },
+        {
+            field: 'tenant.name',
+            title: 'Tenant',
         }
+        
     ];
 
     return (
