@@ -90,7 +90,6 @@ function FloorMapFormComponent(props) {
         length: floorMapInfo.length || 0,
         width: floorMapInfo.width || 0,
         path_loss: floorMapInfo.path_loss || 0,
-        environment_constant: floorMapInfo.environment_constant || 0,
         anchors: floorMapInfo.anchors || []
     };
 
@@ -107,9 +106,6 @@ function FloorMapFormComponent(props) {
         path_loss: Yup.number()
             .min(0)
             .max(5)
-            .required("This field is required"),
-        environment_constant: Yup.number()
-            .min(1)
             .required("This field is required"),
         description: Yup.string().max(255, "Description is too long. Max 255 characters.")
     });
@@ -426,28 +422,6 @@ function FloorMapFormComponent(props) {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="col-xl-3 col-lg-3">
-                                            <label className={`required`}>Environment Constant (C)</label>
-                                            <div>
-                                                <Field
-                                                    as="input"
-                                                    className={`form-control form-control-lg form-control-solid required ${getInputClasses(
-                                                        { errors, touched },
-                                                        "environment_constant"
-                                                    )}`}
-                                                    name="environment_constant"
-                                                    type={"number"}
-                                                    step="any"
-                                                    placeholder="Set the Floor map Environment Constant"
-                                                    {...getFieldProps("environment_constant")}
-                                                />
-                                                <ErrorMessage
-                                                    name="environment_constant"
-                                                    component="div"
-                                                    className="invalid-feedback"
-                                                />
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -504,7 +478,7 @@ function FloorMapFormComponent(props) {
                                                                             className="field-error"
                                                                         />
                                                                     </div>
-                                                                    <div className="col-xl-3 col-lg-3">
+                                                                    <div className="col-xl-2 col-lg-2">
                                                                         <label htmlFor={`anchors.${index}.device_id`}>
                                                                             Device
                                                                         </label>
@@ -581,6 +555,23 @@ function FloorMapFormComponent(props) {
                                                                             className="field-error"
                                                                         />
                                                                     </div>
+                                                                    <div className="col-xl-1 col-lg-1">
+                                                                        <label htmlFor={`anchors.${index}.measured_power`}>Power (C)</label>
+                                                                        <Field
+                                                                            className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                                                { errors, touched },
+                                                                                "anchors.measured_power"
+                                                                            )}`}
+                                                                            name={`anchors.${index}.measured_power`}
+                                                                            type={"number"}
+                                                                            step="any"
+                                                                        />
+                                                                        <ErrorMessage
+                                                                            name={`anchors.${index}.measured_power`}
+                                                                            component="div"
+                                                                            className="field-error"
+                                                                        />
+                                                                    </div>
                                                                     <div
                                                                         className="col-xl-1 col-lg-1"
                                                                         style={{ display: "flex", margin: "1px" }}
@@ -600,7 +591,7 @@ function FloorMapFormComponent(props) {
                                                             style={{ margin: "20px" }}
                                                             className="btn btn-success mr-2"
                                                             onClick={() =>
-                                                                push({ device_id: "", label: "", x: 0, y: 0, z: 0 })
+                                                                push({ device_id: "", label: "", x: 0, y: 0, z: 0, measured_power: 0 })
                                                             }
                                                         >
                                                             Add Anchor
