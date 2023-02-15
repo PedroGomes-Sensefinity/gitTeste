@@ -4,7 +4,6 @@ import { ErrorMessage, Formik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import BlockUi from "react-block-ui";
 import { injectIntl } from 'react-intl';
-import NumberFormat from 'react-number-format';
 import * as Yup from 'yup';
 import apiService from '../../services/apiService';
 import floorMapService from '../../services/floorMapService';
@@ -12,6 +11,7 @@ import { getInputClasses } from '../../utils/formik';
 import toaster from '../../utils/toaster';
 import '../../utils/yup-validations';
 import IndoorMap from "../indoor-map/indoorMap";
+import NumberFormat from "react-number-format";
 
 const useStyles = makeStyles((theme) => ({
     headerMarginTop: {
