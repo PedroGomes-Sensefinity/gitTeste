@@ -11,8 +11,8 @@ import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import { injectIntl } from "react-intl";
 
-function Line(x, y, z, color) {
-  const material = new THREE.LineBasicMaterial({ color: color, linewidth: 100 });
+function Line(x, y, z, color, lineW) {
+  const material = new THREE.LineBasicMaterial({ color: color, linewidth: lineW });
   const points = [];
   points.push(new THREE.Vector3(0, 0, 0));
   points.push(new THREE.Vector3(x, y, z));
@@ -32,23 +32,59 @@ export function Impacts(props) {
       let y = params.get('y');
       let z = params.get('z');
       let paramObj = {};
+      let paramObjReverse = {};
       for (var value of params.keys()) {
         paramObj[value] = params.get(value);
+        paramObjReverse[value] = -params.get(value);
       }
+      console.log(paramObj)
       setValues(paramObj)
+      setValuesReverse(paramObjReverse)
+      const options = []
+      if (x > 0.5) {
+        options.push({ id: 3, label: "Container Left" })
+        setSelectedContainer("/media/3d/container/L/containerL.gltf")
+        setSelectedOption(3)
+      }
+
+      if (x < -0.5) {
+        options.push({ id: 4, label: "Container Right" })
+        setSelectedContainer("/media/3d/container/R/containerL.gltf")
+        setSelectedOption(4)
+      }
+
+      if (y > 0.5) {
+        options.push({ id: 6, label: "Container Down" })
+        setSelectedContainer("/media/3d/container/D/containerD.gltf")
+        setSelectedOption(6)
+      }
+
+      if (y < -0.5) {
+        options.push({ id: 5, label: "Container Top" })
+        setSelectedContainer("/media/3d/container/T/containerT.gltf")
+        setSelectedOption(5)
+      }
+
+      if (z > 0.5) {
+        options.push({ id: 1, label: "Container Front" })
+        setSelectedContainer("/media/3d/container/F/containerF.gltf")
+        setSelectedOption(1)
+      }
+
+      if (z < -0.5) {
+        options.push({ id: 2, label: "Container Back" })
+        setSelectedContainer("/media/3d/container/B/containerB.gltf")
+        setSelectedOption(2)
+      }
+      setViewOptions(options)
     }
   }, []);
-  const viewOptions = [
-    { id: 1, label: "Container Front" },
-    { id: 2, label: "Container Back" },
-    { id: 3, label: "Container Left" },
-    { id: 4, label: "Container Right" },
-    { id: 5, label: "Container Top" },
-    { id: 6, label: "Container Down" },
-  ]
+
+  const [viewOptions, setViewOptions] = useState([])
   const [selectedOption, setSelectedOption] = useState(0);
   const [selectedContainer, setSelectedContainer] = useState("/media/3d/container/R/containerR.gltf")
-  const [values, setValues] = useState({x:0, y:0, z:0})
+  const [values, setValues] = useState({ x: 0, y: 0, z: 0 })
+  const [valuesReverse, setValuesReverse] = useState({ x: 0, y: 0, z: 0 })
   function onChangeOption(e) {
     setSelectedOption(e.target.value);
     switch (e.target.value) {
@@ -97,11 +133,12 @@ export function Impacts(props) {
     }
   );
 
+
   return (
     <div className='row'>
-      <div className='col-xl-1 form'  >
-        <FormControl style={{ margin: "15px" }}>
-          <InputLabel id="select-container">Container Impact</InputLabel>
+      <div className='col-sm-6 form'  >
+        <FormControl style={{ margin: "15px", width: "20em"}}>
+          <InputLabel id="select-container">Impact detected probably on the following Faces:</InputLabel>
           <Select labelId="select-container" value={selectedOption} onChange={onChangeOption}>
             {viewOptions.map(c => (
               <MenuItem value={c.id}>{c.label}</MenuItem>
@@ -116,7 +153,8 @@ export function Impacts(props) {
           <pointLight position={[20, 20, 20]} />
           <spotLight position={[-20, -20, -20]} penumbra={1} />
           <pointLight position={[-20, -20, -20]} />
-          <primitive object={Line(values.x,values.y,values.x, "#DD1C1C")} />
+          <primitive object={Line(values.x, values.y, values.z, "#DD1C1C", 100)} />
+          <primitive object={Line(valuesReverse.x, valuesReverse.y, valuesReverse.z, "#000000", 2)} />
           <Suspense fallback={null}>
             <primitive object={scene} />
           </Suspense>
