@@ -55,10 +55,10 @@ export function Dashboard() {
         apiServiceV2.get("v2/assets").then(r => {
             if ("total" in r) setAssets(r.total);
         });
-        apiServiceV2.get("v2/assets?device=true&tenant_id=19").then(r => {
+        apiServiceV2.get("v2/devices?asset=true&tenant_id=19").then(r => {
             if ("total" in r) setTiAssetCount(r.total);
         });
-        apiServiceV2.get("v2/assets?device=true&tenant_id=20").then(r => {
+        apiServiceV2.get("v2/devices?asset=true&tenant_id=20").then(r => {
             if ("total" in r) setTicvAssetCount(r.total);
         });
         notificationService.count("alarm", "created", "-", "-").then(r => {
