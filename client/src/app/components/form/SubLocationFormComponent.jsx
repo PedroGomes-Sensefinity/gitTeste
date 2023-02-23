@@ -98,7 +98,7 @@ function SubLocationFormComponent(props) {
         return -1;
     }, [geofences])
 
-    const onChangeShape = (setFieldValue) => ((shapes) => setFieldValue('geofences', shapes))
+    const onChangeShape = (setFieldValue) => ((shapes) => setGeofences(shapes))
 
     const columnsGeofences = [
         {
@@ -206,7 +206,6 @@ function SubLocationFormComponent(props) {
                     setFieldTouched,
                     values
                 }) => {
-                    console.log(errors)
                     return <form
                         className='card card-custom'
                         onSubmit={handleSubmit}>

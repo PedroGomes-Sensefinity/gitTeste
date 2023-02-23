@@ -81,7 +81,7 @@ function LocationFormComponent(props) {
     }, [geofences])
 
     const onChangeShape = (setFieldValue) => ((shapes) => {
-        setFieldValue('geofences', shapes)
+       setGeofences(shapes)
     })
 
 
@@ -120,7 +120,6 @@ function LocationFormComponent(props) {
             fields["id"] = parseInt(fields["id"])
         }
 
-        console.log(fields)
         locationServiceV2[endpoint](fields)
             .then((_response) => {
                 toaster.notify('success', "Success Locations!");
