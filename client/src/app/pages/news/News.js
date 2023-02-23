@@ -7,7 +7,17 @@ import { injectIntl } from "react-intl";
 
 const versions = [
     {
-        versionNumber: "V.0.4.1 - Latest", date: "03/02/2023", changes:
+        versionNumber: "V.0.4.2 - Latest", date: "23/02/2023", changes:
+            ["1. Changed the size of PTLIS and PTLEI",
+            "2. Removed all Thresholds and Geofences not created by Transinsular",
+            "3. Fixed a issue where a Threshold was being used as a Sublocation and removed Acceleration Notifications Templates from Thresholds of type Geofence",
+            "4. Added counter of Assets Tracked on Main Page",
+            "5. Fixed a bug on search of Locations/Sublocations that would not result on zero results",
+            "6. Fixed the bug related to shapes on the Locations/Sublocations that would not allow the correct modification of the Shape" 
+        ]
+    },
+    {
+        versionNumber: "V.0.4.1", date: "03/02/2023", changes:
             ["1. Fixed a bug that would decrease Dashboards load!"]
     },
     {
