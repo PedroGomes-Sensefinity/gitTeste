@@ -1,9 +1,5 @@
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
 import React, { useState, useEffect } from 'react'
 import * as THREE from "three";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
 import { Suspense } from 'react'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
@@ -20,6 +16,24 @@ function Line(x, y, z, color, lineW) {
   const line = new THREE.Line(geometry, material);
   return line
 }
+
+function color(value) {
+  if (value < 0) {
+    value = -value
+  }
+  if (value > 0 && value <= 3) {
+    return { color: 0x006600 }
+  }
+  if (value > 3 && value <= 6) {
+    return { color: 0xFFFF00 }
+  }
+  if (value > 6 && value <= 8) {
+    return { color: 0xFF0000 }
+  }
+}
+
+const scene = new THREE.Scene();
+const loader = new GLTFLoader();
 
 export function Impacts(props) {
   useEffect(() => {
@@ -41,76 +55,89 @@ export function Impacts(props) {
       setValues(paramObj)
       setValuesReverse(paramObjReverse)
       const options = []
+
       if (x > 0.5) {
-        options.push({ id: 3, label: "Container Left" })
+        options.push({ id: 3, label: "Container Left", value: x })
         setSelectedContainer("/media/3d/container/L/containerL.gltf")
-        setSelectedOption(3)
+        setCount(1)
+        const geometry = new THREE.BoxGeometry(0.01, 2, 4.8);
+        const material = new THREE.MeshBasicMaterial(color(x));
+
+        const cube = new THREE.Mesh(geometry, material);
+        cube.position.set(-0.80, -0.5, -2.5)
+        scene.add(cube);
       }
 
       if (x < -0.5) {
-        options.push({ id: 4, label: "Container Right" })
-        setSelectedContainer("/media/3d/container/R/containerL.gltf")
-        setSelectedOption(4)
+        options.push({ id: 4, label: "Container Right", value: x })
+        setSelectedContainer("/media/3d/container/R/containerR.gltf")
+        setCount(1)
+        const geometry = new THREE.BoxGeometry(0.01, 2, 4.8);
+        const material = new THREE.MeshBasicMaterial(color(x));
+
+        const cube = new THREE.Mesh(geometry, material);
+        cube.position.set(1.27, -0.5, -2.5)
+        scene.add(cube);
       }
 
       if (y > 0.5) {
-        options.push({ id: 6, label: "Container Down" })
+        options.push({ id: 6, label: "Container Down", value: y })
         setSelectedContainer("/media/3d/container/D/containerD.gltf")
-        setSelectedOption(6)
+        setCount(1)
+
+        const geometry = new THREE.BoxGeometry(2, 0.01, 4.8);
+        const material = new THREE.MeshBasicMaterial(color(y));
+
+        const cube = new THREE.Mesh(geometry, material);
+        cube.position.set(0.25, -1.6, -2.5)
+        scene.add(cube);
       }
 
       if (y < -0.5) {
-        options.push({ id: 5, label: "Container Top" })
+        options.push({ id: 5, label: "Container Top", value: y })
         setSelectedContainer("/media/3d/container/T/containerT.gltf")
-        setSelectedOption(5)
+        setCount(1)
+        const geometry = new THREE.BoxGeometry(2, 0.01, 4.8);
+        const material = new THREE.MeshBasicMaterial(color(y));
+
+        const cube = new THREE.Mesh(geometry, material);
+        cube.position.set(0.25, 0.62, -2.5)
+        scene.add(cube);
       }
 
       if (z > 0.5) {
-        options.push({ id: 1, label: "Container Front" })
+        options.push({ id: 1, label: "Container Front", value: z })
         setSelectedContainer("/media/3d/container/F/containerF.gltf")
-        setSelectedOption(1)
+        setCount(1)
+
+        const geometry = new THREE.BoxGeometry(1.9, 2, 0.01);
+        const material = new THREE.MeshBasicMaterial(color(z));
+
+        const cube = new THREE.Mesh(geometry, material);
+        cube.position.set(0.25, -0.5, -4.951)
+        scene.add(cube);
       }
 
       if (z < -0.5) {
-        options.push({ id: 2, label: "Container Back" })
+        options.push({ id: 2, label: "Container Back", value: z })
         setSelectedContainer("/media/3d/container/B/containerB.gltf")
-        setSelectedOption(2)
+        setCount(1)
+
+        const geometry = new THREE.BoxGeometry(1.9, 2, 0.01);
+        const material = new THREE.MeshBasicMaterial(color(z));
+
+        const cube = new THREE.Mesh(geometry, material);
+        cube.position.set(0.25, -0.5, -0.031)
+        scene.add(cube);
+
       }
-      setViewOptions(options)
     }
   }, []);
 
-  const [viewOptions, setViewOptions] = useState([])
-  const [selectedOption, setSelectedOption] = useState(0);
   const [selectedContainer, setSelectedContainer] = useState("/media/3d/container/R/containerR.gltf")
   const [values, setValues] = useState({ x: 0, y: 0, z: 0 })
   const [valuesReverse, setValuesReverse] = useState({ x: 0, y: 0, z: 0 })
-  function onChangeOption(e) {
-    setSelectedOption(e.target.value);
-    switch (e.target.value) {
-      case 1:
-        setSelectedContainer("/media/3d/container/F/containerF.gltf")
-        break
-      case 2:
-        setSelectedContainer("/media/3d/container/B/containerB.gltf")
-        break
-      case 3:
-        setSelectedContainer("/media/3d/container/L/containerL.gltf")
-        break
-      case 4:
-        setSelectedContainer("/media/3d/container/R/containerR.gltf")
-        break
-      case 5:
-        setSelectedContainer("/media/3d/container/T/containerT.gltf")
-        break
-      case 6:
-        setSelectedContainer("/media/3d/container/D/containerD.gltf")
-        break
-    }
-
-  }
-  const scene = new THREE.Scene();
-  const loader = new GLTFLoader();
+  const [count, setCount] = useState(0)
 
   const draco = new DRACOLoader();
   draco.setDecoderConfig({ type: 'js' });
@@ -121,7 +148,9 @@ export function Impacts(props) {
   loader.load(
     selectedContainer,
     function (gltf) {
-      scene.add(gltf.scene);
+      if (count !== 0) {
+        scene.add(gltf.scene);
+      }
     },
     // loading is progressing
     function (xhr) {
@@ -136,25 +165,40 @@ export function Impacts(props) {
 
   return (
     <div className='row'>
-      <div className='col-sm-6 form'  >
-        <FormControl style={{ margin: "15px", width: "20em"}}>
-          <InputLabel id="select-container">Impact detected probably on the following Faces:</InputLabel>
-          <Select labelId="select-container" value={selectedOption} onChange={onChangeOption}>
-            {viewOptions.map(c => (
-              <MenuItem value={c.id}>{c.label}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+      <div>
+
+        <span style={{ "margin": "5px", "background-color": "green", "width": "1.5rem", "height": "1.5rem", "display": "inline-block", " background-color": "green" }}>
+        </span>
+        <span >
+          Interval: 0g - 3g
+        </span>
+
+        <span style={{ "margin": "5px", "background-color": "yellow", "width": "1.5rem", "height": "1.5rem", "display": "inline-block", " background-color": "yellow" }}>
+        </span>
+        <span >
+          Interval: 3g - 6g
+        </span>
+
+        <span style={{ "margin": "5px", "background-color": "red", "width": "1.5rem", "height": "1.5rem", "display": "inline-block", " background-color": "red" }}>
+        </span>
+        <span >
+          Interval: 6g - 8g
+        </span>
+
       </div>
+
       <div key={selectedContainer} className='col-xl-11 ' style={{ height: '100vh' }}>
+        <span style={{ margin: "4px" }}>
+          Current Values: X: {values.x}  Y: {values.y}  Z: {values.z}
+        </span>
         <Canvas camera={{ fov: 50 }} key={selectedContainer} >
           <ambientLight intensity={1} />
           <spotLight position={[20, 20, 20]} penumbra={1} />
           <pointLight position={[20, 20, 20]} />
           <spotLight position={[-20, -20, -20]} penumbra={1} />
           <pointLight position={[-20, -20, -20]} />
-          <primitive object={Line(values.x, values.y, values.z, "#DD1C1C", 100)} />
-          <primitive object={Line(valuesReverse.x, valuesReverse.y, valuesReverse.z, "#000000", 2)} />
+          <primitive object={Line(values.x, values.y, values.z, "#DD1C1C", 500)} />
+          <primitive object={Line(valuesReverse.x, valuesReverse.y, valuesReverse.z, "#000000", 1)} />
           <Suspense fallback={null}>
             <primitive object={scene} />
           </Suspense>
