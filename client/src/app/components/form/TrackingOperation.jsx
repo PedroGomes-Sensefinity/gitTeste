@@ -49,6 +49,7 @@ function TrackingOperation() {
             const tenantsOptionsR = respTenants.map(tenant => {
                 return { id: tenant.id, name: tenant.name };
             });
+            tenantsOptionsR.push({ id: 0, name: "ALL" })
             setTenantsOptions(tenantsOptionsR);
         });
     }, []);
@@ -164,47 +165,98 @@ function TrackingOperation() {
         }
         setBlocking(true);
         setSubmitting(true);
-        switch (fields["alert_mode"]) {
-            case "1":
-                fields["alert_mode"] = "None";
-                break;
-            case "2":
-                fields["alert_mode"] = "In";
-                break;
-            case "3":
-                fields["alert_mode"] = "Out";
-                break;
-            case "4":
-                fields["alert_mode"] = "In/Out";
-                break;
+        console.log(fields["tenant"].id)
+        if (parseInt(fields["tenant"].id) === 0){
+            console.log(tenantsOptions)
+            tenantsOptions.forEach(tenant =>{
+                console.log(tenant)
+                if(parseInt(tenant.id) !== 0){
+                    switch (fields["alert_mode"]) {
+                        case "1":
+                            fields["alert_mode"] = "None";
+                            break;
+                        case "2":
+                            fields["alert_mode"] = "In";
+                            break;
+                        case "3":
+                            fields["alert_mode"] = "Out";
+                            break;
+                        case "4":
+                            fields["alert_mode"] = "In/Out";
+                            break;
+                    }
+                    switch (fields["type"]) {
+                        case "1":
+                            fields["type"] = "email";
+                            break;
+                        case "2":
+                            fields["type"] = "sms";
+                            break;
+                    }
+                    const data = {};
+                    for (let i = 0; i < geofences.length; i++) {
+                        data[i] = JSON.stringify(geofences[i]);
+                    }
+                    fields["geofence"] = JSON.stringify(data);
+                    fields["asset_ids"] = selectedAssetsId;
+                    fields["tenant"].id = tenant.id
+                    fields["tenant_id"] = parseInt(tenant.id);
+                    console.log(fields)
+                    operationsServiceV2.save("tracking", fields).then(r => {
+                        const thresholdId = r.id
+                        setBlocking(false);
+                        setSubmitting(false);
+                        history.push(`/thresholds/${thresholdId}/edit`)
+                    }).catch(r => {
+                        toaster.notify('error', "Error on Creating Operation");
+                        setBlocking(false);
+                        setSubmitting(false);
+                    })
+                }
+            })
+        }else{
+            switch (fields["alert_mode"]) {
+                case "1":
+                    fields["alert_mode"] = "None";
+                    break;
+                case "2":
+                    fields["alert_mode"] = "In";
+                    break;
+                case "3":
+                    fields["alert_mode"] = "Out";
+                    break;
+                case "4":
+                    fields["alert_mode"] = "In/Out";
+                    break;
+            }
+            switch (fields["type"]) {
+                case "1":
+                    fields["type"] = "email";
+                    break;
+                case "2":
+                    fields["type"] = "sms";
+                    break;
+            }
+            const data = {};
+            for (let i = 0; i < geofences.length; i++) {
+                data[i] = JSON.stringify(geofences[i]);
+            }
+            fields["geofence"] = JSON.stringify(data);
+            fields["asset_ids"] = selectedAssetsId;
+            fields["tenant_id"] = parseInt(fields["tenant"].id);
+            console.log(fields)
+            operationsServiceV2.save("tracking", fields).then(r => {
+                const thresholdId = r.id
+                setBlocking(false);
+                setSubmitting(false);
+                history.push(`/thresholds/${thresholdId}/edit`)
+            }).catch(r => {
+                toaster.notify('error', "Error on Creating Operation");
+                setBlocking(false);
+                setSubmitting(false);
+            })
         }
-        switch (fields["type"]) {
-            case "1":
-                fields["type"] = "email";
-                break;
-            case "2":
-                fields["type"] = "sms";
-                break;
-        }
-        const data = {};
-        for (let i = 0; i < geofences.length; i++) {
-            data[i] = JSON.stringify(geofences[i]);
-        }
-        fields["geofence"] = JSON.stringify(data);
-        fields["asset_ids"] = selectedAssetsId;
-        fields["tenant_id"] = parseInt(fields["tenant"].id);
-
-        operationsServiceV2.save("tracking", fields).then(r => {
-            const thresholdId = r.id
-            setBlocking(false);
-            setSubmitting(false);
-            history.push(`/thresholds/${thresholdId}/edit`)
-        }).catch(r => {
-
-            setBlocking(false);
-            setSubmitting(false);
-        })
-        console.log(fields);
+        
     };
 
     return (
