@@ -206,7 +206,7 @@ function TrackingOperation() {
                         const thresholdId = r.id
                         setBlocking(false);
                         setSubmitting(false);
-                        history.push(`/thresholds/${thresholdId}/edit`)
+                        history.push(`/thresholds/list`)
                     }).catch(r => {
                         toaster.notify('error', "Error on Creating Operation");
                         setBlocking(false);
