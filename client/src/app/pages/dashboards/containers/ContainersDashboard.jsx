@@ -111,7 +111,8 @@ export function ContainersDashboard() {
         data15_30: [0],
         data30_60: [0],
         data60_90: [0],
-        data90: [0]
+        data90: [0], 
+        total: [0],
     });
 
     //Container States
@@ -425,6 +426,7 @@ export function ContainersDashboard() {
                         const data30_60_R = [];
                         const data60_90_R = [];
                         const data90_R = [];
+                        const total = [];
                         for (const longStanding of response) {
                             if (
                                 longStanding.interval_count.less15 !== 0 ||
@@ -439,6 +441,13 @@ export function ContainersDashboard() {
                                 data30_60_R.push(longStanding.interval_count.interval30_60);
                                 data60_90_R.push(longStanding.interval_count.interval60_90);
                                 data90_R.push(longStanding.interval_count.more90);
+                                total.push(
+                                    longStanding.interval_count.less15 +
+                                        longStanding.interval_count.interval15_30 +
+                                        longStanding.interval_count.interval30_60 +
+                                        longStanding.interval_count.interval60_90 +
+                                        longStanding.interval_count.more90
+                                );
                             }
                         }
                         if (ports.length !== 0) {
@@ -448,7 +457,8 @@ export function ContainersDashboard() {
                                 data15_30: data15_30_R,
                                 data30_60: data30_60_R,
                                 data60_90: data60_90_R,
-                                data90: data90_R
+                                data90: data90_R,
+                                total: total
                             };
                             setIntervalData(intervalData_R);
                         }
@@ -520,25 +530,43 @@ export function ContainersDashboard() {
                 const data30_60_R = [];
                 const data60_90_R = [];
                 const data90_R = [];
+                const total = [];
                 for (const longStanding of response) {
-                    ports_R.push(longStanding.port_code);
-                    data15_R.push(longStanding.interval_count.less15);
-                    data15_30_R.push(longStanding.interval_count.interval15_30);
-                    data30_60_R.push(longStanding.interval_count.interval30_60);
-                    data60_90_R.push(longStanding.interval_count.interval60_90);
-                    data90_R.push(longStanding.interval_count.more90);
+                    if (
+                        longStanding.interval_count.less15 !== 0 ||
+                        longStanding.interval_count.interval15_30 !== 0 ||
+                        longStanding.interval_count.interval30_60 !== 0 ||
+                        longStanding.interval_count.interval60_90 !== 0 ||
+                        longStanding.interval_count.more90 !== 0
+                    ) {
+                        ports_R.push(longStanding.port_code);
+                        data15_R.push(longStanding.interval_count.less15);
+                        data15_30_R.push(longStanding.interval_count.interval15_30);
+                        data30_60_R.push(longStanding.interval_count.interval30_60);
+                        data60_90_R.push(longStanding.interval_count.interval60_90);
+                        data90_R.push(longStanding.interval_count.more90);
+                        total.push(
+                            longStanding.interval_count.less15 +
+                                longStanding.interval_count.interval15_30 +
+                                longStanding.interval_count.interval30_60 +
+                                longStanding.interval_count.interval60_90 +
+                                longStanding.interval_count.more90
+                        );
+                    }
                 }
-
-                setPorts(ports_R);
-                const intervalData_R = {
-                    data15: data15_R,
-                    data15_30: data15_30_R,
-                    data30_60: data30_60_R,
-                    data60_90: data60_90_R,
-                    data90: data90_R
-                };
-                setIntervalData(intervalData_R);
-                setBlocking(false);
+                if (ports.length !== 0) {
+                    setPorts(ports_R);
+                    const intervalData_R = {
+                        data15: data15_R,
+                        data15_30: data15_30_R,
+                        data30_60: data30_60_R,
+                        data60_90: data60_90_R,
+                        data90: data90_R,
+                        total: total
+                    };
+                    setIntervalData(intervalData_R);
+                    setBlocking(false);
+                }
             });
     }
 
@@ -848,6 +876,14 @@ export function ContainersDashboard() {
                                         </TableCell>
                                         {intervalData["data90"].map(data90i => (
                                             <StyledTableCell align="center">{data90i}</StyledTableCell>
+                                        ))}
+                                    </TableRow>
+                                    <TableRow key={"<15"} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                                        <TableCell style={sticky} component="th" scope="row">
+                                            TOTAL
+                                        </TableCell>
+                                        {intervalData["total"].map(total => (
+                                            <StyledTableCell align="center">{total}</StyledTableCell>
                                         ))}
                                     </TableRow>
                                 </TableBody>
