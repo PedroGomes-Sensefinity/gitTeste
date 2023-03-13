@@ -13,21 +13,13 @@ import { getInputClasses } from "../../utils/formik";
 import toaster from "../../utils/toaster";
 import "../../utils/yup-validations";
 import apiServiceV2 from "../../services/v2/apiServiceV2";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles(theme => ({
     headerMarginTop: {
         marginTop: theme.spacing(5)
     }
 }));
-
-const ruleTypeOptions = [
-    { id: "temperaturedegree", name: "Temperature" },
-    { id: "humidityrelative", name: "Humidity" },
-    { id: "geofences", name: "Geo-fences" },
-    { id: "buttonpressed", name: "Button pressed" },
-    { id: "movementstatus", name: "Movement status" },
-    { id: "acceleration", name: "Acceleration" }
-];
 
 function ThresholdFormComponent(props) {
     const intl = props.intl;
@@ -42,6 +34,9 @@ function ThresholdFormComponent(props) {
 
     const [tenantsOptions, setTenantsOptions] = useState([{ id: 0, name: "Tenants Not Found" }]);
     const [tenantId, setTenantId] = useState(0);
+    const [ruleTypeOptions, setRuleTypeOptions] = useState([]);
+
+    const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }));
 
     const ruleCurrentSymbol = "";
     const ruleWhenCronsOptions = [
@@ -68,7 +63,31 @@ function ThresholdFormComponent(props) {
     };
 
     const [routeOptions, setRouteOptions] = useState([]);
+
+    function validadeThresholdFromPermissions() {
+        const options = [];
+        if (permissions.canCreateThresholdTemperature) {
+            options.push({ id: "temperaturedegree", name: "Temperature" });
+        }
+        if (permissions.canCreateThresholdHumidity) {
+            options.push({ id: "humidityrelative", name: "Humidity" });
+        }
+        if (permissions.canCreateThresholdGeofences) {
+            options.push({ id: "geofences", name: "Geo-fences" });
+        }
+        if (permissions.canCreateThresholdButtonPressed) {
+            options.push({ id: "buttonpressed", name: "Button pressed" });
+        }
+        if (permissions.canCreateThresholdMovementStatus) {
+            options.push({ id: "movementstatus", name: "Movement status" });
+        }
+        if (permissions.canCreateThresholdAcceleration) {
+            options.push({ id: "acceleration", name: "Acceleration" });
+        }
+        setRuleTypeOptions(options);
+    }
     useEffect(() => {
+        validadeThresholdFromPermissions();
         // Get tenant options
         if (isAddMode) {
             apiServiceV2.get("v2/tenants/children").then(response => {

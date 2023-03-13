@@ -131,6 +131,14 @@ export function Permissions(permsArray) {
 
         //Impacts
         canViewImpacts: permsObj['impacts_view'] || defaultValue,
+
+        //Thresholds:
+        canCreateThresholdTemperature: permsObj['threshold_temperaturedegree'] || defaultValue,
+        canCreateThresholdHumidity: permsObj['threshold_humidityrelative'] || defaultValue,
+        canCreateThresholdGeofences: permsObj['threshold_geofences'] || defaultValue,
+        canCreateThresholdButtonPressed: permsObj['threshold_routes'] || defaultValue,
+        canCreateThresholdMovementStatus: permsObj['threshold_movementstatus'] || defaultValue,
+        canCreateThresholdAcceleration: permsObj['threshold_acceleration'] || defaultValue,
     }
 }
 
