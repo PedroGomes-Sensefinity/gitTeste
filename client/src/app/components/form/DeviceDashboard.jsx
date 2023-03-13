@@ -93,7 +93,7 @@ function DeviceDashboard(props) {
                                     <h3 className="card-label">Last Location/Sublocation</h3>
                                 </div>
                             </div>
-                            <div style={{ textAlign: "center" }} className="card-body" style={{"fontSize": "20px"}}>
+                            <div style={{ textAlign: "center", "fontSize": "20px"  }} className="card-body">
                                 <h1>{utils.either(dashboard.last_location, "In Transit")}</h1>
                                 <h1>
                                     {utils.either(dashboard.last_sublocation, "In Transit")} (
