@@ -428,34 +428,40 @@ function ThresholdFormComponent(props) {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div
-                                            className={`col-xl-3 col-lg-3 ${
-                                                values.ruleMeasurementType === "geofences" ? "" : "hide"
-                                            }`}
-                                        >
-                                            <label>Route</label>
-                                            <Field
-                                                as="select"
-                                                value={values["routeId"] || 0}
-                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                    { errors, touched },
-                                                    "routeId"
-                                                )}`}
-                                                name="routeId"
-                                                placeholder=""
-                                                {...getFieldProps("routeId")}
+                                        {permissions.canCreateThresholdGeofences && (
+                                            <div
+                                                className={`col-xl-3 col-lg-3 ${
+                                                    values.ruleMeasurementType === "geofences" ? "" : "hide"
+                                                }`}
                                             >
-                                                <option key="" value=""></option>
-                                                {routeOptions.map(e => {
-                                                    return (
-                                                        <option key={e.id} value={e.id}>
-                                                            {e.name}
-                                                        </option>
-                                                    );
-                                                })}
-                                            </Field>
-                                            <ErrorMessage name="route" component="div" className="invalid-feedback" />
-                                        </div>
+                                                <label>Route</label>
+                                                <Field
+                                                    as="select"
+                                                    value={values["routeId"] || 0}
+                                                    className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                        { errors, touched },
+                                                        "routeId"
+                                                    )}`}
+                                                    name="routeId"
+                                                    placeholder=""
+                                                    {...getFieldProps("routeId")}
+                                                >
+                                                    <option key="" value=""></option>
+                                                    {routeOptions.map(e => {
+                                                        return (
+                                                            <option key={e.id} value={e.id}>
+                                                                {e.name}
+                                                            </option>
+                                                        );
+                                                    })}
+                                                </Field>
+                                                <ErrorMessage
+                                                    name="route"
+                                                    component="div"
+                                                    className="invalid-feedback"
+                                                />
+                                            </div>
+                                        )}
                                     </div>
 
                                     <div
