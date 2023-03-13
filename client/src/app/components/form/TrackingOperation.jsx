@@ -171,6 +171,7 @@ function TrackingOperation() {
             tenantsOptions.forEach(tenant =>{
                 console.log(tenant)
                 if(parseInt(tenant.id) !== 0){
+                    fields["label"] = fields["label"] + "-" + tenant.name
                     switch (fields["alert_mode"]) {
                         case "1":
                             fields["alert_mode"] = "None";
