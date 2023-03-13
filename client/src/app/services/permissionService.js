@@ -41,6 +41,8 @@ export function Permissions(permsArray) {
     const defaultValue = permsObj['all'] || false
     return {
 
+        hasAllPermissions: permsObj['all'],
+
         // Device permissions
         canViewDevices: permsObj['device_view'] || defaultValue,
         canCreateDevices: permsObj['device_create'] || defaultValue,
@@ -121,7 +123,7 @@ export function Permissions(permsArray) {
         canViewLocations: permsObj['locations_view'] || defaultValue,
         canCreateLocations: permsObj['locations_create'] || defaultValue,
         canEditLocations: permsObj['locations_edit'] || defaultValue,
-        
+
         // Location (and sublocations) related operations permissions
         canViewSubLocations: permsObj['sub_locations_view'] || defaultValue,
         canCreateSubLocations: permsObj['sub_locations_create'] || defaultValue,

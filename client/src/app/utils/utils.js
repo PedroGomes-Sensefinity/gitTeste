@@ -5,6 +5,20 @@ const utils = {
     either(thiis, that) {
         return thiis ? thiis : that
     },
+    dateBeautify(date) {
+        if(date === undefined){
+            return "NA"
+        }
+        const dateSplit = date.split('T')
+        if (dateSplit.length == 2) {
+            const hour = dateSplit[1].split('.')
+            if(hour.length == 2){
+                return dateSplit[0] + " @ " + hour[0]
+            }
+            return "NA"
+        }
+        return "NA"
+    },
     getMaxMinCoordinatesInterval(coordinates) {
         const numbers = coordinates.filter(elems => typeof elems === 'number')
         if (numbers.length !== 0) {
