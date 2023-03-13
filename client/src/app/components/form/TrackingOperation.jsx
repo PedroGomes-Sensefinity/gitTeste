@@ -169,42 +169,44 @@ function TrackingOperation() {
         if (parseInt(fields["tenant"].id) === 0){
             console.log(tenantsOptions)
             const label = fields["label"]
-            tenantsOptions.forEach(tenant =>{
-                console.log(tenant)
-                if(parseInt(tenant.id) !== 0){
-                    fields["label"] = label + "-" + tenant.name
-                    switch (fields["alert_mode"]) {
+            tenantsOptions.forEach(tenantOption =>{
+                const fieldsCopy = fields
+                console.log(tenantOption)
+                if(parseInt(tenantOption.id) !== 0){
+                    fieldsCopy["label"] = label + "-" + tenantOption.name
+                    switch (fieldsCopy["alert_mode"]) {
                         case "1":
-                            fields["alert_mode"] = "None";
+                            fieldsCopy["alert_mode"] = "None";
                             break;
                         case "2":
-                            fields["alert_mode"] = "In";
+                            fieldsCopy["alert_mode"] = "In";
                             break;
                         case "3":
-                            fields["alert_mode"] = "Out";
+                            fieldsCopy["alert_mode"] = "Out";
                             break;
                         case "4":
-                            fields["alert_mode"] = "In/Out";
+                            fieldsCopy["alert_mode"] = "In/Out";
                             break;
                     }
-                    switch (fields["type"]) {
+                    switch (fieldsCopy["type"]) {
                         case "1":
-                            fields["type"] = "email";
+                            fieldsCopy["type"] = "email";
                             break;
                         case "2":
-                            fields["type"] = "sms";
+                            fieldsCopy["type"] = "sms";
                             break;
                     }
                     const data = {};
                     for (let i = 0; i < geofences.length; i++) {
                         data[i] = JSON.stringify(geofences[i]);
                     }
-                    fields["geofence"] = JSON.stringify(data);
-                    fields["asset_ids"] = selectedAssetsId;
-                    fields["tenant"].id = tenant.id
-                    fields["tenant_id"] = parseInt(tenant.id);
-                    console.log(fields)
-                    operationsServiceV2.save("tracking", fields).then(r => {
+                    fieldsCopy["geofence"] = JSON.stringify(data);
+                    fieldsCopy["asset_ids"] = selectedAssetsId;
+                    fieldsCopy["tenant"].id = tenantOption.id
+                    fieldsCopy["tenant_id"] = parseInt(tenantOption.id);
+                    console.log(fieldsCopy)
+                    console.log(JSON.stringify(fieldsCopy))
+                    operationsServiceV2.save("tracking", fieldsCopy).then(r => {
                         const thresholdId = r.id
                         setBlocking(false);
                         setSubmitting(false);
