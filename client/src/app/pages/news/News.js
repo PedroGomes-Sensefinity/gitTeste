@@ -7,14 +7,28 @@ import { injectIntl } from "react-intl";
 
 const versions = [
     {
-        versionNumber: "V.0.4.2 - Latest", date: "23/02/2023", changes:
+        versionNumber: "V.0.4.3 - Latest", date: "13/03/2023", changes:
+            ["1. Added Total Counter to Sublocations on Container Dashboard;",
+                "2. Updated Time Format on Asset/Device Dashboards;",
+                "3. Added support for multiple faces on Impacts Visualization;",
+                "4. Added support for multiple colors on Impacts Visualization;",
+                "5. Changed name of Assets to Containers on Dashboards;",
+                "6. Thresholds types are now filtered by client;",
+                "7. New Dashboard for Sublocations available! (Previously: 'Continente Dashboard');",
+                "8. Bug fix on Routes Dashboard Layers;",
+                "9. Added the possibility to edit Geofences from the Threshold;",
+                "10. Operation tracking update: now is adding the threshold created to all Assets by default!",
+            ]
+    },
+    {
+        versionNumber: "V.0.4.2", date: "23/02/2023", changes:
             ["1. Changed the size of PTLIS and PTLEI",
-            "2. Removed all Thresholds and Geofences not created by Transinsular",
-            "3. Fixed a issue where a Threshold was being used as a Sublocation and removed Acceleration Notifications Templates from Thresholds of type Geofence",
-            "4. Added counter of Assets Tracked on Main Page",
-            "5. Fixed a bug on search of Locations/Sublocations that would not result on zero results",
-            "6. Fixed the bug related to shapes on the Locations/Sublocations that would not allow the correct modification of the Shape" 
-        ]
+                "2. Removed all Thresholds and Geofences not created by Transinsular",
+                "3. Fixed a issue where a Threshold was being used as a Sublocation and removed Acceleration Notifications Templates from Thresholds of type Geofence",
+                "4. Added counter of Assets Tracked on Main Page",
+                "5. Fixed a bug on search of Locations/Sublocations that would not result on zero results",
+                "6. Fixed the bug related to shapes on the Locations/Sublocations that would not allow the correct modification of the Shape"
+            ]
     },
     {
         versionNumber: "V.0.4.1", date: "03/02/2023", changes:

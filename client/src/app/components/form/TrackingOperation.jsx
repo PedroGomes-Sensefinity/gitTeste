@@ -49,7 +49,7 @@ function TrackingOperation() {
             const tenantsOptionsR = respTenants.map(tenant => {
                 return { id: tenant.id, name: tenant.name };
             });
-            tenantsOptionsR.push({ id: 0, name: "ALL" })
+            //tenantsOptionsR.push({ id: 0, name: "ALL" })
             setTenantsOptions(tenantsOptionsR);
         });
     }, []);
