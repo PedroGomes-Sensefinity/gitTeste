@@ -303,7 +303,7 @@ function DeviceDashboard(props) {
                                 <br></br>
                                 <MdLocationOn /> Coordinates: {JSON.stringify(dashboard.last_position)}
                                 <br></br>
-                                <BsClock /> Timestamp: {dashboard.last_position_timestamp}
+                                <BsClock /> Position Time: {utils.dateBeautify(dashboard.last_position_timestamp)}
                             </div>
                         </div>
                         <div className="card-body">
