@@ -170,7 +170,8 @@ function TrackingOperation() {
             const label = fields["label"]
             console.log(label)
             tenantsOptions.forEach(tenantOption =>{
-                const fieldsCopy = fields
+                // Clone Object without reference javascript
+                var fieldsCopy = Object.create(fields)
                 console.log(tenantOption)
                 if(parseInt(tenantOption.id) !== 0){
                     fieldsCopy["label"] = label + "-" + tenantOption.name
