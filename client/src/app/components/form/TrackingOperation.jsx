@@ -49,7 +49,7 @@ function TrackingOperation() {
             const tenantsOptionsR = respTenants.map(tenant => {
                 return { id: tenant.id, name: tenant.name };
             });
-            //tenantsOptionsR.push({ id: 0, name: "ALL" })
+            tenantsOptionsR.push({ id: 0, name: "ALL" })
             setTenantsOptions(tenantsOptionsR);
         });
     }, []);
@@ -167,8 +167,8 @@ function TrackingOperation() {
         setSubmitting(true);
         console.log(fields["tenant"].id)
         if (parseInt(fields["tenant"].id) === 0){
-            console.log(tenantsOptions)
             const label = fields["label"]
+            console.log(label)
             tenantsOptions.forEach(tenantOption =>{
                 const fieldsCopy = fields
                 console.log(tenantOption)
@@ -207,10 +207,9 @@ function TrackingOperation() {
                     console.log(fieldsCopy)
                     console.log(JSON.stringify(fieldsCopy))
                     operationsServiceV2.save("tracking", fieldsCopy).then(r => {
-                        const thresholdId = r.id
                         setBlocking(false);
                         setSubmitting(false);
-                        history.push(`/thresholds/list`)
+                        toaster.notify('success', "Operation Success!");
                     }).catch(r => {
                         toaster.notify('error', "Error on Creating Operation");
                         setBlocking(false);
