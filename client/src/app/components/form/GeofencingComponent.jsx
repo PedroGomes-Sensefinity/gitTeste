@@ -14,6 +14,7 @@ import Map from "../geo-fencing-map/map";
 import TableGrid from "../table-grid/TableGrid";
 import apiServiceV2 from "../../services/v2/apiServiceV2";
 import geofenceServiceV2 from "../../services/v2/geofenceServiceV2";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
     headerMarginTop: {
@@ -25,10 +26,12 @@ function GeofencingComponent(props) {
     const id = props.id;
     const isAddMode = !id;
     const classes = useStyles();
+    const history = useHistory();
     const [blocking, setBlocking] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const [geofences, setGeofences] = useState([]);
+    const [thresholdIdQuery, setThresholdIdQuery] = useState(0);
 
     const [thresholds, setThresholds] = useState([]);
     const [selectedThresholds, setSelectedThresholds] = useState([]);
@@ -39,6 +42,24 @@ function GeofencingComponent(props) {
     const [initialValues, setInitialValues] = useState({ id: "", label: "", description: "", alert_mode: "1" });
 
     useEffect(() => {
+        const url = window.location.href;
+        let decodedUrl = unescape(url);
+        const myArray = decodedUrl.split("?");
+        if (myArray.length === 2) {
+            const params = new URLSearchParams(myArray[1]);
+            let thresholdID = params.get("threshold_id");
+            if (thresholdID !== null) {
+                console.log(thresholdID);
+                apiServiceV2.get("v2/thresholds/" + thresholdID).then(response => {
+                    const thresholdsSelected = selectedThresholds;
+                    thresholdsSelected.push({ id: response.threshold.id, label: response.threshold.label });
+                    setSelectedThresholds([...thresholdsSelected]);
+                    setInitialValues({ id: "", label: "", description: "", alert_mode: "1" , tenant:{id: response.threshold.tenant.id}})
+                    setTenantId(response.threshold.tenant.id)
+                    setThresholdIdQuery(response.threshold.id)
+                });
+            }
+        }
         // Get tenant options
         if (isAddMode) {
             apiServiceV2.get("v2/tenants/children").then(response => {
@@ -75,24 +96,24 @@ function GeofencingComponent(props) {
                     description: geofence.description,
                     alert_mode: geofence.alert_mode
                 });
-                console.log(geofence)
+                console.log(geofence);
                 const shapes = geofence.shapes;
                 const geofencesArr = [];
                 // Shapes Data
                 shapes.forEach(shape => {
-                    const shapeJson = JSON.parse(shape)
-                    shapeJson["geoJSON"] = JSON.parse(shapeJson["geoJSON"])
+                    const shapeJson = JSON.parse(shape);
+                    shapeJson["geoJSON"] = JSON.parse(shapeJson["geoJSON"]);
                     geofencesArr.push(shapeJson);
                 });
                 setGeofences(geofencesArr);
                 // Add threshold to Geofence Data
                 geofence.thresholdsIds.forEach(id => {
-                    apiServiceV2.get("v2/thresholds/"+ id).then(response => {
+                    apiServiceV2.get("v2/thresholds/" + id).then(response => {
                         const thresholdsSelected = selectedThresholds;
-                        thresholdsSelected.push({id: response.threshold.id, label : response.threshold.label});
+                        thresholdsSelected.push({ id: response.threshold.id, label: response.threshold.label });
                         setSelectedThresholds([...thresholdsSelected]);
                     });
-                })
+                });
                 setTenantsOptions([{ id: geofence.tenant.id, name: geofence.tenant.name }]);
             });
         }
@@ -163,7 +184,6 @@ function GeofencingComponent(props) {
         });
         return data;
     };
-
 
     const columnsGeofences = [
         {
@@ -258,6 +278,9 @@ function GeofencingComponent(props) {
                 setGeofences([]);
                 setThresholds([]);
                 setSelectedThresholds([]);
+                if(thresholdIdQuery !== 0){
+                    history.push(`/thresholds/${thresholdIdQuery}/edit`);
+                }
             }
             setBlocking(false);
             setSubmitting(false);

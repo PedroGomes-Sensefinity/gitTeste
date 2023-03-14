@@ -7,7 +7,13 @@ import { injectIntl } from "react-intl";
 
 const versions = [
     {
-        versionNumber: "V.0.4.3 - Latest", date: "13/03/2023", changes:
+        versionNumber: "V.0.4.4 - Latest", date: "14/03/2023", changes:
+            ["1. It's now possible to select All tenants on Operation Tracking! That will create the same resources for all tenants (e.g.: For Transinsular will create to TI and TICV)",
+                "2. Not it's easier to add a Geofence to a Threshold. Just go to: Thresholds - Select Threshold - Geofences - Add New Geofence",
+            ]
+    },
+    {
+        versionNumber: "V.0.4.3", date: "13/03/2023", changes:
             ["1. Added Total Counter to Sublocations on Container Dashboard;",
                 "2. Updated Time Format on Asset/Device Dashboards;",
                 "3. Added support for multiple faces on Impacts Visualization;",

@@ -2,7 +2,7 @@ import DoneIcon from "@material-ui/icons/Done";
 import { makeStyles } from "@material-ui/styles";
 import { ErrorMessage, Field, Formik, FieldArray } from "formik";
 import React, { useCallback, useEffect, useState } from "react";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 import BlockUi from "react-block-ui";
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import { injectIntl } from "react-intl";
@@ -37,7 +37,7 @@ function TrackingOperation() {
 
     const [info, setInfo] = useState([]);
 
-    const history = useHistory()
+    const history = useHistory();
 
     const [tenantId, setTenantId] = useState(0);
     const [tenantsOptions, setTenantsOptions] = useState([{ id: 0, name: "Tenants Not Found" }]);
@@ -49,7 +49,7 @@ function TrackingOperation() {
             const tenantsOptionsR = respTenants.map(tenant => {
                 return { id: tenant.id, name: tenant.name };
             });
-            tenantsOptionsR.push({ id: 0, name: "ALL" })
+            tenantsOptionsR.push({ id: 0, name: "ALL" });
             setTenantsOptions(tenantsOptionsR);
         });
     }, []);
@@ -65,7 +65,7 @@ function TrackingOperation() {
                 contact: ""
             }
         ],
-        type: "1",
+        type: "1"
     });
 
     const optionsGeofences = [
@@ -165,16 +165,13 @@ function TrackingOperation() {
         }
         setBlocking(true);
         setSubmitting(true);
-        console.log(fields["tenant"].id)
-        if (parseInt(fields["tenant"].id) === 0){
-            const label = fields["label"]
-            console.log(label)
-            tenantsOptions.forEach(tenantOption =>{
+        if (parseInt(fields["tenant"].id) === 0) {
+            const label = fields["label"];
+            tenantsOptions.forEach(tenantOption => {
                 // Clone Object without reference javascript
-                var fieldsCopy = Object.create(fields)
-                console.log(tenantOption)
-                if(parseInt(tenantOption.id) !== 0){
-                    fieldsCopy["label"] = label + "-" + tenantOption.name
+                var fieldsCopy = Object.create(fields);
+                if (parseInt(tenantOption.id) !== 0) {
+                    fieldsCopy["label"] = label + "-" + tenantOption.name;
                     switch (fieldsCopy["alert_mode"]) {
                         case "1":
                             fieldsCopy["alert_mode"] = "None";
@@ -203,22 +200,24 @@ function TrackingOperation() {
                     }
                     fieldsCopy["geofence"] = JSON.stringify(data);
                     fieldsCopy["asset_ids"] = selectedAssetsId;
-                    fieldsCopy["tenant"].id = tenantOption.id
+                    fieldsCopy["tenant"].id = tenantOption.id;
                     fieldsCopy["tenant_id"] = parseInt(tenantOption.id);
-                    console.log(fieldsCopy)
-                    console.log(JSON.stringify(fieldsCopy))
-                    operationsServiceV2.save("tracking", fieldsCopy).then(r => {
-                        setBlocking(false);
-                        setSubmitting(false);
-                        toaster.notify('success', "Operation Success!");
-                    }).catch(r => {
-                        toaster.notify('error', "Error on Creating Operation");
-                        setBlocking(false);
-                        setSubmitting(false);
-                    })
+
+                    operationsServiceV2
+                        .save("tracking", fieldsCopy)
+                        .then(r => {
+                            setBlocking(false);
+                            setSubmitting(false);
+                            toaster.notify("success", "Operation Success!");
+                        })
+                        .catch(r => {
+                            toaster.notify("error", "Error on Creating Operation");
+                            setBlocking(false);
+                            setSubmitting(false);
+                        });
                 }
-            })
-        }else{
+            });
+        } else {
             switch (fields["alert_mode"]) {
                 case "1":
                     fields["alert_mode"] = "None";
@@ -248,19 +247,20 @@ function TrackingOperation() {
             fields["geofence"] = JSON.stringify(data);
             fields["asset_ids"] = selectedAssetsId;
             fields["tenant_id"] = parseInt(fields["tenant"].id);
-            console.log(fields)
-            operationsServiceV2.save("tracking", fields).then(r => {
-                const thresholdId = r.id
-                setBlocking(false);
-                setSubmitting(false);
-                history.push(`/thresholds/${thresholdId}/edit`)
-            }).catch(r => {
-                toaster.notify('error', "Error on Creating Operation");
-                setBlocking(false);
-                setSubmitting(false);
-            })
+            operationsServiceV2
+                .save("tracking", fields)
+                .then(r => {
+                    const thresholdId = r.id;
+                    setBlocking(false);
+                    setSubmitting(false);
+                    history.push(`/thresholds/${thresholdId}/edit`);
+                })
+                .catch(r => {
+                    toaster.notify("error", "Error on Creating Operation");
+                    setBlocking(false);
+                    setSubmitting(false);
+                });
         }
-        
     };
 
     return (
@@ -284,7 +284,8 @@ function TrackingOperation() {
                             <div className="card-title align-items-start flex-column">
                                 <h3 className="card-label font-weight-bolder text-dark">Setup Tracking</h3>
                                 <span className="text-muted font-weight-bold font-size-sm mt-1">
-                                    Operation to create Geofence, Threshold, Notification Template and associate with multiple Assets.
+                                    Operation to create Geofence, Threshold, Notification Template and associate with
+                                    multiple Assets.
                                 </span>
                                 <span className="text-muted font-weight-bold font-size-sm mt-1">
                                     <label className="required">&nbsp;</label> All fields marked with asterisks are
@@ -397,9 +398,7 @@ function TrackingOperation() {
                         <div className={`card-header py-3 ` + classes.headerMarginTop}>
                             <div className="card-title align-items-start flex-column">
                                 <h3 className="card-label font-weight-bolder text-dark">Geofences</h3>
-                                <span className="text-muted font-weight-bold font-size-sm mt-1">
-                                    Create Geofence
-                                </span>
+                                <span className="text-muted font-weight-bold font-size-sm mt-1">Create Geofence</span>
                             </div>
                         </div>
                         {/* end::Header */}
@@ -522,59 +521,64 @@ function TrackingOperation() {
                                                 {({ insert, remove, push }) => (
                                                     <div>
                                                         {values.notifications_templates.length > 0 &&
-                                                            values.notifications_templates.map((notification, index) => (
-                                                                <div className="row" key={index}>
-                                                                    <div className="col-xl-1 col-lg-1" style={{ display: "flex", margin: "5px" }}>
-                                                                        <button
-                                                                            type="button"
-                                                                            className="btn btn-secondary"
-                                                                            onClick={() => remove(index)}
+                                                            values.notifications_templates.map(
+                                                                (notification, index) => (
+                                                                    <div className="row" key={index}>
+                                                                        <div
+                                                                            className="col-xl-1 col-lg-1"
+                                                                            style={{ display: "flex", margin: "5px" }}
                                                                         >
-                                                                            Remove Contact
-                                                                        </button>
+                                                                            <button
+                                                                                type="button"
+                                                                                className="btn btn-secondary"
+                                                                                onClick={() => remove(index)}
+                                                                            >
+                                                                                Remove Contact
+                                                                            </button>
+                                                                        </div>
+                                                                        <div className="col-xl-3 col-lg-3">
+                                                                            <label
+                                                                                htmlFor={`notifications_templates.${index}.name`}
+                                                                            >
+                                                                                Name
+                                                                            </label>
+                                                                            <Field
+                                                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                                                    { errors, touched },
+                                                                                    "notifications_templates.name"
+                                                                                )}`}
+                                                                                name={`notifications_templates.${index}.name`}
+                                                                                placeholder="User Sensefinity"
+                                                                                type="text"
+                                                                            />
+                                                                            <ErrorMessage
+                                                                                name={`notifications_templates.${index}.name`}
+                                                                                component="div"
+                                                                                className="field-error"
+                                                                            />
+                                                                        </div>
+                                                                        <div className="col-xl-4 col-lg-4">
+                                                                            <label
+                                                                                htmlFor={`notifications_templates.${index}.contact`}
+                                                                            >
+                                                                                Contact
+                                                                            </label>
+                                                                            <Field
+                                                                                className={`form-control form-control-lg form-control-solid ${getInputClasses(
+                                                                                    { errors, touched },
+                                                                                    "notifications_templates.contact"
+                                                                                )}`}
+                                                                                name={`notifications_templates.${index}.contact`}
+                                                                            />
+                                                                            <ErrorMessage
+                                                                                name={`notifications_templates.${index}.name`}
+                                                                                component="div"
+                                                                                className="field-error"
+                                                                            />
+                                                                        </div>
                                                                     </div>
-                                                                    <div className="col-xl-3 col-lg-3">
-                                                                        <label
-                                                                            htmlFor={`notifications_templates.${index}.name`}
-                                                                        >
-                                                                            Name
-                                                                        </label>
-                                                                        <Field
-                                                                            className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                                                { errors, touched },
-                                                                                "notifications_templates.name"
-                                                                            )}`}
-                                                                            name={`notifications_templates.${index}.name`}
-                                                                            placeholder="User Sensefinity"
-                                                                            type="text"
-                                                                        />
-                                                                        <ErrorMessage
-                                                                            name={`notifications_templates.${index}.name`}
-                                                                            component="div"
-                                                                            className="field-error"
-                                                                        />
-                                                                    </div>
-                                                                    <div className="col-xl-4 col-lg-4">
-                                                                        <label
-                                                                            htmlFor={`notifications_templates.${index}.contact`}
-                                                                        >
-                                                                            Contact
-                                                                        </label>
-                                                                        <Field
-                                                                            className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                                                { errors, touched },
-                                                                                "notifications_templates.contact"
-                                                                            )}`}
-                                                                            name={`notifications_templates.${index}.contact`}
-                                                                        />
-                                                                        <ErrorMessage
-                                                                            name={`notifications_templates.${index}.name`}
-                                                                            component="div"
-                                                                            className="field-error"
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            ))}
+                                                                )
+                                                            )}
                                                         <button
                                                             type="button"
                                                             className="btn btn-success mr-2"

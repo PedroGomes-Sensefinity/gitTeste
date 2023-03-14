@@ -40,11 +40,11 @@ export function ThresholdsForm({ match }) {
             case 0:
                 return <ThresholdFormComponent id={id} threshold={threshold} onChange={setThreshold} />
             case 1:
-                return <ThresholdActionComponent id={id} threshold={threshold} onChange={setThreshold} />
-            case 2:
                 return <ThresholdAssetsComponent id={id} threshold={threshold} />
-            case 3:
+            case 2:
                 return <ThresholdGeofencesComponent id={id} threshold={threshold} />
+            case 3:
+                return <ThresholdActionComponent id={id} threshold={threshold} onChange={setThreshold} />
             case 4:
                 return <ThresholdDevicesComponent id={id} />
             case 5:
@@ -58,9 +58,9 @@ export function ThresholdsForm({ match }) {
                 <Paper square>
                     <Tabs value={value} indicatorColor="primary" textColor="primary" onChange={handleChange}>
                         <Tab label="Threshold Info" />
-                        <Tab label="Notification Template" disabled={typeof id === 'undefined'} />
                         <Tab label="Assets" disabled={typeof id === 'undefined'} />
                         <Tab label="Geofences" disabled={typeof id === 'undefined'} />
+                        <Tab label="Notification Template" disabled={typeof id === 'undefined'} />
                         <Tab label="Devices" disabled={typeof id === 'undefined'} />
                         <Tab label="Groups" disabled={typeof id === 'undefined'} />
                     </Tabs>
