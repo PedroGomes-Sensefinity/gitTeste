@@ -358,7 +358,7 @@ export function ContainersDashboard() {
             case 5:
                 setSelectedInterval("gte90");
                 break;
-            case 0:
+            default:
                 setSelectedInterval("");
         }
         setSelectedPortCode(ports[e.target.cellIndex - 1]);
