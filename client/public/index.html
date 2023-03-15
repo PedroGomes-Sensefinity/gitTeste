@@ -1,33 +1,9 @@
 <!DOCTYPE html>
-<!--
-Theme: Metronic - The Ultimate Bootstrap Admin Theme
-Author: KeenThemes
-Website: http://www.keenthemes.com/
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Dribbble: www.dribbble.com/keenthemes
-Like: www.facebook.com/keenthemes
-License: You must have a valid license purchased only from https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/ in order to legally use the theme for your project.
--->
 <html lang="en">
     <head>
         <meta charset="utf-8" />
         <title>Sensefinity | UI-Admin</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-        <!-- <link rel="manifest" href="%PUBLIC_URL%/manifest.json" /> -->
-        <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
-
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
         <link rel="icon" type="image/x-icon" href="%PUBLIC_URL%/media/logos/favicon.ico" />
 
         <link
@@ -55,8 +31,6 @@ License: You must have a valid license purchased only from https://themes.getboo
             src="https://polyfill.io/v3/polyfill.min.js?features=es2017%2Cdefault%2Ces2015%2Ces2016%2CIntl"
         ></script>
     </head>
-    <!-- <body id="kt_body" direction="rtl" dir="rtl" style="direction: rtl">  RTL version body -->
-    <!-- Standard version of body -->
     <body id="kt_body">
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <div id="root"></div>
@@ -65,7 +39,42 @@ License: You must have a valid license purchased only from https://themes.getboo
 
             <div class="loaderCustom"></div>
             <br></br>
-            <h3 style="color: grey; font-size:15px;">In 2021, the total number of worldwide connected IoT devices was over 10 billion.</h3>
+            <h3 id="quote" style="color: grey; font-size:20px; font-family: 'Lucida Console'">
+            
+            </h3>
+            <script>
+                var strarray = new Array(
+                    "There are over 250 foodborne diseases, all of which can be traced back to three categories of hazards: biological, chemical or physical.",
+                    "The North American logistics market is worth 1.4 trillion euros.",
+                    "Logistics carry 83% of all the farming & agriculture produce.",
+                    "In 2017 alone, the heavy trucks were involved in 107,000 crashes that led to passenger injuries.",
+                    "Only 1% of the earth’s water is safe for human consumption.",
+                    "In the last 170 years, we added 2.4 trillion tons of Carbon Dioxide into our atmosphere.",
+                    "As of 2018, the concentration of carbon dioxide (CO2) in our atmosphere was the highest it has been in 3 million years.",
+                    "In 2015, about 54.4 million people had low access to a supermarket due to limited transportation and uneven distribution of supermarkets.",
+                    "Given the right temperature and nutrients, bacteria can divide every 20 minutes.",
+                    "Some parasites, such as fish-borne trematodes, are only transmitted through food.",
+                    "Freezing food can help slow the growth of bacteria.",
+                    "Keep your refrigerator at 40°F/4ºC",
+                    "Half of all seafood gets thrown away.",
+                    "Around 90% of goods are carried out by sea.",
+                    "If a shipping container is properly taken care of, it can last 20 or more years.",
+                    "It is estimated that between 2,000 and 10,000 containers get lost at sea every year.",
+                    "GPS trackers can be used to keep track of the most important things in your life including family (people and pets!) and valuable possessions such as vehicles.",
+                    "1.5 trillion spent in transit logistics in the U.S. each year.",
+                    "Across the world, $8 billion is spent on moving goods over road transportation.",
+                    "Sensefinity saved 1 729 535 kgs of food!",
+                    "5 853 810 kgs of CO2 reduction with our platform!",
+                    "Sensefinity tool generated 393 955 alerts to help businesses find out issues.",
+                    "Sensefinity's platform processed 95 653 159 data insights."
+                    );
+        
+                randomnum = Math.round(Math.random()*22);
+                element = document.getElementById("quote");
+                element.textContent += strarray[randomnum]
+                console.log(strarray[randomnum])
+
+                </script>
         </div>
         <div id="layout-portal"></div>
     </body>

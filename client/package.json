@@ -112,6 +112,7 @@
     "react-swipeable-views": "0.13.9",
     "react-syntax-highlighter": "12.2.1",
     "react-toastify": "^7.0.4",
+    "react-typed": "^1.2.0",
     "react-window": "1.8.5",
     "redux": "4.0.5",
     "redux-persist": "6.0.0",

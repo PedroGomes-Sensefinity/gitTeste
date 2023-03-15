@@ -7,8 +7,49 @@ import Login from "./Login";
 import ForgotPassword from "./ForgotPassword";
 import "../../../../_metronic/_assets/sass/pages/login/classic/login-1.scss";
 import RecoverPassword from "./RecoverPassword";
+import './AuthPage.css';
+import Typed from "react-typed"
+
+
+var strarray = new Array(
+  "There are over 250 foodborne diseases, all of which can be traced back to three categories of hazards: biological, chemical or physical.",
+  "The North American logistics market is worth 1.4 trillion euros.",
+  "Logistics carry 83% of all the farming & agriculture produce.",
+  "In 2017 alone, the heavy trucks were involved in 107,000 crashes that led to passenger injuries.",
+  "Only 1% of the earth’s water is safe for human consumption.",
+  "In the last 170 years, we added 2.4 trillion tons of Carbon Dioxide into our atmosphere.",
+  "As of 2018, the concentration of carbon dioxide (CO2) in our atmosphere was the highest it has been in 3 million years.",
+  "In 2015, about 54.4 million people had low access to a supermarket due to limited transportation and uneven distribution of supermarkets.",
+  "Given the right temperature and nutrients, bacteria can divide every 20 minutes.",
+  "Some parasites, such as fish-borne trematodes, are only transmitted through food.",
+  "Freezing food can help slow the growth of bacteria.",
+  "Keep your refrigerator at 40°F/4ºC",
+  "Half of all seafood gets thrown away.",
+  "Around 90% of goods are carried out by sea.",
+  "If a shipping container is properly taken care of, it can last 20 or more years.",
+  "It is estimated that between 2,000 and 10,000 containers get lost at sea every year.",
+  "GPS trackers can be used to keep track of the most important things in your life including family (people and pets!) and valuable possessions such as vehicles.",
+  "1.5 trillion spent in transit logistics in the U.S. each year.",
+  "Across the world, $8 billion is spent on moving goods over road transportation.",
+  "Sensefinity saved 1 729 535 kgs of food!",
+  "5 853 810 kgs of CO2 reduction with our platform!",
+  "Sensefinity tool generated 393 955 alerts to help businesses find out issues.",
+  "Sensefinity's platform processed 95 653 159 data insights."
+);
+
+function shuffle(a) {
+  var j, x, i;
+  for (i = a.length - 1; i > 0; i--) {
+      j = Math.floor(Math.random() * (i + 1));
+      x = a[i];
+      a[i] = a[j];
+      a[j] = x;
+  }
+  return a;
+}
 
 export function AuthPage() {
+  strarray = shuffle(strarray)
   return (
     <>
       <div className="d-flex flex-column flex-root">
@@ -42,10 +83,23 @@ export function AuthPage() {
                   Welcome to Sensefinity!
                 </h3>
                 <p className="font-weight-lighter text-white opacity-80">
-                A 360° complete IoT tracking and analytics solution for businesses enabling end to end supply chain visibility
+                  A 360° complete IoT tracking and analytics solution for businesses enabling end to end supply chain visibility
                 </p>
               </div>
               {/* end:: Aside content */}
+
+              <div className="footer">
+                <img src="/media/images/lightbulb.png" alt="Girl in a jacket" width="37" height="37"/>
+                <Typed className="font-weight-lighter text-white"
+                  style={{"fontFamily": "Lucida Console","fontSize":"15px", "margin": "10px"}}
+                  strings={strarray}
+                  typeSpeed={80}
+                  backDelay={15000}
+                  backSpeed={10}
+                  loop
+                />
+
+              </div>
 
               {/* start:: Aside footer for desktop */}
               <div className="d-none flex-column-auto d-lg-flex justify-content-between mt-10">
@@ -103,7 +157,7 @@ export function AuthPage() {
               </Switch>
             </div>
             {/*end::Content body*/}
-             {/*ISSUES DIV*/}
+            {/*ISSUES DIV*/}
             {/*
             <div  className="d-flex flex-column-fluid flex-center mt-30 mt-lg-0">
               <p>Issues (25/01/2023 - 09:49h): We are aware of connectivity problems due to: <a href="https://status.azure.com/en-gb/status">Azure Status</a> and we're currently investigating impact.</p>
