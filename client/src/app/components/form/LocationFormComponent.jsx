@@ -44,7 +44,7 @@ function LocationFormComponent(props) {
         name: location.name || '',
         tenant_id: initialTenantID,
         tenantsOptions: tenantsOptions,
-        geofences: geofences,
+        geofences: [],
         tenant_id: initialTenantID
     }
 
@@ -80,9 +80,9 @@ function LocationFormComponent(props) {
         return -1;
     }, [geofences])
 
-    const onChangeShape = (setFieldValue) => ((shapes) => {
+    const onChangeShape =  (shapes) => {
        setGeofences(shapes)
-    })
+    };
 
 
     const columnsGeofences = [
@@ -98,6 +98,7 @@ function LocationFormComponent(props) {
     });
 
     const save = (fields, { setFieldValue, setSubmitting }) => {
+        fields.geofences = geofences;
         if (fields.geofences.length === 0) {
             toaster.notify('error', "Location needs 1 Shape!");
             setBlocking(false);
@@ -258,24 +259,24 @@ function LocationFormComponent(props) {
                                 <div className="form-group row">
                                     {/*begin:: Map */}
                                     <div className={`col-xl-6 col-lg-6`}>
-                                        <Map zoom={6} shapes={geofences} onChangeShape={onChangeShape(setFieldValue)} />
+                                        <Map zoom={6} shapes={geofences} onChangeShape={onChangeShape} />
                                     </div>
                                     <div className={`col-xl-6 col-lg-6  `}>
                                         <TableGrid
                                             title=''
                                             columns={columnsGeofences}
-                                            data={values.geofences}
+                                            data={geofences}
                                             style={{ height: 500 }}
                                             editable={{
                                                 onRowUpdate: (newData, oldData) =>
                                                     new Promise((resolve, _reject) => {
                                                         setTimeout(() => {
-                                                            const dataUpdate = [...values.geofences];
+                                                            const dataUpdate = [...geofences];
                                                             const index = getGeofenceIndexById(oldData.tableData.id);
                                                             dataUpdate[index] = newData;
-                                                            onChangeShape(setFieldValue)(dataUpdate);
+                                                            onChangeShape(dataUpdate);
                                                             resolve();
-                                                        }, 1000)
+                                                        }, 1000);
                                                     })
                                             }}
                                         />
