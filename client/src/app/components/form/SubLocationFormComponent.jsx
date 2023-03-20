@@ -98,7 +98,7 @@ function SubLocationFormComponent(props) {
         [geofences]
     );
 
-    const onChangeShape = shapes => setGeofences(shapes);
+    const onChangeShape = (shapes) => setGeofences(shapes);
 
     const columnsGeofences = [
         {
@@ -380,7 +380,7 @@ function SubLocationFormComponent(props) {
                                                                     oldData.tableData.id
                                                                 );
                                                                 dataUpdate[index] = newData;
-                                                                onChangeShape(setFieldValue)(dataUpdate);
+                                                                onChangeShape(dataUpdate);
                                                                 resolve();
                                                             }, 1000);
                                                         })
