@@ -115,7 +115,6 @@ function Login(props) {
                         disableLoading();
                     })
                     .catch((error) => {
-                        console.log(error)
                         setStatus(
                             intl.formatMessage({
                                 id: 'AUTH.VALIDATION.INVALID_LOGIN',

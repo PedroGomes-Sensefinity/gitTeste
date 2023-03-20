@@ -21,8 +21,6 @@ export function Routes() {
     shallowEqual
   );
   const currentUrl = window.location.href
-
-  console.log(currentUrl)
   return (
     <Switch>
       {!isAuthorized ? (
