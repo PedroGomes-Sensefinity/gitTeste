@@ -20,13 +20,15 @@ export function Routes() {
     }),
     shallowEqual
   );
+  const currentUrl = window.location.href
 
+  console.log(currentUrl)
   return (
     <Switch>
       {!isAuthorized ? (
         /*Render auth page when user at `/auth` and not authorized.*/
         <Route>
-          <AuthPage />
+          <AuthPage redirectURL={currentUrl}/>
         </Route>
       ) : (
         /*Otherwise redirect to root page (`/`)*/

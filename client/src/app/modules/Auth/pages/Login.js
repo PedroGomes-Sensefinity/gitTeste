@@ -72,8 +72,8 @@ function Login(props) {
         validationSchema: LoginSchema,
         onSubmit: (values, { setStatus, setSubmitting }) => {
             enableLoading();
-            ReactGA.event({category: "Button",action: "Login " + values.email.replace("@","_")})
-            
+            ReactGA.event({ category: "Button", action: "Login " + values.email.replace("@", "_") })
+
             setTimeout(() => {
                 login(values.email, values.password)
                     .then((response) => response.data)
@@ -97,11 +97,25 @@ function Login(props) {
                         setToken(tenant.hash);
                         setUser(user);
                         setTenantLogo(user.tenantLogo);
-                        history.push("/");
+                        
+                        let url = String(props.redirectURL)
+                        let reducedUrl = ""
+                        if (url.includes("localhost")) {
+                            reducedUrl = url.replace("http://localhost:8080/", "/")
+                        } else {
+                            reducedUrl = url.replace("https://uiadmin.sensefinity.com/", "/")
+                        }
+
+                        if (reducedUrl.includes("#")) {
+                            reducedUrl = reducedUrl.split("#")[0]
+
+                        }
+                        history.push(reducedUrl);
 
                         disableLoading();
                     })
-                    .catch(() => {
+                    .catch((error) => {
+                        console.log(error)
                         setStatus(
                             intl.formatMessage({
                                 id: 'AUTH.VALIDATION.INVALID_LOGIN',
@@ -201,7 +215,7 @@ function Login(props) {
                         to='/auth/forgot-password'
                         className='text-dark-50 text-hover-primary my-3 mr-2'
                         id='kt_login_forgot'>Forgot my password
-                         {/*<FormattedMessage id="Forgot my password" />*/}
+                        {/*<FormattedMessage id="Forgot my password" />*/}
                     </Link>
                     <button
                         id='kt_login_signin_submit'

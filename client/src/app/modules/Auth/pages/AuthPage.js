@@ -48,8 +48,9 @@ function shuffle(a) {
   return a;
 }
 
-export function AuthPage() {
+export function AuthPage(props) {
   strarray = shuffle(strarray)
+  const currentURL = props.redirectURL
   return (
     <>
       <div className="d-flex flex-column flex-root">
@@ -144,9 +145,9 @@ export function AuthPage() {
             {/* begin::Content body */}
             <div className="d-flex flex-column-fluid flex-center mt-30 mt-lg-0">
               <Switch>
-                <ContentRoute path="/auth/login" component={Login} />
+                <ContentRoute path="/auth/login" render={(props) => <Login {...props} redirectURL={currentURL} />}/>
 
-                <ContentRoute path="/auth/forgot-password" component={ForgotPassword} />
+                <ContentRoute path="/auth/forgot-password"  component={ForgotPassword()} />
 
                 <ContentRoute
                   path="/auth/password-recover/:id"
