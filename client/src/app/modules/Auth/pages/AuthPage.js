@@ -40,10 +40,10 @@ var strarray = new Array(
 function shuffle(a) {
   var j, x, i;
   for (i = a.length - 1; i > 0; i--) {
-      j = Math.floor(Math.random() * (i + 1));
-      x = a[i];
-      a[i] = a[j];
-      a[j] = x;
+    j = Math.floor(Math.random() * (i + 1));
+    x = a[i];
+    a[i] = a[j];
+    a[j] = x;
   }
   return a;
 }
@@ -89,9 +89,9 @@ export function AuthPage() {
               {/* end:: Aside content */}
 
               <div className="footer">
-                <img src="/media/images/lightbulb.png" alt="Girl in a jacket" width="37" height="37"/>
+                <img src="/media/images/lightbulb.png" alt="Girl in a jacket" width="37" height="37" />
                 <Typed className="font-weight-lighter text-white"
-                  style={{"fontFamily": "Lucida Console","fontSize":"15px", "margin": "10px"}}
+                  style={{ "fontFamily": "Lucida Console", "fontSize": "15px", "margin": "10px" }}
                   strings={strarray}
                   typeSpeed={80}
                   backDelay={15000}
@@ -158,11 +158,14 @@ export function AuthPage() {
             </div>
             {/*end::Content body*/}
             {/*ISSUES DIV*/}
-            {/*
-            <div  className="d-flex flex-column-fluid flex-center mt-30 mt-lg-0">
-              <p>Issues (25/01/2023 - 09:49h): We are aware of connectivity problems due to: <a href="https://status.azure.com/en-gb/status">Azure Status</a> and we're currently investigating impact.</p>
+            <div className='text-center mb-8 mb-lg-14'>
+              <h3>
+                Maintenance Scheduled: <strong>23/03/2023 to 24/03/2023</strong>
+              </h3>
+              <p className='text-muted font-weight-bold'>
+                During this time you will be able to use the platform, but you will not be able to edit your data! We will post any updates here!
+              </p>
             </div>
-            */}
             {/* begin::Mobile footer */}
             <div className="d-flex d-lg-none flex-column-auto flex-column flex-sm-row justify-content-between align-items-center mt-5 p-5">
               {/* <div className="text-dark-50 font-weight-bold order-2 order-sm-1 my-2">
