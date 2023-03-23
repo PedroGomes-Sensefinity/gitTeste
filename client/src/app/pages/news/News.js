@@ -7,6 +7,10 @@ import { injectIntl } from "react-intl";
 
 const versions = [
     {
+        versionNumber: "V.1.0.0 - Latest", date: "23/03/2023", changes:
+            ["Final version of optimizations!"]
+    },
+    {
         versionNumber: "V.0.4.4 - Latest", date: "14/03/2023", changes:
             ["1. It's now possible to select All tenants on Operation Tracking! That will create the same resources for all tenants (e.g.: For Transinsular will create to TI and TICV)",
                 "2. Not it's easier to add a Geofence to a Threshold. Just go to: Thresholds - Select Threshold - Geofences - Add New Geofence",

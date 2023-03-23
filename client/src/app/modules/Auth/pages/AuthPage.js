@@ -145,9 +145,9 @@ export function AuthPage(props) {
             {/* begin::Content body */}
             <div className="d-flex flex-column-fluid flex-center mt-30 mt-lg-0">
               <Switch>
-                <ContentRoute path="/auth/login" render={(props) => <Login {...props} redirectURL={currentURL} />}/>
+                <ContentRoute path="/auth/login" render={(props) => <Login {...props} redirectURL={currentURL} />} />
 
-                <ContentRoute path="/auth/forgot-password"  component={ForgotPassword()} />
+                <ContentRoute path="/auth/forgot-password" component={ForgotPassword()} />
 
                 <ContentRoute
                   path="/auth/password-recover/:id"
@@ -159,6 +159,7 @@ export function AuthPage(props) {
             </div>
             {/*end::Content body*/}
             {/*ISSUES DIV*/}
+            {/*
             <div className='text-center mb-8 mb-lg-14'>
               <h3>
                 Maintenance Scheduled: <strong>23/03/2023 to 24/03/2023</strong>
@@ -166,7 +167,7 @@ export function AuthPage(props) {
               <p className='text-muted font-weight-bold'>
                 During this time you will be able to use the platform, but you will not be able to edit your data! We will post any updates here!
               </p>
-            </div>
+            </div>*/}
             {/* begin::Mobile footer */}
             <div className="d-flex d-lg-none flex-column-auto flex-column flex-sm-row justify-content-between align-items-center mt-5 p-5">
               {/* <div className="text-dark-50 font-weight-bold order-2 order-sm-1 my-2">

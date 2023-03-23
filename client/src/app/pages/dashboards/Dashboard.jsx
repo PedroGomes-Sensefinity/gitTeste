@@ -212,7 +212,7 @@ export function Dashboard() {
                                         Discover the latest updates to the Sensefinty Web Application!
                                     </span>
                                     <br></br>
-                                    <span className={"font-weight-bold mt-2"}>Last Update : V.0.4.4 - 14/03/2023</span>
+                                    <span className={"font-weight-bold mt-2"}>Last Update : V.1.0.0 - 23/03/2023</span>
                                 </div>
                             </div>
                         </div>
@@ -235,8 +235,10 @@ export function Dashboard() {
                                         </span>
                                     </span>
                                     <div className={"d-flex flex-column text-right"}>
-                                        <span className={"text-dark-75 font-weight-bolder font-size-h3"}>{tiAssetCount}</span>
-                                        <span  className={"font-weight-bold mt-2"}>Assets Tracked - TI</span>
+                                        <span className={"text-dark-75 font-weight-bolder font-size-h3"}>
+                                            {tiAssetCount}
+                                        </span>
+                                        <span className={"font-weight-bold mt-2"}>Assets Tracked - TI</span>
                                     </div>
                                 </div>
                             </div>
@@ -262,8 +264,12 @@ export function Dashboard() {
                                         </span>
                                     </span>
                                     <div className={"d-flex flex-column text-right"}>
-                                        <span className={"text-dark-75 font-weight-bolder font-size-h3"}>{ticvAssetCount}</span>
-                                        <span className={"font-weight-bold mt-2"}s>Assets Tracked - TICV</span>
+                                        <span className={"text-dark-75 font-weight-bolder font-size-h3"}>
+                                            {ticvAssetCount}
+                                        </span>
+                                        <span className={"font-weight-bold mt-2"} s>
+                                            Assets Tracked - TICV
+                                        </span>
                                     </div>
                                 </div>
                             </div>
