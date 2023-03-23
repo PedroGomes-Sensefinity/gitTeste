@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: ui-admin-v2
-        image: sensehubaksecr.azurecr.io/ui-admin-v2:image_to_be_replaced
+        image: image_to_be_replaced
         imagePullPolicy: "Always"
         ports:
           - containerPort: 80

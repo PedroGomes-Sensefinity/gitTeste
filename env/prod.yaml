@@ -1,0 +1,15 @@
+kind: ConfigMap 
+apiVersion: v1 
+metadata:
+  name: ui-admin-v2-conf
+data:
+  SERVICE_APP_REST_API_VERSION: '2'
+  SERVICE_CHECK_TIMEOUT: '2s'
+  SERVICE_REST_ALLOW_CORS_ORIGIN: 'https://uiadmin-test.sensefinity.com/'
+  SERVICE_REST_AUTH_TYPE: 'Basic'
+  SERVICE_APP_REST_API_URL: 'https://rest-test.sensefinity.com/'
+  SERVICE_CHECK_ENDPOINT: "/"
+  SERVICE_CHECK_INTERVAL: '10s'
+  SERVICE_DESC: 'Administration User Interface'
+  SERVICE_NAME: 'ui-admin-v2-web'
+  SERVICE_TAGS: 'local,local-test,sens8,sensefinity-cloud,ui-admin-v2,admin-v2-ui'
