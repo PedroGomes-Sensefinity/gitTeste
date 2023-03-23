@@ -1,24 +1,15 @@
 image: docker:20
 variables:
-   # When using dind service, you must instruct Docker to talk with
-  # the daemon started inside of the service. The daemon is available
-  # with a network connection instead of the default
-  # /var/run/docker.sock socket.
   DOCKER_HOST: tcp://docker:2376
-  # Specify to Docker where to create the certificates. Docker
-  # creates them automatically on boot, and creates
-  # `/certs/client` to share between the service and job
-  # container, thanks to volume mount from config.toml
   DOCKER_TLS_CERTDIR: "/certs"
-  # These are usually specified by the entrypoint, however the
-  # Kubernetes executor doesn't run entrypoints
-  # https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4125
   DOCKER_TLS_VERIFY: 1
   DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
   DOCKER_DRIVER: overlay2
-  REPOSITORY_URL: sensehubaksecr.azurecr.io/ui-admin-v2
+  REPOSITORY_DEFAULT: europe-west3-docker.pkg.dev
+  REPOSITORY_URL: europe-west3-docker.pkg.dev/$GOOGLE_PROJECT_ID/sensefinity-registry-prod
   K8S_NAMESPACE: hub
-  REVISION: ui-admin-v2-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+  REVISION: ui-admin-v2:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+  REPOSITORY_IMAGE: $REPOSITORY_URL/$REVISION
 
 services:
   - docker:20-dind
@@ -32,17 +23,21 @@ build:
   only:
     - master
   tags: 
-    - sense-runner
+    - sense-runner-gcp
   image:
-    name: docker:20
+    name: google/cloud-sdk:latest
     entrypoint: [""]
   before_script:
     - until docker info; do sleep 1; done
   script:
-    - echo "Build"
-    - docker login sensehubaksecr.azurecr.io -u $ACR_USERNAME -p $ACR_PASSWORD
-    - docker build -f Dockerfile . -t $REPOSITORY_URL:$REVISION
-    - docker push $REPOSITORY_URL:$REVISION
+    - echo "Building using Runner on GCP"
+    - cp $GCLOUD_SERVICE_ACCOUNT key.json 
+    - gcloud init
+    - gcloud auth activate-service-account --key-file=key.json 
+    - gcloud auth configure-docker $REPOSITORY_DEFAULT
+    - cat key.json | docker login -u _json_key --password-stdin https://europe-west3-docker.pkg.dev
+    - docker build -f Dockerfile . --build-arg GOPRIVATE=${GOPRIVATE} --build-arg gitlab_id=${gitlab_id} --build-arg gitlab_token=${gitlab_token} -t $REPOSITORY_URL/$REVISION
+    - docker push $REPOSITORY_URL/$REVISION
   allow_failure: false
 
 deploy:
@@ -50,16 +45,17 @@ deploy:
   only:
     - master
   tags: 
-    - sense-runner
+    - sense-runner-gcp
   image:
     name: bitnami/kubectl:latest
     entrypoint: [""]
   script:
-    - echo "Deploy on Azure using Agent"
-    - kubectl config use-context $K8S_CONTEXT
+    - echo "Deploy on GCP using Agent"
+    - kubectl config use-context $K8S_CONTEXT_GCLOUD
     - kubectl config set-context --current --namespace=$K8S_NAMESPACE
-    - sed -i "s/image_to_be_replaced/$REVISION/g" deployment.yaml
-    # kubectl apply -f prod.yaml
+    - sed -i "s image_to_be_replaced $REPOSITORY_IMAGE g" deployment.yaml
+    - kubectl apply -f env/prod.yaml  
     - kubectl apply -f deployment.yaml
+    - kubectl apply -f service-ui-admin-v2.yaml
     - sh check_pod_status.sh
   allow_failure: false
