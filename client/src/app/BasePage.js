@@ -48,6 +48,7 @@ import { DashboardsRoutes } from "./pages/dashboards/routes/DashboardsRoutes";
 import TrackingOperation from "./components/form/TrackingOperation";
 import { Impacts } from "./pages/impacts/Impacts";
 import { ListDashboards } from "./pages/dashboards/containers/ListsDashboards";
+import { Empty } from "./modules/Empty/Empty";
 
 
 
@@ -188,7 +189,7 @@ export default function BasePage() {
         <ContentRoute key="/impacts" path="/impacts" component={Impacts} />,
         <ContentRoute key="/operation/tracking" path="/operation/tracking" component={TrackingOperation} />,
 
-        <ContentRoute key="/*" path="/*" component={ErrorPage1} />,
+        <ContentRoute key="/*" path="/*" component={Empty} />,
       </Switch>
     </Suspense>
   );
