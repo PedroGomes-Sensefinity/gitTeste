@@ -34,12 +34,8 @@ export function Dashboard() {
 
     // Temporary Vars for Transinsular needes
     // This code is only here to help transinsular track the number of assets with devices MUST be removed ASAP
-    const [tiAssetCount, setTiAssetCount] = useState(0);
-    const [ticvAssetCount, setTicvAssetCount] = useState(0);
 
-    const [tiCard, setTiCard] = useState(<></>);
-    const [ticvCard, setTicvCard] = useState(<></>);
-
+    const [deviceAssetCard, setDeviceAssetCard] = useState(<></>);
     //v2
     const [assets, setAssets] = useState(0);
     const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }));
@@ -59,11 +55,10 @@ export function Dashboard() {
             if ("total" in r) setAssets(r.total);
         });
         apiServiceV2
-            .get("v2/devices?asset=true&tenant_id=19")
+            .get("v2/devices?asset=true")
             .then(r => {
                 if ("total" in r) {
-                    setTiAssetCount(r.total);
-                    setTiCard(
+                    setDeviceAssetCard(
                         <div className={"col-lg-3 col-xxl-3"}>
                             <div className={"card"} style={styleShade}>
                                 <div className={"card-body p-0"} style={{ position: "relative" }}>
@@ -81,46 +76,9 @@ export function Dashboard() {
                                         </span>
                                         <div className={"d-flex flex-column text-right"}>
                                             <span className={"text-dark-75 font-weight-bolder font-size-h3"}>
-                                                {tiAssetCount}
+                                                {r.total}
                                             </span>
-                                            <span className={"font-weight-bold mt-2"}>Assets Tracked - TI</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    );
-                }
-            })
-            .catch(e => {});
-        apiServiceV2
-            .get("v2/devices?asset=true&tenant_id=20")
-            .then(r => {
-                if ("total" in r) {
-                    setTicvAssetCount(r.total);
-                    setTicvCard(
-                        <div className={"col-lg-3 col-xxl-3"}>
-                            <div className={"card"} style={styleShade}>
-                                <div className={"card-body p-0"} style={{ position: "relative" }}>
-                                    <div
-                                        className={
-                                            "d-flex align-items-center justify-content-between card-spacer flex-grow-1"
-                                        }
-                                    >
-                                        <span className={"symbol circle symbol-50 symbol-light-success mr-2"}>
-                                            <span className={"symbol-label"}>
-                                                <span className={"svg-icon svg-icon-xl svg-icon-success"}>
-                                                    <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Layers.svg")} />
-                                                </span>
-                                            </span>
-                                        </span>
-                                        <div className={"d-flex flex-column text-right"}>
-                                            <span className={"text-dark-75 font-weight-bolder font-size-h3"}>
-                                                {ticvAssetCount}
-                                            </span>
-                                            <span className={"font-weight-bold mt-2"} s>
-                                                Assets Tracked - TICV
-                                            </span>
+                                            <span className={"font-weight-bold mt-2"}>Assets Tracked</span>
                                         </div>
                                     </div>
                                 </div>
@@ -287,8 +245,7 @@ export function Dashboard() {
                         </div>
                     </div>
                 </div>
-                {tiCard}
-                {ticvCard}
+                {deviceAssetCard}
             </div>
         </div>
     );
