@@ -1,96 +1,85 @@
-import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
-import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import Tooltip from '@mui/material/Tooltip';
-import React, { useEffect, useState } from 'react';
+import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
+import Checkbox from "@mui/material/Checkbox";
+import IconButton from "@mui/material/IconButton";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TablePagination from "@mui/material/TablePagination";
+import TableRow from "@mui/material/TableRow";
+import Tooltip from "@mui/material/Tooltip";
+import React, { useEffect, useState } from "react";
 import BlockUi from "react-block-ui";
-import apiServiceV2 from '../../services/v2/apiServiceV2';
-import { SearchBar } from '../text-fields/SearchBar';
+import apiServiceV2 from "../../services/v2/apiServiceV2";
+import { SearchBar } from "../text-fields/SearchBar";
 
 function SelectableTableHead(props) {
     const { onSelectAllClick, numSelected, rowCount, columns, actions, disabled } = props;
 
-    return <TableHead>
-        <TableRow>
-            <TableCell padding="checkbox">
-                <Checkbox
-                    disabled={disabled}
-                    color="primary"
-                    indeterminate={numSelected > 0 && numSelected < rowCount}
-                    checked={rowCount > 0 && numSelected === rowCount}
-                    onChange={onSelectAllClick}
-                />
-            </TableCell>
-            {actions.length > 0 &&
-                <TableCell key='actions'> Actions </TableCell>}
-            {columns.map((headCell, idx) => (
-                <TableCell
-                    key={headCell.field}
-                >
-                    {headCell.title}
+    return (
+        <TableHead>
+            <TableRow>
+                <TableCell padding="checkbox">
+                    <Checkbox
+                        disabled={disabled}
+                        color="primary"
+                        indeterminate={numSelected > 0 && numSelected < rowCount}
+                        checked={rowCount > 0 && numSelected === rowCount}
+                        onChange={onSelectAllClick}
+                    />
                 </TableCell>
-            ))}
-        </TableRow>
-    </TableHead>
-
+                {actions.length > 0 && <TableCell key="actions"> Actions </TableCell>}
+                {columns.map((headCell, idx) => (
+                    <TableCell key={headCell.field}>{headCell.title}</TableCell>
+                ))}
+            </TableRow>
+        </TableHead>
+    );
 }
 
-
 export function SelectableTableGrid(props) {
-
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
-    const { endpoint, dataField, actions, columns } = props
-    const [query, setQuery] = useState("")
-    const [searchQuery, setSearchQuery] = useState("")
-    const [count, setCount] = useState(0)
+    const { endpoint, dataField, actions, columns } = props;
+    const [query, setQuery] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
+    const [count, setCount] = useState(0);
 
+    const [tenantID, setTenantId] = useState(0);
+    const [tenantsOptions, setTenantsOptions] = useState([]);
+    const selectDisabled = tenantID === 0;
 
-    const [tenantID, setTenantId] = useState(0)
-    const [tenantsOptions, setTenantsOptions] = useState([])
-    const selectDisabled = tenantID === 0
-
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [rows, setRows] = useState([]);
     const [isLoading, setLoading] = useState(true);
     const [refetch, setRefetch] = useState(true);
 
     useEffect(() => {
-        setLoading(true)
-        let method = tenantID === 0 ? 'getByLimitOffsetSearch' : 'getByLimitOffsetSearchTenant'
-        let params = [endpoint, rowsPerPage, page * rowsPerPage, searchQuery, tenantID]
+        setLoading(true);
+        let method = tenantID === 0 ? "getByLimitOffsetSearch" : "getByLimitOffsetSearchTenant";
+        let params = [endpoint, rowsPerPage, page * rowsPerPage, searchQuery, tenantID];
 
-        apiServiceV2[method](...params)
-            .then((result) => {
-
-                const newData = result[dataField] || []
-                const newCount = result.total || 0
-                console.log(newCount)
-                setRows(newData)
-                setCount(newCount)
-                setLoading(false)
-            });
-    }, [rowsPerPage, page, refetch, searchQuery, tenantID])
-
+        apiServiceV2[method](...params).then(result => {
+            const newData = result[dataField] || [];
+            const newCount = result.total || 0;
+            console.log(newCount);
+            setRows(newData);
+            setCount(newCount);
+            setLoading(false);
+        });
+    }, [rowsPerPage, page, refetch, searchQuery, tenantID]);
 
     useEffect(() => {
-        setLoading(true)
+        setLoading(true);
         const timer = setTimeout(() => {
-            setSearchQuery(query)
-        }, 500)
+            setSearchQuery(query);
+        }, 500);
 
         return () => {
-            clearTimeout(timer)
-        }
-    }, [query])
-
+            clearTimeout(timer);
+        };
+    }, [query]);
 
     useEffect(() => {
         apiServiceV2.get("v2/tenants/children").then(response => {
@@ -100,14 +89,14 @@ export function SelectableTableGrid(props) {
                 return { id: tenant.id, name: tenant.name };
             });
             setTenantsOptions(tenantsOptionsR);
-        })
-    }, [])
+        });
+    }, []);
 
-    const onChangeTenant = (evt) => {
-        setTenantId(evt.target.value)
-    }
+    const onChangeTenant = evt => {
+        setTenantId(evt.target.value);
+    };
 
-    const handleSelectAllClick = (event) => {
+    const handleSelectAllClick = event => {
         if (event.target.checked) {
             setSelected(rows);
         } else {
@@ -116,8 +105,8 @@ export function SelectableTableGrid(props) {
     };
 
     const triggerRefetch = () => {
-        setRefetch(state => !state)
-    }
+        setRefetch(state => !state);
+    };
 
     const handleClick = (_event, row) => {
         const selectedIndex = selected.indexOf(row);
@@ -130,10 +119,7 @@ export function SelectableTableGrid(props) {
         } else if (selectedIndex === selected.length - 1) {
             newSelected = newSelected.concat(selected.slice(0, -1));
         } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1),
-            );
+            newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
         }
 
         setSelected(newSelected);
@@ -143,15 +129,15 @@ export function SelectableTableGrid(props) {
         setPage(newPage);
     };
 
-    const handleChangeRowsPerPage = (event) => {
+    const handleChangeRowsPerPage = event => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
 
-    const onQueryChange = (newText) => {
-        setQuery(newText)
-    }
-    const isSelected = (row) => selected.find(elem => elem.id === row.id) !== undefined;
+    const onQueryChange = newText => {
+        setQuery(newText);
+    };
+    const isSelected = row => selected.find(elem => elem.id === row.id) !== undefined;
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows = Math.max(0, rowsPerPage - rows.length);
@@ -161,12 +147,16 @@ export function SelectableTableGrid(props) {
             <FormControl style={{ margin: "15px" }}>
                 <InputLabel id="select-container">Tenant</InputLabel>
                 <Select labelId="select-container" value={tenantID} onChange={onChangeTenant}>
-                    {[<MenuItem key={''} value={0} >Select a Tenant</MenuItem>, ...tenantsOptions.map(tenant => <MenuItem
-                        key={tenant.id}
-                        value={tenant.id}>
-                        {tenant.name}
-                    </MenuItem>
-                    )]}
+                    {[
+                        <MenuItem key={""} value={0}>
+                            Select a Tenant
+                        </MenuItem>,
+                        ...tenantsOptions.map(tenant => (
+                            <MenuItem key={tenant.id} value={tenant.id}>
+                                {tenant.name}
+                            </MenuItem>
+                        ))
+                    ]}
                 </Select>
             </FormControl>
             <div className="d-flex flex-row-reverse">
@@ -187,12 +177,12 @@ export function SelectableTableGrid(props) {
                             onQueryChange={onQueryChange}
                         />
                         <TableBody>
-                            {rows.map((row) => {
+                            {rows.map(row => {
                                 const isItemSelected = isSelected(row);
 
                                 return (
                                     <TableRow
-                                        key={`${row.id}${isItemSelected ? '-selected' : ''}`}
+                                        key={`${row.id}${isItemSelected ? "-selected" : ""}`}
                                         hover
                                         role="checkbox"
                                         aria-checked={isItemSelected}
@@ -201,7 +191,7 @@ export function SelectableTableGrid(props) {
                                     >
                                         <TableCell key={`${row.id}-checkbox`} padding="checkbox">
                                             <Checkbox
-                                                onClick={(event) => handleClick(event, row)}
+                                                onClick={event => handleClick(event, row)}
                                                 color="primary"
                                                 checked={isItemSelected}
                                                 disabled={selectDisabled}
@@ -221,25 +211,23 @@ export function SelectableTableGrid(props) {
 
                                         {columns.map((column, id) => {
                                             //handle nested fields
-                                            const fieldValue = column.field.split('.').reduce((prev, curr) => {
-                                                return prev[curr]
-                                            }, row)
+                                            const fieldValue = column.field.split(".").reduce((prev, curr) => {
+                                                return prev[curr];
+                                            }, row);
 
-                                            return <TableCell
-                                                key={id}
-                                                component="th"
-                                                scope="row">
-                                                {fieldValue}
-                                            </TableCell>
+                                            return (
+                                                <TableCell key={id} component="th" scope="row">
+                                                    {fieldValue}
+                                                </TableCell>
+                                            );
                                         })}
-
                                     </TableRow>
                                 );
                             })}
                             {emptyRows > 0 && (
                                 <TableRow
                                     style={{
-                                        height: (53) * emptyRows,
+                                        height: 53 * emptyRows
                                     }}
                                 >
                                     <TableCell colSpan={6} />
@@ -249,7 +237,7 @@ export function SelectableTableGrid(props) {
                     </Table>
                 </TableContainer>
                 <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
+                    rowsPerPageOptions={[10, 20, 50]}
                     component="div"
                     count={count}
                     rowsPerPage={rowsPerPage}
@@ -257,7 +245,7 @@ export function SelectableTableGrid(props) {
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
-            </BlockUi >
+            </BlockUi>
         </>
     );
 }

@@ -453,7 +453,7 @@ export function AsideMenuList({ layoutProps }) {
           </li>
         }
 
-        <li
+        {(permissions.canCreateAssets && permissions.canCreateGeofences && permissions.canCreateThresholds && permissions.canCreateThresholdGeofences && permissions.canCreateNotificationTemplates) && <li
           className={`menu-item ${getMenuItemActive("/operation/tracking", false)}`}
           aria-haspopup="true"
         >
@@ -463,7 +463,7 @@ export function AsideMenuList({ layoutProps }) {
             </span>
             <span className="menu-text">Setup Operation</span>
           </NavLink>
-        </li>
+        </li>}
 
       </ul>
       {/* end::Menu Nav */}
