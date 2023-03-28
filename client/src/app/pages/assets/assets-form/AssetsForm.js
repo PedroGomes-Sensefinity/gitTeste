@@ -83,17 +83,41 @@ export function AssetsForm({ match, location }) {
         console.log(value)
         switch (value) {
             case "dashboard":
-                return <DeviceSelector asset={assetInfo} />
+                return (<BlockUi tag='div' blocking={isLoading}>
+                    <TabContainer>
+                        < DeviceSelector asset={assetInfo} />
+                    </TabContainer>
+                </BlockUi>)
             case "info":
-                return <AssetsFormComponent id={assetId} asset={assetInfo} />
+                return (<BlockUi tag='div' blocking={isLoading}>
+                    <TabContainer>
+                        <AssetsFormComponent id={assetId} asset={assetInfo} />
+                    </TabContainer>
+                </BlockUi>)
             case "devices":
-                return <AssetDevicesComponent id={assetId} asset={assetInfo} onAssetChange={onAssetChange} />
+                return (<BlockUi tag='div' blocking={isLoading}>
+                    <TabContainer>
+                        <AssetDevicesComponent id={assetId} asset={assetInfo} onAssetChange={onAssetChange} />
+                    </TabContainer>
+                </BlockUi>)
             case "history":
-                return <AssetHistory id={assetId} asset={assetInfo} />
+                return (<BlockUi tag='div' blocking={isLoading}>
+                    <TabContainer>
+                        <AssetHistory id={assetId} asset={assetInfo} />
+                    </TabContainer>
+                </BlockUi>)
             case "impacts":
-                return <AssetImpacts id={assetId} asset={assetInfo} />
+                return (<BlockUi tag='div' blocking={isLoading}>
+                    <TabContainer>
+                        <AssetImpacts id={assetId} asset={assetInfo} />
+                    </TabContainer>
+                </BlockUi>)
             case "extrafields":
-                return <AssetFormExtraFields id={assetId} />
+                return (<BlockUi tag='div' blocking={isLoading}>
+                    <TabContainer>
+                        <AssetFormExtraFields id={assetId} />
+                    </TabContainer>
+                </BlockUi>)
             default:
                 return <KibanaDashboard url={dashboards[value].dashboard_url} />;
         }
@@ -135,7 +159,7 @@ export function AssetsForm({ match, location }) {
         });
     }, []);
 
-    return <div>
+    return <>
         <Paper square>
             <Tabs value={value} indicatorColor="primary" textColor="primary" onChange={handleChange}>
                 <Tab value="dashboard" label="Dashboard" />
@@ -147,12 +171,8 @@ export function AssetsForm({ match, location }) {
                 <Tab value="extrafields" label="Extra Fields" disabled={typeof assetId === 'undefined' || hasMetadataSchema === false} />
             </Tabs>
         </Paper>
-        <BlockUi tag='div' blocking={isLoading}>
-            <TabContainer>
-                {componentToBeRendered}
-            </TabContainer>
-        </BlockUi>
-    </div>
+        {componentToBeRendered}
+    </>
 }
 
 
