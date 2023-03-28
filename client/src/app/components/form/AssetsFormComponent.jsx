@@ -72,9 +72,9 @@ function AssetsFormComponent(props) {
 
         if (props.asset !== undefined) {
             props.asset.threshold_ids.forEach(id => {
-                apiServiceV2.get("v2/thresholds/"+ id).then(response => {
+                apiServiceV2.get("v2/thresholds/" + id).then(response => {
                     const thresholdsSelected = selectedThresholds;
-                    thresholdsSelected.push({id: response.threshold.id, label : response.threshold.label});
+                    thresholdsSelected.push({ id: response.threshold.id, label: response.threshold.label });
                     setSelectedThresholds([...thresholdsSelected]);
                 });
             });
@@ -350,7 +350,7 @@ function AssetsFormComponent(props) {
                                             {ruleTypeOptions.map(e => {
                                                 return (
                                                     <option key={e.id} value={e.id}>
-                                                        {e.name}
+                                                        {e.type} - {e.name}
                                                     </option>
                                                 );
                                             })}
