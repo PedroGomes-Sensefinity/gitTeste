@@ -7,7 +7,15 @@ import { injectIntl } from "react-intl";
 
 const versions = [
     {
-        versionNumber: "V.1.0.0 - Latest", date: "23/03/2023", changes:
+        versionNumber: "V.1.0.1 - Latest", date: "23/03/2023", changes:
+            ["1. Added Asset Family and Asset Type to Assets Lists",
+                "2. Increased Page options on Assets Lists",
+                "3. Added Support for a new Asset Type Called: Cold Room",
+                "4. Added Options to have custom Dashboards for Temperature on Assets (*)",
+                "(*) - Only for assets of type Cold Room"]
+    },
+    {
+        versionNumber: "V.1.0.0", date: "23/03/2023", changes:
             ["Final version of optimizations!"]
     },
     {
