@@ -12,17 +12,21 @@ import apiServiceV2 from '../../../services/v2/apiServiceV2';
 import DeviceSelector from "./DeviceSelector";
 import { injectIntl } from "react-intl";
 import AssetImpacts from "../../../components/history/AssetImpacts";
-
+import { useSelector } from 'react-redux';
+import { KibanaDashboard } from "../../dashboards/KibanaDashboard";
 
 export function AssetsForm({ match, location }) {
     const { id: assetId } = match.params;
     const baseURL = location.pathname
     const [assetInfo, setAssetInfo] = useState(undefined)
     const [isLoading, setLoading] = useState(true)
+    const [kibanaTabs, setKibanaTabs] = useState([])
+    const [dashboards, setDashboards] = useState([])
     const [hasMetadataSchema, setMetadataSchema] = useState(false)
     const [refetch, setRefetch] = useState(false)
     // we use this hook so it doesn't show the splash screen
     const history = useHistory()
+    const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
 
     function handleChange(event, newValue) {
         setValue(newValue);
@@ -36,35 +40,38 @@ export function AssetsForm({ match, location }) {
 
     const updateLink = (value) => {
         switch (value) {
-            case 0:
+            case "dashboard":
                 history.push(`${baseURL}`)
                 return
-            case 1:
+            case "info":
                 history.push(`${baseURL}#edit`)
                 return
-            case 2:
+            case "devices":
                 history.push(`${baseURL}#devices`)
                 return
-            case 3:
+            case "history":
                 history.push(`${baseURL}#history`)
                 return
-            case 4:
+            case "impacts":
                 history.push(`${baseURL}#impacts`)
                 return
-            case 5:
+            case "extrafields":
                 history.push(`${baseURL}#extra-fields`)
+                return
+            default:
+                history.push(`${baseURL}`)
                 return
         }
     }
 
     const initialValue = useMemo(() => {
         switch (location.hash) {
-            case '': return 0
-            case '#edit': return 1
-            case '#devices': return 2
-            case '#history': return 3
-            case '#impacts': return 4
-            case '#extra-fields': return 5
+            case '': return "dashboard"
+            case '#edit': return "info"
+            case '#devices': return "devices"
+            case '#history': return "history"
+            case '#impacts': return "impacts"
+            case '#extra-fields': return "extrafields"
         }
     }, [location.hash])
 
@@ -73,19 +80,22 @@ export function AssetsForm({ match, location }) {
         if (isLoading) {
             return <></>
         }
+        console.log(value)
         switch (value) {
-            case 0:
+            case "dashboard":
                 return <DeviceSelector asset={assetInfo} />
-            case 1:
+            case "info":
                 return <AssetsFormComponent id={assetId} asset={assetInfo} />
-            case 2:
+            case "devices":
                 return <AssetDevicesComponent id={assetId} asset={assetInfo} onAssetChange={onAssetChange} />
-            case 3:
+            case "history":
                 return <AssetHistory id={assetId} asset={assetInfo} />
-            case 4:
+            case "impacts":
                 return <AssetImpacts id={assetId} asset={assetInfo} />
-            case 5:
+            case "extrafields":
                 return <AssetFormExtraFields id={assetId} />
+            default:
+                return <KibanaDashboard url={dashboards[value].dashboard_url} />;
         }
     }, [value, assetInfo, isLoading]);
 
@@ -99,6 +109,19 @@ export function AssetsForm({ match, location }) {
             if (err.status === 404) {
                 history.push('/error/error-v1')
             }
+        })
+        apiServiceV2.get(`v2/assets/` + assetId + `/dashboards`).then((results) => {
+            const dashboards = results.dashboards
+            console.log(dashboards)
+            const dashboardTabs = []
+            for (const i in dashboards) {
+                console.log(i)
+                dashboardTabs.push(<Tab value={i} label={dashboards[i].dashboard_name} />)
+            }
+            setDashboards(dashboards)
+            setKibanaTabs(dashboardTabs)
+        }).catch(err => {
+            console.log(err)
         })
     }, [assetId, refetch])
 
@@ -115,12 +138,13 @@ export function AssetsForm({ match, location }) {
     return <div>
         <Paper square>
             <Tabs value={value} indicatorColor="primary" textColor="primary" onChange={handleChange}>
-                <Tab label="Dashboard" />
-                <Tab label="Asset Info" />
-                <Tab label="Devices" disabled={typeof assetId === 'undefined'} />
-                <Tab label="History" disabled={typeof assetId === 'undefined'} />
-                <Tab label="Impacts" disabled={typeof assetId === 'undefined'} />
-                <Tab label="Extra Fields" disabled={typeof assetId === 'undefined' || hasMetadataSchema === false} />
+                <Tab value="dashboard" label="Dashboard" />
+                {kibanaTabs}
+                <Tab value="info" label="Asset Info" />
+                <Tab value="devices" label="Devices" disabled={typeof assetId === 'undefined'} />
+                {permissions.canCreateThresholdGeofences && <Tab value="history" label="History" disabled={typeof assetId === 'undefined'} />}
+                {permissions.canViewImpacts && <Tab value="impacts" label="Impacts" disabled={typeof assetId === 'undefined'} />}
+                <Tab value="extrafields" label="Extra Fields" disabled={typeof assetId === 'undefined' || hasMetadataSchema === false} />
             </Tabs>
         </Paper>
         <BlockUi tag='div' blocking={isLoading}>
