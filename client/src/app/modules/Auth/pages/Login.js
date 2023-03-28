@@ -97,7 +97,7 @@ function Login(props) {
                         setToken(tenant.hash);
                         setUser(user);
                         setTenantLogo(user.tenantLogo);
-                        
+
                         let url = String(props.redirectURL)
                         let reducedUrl = ""
                         if (url.includes("localhost")) {
@@ -210,12 +210,12 @@ function Login(props) {
                     ) : null}
                 </div>
                 <div className='form-group d-flex flex-wrap justify-content-between align-items-center'>
-                    <Link
+                    {/* <Link
                         to='/auth/forgot-password'
                         className='text-dark-50 text-hover-primary my-3 mr-2'
                         id='kt_login_forgot'>Forgot my password
-                        {/*<FormattedMessage id="Forgot my password" />*/}
-                    </Link>
+                        <FormattedMessage id="Forgot my password" />
+                    </Link>*/}
                     <button
                         id='kt_login_signin_submit'
                         type='submit'
