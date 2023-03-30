@@ -204,6 +204,20 @@ export function AsideMenuList({ layoutProps }) {
                 </li>
                 {/*end::2 Level*/}
                 {/*begin::2 Level*/}
+                {permissions.hasAllPermissions &&
+                  <li
+                    className={`menu-item ${getMenuItemActive("/devices/configmessages")}`}
+                    aria-haspopup="true"
+                  >
+                    <NavLink className="menu-link" to="/devices/configmessages">
+                      <i className="menu-bullet menu-bullet-dot">
+                        <span />
+                      </i>
+                      <span className="menu-text">Device Config Messages</span>
+                    </NavLink>
+                  </li>
+                }
+                {/*begin::2 Level*/}
                 {permissions.canCreateDevices &&
                   <li
                     className={`menu-item ${getMenuItemActive("/devices/provision")}`}
@@ -464,6 +478,8 @@ export function AsideMenuList({ layoutProps }) {
             <span className="menu-text">Setup Operation</span>
           </NavLink>
         </li>}
+
+        
 
       </ul>
       {/* end::Menu Nav */}

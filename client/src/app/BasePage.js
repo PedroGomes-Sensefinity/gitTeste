@@ -49,6 +49,7 @@ import TrackingOperation from "./components/form/TrackingOperation";
 import { Impacts } from "./pages/impacts/Impacts";
 import { ListDashboards } from "./pages/dashboards/containers/ListsDashboards";
 import { Empty } from "./modules/Empty/Empty";
+import { DevicesConfigMessages } from "./pages/devices/devices-configmessages/DevicesList";
 
 
 
@@ -85,6 +86,7 @@ export default function BasePage() {
         {permissions.canViewDevices && [
           <ContentRoute key="/devices/edit/:id" path="/devices/edit/:id" component={Device} />,
           <ContentRoute key="/devices/provision" path="/devices/provision" component={DevicesProvision} />,
+          <ContentRoute key="/devices/configmessages" path="/devices/configmessages" component={DevicesConfigMessages} />,
           <ContentRoute key="/devices/upload" path="/devices/upload" component={DevicesUpload} />,
           <ContentRoute key="/devices/new" path="/devices/new" component={CreateDevice} />,
           <ContentRoute key="/devices/list" path="/devices/list" component={DevicesList} />,
