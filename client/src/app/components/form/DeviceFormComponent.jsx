@@ -9,7 +9,6 @@ import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import apiService from '../../services/apiService';
 import deviceService from '../../services/deviceService';
-import tenantService from '../../services/tenantService';
 import { getInputClasses } from '../../utils/formik';
 import toaster from '../../utils/toaster';
 import '../../utils/yup-validations';
@@ -38,9 +37,6 @@ function DeviceFormComponent(props) {
     const [selectedGroup, setSelectedGroup] = useState([])
 
     const forceBoardId = selectedBoardFamily.length !== 0 ? selectedBoardFamily[0].force_board_id : false
-
-
-    const [tenant, setTenant] = useState({})
     const classes = useStyles();
 
     const initialValues = {
@@ -68,16 +64,12 @@ function DeviceFormComponent(props) {
         setBlocking(true)
 
         const promises = [
-            apiService.get('board_families', 100, 0),
-            tenantService.getInfo(),
+            apiService.get('board_families', 100, 0)
         ];
 
         Promise.all(promises).then(allResponses => {
             const respBoardFamilies = allResponses[0].board_families || [];
-            const respTenant = allResponses[1];
-
             setBoardFamilies(respBoardFamilies);
-            setTenant(respTenant);
             if (!isAddMode && deviceId !== 'new') {
                 apiService.getById('device', deviceId).then((response) => {
                     const respDevices = response.devices || []
@@ -473,27 +465,6 @@ function DeviceFormComponent(props) {
                                 </div>
 
                                 <div className='form-group row'>
-                                    {tenant.type === 'master' &&
-                                        <div className='col-xl-6 col-lg-6'>
-                                            <label className={`required`}>Metadata</label>
-                                            <div>
-                                                <Field
-                                                    as="textarea"
-                                                    rows='7'
-                                                    className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                                                        { errors, touched },
-                                                        'meta_data'
-                                                    )}`}
-                                                    name='meta_data'
-                                                    placeholder='Set the meta_data'
-                                                    disabled={!permissions.canEditDevices}
-                                                    {...getFieldProps(
-                                                        'meta_data'
-                                                    )}
-                                                />
-                                            </div>
-                                        </div>
-                                    }
 
                                     <div className='col-xl-6 col-lg-6'>
                                         <label>Comments</label>
