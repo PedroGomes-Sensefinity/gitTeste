@@ -81,7 +81,7 @@ export function Videos() {
                             </Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size="small">Open Video On Youtube!</Button>
+                            <Button target="_blank" href={video.url} size="small">Open Video On Youtube!</Button>
                         </CardActions>
                     </Card>
                 </div>)
