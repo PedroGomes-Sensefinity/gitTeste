@@ -32,6 +32,8 @@ function AssetsFormComponent(props) {
     const [selectedThresholds, setSelectedThresholds] = useState([]);
     const [tenantId, setTenantId] = useState(0);
 
+    const [assetType, setAssetType] = useState(0);
+
     const initialValues = props.asset || {
         id: 0,
         label: "",
@@ -47,10 +49,13 @@ function AssetsFormComponent(props) {
         apiServiceV2.get("v2/assets/types").then(response => {
             const respAssetTypes = response.asset_types || [];
 
-            const ruleTypeOptions = respAssetTypes.map(assetType => {
+            const ruleTypeOptionsR = respAssetTypes.map(assetType => {
                 return { id: assetType.id, name: assetType.label, type: assetType.type };
             });
-            setRuleTypeOptions(ruleTypeOptions);
+            if (ruleTypeOptionsR.length > 0) {
+                setAssetType(ruleTypeOptionsR[0].id);
+            }
+            setRuleTypeOptions(ruleTypeOptionsR);
         });
         if (isAddMode) {
             apiServiceV2.get("v2/tenants/children").then(response => {
@@ -137,10 +142,9 @@ function AssetsFormComponent(props) {
     const validateLabel = value => {
         let error;
         let type;
-
         ruleTypeOptions.forEach(function(options) {
-            if (options["id"] === initialValues.asset_type.id) {
-                type = options["type"];
+            if (options.id == assetType) {
+                type = options.type;
             }
         });
         if (type === "Container") {
@@ -345,6 +349,10 @@ function AssetsFormComponent(props) {
                                             name="asset_type_id"
                                             placeholder=""
                                             {...getFieldProps("asset_type.id")}
+                                            onChange={e => {
+                                                setAssetType(e.target.value);
+                                                setFieldValue("asset_type.id", e.target.value);
+                                            }}
                                         >
                                             <option key="" value=""></option>
                                             {ruleTypeOptions.map(e => {
