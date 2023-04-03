@@ -7,7 +7,11 @@ import { injectIntl } from "react-intl";
 
 const versions = [
     {
-        versionNumber: "V.1.0.1 - Latest", date: "28/03/2023", changes:
+        versionNumber: "V.1.0.2 - Latest", date: "03/04/2023", changes:
+            ["1. Added Page with tutorials videos!"]
+    },
+    {
+        versionNumber: "V.1.0.1", date: "28/03/2023", changes:
             ["1. Added Asset Family and Asset Type to Assets Lists",
                 "2. Increased Page options on Assets Lists",
                 "3. Added Support for a new Asset Type Called: Cold Room",
@@ -19,7 +23,7 @@ const versions = [
             ["Final version of optimizations!"]
     },
     {
-        versionNumber: "V.0.4.4 - Latest", date: "14/03/2023", changes:
+        versionNumber: "V.0.4.4", date: "14/03/2023", changes:
             ["1. It's now possible to select All tenants on Operation Tracking! That will create the same resources for all tenants (e.g.: For Transinsular will create to TI and TICV)",
                 "2. Not it's easier to add a Geofence to a Threshold. Just go to: Thresholds - Select Threshold - Geofences - Add New Geofence",
             ]

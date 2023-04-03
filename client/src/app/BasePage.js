@@ -50,6 +50,7 @@ import { Impacts } from "./pages/impacts/Impacts";
 import { ListDashboards } from "./pages/dashboards/containers/ListsDashboards";
 import { Empty } from "./modules/Empty/Empty";
 import { DevicesConfigMessages } from "./pages/devices/devices-configmessages/DevicesList";
+import { Videos } from "./pages/videos/Videos";
 
 
 
@@ -188,6 +189,7 @@ export default function BasePage() {
         ]}
         { /* what's new Page*/}
         <ContentRoute key="/whatsnew" path="/whatsnew" component={News} />,
+        <ContentRoute key="/videos" path="/videos" component={Videos} />,
         <ContentRoute key="/impacts" path="/impacts" component={Impacts} />,
         <ContentRoute key="/operation/tracking" path="/operation/tracking" component={TrackingOperation} />,
 
