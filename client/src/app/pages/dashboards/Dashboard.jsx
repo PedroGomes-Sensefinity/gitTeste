@@ -236,7 +236,7 @@ export function Dashboard() {
                                     </Button>
                                     <br></br>
                                     <span className={"text-muted font-weight-bold mt-2"}>
-                                        Discover the latest updates to the Sensefinty Web Application!
+                                        Discover the latest updates to the Sensefinity Web Application!
                                     </span>
                                     <br></br>
                                     <span className={"font-weight-bold mt-2"}>Last Update : V.1.0.3 - 04/04/2023</span>
