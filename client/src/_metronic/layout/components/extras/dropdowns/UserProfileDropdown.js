@@ -30,17 +30,17 @@ export function UserProfileDropdown() {
           className={
             "btn btn-icon w-auto btn-clean d-flex align-items-center btn-lg px-2"
           }
-          style={{"padding":"5px"}}
+          style={{ "padding": "5px" }}
         >
-          <span className="text-muted font-weight-bold font-size-base d-none d-md-inline mr-1">
-            Hi, {user.tenant}
-          </span>{" "}
           <span className="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-3">
           </span>
           <span className="symbol symbol-35 symbol-light-success">
             <span className="symbol-label font-size-h5 font-weight-bold">
-                {user.email[0] || user.username[0]}
+              {user.email[0] || user.username[0]}
             </span>
+          </span>{" "}
+          <span style={{margin: "10px"}} className="text-muted font-weight-bold font-size-base d-none d-md-inline mr-1">
+            Hi, {user.tenant}
           </span>
         </div>
       </Dropdown.Toggle>

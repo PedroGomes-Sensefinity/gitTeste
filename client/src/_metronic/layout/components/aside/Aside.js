@@ -5,8 +5,9 @@ import { Brand } from "../brand/Brand";
 import { AsideMenu } from "./aside-menu/AsideMenu";
 import { useHtmlClassService } from "../../_core/MetronicLayout";
 import { UserProfileDropdown } from "../extras/dropdowns/UserProfileDropdown";
+import { Button } from "react-bootstrap";
 
-export function Aside() {
+export function Aside(props) {
   const uiService = useHtmlClassService();
 
   const layoutProps = useMemo(() => {
@@ -41,7 +42,7 @@ export function Aside() {
               {/* end::Header Logo */}
             </>
           )}
-          <div style={{"padding":"15px"}}>
+          <div style={{ "padding": "15px" }}>
             <UserProfileDropdown />
           </div>
           <AsideMenu disableScroll={layoutProps.disableScroll} />

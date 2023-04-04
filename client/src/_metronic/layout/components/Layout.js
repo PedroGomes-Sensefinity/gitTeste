@@ -1,25 +1,32 @@
-import React, {useMemo} from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import objectPath from "object-path";
 // LayoutContext
-import {useHtmlClassService} from "../_core/MetronicLayout";
+import { useHtmlClassService } from "../_core/MetronicLayout";
 // Import Layout components
-import {Header} from "./header/Header";
-import {HeaderMobile} from "./header-mobile/HeaderMobile";
-import {Aside} from "./aside/Aside";
-import {Footer} from "./footer/Footer";
-import {LayoutInit} from "./LayoutInit";
-import {SubHeader} from "./subheader/SubHeader";
-import {QuickPanel} from "./extras/offcanvas/QuickPanel";
-import {QuickUser} from "./extras/offcanvas/QuickUser";
-import {ScrollTop} from "./extras/ScrollTop";
+import { Header } from "./header/Header";
+import { HeaderMobile } from "./header-mobile/HeaderMobile";
+import { Aside } from "./aside/Aside";
+import { Footer } from "./footer/Footer";
+import { LayoutInit } from "./LayoutInit";
+import { SubHeader } from "./subheader/SubHeader";
+import { QuickPanel } from "./extras/offcanvas/QuickPanel";
+import { QuickUser } from "./extras/offcanvas/QuickUser";
+import { ScrollTop } from "./extras/ScrollTop";
+import { Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { IconButton } from "@material-ui/core";
+import { MdChevronRight, MdChevronLeft } from "react-icons/md";
 //import {StickyToolbar} from "./extras/StickyToolbar";
 
 export function Layout({ children }) {
     const uiService = useHtmlClassService();
+    const [sideMenu, setSideMenu] = useState(true)
     // Layout settings (cssClasses/cssAttributes)
     const layoutProps = useMemo(() => {
+        setSideMenu(true)
         return {
             layoutConfig: uiService.config,
+            headerLogo: uiService.getStickyLogo(),
             selfLayout: objectPath.get(uiService.config, "self.layout"),
             asideDisplay: objectPath.get(uiService.config, "aside.self.display"),
             subheaderDisplay: objectPath.get(uiService.config, "subheader.display"),
@@ -32,17 +39,22 @@ export function Layout({ children }) {
             contentExtended: objectPath.get(uiService.config, "content.extended")
         };
     }, [uiService]);
+    function onChange() {
+        setSideMenu(!sideMenu)
+    }
 
     return layoutProps.selfLayout !== "blank" ? (
         <>
             {/*begin::Main*/}
-            <HeaderMobile/>
+            <HeaderMobile />
+            {/*begin::Logo*/}
+            {/*end::Logo*/}
             <div className="d-flex flex-column flex-root">
                 {/*begin::Page*/}
                 <div className="d-flex flex-row flex-column-fluid page">
-                    {layoutProps.asideDisplay && (<Aside/>)}
+                    {sideMenu   && (<Aside style={{ "width": sideMenu ? "" : "0px" }} />)}
                     {/*begin::Wrapper*/}
-                    <div className="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
+                    <div style={{ "padding-left": sideMenu ? "" : "0px" }} className="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
                         {/*begin::Content*/}
                         <div
                             id="kt_content"
@@ -59,20 +71,22 @@ export function Layout({ children }) {
                                 </div>
                             )}
 
-                            {layoutProps.contentExtended && {children}}
+                            {layoutProps.contentExtended && { children }}
                             {/*end::Entry*/}
                         </div>
                         {/*end::Content*/}
+                        <Footer sideMenu={sideMenu} onChange={onChange}></Footer>
                     </div>
                     {/*end::Wrapper*/}
                 </div>
                 {/*end::Page*/}
             </div>
-            <QuickUser/>
-            <QuickPanel/>
-            <ScrollTop/>
+            <QuickUser />
+            <QuickPanel />
+            <ScrollTop />
             { /*<StickyToolbar/>* }
             {/*end::Main*/}
+
             <LayoutInit />
         </>
     ) : (
