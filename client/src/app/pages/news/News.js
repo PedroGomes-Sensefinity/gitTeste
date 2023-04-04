@@ -7,7 +7,11 @@ import { injectIntl } from "react-intl";
 
 const versions = [
     {
-        versionNumber: "V.1.0.2 - Latest", date: "03/04/2023", changes:
+        versionNumber: "V.1.0.3 - Latest", date: "04/04/2023", changes:
+            ["1. Added Footer with option to close side menu. This will allow a better visualization of dashboards."]
+    },
+    {
+        versionNumber: "V.1.0.2", date: "03/04/2023", changes:
             ["1. Added Page with tutorials videos!"]
     },
     {

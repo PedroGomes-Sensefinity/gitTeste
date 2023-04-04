@@ -239,7 +239,7 @@ export function Dashboard() {
                                         Discover the latest updates to the Sensefinty Web Application!
                                     </span>
                                     <br></br>
-                                    <span className={"font-weight-bold mt-2"}>Last Update : V.1.0.2 - 03/04/2023</span>
+                                    <span className={"font-weight-bold mt-2"}>Last Update : V.1.0.3 - 04/04/2023</span>
                                 </div>
                             </div>
                         </div>
