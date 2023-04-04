@@ -46,7 +46,7 @@ export function Footer(props) {
             &copy; Sensefinity
           </a>
           <Link to={{ pathname: "https://sensefinity.com" }} target="_blank">
-            <img style={{ width: "100px", padding: "10px" }} alt="logo" src={layoutProps.headerLogo} />
+            <img style={{ width: "100px", padding: "10px" }} alt="logo" src="/media/logos/sensefinity_iot-small.png" />
           </Link>
         </div>
       </div>
