@@ -76,7 +76,7 @@ export function AsideMenuList({ layoutProps }) {
               }
               {/*end::2 Level*/}
               {/*begin::2 Level*/}
-              {permissions.canViewContainerDashboard &&
+              {permissions.canViewDashboardLists &&
                 <li
                   className={`menu-item ${getMenuItemActive("/dashboard/lists/containers")}`}
                   aria-haspopup="true"

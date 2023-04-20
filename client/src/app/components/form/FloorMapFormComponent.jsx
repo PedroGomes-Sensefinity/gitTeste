@@ -64,7 +64,6 @@ function FloorMapFormComponent(props) {
             //Get Geofence Data
             apiServiceV2.get("v2/floormaps/" + floorMapId).then(response => {
                 setFloorMap(response.floor_map);
-                console.log(response.floor_map);
                 setImage(response.floor_map.attachment_url);
             });
         }
@@ -76,8 +75,6 @@ function FloorMapFormComponent(props) {
             const devicesR = response.devices || [];
             devicesR.forEach(e => devices.push({ device_id: e.id }));
             setDevicesSearch(devices);
-
-            console.log(devices);
         });
     };
 
@@ -119,7 +116,6 @@ function FloorMapFormComponent(props) {
             return;
         }
         fields["attachment_url"] = image;
-        console.log(JSON.stringify(fields));
         if (isAddMode) {
             fields["tenant_id"] = parseInt(tenantId);
             apiServiceV2
@@ -162,7 +158,6 @@ function FloorMapFormComponent(props) {
         data.append("file", file);
 
         floorMapService.upload(data).then(r => {
-            console.log(r.detail);
             setImage(r.detail);
             setBlocking(false);
         });
@@ -178,7 +173,6 @@ function FloorMapFormComponent(props) {
             markers.push({ top: (element.x * 100) / values.length - 1, left: (element.y * 100) / values.width - 1 })
         );
         setMarkers(markers);
-        console.log(markers);
     };
 
     const handleChangeTenant = event => {

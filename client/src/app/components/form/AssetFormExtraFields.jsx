@@ -40,7 +40,6 @@ export default function AssetFormExtraFields(props) {
     }, []);
 
     const onSubmit = formData => {
-        console.log(formData.formData);
         const assetSave = asset;
         assetSave["asset_type_id"] = assetSave.asset_type.id
         assetSave["metadata"] = JSON.stringify(formData.formData);

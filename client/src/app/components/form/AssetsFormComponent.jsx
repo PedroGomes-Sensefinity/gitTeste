@@ -228,7 +228,6 @@ function AssetsFormComponent(props) {
             fields["tenant_id"] = parseInt(fields.tenant.id);
         }
         fields["tenant"] = {};
-        console.log(fields);
         assetsServiceV2[method](fields)
             .then(response => {
                 toaster.notify("success", msgSuccess);
@@ -244,7 +243,6 @@ function AssetsFormComponent(props) {
                 }
             })
             .catch(err => {
-                console.log(err);
                 toaster.notify("error", err.status);
                 setSubmitting(false);
                 setBlocking(false);

@@ -17,13 +17,13 @@ export function Videos() {
     let COUNT = 8
 
     function getVideos(e, v) {
-        console.log(v)
+        
         apiServiceV2.get(`v2/videos?limit=` + COUNT + `&offset=` + COUNT * (v - 1)).then(r => {
             const videosR = []
-            console.log(r)
+            
             if (r.videos !== undefined) {
                 for (const video of r.videos) {
-                    console.log(video)
+                    
                     videosR.push(<div className={"col-lg-3 col-xxl-3"}>
                         <Card sx={{ maxWidth: 345, margin: "10px" }}>
                             <iframe
@@ -60,7 +60,7 @@ export function Videos() {
             const videosR = []
             setTotal(Math.ceil(r.total / COUNT))
             for (const video of r.videos) {
-                console.log(video)
+                
                 videosR.push(<div className={"col-lg-3 col-xxl-3"}>
                     <Card sx={{ maxWidth: 345, margin: "10px" }}>
                         <iframe

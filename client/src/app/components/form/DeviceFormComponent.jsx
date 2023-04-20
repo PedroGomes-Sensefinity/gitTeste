@@ -136,8 +136,6 @@ function DeviceFormComponent(props) {
     };
 
     const makeGroupLabel = (group) => {
-        console.log('making group label from')
-            console.log(group)
         const parentParent = (group.parent_label !== undefined && group.parent_parent_id !== 0) ? "../" : "";
         const parent = (group.parent_label !== undefined && group.parent_label !== "" ) ? `${group.parent_label}/` : "";
         return `${parentParent}${parent}${group.label}`;
@@ -268,7 +266,6 @@ function DeviceFormComponent(props) {
                 handleSubmit,
                 values
             }) => {
-                console.log(values)
                 return (
                     <form
                         className='card card-custom'

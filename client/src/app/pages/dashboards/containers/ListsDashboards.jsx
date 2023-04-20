@@ -25,9 +25,7 @@ export function ListDashboards() {
     }, []);
 
     const componentToBeRendered = useMemo(() => {
-        console.log(value);
-        console.log(dashboards);
-        console.log(dashboards[value]);
+
         if (dashboards[value] === undefined) {
             return <></>;
         } else {

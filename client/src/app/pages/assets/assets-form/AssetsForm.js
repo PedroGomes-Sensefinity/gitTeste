@@ -80,7 +80,7 @@ export function AssetsForm({ match, location }) {
         if (isLoading) {
             return <></>
         }
-        console.log(value)
+        
         switch (value) {
             case "dashboard":
                 return (<BlockUi tag='div' blocking={isLoading}>
@@ -136,7 +136,7 @@ export function AssetsForm({ match, location }) {
         })
         apiServiceV2.get(`v2/assets/` + assetId + `/dashboards`).then((results) => {
             const dashboards = results.dashboards
-            console.log(dashboards)
+            
             const dashboardTabs = []
             for (const i in dashboards) {
                 console.log(i)
@@ -145,7 +145,7 @@ export function AssetsForm({ match, location }) {
             setDashboards(dashboards)
             setKibanaTabs(dashboardTabs)
         }).catch(err => {
-            console.log(err)
+            
         })
     }, [assetId, refetch])
 

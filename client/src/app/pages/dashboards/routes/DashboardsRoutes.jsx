@@ -22,7 +22,6 @@ export function DashboardsRoutes() {
                 dashboard = [{}];
                 setDashboards(dashboard);
             }else{
-                console.log(dashboard)
                 setDashboards(dashboard);
                 setValue(0)
             }
@@ -30,8 +29,7 @@ export function DashboardsRoutes() {
     }, []);
 
     const componentToBeRendered = useMemo(() => {
-        console.log(value)
-        console.log(dashboards)
+
         if (dashboards[value] !== undefined && dashboards[value].url !== undefined){
             switch (value) {
                 default:

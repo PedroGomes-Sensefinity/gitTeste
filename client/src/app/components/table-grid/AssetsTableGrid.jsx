@@ -20,7 +20,7 @@ function AssetTableToolbar(props) {
         apiServiceV2.get(`v2/thresholds?tenant_id=${tenantID}`)
             .then(response => {
                 const thresholds = response.thresholds || []
-                console.log(thresholds)
+                
                 setThresholdOptions(thresholds)
             })
     }, [tenantID])

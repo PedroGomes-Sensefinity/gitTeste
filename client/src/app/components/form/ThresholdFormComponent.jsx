@@ -227,7 +227,7 @@ function ThresholdFormComponent(props) {
             threshold["id"] = parseInt(threshold["id"]);
         }
 
-        console.log(threshold);
+        
 
         thresholdServiceV2[method](threshold)
             .then(response => {

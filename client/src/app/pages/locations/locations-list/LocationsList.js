@@ -29,7 +29,7 @@ export function LocationsList() {
             icon: permissions.canEditLocations ? EditIcon : MdSpaceDashboard,
             tooltip: permissions.canEditLocations ? 'Edit Location' : 'View Location',
             onClick: (_, rowData) => {
-                console.log(rowData)
+                
                 history.push(`/locations/edit/${rowData.id}`);
             },
         })

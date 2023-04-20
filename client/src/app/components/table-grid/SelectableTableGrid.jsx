@@ -63,7 +63,7 @@ export function SelectableTableGrid(props) {
         apiServiceV2[method](...params).then(result => {
             const newData = result[dataField] || [];
             const newCount = result.total || 0;
-            console.log(newCount);
+            
             setRows(newData);
             setCount(newCount);
             setLoading(false);

@@ -76,6 +76,8 @@ export default function BasePage() {
         }
         {permissions.canViewContainerDashboard && [
           <ContentRoute key="/dashboard/containers" path="/dashboard/containers" component={DashboardsContainers} />,
+        ]}
+        {permissions.canViewDashboardLists && [
           <ContentRoute key="/dashboard/lists/containers" path="/dashboard/lists/containers" component={ListDashboards} />,
         ]}
         {permissions.canViewRoutesDashboard && [

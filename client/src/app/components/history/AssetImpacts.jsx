@@ -70,7 +70,7 @@ export default function AssetImpacts(props) {
 
     function onChangeContainer(e) {
         setselectedContainer(e.target.value);
-        console.log(e.target.value);
+        
     }
 
     return (

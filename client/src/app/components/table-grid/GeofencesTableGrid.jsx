@@ -22,11 +22,11 @@ function GeofencesTableToolbar(props) {
             alert_mode: alert_modes[value]
         }
 
-        console.log(fields)
+        
 
         apiServiceV2.post("v2/operations/geofences-alarm-types", fields)
             .then(response => {
-                console.log(response)
+                
                 const affected = response.affected
                 toaster.notify('success', `Updated ${affected} geofences`);
                 triggerRefetch()

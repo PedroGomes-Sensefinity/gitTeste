@@ -44,9 +44,7 @@ export const UploadComponent = props => {
         multiple: false,
         accept: 'image/*',
         onDrop:acceptedFiles => {
-            console.log(acceptedFiles);
-            console.log(Array.isArray(acceptedFiles));
-            console.log(acceptedFiles.length);
+            
             if (Array.isArray(acceptedFiles) && acceptedFiles.length > 0) {
                 setFieldValue('files', acceptedFiles)
                 setFieldValue('file', acceptedFiles[0])

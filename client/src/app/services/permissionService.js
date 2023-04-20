@@ -117,6 +117,7 @@ export function Permissions(permsArray) {
         // Dashboards
         canViewRoutesDashboard: permsObj['dashboard_routes'] || defaultValue,
         canViewContainerDashboard: permsObj['dashboard_containers'] || defaultValue,
+        canViewDashboardLists: permsObj['dashboard_lists'] || defaultValue,
         canViewDeviceDashboardExtras: permsObj['device_dashboard_extras'] || defaultValue,
 
         // Location (and sublocations) related operations permissions

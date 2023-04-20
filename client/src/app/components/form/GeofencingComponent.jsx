@@ -49,7 +49,6 @@ function GeofencingComponent(props) {
             const params = new URLSearchParams(myArray[1]);
             let thresholdID = params.get("threshold_id");
             if (thresholdID !== null) {
-                console.log(thresholdID);
                 apiServiceV2.get("v2/thresholds/" + thresholdID).then(response => {
                     const thresholdsSelected = selectedThresholds;
                     thresholdsSelected.push({ id: response.threshold.id, label: response.threshold.label });
@@ -96,7 +95,6 @@ function GeofencingComponent(props) {
                     description: geofence.description,
                     alert_mode: geofence.alert_mode
                 });
-                console.log(geofence);
                 const shapes = geofence.shapes;
                 const geofencesArr = [];
                 // Shapes Data

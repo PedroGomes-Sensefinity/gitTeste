@@ -119,7 +119,6 @@ function FloorMapMapFormComponent(props) {
 
         floorMapService.upload(data)
             .then((r) => {
-                console.log(r);
                 setBlocking(false)
                 setFieldValue('attachment_id', r.id, false);
             });

@@ -22,7 +22,7 @@ export const SearchBar = ({ query, onQueryChange, clearIcon = false, variant = "
 
     const handleClick = () => {
         onQueryChange("")
-        console.log("clicked the clear icon...");
+        
     };
 
     const inputProps = {

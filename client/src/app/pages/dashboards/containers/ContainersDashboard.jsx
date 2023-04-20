@@ -23,6 +23,7 @@ import apiServiceV2 from "../../../services/v2/apiServiceV2";
 import Progress from "../../../utils/Progress/Progress";
 import toaster from "../../../utils/toaster";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 // General Styles
 const style = {
@@ -65,6 +66,7 @@ const redirectStyleShape = {
 };
 
 export function ContainersDashboard() {
+    const { permissions } = useSelector(({ auth }) => ({ permissions: auth.permissions }))
     //Specific Styles
     const locationStyle = { fontWeight: "bold", textAlign: "center", cursor: "pointer", borderColor: "#808080" };
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -176,7 +178,7 @@ export function ContainersDashboard() {
                 }
             })
             .catch(r => {
-                toaster.notify("error", "Error on Generate Report!");
+                toaster.notify("error", "Reports not available! Please try again later. Reports are not available for demo accounts.");
                 setButtonDisabled(false);
                 setButtonLabel("Generate Report");
                 setButtonLabel24("Generate Report for the Last 24 Hours");
@@ -191,10 +193,10 @@ export function ContainersDashboard() {
             apiServiceV2
                 .get(
                     "v2/reports/generate?container_id=" +
-                        containerId +
-                        "&filter=" +
-                        selectedLocation +
-                        "&type=locations_in_transit&file_format=csv"
+                    containerId +
+                    "&filter=" +
+                    selectedLocation +
+                    "&type=locations_in_transit&file_format=csv"
                 )
                 .then(response => {
                     setTimeout(() => {
@@ -203,7 +205,7 @@ export function ContainersDashboard() {
                     }, 50000);
                 })
                 .catch(r => {
-                    toaster.notify("error", "Error on Generate Report!");
+                    toaster.notify("error", "Reports not available! Please try again later. Reports are not available for demo accounts.");
                     setButtonDisabled(false);
                     setButtonLabel("Generate Report");
                     setShowProgress(false);
@@ -212,10 +214,10 @@ export function ContainersDashboard() {
             apiServiceV2
                 .get(
                     "v2/reports/generate?container_id=" +
-                        containerId +
-                        "&filter=" +
-                        selectedLocation +
-                        "&type=locations&file_format=csv"
+                    containerId +
+                    "&filter=" +
+                    selectedLocation +
+                    "&type=locations&file_format=csv"
                 )
                 .then(response => {
                     setTimeout(() => {
@@ -224,7 +226,7 @@ export function ContainersDashboard() {
                     }, 50000);
                 })
                 .catch(r => {
-                    toaster.notify("error", "Error on Generate Report!");
+                    toaster.notify("error", "Reports not available! Please try again later. Reports are not available for demo accounts.");
                     setButtonDisabled(false);
                     setButtonLabel("Generate Report");
                     setShowProgress(false);
@@ -283,7 +285,7 @@ export function ContainersDashboard() {
                 }, 50000);
             })
             .catch(r => {
-                toaster.notify("error", "Error on Generate Report!");
+                toaster.notify("error", "Reports not available! Please try again later. Reports are not available for demo accounts.");
                 setButtonDisabled(false);
                 setButtonLabel24("Generate Report for the Last 24 Hours");
                 setShowProgress(false);
@@ -326,7 +328,7 @@ export function ContainersDashboard() {
                 }, 50000);
             })
             .catch(r => {
-                toaster.notify("error", "Error on Generate Report!");
+                toaster.notify("error", "Reports not available! Please try again later. Reports are not available for demo accounts.");
                 setButtonDisabled(false);
                 setButtonLabel("Generate Report");
                 setShowProgress(false);
@@ -392,6 +394,9 @@ export function ContainersDashboard() {
                     )
                     .then(response => {
                         const ports_R = [];
+                        // Special Case i have ports but they are all 0. Good for new clients demos
+                        const ports_ZERO = [];
+                        const data_ZERO = [];
                         const data15_R = [];
                         const data15_30_R = [];
                         const data30_60_R = [];
@@ -414,11 +419,14 @@ export function ContainersDashboard() {
                                 data90_R.push(longStanding.interval_count.more90);
                                 total.push(
                                     longStanding.interval_count.less15 +
-                                        longStanding.interval_count.interval15_30 +
-                                        longStanding.interval_count.interval30_60 +
-                                        longStanding.interval_count.interval60_90 +
-                                        longStanding.interval_count.more90
+                                    longStanding.interval_count.interval15_30 +
+                                    longStanding.interval_count.interval30_60 +
+                                    longStanding.interval_count.interval60_90 +
+                                    longStanding.interval_count.more90
                                 );
+                            } else {
+                                ports_ZERO.push(longStanding.port_code);
+                                data_ZERO.push(0)
                             }
                         }
                         if (ports_R.length !== 0) {
@@ -434,23 +442,38 @@ export function ContainersDashboard() {
                             setIntervalData(intervalData_R);
                             setBlocking(false);
                         } else {
-                            setPorts(["SUBLOCATIONS NOT FOUND"]);
-                            const intervalData_R = {
-                                data15: [0],
-                                data15_30: [0],
-                                data30_60: [0],
-                                data60_90: [0],
-                                data90: [0],
-                                total: [0]
-                            };
-                            setIntervalData(intervalData_R);
-                            setBlocking(false);
+                            if (ports_ZERO.length === 0) {
+                                setPorts(["SUBLOCATIONS NOT FOUND"]);
+                                const intervalData_R = {
+                                    data15: [0],
+                                    data15_30: [0],
+                                    data30_60: [0],
+                                    data60_90: [0],
+                                    data90: [0],
+                                    total: [0]
+                                };
+                                setIntervalData(intervalData_R);
+                                setBlocking(false);
+                            } else {
+                                // Special Case i have ports but they are all 0. Good for new clients demos
+                                setPorts(ports_ZERO)
+                                const intervalData_R = {
+                                    data15: data_ZERO,
+                                    data15_30: data_ZERO,
+                                    data30_60: data_ZERO,
+                                    data60_90: data_ZERO,
+                                    data90: data_ZERO,
+                                    total: data_ZERO
+                                };
+                                setIntervalData(intervalData_R);
+                                setBlocking(false);
+                            }
                         }
                     });
             }
         });
 
-        apiService.getByEndpointDashboard("dashboards/containers").then(response => {});
+        apiService.getByEndpointDashboard("dashboards/containers").then(response => { });
     }, []);
 
     //Handle container changes
@@ -474,6 +497,9 @@ export function ContainersDashboard() {
             .getByEndpointDashboard("dashboards/containers/longstandings?container_id=" + e.target.value)
             .then(response => {
                 const ports_R = [];
+                // Special Case i have ports but they are all 0. Good for new clients demos
+                const ports_ZERO = [];
+                const data_ZERO = [];
                 const data15_R = [];
                 const data15_30_R = [];
                 const data30_60_R = [];
@@ -496,11 +522,14 @@ export function ContainersDashboard() {
                         data90_R.push(longStanding.interval_count.more90);
                         total.push(
                             longStanding.interval_count.less15 +
-                                longStanding.interval_count.interval15_30 +
-                                longStanding.interval_count.interval30_60 +
-                                longStanding.interval_count.interval60_90 +
-                                longStanding.interval_count.more90
+                            longStanding.interval_count.interval15_30 +
+                            longStanding.interval_count.interval30_60 +
+                            longStanding.interval_count.interval60_90 +
+                            longStanding.interval_count.more90
                         );
+                    } else {
+                        ports_ZERO.push(longStanding.port_code);
+                        data_ZERO.push(0)
                     }
                 }
                 if (ports_R.length !== 0) {
@@ -516,17 +545,31 @@ export function ContainersDashboard() {
                     setIntervalData(intervalData_R);
                     setBlocking(false);
                 } else {
-                    setPorts(["SUBLOCATIONS NOT FOUND"]);
-                    const intervalData_R = {
-                        data15: [0],
-                        data15_30: [0],
-                        data30_60: [0],
-                        data60_90: [0],
-                        data90: [0],
-                        total: [0]
-                    };
-                    setIntervalData(intervalData_R);
-                    setBlocking(false);
+                    if (ports_ZERO.length === 0) {
+                        setPorts(["SUBLOCATIONS NOT FOUND"]);
+                        const intervalData_R = {
+                            data15: [0],
+                            data15_30: [0],
+                            data30_60: [0],
+                            data60_90: [0],
+                            data90: [0],
+                            total: [0]
+                        };
+                        setIntervalData(intervalData_R);
+                        setBlocking(false);
+                    } else {
+                        setPorts(ports_ZERO)
+                        const intervalData_R = {
+                            data15: data_ZERO,
+                            data15_30: data_ZERO,
+                            data30_60: data_ZERO,
+                            data60_90: data_ZERO,
+                            data90: data_ZERO,
+                            total: data_ZERO
+                        };
+                        setIntervalData(intervalData_R);
+                        setBlocking(false);
+                    }
                 }
             });
     }
@@ -691,26 +734,28 @@ export function ContainersDashboard() {
                     </div>
                 </div>
             </div>
-            <div className="row mt-3">
-                <div className="col-sm-2 col-sm-2">
-                    <div className="card card-custom" style={redirectStyleShape}>
-                        <div className="card-body" style={{ margin: "auto" }}>
-                            <Link to="/dashboard/lists/containers" className="btn btn-secondary">
-                                Abrir Impactos
-                            </Link>
+            {permissions.canViewDashboardLists &&
+                <div className="row mt-3">
+                    <div className="col-sm-2 col-sm-2">
+                        <div className="card card-custom" style={redirectStyleShape}>
+                            <div className="card-body" style={{ margin: "auto" }}>
+                                <Link to="/dashboard/lists/containers" className="btn btn-secondary">
+                                    Abrir Impactos
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-sm-2 col-sm-2">
+                        <div className="card card-custom" style={redirectStyleShape}>
+                            <div className="card-body" style={{ margin: "auto" }}>
+                                <Link to="/dashboard/lists/containers" className="btn btn-secondary">
+                                    Abrir Geofences
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div className="col-sm-2 col-sm-2">
-                    <div className="card card-custom" style={redirectStyleShape}>
-                        <div className="card-body" style={{ margin: "auto" }}>
-                            <Link to="/dashboard/lists/containers" className="btn btn-secondary">
-                                Abrir Geofences
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            }
         </BlockUi>
     );
 }

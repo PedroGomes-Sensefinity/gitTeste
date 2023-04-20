@@ -73,7 +73,7 @@ function ThresholdActionComponent(props) {
                 label: s.label,
             }
         })
-        console.log(threshold)
+        
         tempThreshold.rule = JSON.stringify(rule);
         thresholdServiceV2.update(tempThreshold)
             .then(() => {

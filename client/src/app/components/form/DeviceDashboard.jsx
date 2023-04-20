@@ -67,8 +67,6 @@ function DeviceDashboard(props) {
 
     useEffect(() => {
         initDashboard();
-        console.log("oi");
-        console.log(permissions.hasAllPermissions);
     }, []);
 
     return (

@@ -139,8 +139,6 @@ class NotificationsTemplatesFormComponent extends React.Component {
         let notificationTemplate = this.setNotificationTemplate(fields)
         notificationTemplate.tenant_id = fields.tenant_id
 
-        console.log(notificationTemplate)
-
         notificationTemplateServiceV2[method](notificationTemplate)
             .then((response) => {
                 toaster.notify('success', msgSuccess);
@@ -355,7 +353,6 @@ class NotificationsTemplatesFormComponent extends React.Component {
                                 notificationTemplateServiceV2
                                     .getByID(this.state.id)
                                     .then((notification) => {
-                                        console.log(notification)
                                         const template = JSON.parse(notification.template || '{}');
 
                                         setFieldValue('label', notification.label, false);

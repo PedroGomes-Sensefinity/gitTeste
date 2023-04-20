@@ -51,7 +51,7 @@ export function Impacts(props) {
         paramObj[value] = params.get(value);
         paramObjReverse[value] = -params.get(value);
       }
-      console.log(paramObj)
+
       setValues(paramObj)
       setValuesReverse(paramObjReverse)
       const options = []
