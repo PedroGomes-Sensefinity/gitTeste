@@ -1,0 +1,74 @@
+name: ci-build-and-deploy
+run-name: ${{ github.actor }} Triggered Build and Deploy
+on:
+  push:
+    branches:
+      - main
+env:
+  REPOSITORY_IMAGE: ${{ secrets.GCLOUD_REPOSITORY_URL}}/${{ github.event.repository.name }}:${{ github.ref_name }}-${{ github.sha }}
+  K8S_NAMESPACE: hub
+
+jobs:
+  build:
+    name: Build and Push to Container Registry
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Authenticate GCloud CLI
+        uses: google-github-actions/auth@v1.0.0
+        with:
+          credentials_json: ${{ secrets.GCLOUD_SERVICE_ACCOUNT_KEY }}
+
+      - name: Setup GCloud CLI
+        uses: google-github-actions/setup-gcloud@v1.1.0
+        with:
+          version: ">= 363.0.0"
+
+      - name: Authenticate Docker
+        run: gcloud --quiet auth configure-docker ${{secrets.GCLOUD_REPOSITORY_DEFAULT}}
+
+      - name: Build Docker Image
+        run: |
+          docker build \
+          -f Dockerfile . --build-arg GOPRIVATE=$GOPRIVATE \
+          --build-arg git_account_id=${{ secrets.GIT_CI_USER }} \
+          --build-arg git_token=${{ secrets.GIT_CI_TOKEN }} \
+          --tag $REPOSITORY_IMAGE
+
+      - name: Push To Container Registry
+        run: docker push $REPOSITORY_IMAGE
+
+  deploy:
+    name: Deploy on GCP Cluster
+    runs-on: ubuntu-latest
+    environment: production
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Authenticate GCloud CLI
+        uses: google-github-actions/auth@v1.0.0
+        with:
+          credentials_json: ${{ secrets.GCLOUD_SERVICE_ACCOUNT_KEY }}
+
+      - name: Authenticate Kubectl
+        uses: google-github-actions/get-gke-credentials@v1.0.1
+        with:
+          cluster_name: ${{ secrets.GKE_CLUSTER_NAME }}
+
+      - name: Prepare new deployment
+        run: |-
+          kubectl config set-context --current --namespace=$K8S_NAMESPACE
+          sed -i "s image_to_be_replaced $REPOSITORY_IMAGE g" .prod/deployment.yaml
+
+      - name: Apply new Configuration
+        run: |-
+          kubectl apply -f .prod/prod.yaml
+          kubectl apply -f .prod/service-ui-admin-v2.yaml
+          kubectl apply -f .prod/deployment.yaml
+
+      - name: Check Pod Status
+        run: sh .prod/check_pod_status.sh
