@@ -670,7 +670,7 @@ export function ContainersDashboard() {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell style={sticky} component="th" scope="row">
-                                            Long Standing
+                                            Long Standing By Sublocation
                                         </TableCell>
                                         {ports.map(port => (
                                             <TableCell style={locationStyle} component="th" scope="row" align="center">
@@ -682,7 +682,7 @@ export function ContainersDashboard() {
                                 <TableBody>
                                     <TableRow key={"<15"} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                                         <TableCell style={sticky} component="th" scope="row">
-                                            &#60; 15
+                                            &#60; 15 days
                                         </TableCell>
                                         {intervalData["data15"].map(data15i => (
                                             <StyledTableCell align="center">{data15i}</StyledTableCell>
@@ -690,7 +690,7 @@ export function ContainersDashboard() {
                                     </TableRow>
                                     <TableRow key={"15-30"} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                                         <TableCell style={sticky} component="th" scope="row">
-                                            15-30
+                                            15-30 days
                                         </TableCell>
                                         {intervalData["data15_30"].map(data15_30i => (
                                             <StyledTableCell align="center">{data15_30i}</StyledTableCell>
@@ -698,7 +698,7 @@ export function ContainersDashboard() {
                                     </TableRow>
                                     <TableRow key={"30-60"} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                                         <TableCell style={sticky} component="th" scope="row">
-                                            30-60
+                                            30-60 days
                                         </TableCell>
                                         {intervalData["data30_60"].map(data30_60i => (
                                             <StyledTableCell align="center">{data30_60i}</StyledTableCell>
@@ -706,7 +706,7 @@ export function ContainersDashboard() {
                                     </TableRow>
                                     <TableRow key={"60-90"} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                                         <TableCell style={sticky} component="th" scope="row">
-                                            60-90
+                                            60-90 days
                                         </TableCell>
                                         {intervalData["data60_90"].map(data60_90i => (
                                             <StyledTableCell align="center">{data60_90i}</StyledTableCell>
@@ -714,7 +714,7 @@ export function ContainersDashboard() {
                                     </TableRow>
                                     <TableRow key={">90"} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                                         <TableCell style={sticky} component="th" scope="row">
-                                            &#62; 90
+                                            &#62; 90 days
                                         </TableCell>
                                         {intervalData["data90"].map(data90i => (
                                             <StyledTableCell align="center">{data90i}</StyledTableCell>
@@ -722,7 +722,7 @@ export function ContainersDashboard() {
                                     </TableRow>
                                     <TableRow key={"total"} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                                         <TableCell style={sticky} component="th" scope="row">
-                                            TOTAL
+                                            TOTAL (days)
                                         </TableCell>
                                         {intervalData["total"].map(total => (
                                             <StyledTableCell align="center">{total}</StyledTableCell>
