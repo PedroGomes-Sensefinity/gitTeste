@@ -31,12 +31,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build \
-          -f Dockerfile . --build-arg GOPRIVATE=$GOPRIVATE \
-          --build-arg git_account_id=${{ secrets.GIT_CI_USER }} \
-          --build-arg git_token=${{ secrets.GIT_CI_TOKEN }} \
-          --tag $REPOSITORY_IMAGE
-
+          docker build -f Dockerfile . --tag $REPOSITORY_IMAGE
       - name: Push To Container Registry
         run: docker push $REPOSITORY_IMAGE
 
