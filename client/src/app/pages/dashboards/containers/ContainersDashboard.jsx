@@ -722,7 +722,7 @@ export function ContainersDashboard() {
                                     </TableRow>
                                     <TableRow key={"total"} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                                         <TableCell style={sticky} component="th" scope="row">
-                                            TOTAL (days)
+                                            TOTAL (count)
                                         </TableCell>
                                         {intervalData["total"].map(total => (
                                             <StyledTableCell align="center">{total}</StyledTableCell>
