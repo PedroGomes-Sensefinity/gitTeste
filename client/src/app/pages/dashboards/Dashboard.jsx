@@ -56,9 +56,9 @@ export function Dashboard() {
             if ("tenants_new" in r) {
                 r.tenants_new.forEach(e => {
                     apiServiceV2.get("v2/assets?device=true&tenant_id=" + e.id).then(r => {
-                        let assetsTracked = assetsTrackedStr
-                        assetsTracked += " " + e.name + " " + r.total
-                        setAssetsTrackedStr(assetsTracked)
+                        if ("total" in r) {
+                            setAssetsTrackedStr(assetsTrackedStr + " " + e.name + " " + r.total)
+                        }
                     })
                 })
             } 
