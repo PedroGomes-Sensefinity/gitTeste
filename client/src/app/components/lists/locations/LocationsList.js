@@ -41,7 +41,7 @@ export function LocationsList(props) {
         },
         {
             field: 'reverse_geocoding',
-            title: 'Location',
+            title: 'Current Location',
         },
         {
             field: 'longstanding',

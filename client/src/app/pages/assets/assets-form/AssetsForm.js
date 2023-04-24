@@ -80,7 +80,7 @@ export function AssetsForm({ match, location }) {
         if (isLoading) {
             return <></>
         }
-        
+
         switch (value) {
             case "dashboard":
                 return (<BlockUi tag='div' blocking={isLoading}>
@@ -136,7 +136,7 @@ export function AssetsForm({ match, location }) {
         })
         apiServiceV2.get(`v2/assets/` + assetId + `/dashboards`).then((results) => {
             const dashboards = results.dashboards
-            
+
             const dashboardTabs = []
             for (const i in dashboards) {
                 console.log(i)
@@ -145,7 +145,7 @@ export function AssetsForm({ match, location }) {
             setDashboards(dashboards)
             setKibanaTabs(dashboardTabs)
         }).catch(err => {
-            
+
         })
     }, [assetId, refetch])
 
@@ -159,16 +159,22 @@ export function AssetsForm({ match, location }) {
         });
     }, []);
 
+    const tabCss = {fontSize: "14px"}
+
     return <>
         <Paper square>
-            <Tabs value={value} indicatorColor="primary" textColor="primary" onChange={handleChange}>
-                <Tab value="dashboard" label="Dashboard" />
+            <Tabs value={value}
+                indicatorColor="secondary"
+                textColor="inherit"
+                variant="fullWidth"
+                onChange={handleChange}>
+                <Tab style={tabCss} value="dashboard" label="Dashboard" />
                 {kibanaTabs}
-                <Tab value="info" label="Asset Info" />
-                <Tab value="devices" label="Devices" disabled={typeof assetId === 'undefined'} />
-                {permissions.canCreateThresholdGeofences && <Tab value="history" label="History" disabled={typeof assetId === 'undefined'} />}
-                {permissions.canViewImpacts && <Tab value="impacts" label="Impacts" disabled={typeof assetId === 'undefined'} />}
-                <Tab value="extrafields" label="Extra Fields" disabled={typeof assetId === 'undefined' || hasMetadataSchema === false} />
+                <Tab style={tabCss} value="info" label="Asset Info" />
+                <Tab style={tabCss} value="devices" label="Devices" disabled={typeof assetId === 'undefined'} />
+                {permissions.canCreateThresholdGeofences && <Tab style={tabCss} value="history" label="History" disabled={typeof assetId === 'undefined'} />}
+                {permissions.canViewImpacts && <Tab style={tabCss} value="impacts" label="Impacts" disabled={typeof assetId === 'undefined'} />}
+                <Tab style={tabCss} value="extrafields" label="Extra Fields" disabled={typeof assetId === 'undefined' || hasMetadataSchema === false} />
             </Tabs>
         </Paper>
         {componentToBeRendered}

@@ -25,7 +25,7 @@ export default function GeofenceHistory(props) {
         },
         {
             field: "reverse_geocoding",
-            title: "Location"
+            title: "Current Location"
         },
         {
             field: "geofence_label",

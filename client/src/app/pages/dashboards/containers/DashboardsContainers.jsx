@@ -38,7 +38,7 @@ export function DashboardsContainers() {
     return (
         <>
             <Paper square>
-                <Tabs value={value} indicatorColor="secondary" textColor="secondary" onChange={handleChange}>
+                <Tabs value={value} indicatorColor="secondary" textColor="secondary" onChange={handleChange} scrollButtons>
                     {dashboards.map(d => (
                         <Tab label={d.name} />
                     ))}

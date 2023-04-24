@@ -104,7 +104,7 @@ function DeviceDashboard(props) {
                         <div style={{ width: "100%", height: "100%" }} className="card card-custom">
                             <div className="card-header">
                                 <div className="card-title">
-                                    <h3 className="card-label">Location</h3>
+                                    <h3 className="card-label">Current Location</h3>
                                 </div>
                             </div>
                             <div className="card-body" style={{"fontSize": "20px"}}>
