@@ -83,10 +83,13 @@ const apiServiceV2 = {
         });
     },
 
-    getByLimitOffsetSearch: function (endpoint, limit, offset, search) {
+    getByLimitOffsetSearch: function (endpoint, limit, offset, search, tenantID, filters) {
         return new Promise(function (resolve, reject) {
+            if(filters === undefined){
+                filters = ""
+            }
             axios
-                .get(`${process.env.REACT_APP_REST_API_URL}${endpoint}?limit=${limit}&offset=${offset}&search=${search}`)
+                .get(`${process.env.REACT_APP_REST_API_URL}${endpoint}?limit=${limit}&offset=${offset}&search=${search}` + filters)
                 .then(function (response) {
                     let data = [];
                     if (response.status === 200) {
@@ -100,10 +103,13 @@ const apiServiceV2 = {
         });
     },
 
-    getByLimitOffsetSearchTenant: function (endpoint, limit, offset, search, tenantID) {
+    getByLimitOffsetSearchTenant: function (endpoint, limit, offset, search, tenantID, filters) {
         return new Promise(function (resolve, reject) {
+            if(filters === undefined){
+                filters = ""
+            }
             axios
-                .get(`${process.env.REACT_APP_REST_API_URL}${endpoint}?limit=${limit}&offset=${offset}&search=${search}&tenant_id=${tenantID}`)
+                .get(`${process.env.REACT_APP_REST_API_URL}${endpoint}?limit=${limit}&offset=${offset}&search=${search}&tenant_id=${tenantID}` + filters)
                 .then(function (response) {
                     let data = [];
                     if (response.status === 200) {

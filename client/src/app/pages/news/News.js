@@ -7,7 +7,14 @@ import { injectIntl } from "react-intl";
 
 const versions = [
     {
-        versionNumber: "V.1.0.3 - Latest", date: "04/04/2023", changes:
+        versionNumber: "V.1.0.4 - Latest", date: "24/04/2023", changes:
+            ["1. Added divider on Side Menu to simplify menu use",
+                "2. Assets tracked count now supports subtenants",
+                "3. On Assets Lists added filter for Assets Tracked and added Device Id",
+                "4. Removed subgroup of dashboards to allow rapid access to main Dashboards"]
+    },
+    {
+        versionNumber: "V.1.0.3", date: "04/04/2023", changes:
             ["1. Added Footer with option to close side menu. This will allow a better visualization of dashboards."]
     },
     {

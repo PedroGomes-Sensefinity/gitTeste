@@ -41,7 +41,7 @@ function SelectableTableHead(props) {
 export function SelectableTableGrid(props) {
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
-    const { endpoint, dataField, actions, columns } = props;
+    const { endpoint, dataField, actions, columns, filters } = props;
     const [query, setQuery] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
     const [count, setCount] = useState(0);
@@ -58,7 +58,7 @@ export function SelectableTableGrid(props) {
     useEffect(() => {
         setLoading(true);
         let method = tenantID === 0 ? "getByLimitOffsetSearch" : "getByLimitOffsetSearchTenant";
-        let params = [endpoint, rowsPerPage, page * rowsPerPage, searchQuery, tenantID];
+        let params = [endpoint, rowsPerPage, page * rowsPerPage, searchQuery, tenantID, filters];
 
         apiServiceV2[method](...params).then(result => {
             const newData = result[dataField] || [];
@@ -68,7 +68,7 @@ export function SelectableTableGrid(props) {
             setCount(newCount);
             setLoading(false);
         });
-    }, [rowsPerPage, page, refetch, searchQuery, tenantID]);
+    }, [rowsPerPage, page, refetch, searchQuery, tenantID, filters]);
 
     useEffect(() => {
         setLoading(true);

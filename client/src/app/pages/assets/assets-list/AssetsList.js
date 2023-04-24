@@ -55,8 +55,12 @@ export function AssetsList() {
             title: 'Description',
         },
         {
-            field: 'asset_type.type',
-            title: 'Asset Family',
+            field: 'tenant.name',
+            title: 'Tenant',
+        },
+        {
+            field: 'devices_ids',
+            title: 'Device',
         },
         {
             field: 'asset_type.label',

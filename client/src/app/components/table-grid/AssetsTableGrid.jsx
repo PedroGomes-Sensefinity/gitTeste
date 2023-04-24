@@ -1,4 +1,4 @@
-import { Button } from '@mui/material';
+import { Button, Checkbox, FormControlLabel } from '@mui/material';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import React, { useEffect, useState } from 'react';
@@ -20,7 +20,7 @@ function AssetTableToolbar(props) {
         apiServiceV2.get(`v2/thresholds?tenant_id=${tenantID}`)
             .then(response => {
                 const thresholds = response.thresholds || []
-                
+
                 setThresholdOptions(thresholds)
             })
     }, [tenantID])
@@ -107,12 +107,22 @@ function AssetTableToolbar(props) {
 
 
 export const AssetTableGrid = ({ actions, columns }) => {
-    return <SelectableTableGrid
-        actions={actions}
-        columns={columns}
-        endpoint={'/v2/assets'}
-        dataField='assets'
-        toolbar={AssetTableToolbar}    />
+    const [filters, setFilters] = useState("")
+
+    return <>
+
+        <FormControlLabel
+            control={<Checkbox onChange={(e) => { (e.target.checked ? setFilters("&device=true") : setFilters("&device=false")) }} />}
+            label="Filter By Assets Tracked (Assets with Device)"
+        />
+        <SelectableTableGrid
+            actions={actions}
+            columns={columns}
+            filters={filters}
+            endpoint={"/v2/assets"}
+            dataField='assets'
+            toolbar={AssetTableToolbar} />
+    </>
 
 
 }
