@@ -7,6 +7,7 @@ import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { checkIsActive, toAbsoluteUrl } from "../../../../_helpers";
 import ReactGA from 'react-ga';
+import DividerWithText from "../../extras/DividirText";
 
 export function AsideMenuList({ layoutProps }) {
 
@@ -27,459 +28,453 @@ export function AsideMenuList({ layoutProps }) {
     <>
       {/* begin::Menu Nav */}
       <ul className={`menu-nav ${layoutProps.ulClasses}`}>
+        <DividerWithText>General</DividerWithText>
         {/*begin::1 Level*/}
-        <li
-          className={`menu-item ${getMenuItemActive("/dashboard", false)}`}
-          aria-haspopup="true"
-        >
-          <NavLink className='menu-link menu-toggle' to="/dashboard">
-            <span className="svg-icon menu-icon">
-              <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Display1.svg")} />
-            </span>
-            <span className="menu-text">Dashboards</span>
-          </NavLink>
-
-          <div className="menu-submenu">
-            <i className="menu-arrow" />
-            <ul className="menu-subnav">
-              <li className="menu-item menu-item-parent" aria-haspopup="true">
-                <span className="menu-link">
-                  <span className="menu-text">Dashboard</span>
-                </span>
-              </li>
-              {/*begin::2 Level*/}
-              <li
-                className={`menu-item ${getMenuItemActive("/dashboard/default")}`}
-                aria-haspopup="true"
-              >
-                <NavLink className="menu-link" to="/dashboard/default">
-                  <i className="menu-bullet menu-bullet-dot">
-                    <span />
-                  </i>
-                  <span className="menu-text">Dashboard</span>
-                </NavLink>
-              </li>
-              {/*end::2 Level*/}
-              {/*begin::2 Level*/}
-              {permissions.canViewContainerDashboard &&
-                <li
-                  className={`menu-item ${getMenuItemActive("/dashboard/containers")}`}
-                  aria-haspopup="true"
-                >
-                  <NavLink className="menu-link" to="/dashboard/containers">
-                    <i className="menu-bullet menu-bullet-dot">
-                      <span />
-                    </i>
-                    <span className="menu-text">Containers Dashboards</span>
-                  </NavLink>
-                </li>
-              }
-              {/*end::2 Level*/}
-              {/*begin::2 Level*/}
-              {permissions.canViewDashboardLists &&
-                <li
-                  className={`menu-item ${getMenuItemActive("/dashboard/lists/containers")}`}
-                  aria-haspopup="true"
-                >
-                  <NavLink className="menu-link" to="/dashboard/lists/containers">
-                    <i className="menu-bullet menu-bullet-dot">
-                      <span />
-                    </i>
-                    <span className="menu-text">List Dashboards</span>
-                  </NavLink>
-                </li>
-              }
-              {/*end::2 Level*/}
-              {/*begin::2 Level*/}
-              {permissions.canViewRoutesDashboard &&
-                <li
-                  className={`menu-item ${getMenuItemActive("/dashboard/route")}`}
-                  aria-haspopup="true"
-                >
-                  <NavLink className="menu-link" to="/dashboard/route">
-                    <i className="menu-bullet menu-bullet-dot">
-                      <span />
-                    </i>
-                    <span className="menu-text">Routes Dashboards</span>
-                  </NavLink>
-                </li>
-              }
-              {/*end::2 Level*/}
-            </ul>
-          </div>
-        </li>
-        {/*end::1 Level*/}
-
-        {/*begin::1 Level*/}
-        {permissions.canViewTenants &&
+      
           <li
-            className={`menu-item ${getMenuItemActive("/tenants", false)}`}
+            className={`menu-item ${getMenuItemActive("/dashboard/default", true)}`}
             aria-haspopup="true"
           >
-            <NavLink className="menu-link" to="/tenants/list">
+            <NavLink className="menu-link menu-toggle" to="/dashboard/default">
               <span className="svg-icon menu-icon">
-                <SVG src={toAbsoluteUrl("/media/svg/icons/Files/User-folder.svg")} />
+                <SVG src={toAbsoluteUrl("/media/svg/icons/Layout/Layout-top-panel-6.svg")} />
               </span>
-              <span className="menu-text">Tenants</span>
+              <span className="menu-text">General Dashboard</span>
             </NavLink>
           </li>
-        }
-        {/*end::1 Level*/}
 
-        {/*begin::1 Level*/}
-        {permissions.canViewUsers &&
-          <li
-            className={`menu-item ${getMenuItemActive("/users", true)}`}
-            aria-haspopup="true">
-            <NavLink className="menu-link menu-toggle" to="/users/list">
+
+          {/*begin::2 Level*/}
+          {permissions.canViewContainerDashboard &&
+            <li
+              className={`menu-item ${getMenuItemActive("/dashboard/containers")}`}
+              aria-haspopup="true"
+            >
+              <NavLink className="menu-link" to="/dashboard/containers">
               <span className="svg-icon menu-icon">
-                <SVG src={toAbsoluteUrl("/media/svg/icons/Files/User-folder.svg")} />
+                <SVG src={toAbsoluteUrl("/media/svg/icons/Layout/Layout-top-panel-6.svg")} />
               </span>
-              <span className="menu-text">Users</span>
+                <span className="menu-text">Containers Dashboards</span>
+              </NavLink>
+            </li>
+          }
+          {/*end::2 Level*/}
+          {/*begin::2 Level*/}
+          {permissions.canViewDashboardLists &&
+            <li
+              className={`menu-item ${getMenuItemActive("/dashboard/lists/containers")}`}
+              aria-haspopup="true"
+            >
+              <NavLink className="menu-link" to="/dashboard/lists/containers">
+              <span className="svg-icon menu-icon">
+                <SVG src={toAbsoluteUrl("/media/svg/icons/Layout/Layout-top-panel-6.svg")} />
+              </span>
+                <span className="menu-text">List Dashboards</span>
+              </NavLink>
+            </li>
+          }
+          {/*end::2 Level*/}
+          {/*begin::2 Level*/}
+          {permissions.canViewRoutesDashboard &&
+            <li
+              className={`menu-item ${getMenuItemActive("/dashboard/route")}`}
+              aria-haspopup="true"
+            >
+              <NavLink className="menu-link" to="/dashboard/route">
+              <span className="svg-icon menu-icon">
+                <SVG src={toAbsoluteUrl("/media/svg/icons/Layout/Layout-top-panel-6.svg")} />
+              </span>
+                <span className="menu-text">Routes Dashboards</span>
+              </NavLink>
+            </li>
+          }
+          {/*end::2 Level*/}
+
+
+          {/*begin::1 Level*/}
+          {permissions.canViewAssets &&
+            <li
+              className={`menu-item ${getMenuItemActive("/assets", true)}`}
+              aria-haspopup="true"
+            >
+              <NavLink className="menu-link menu-toggle" to="/assets/list">
+                <span className="svg-icon menu-icon">
+                  <SVG src={toAbsoluteUrl("/media/svg/icons/Layout/Layout-top-panel-5.svg")} />
+                </span>
+                <span className="menu-text">Assets</span>
+              </NavLink>
+            </li>
+          }
+          {/*begin::1 Level*/}
+
+          {permissions.canViewDevices &&
+            <li
+              className={`menu-item ${getMenuItemActive("/devices", true)}`}
+              aria-haspopup="true"
+            >
+              <NavLink className="menu-link menu-toggle" to="/devices">
+                <span className="svg-icon menu-icon">
+                  <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/CPU1.svg")} />
+                </span>
+                <span className="menu-text">Devices</span>
+              </NavLink>
+              <div className="menu-submenu">
+                <i className="menu-arrow" />
+                <ul className="menu-subnav">
+                  <li className="menu-item menu-item-parent" aria-haspopup="true">
+                    <span className="menu-link">
+                      <span className="menu-text">Devices</span>
+                    </span>
+                  </li>
+                  {/*begin::2 Level*/}
+                  <li
+                    className={`menu-item ${getMenuItemActive("/devices/list")}`}
+                    aria-haspopup="true"
+                  >
+                    <NavLink className="menu-link" to="/devices/list">
+                      <i className="menu-bullet menu-bullet-dot">
+                        <span />
+                      </i>
+                      <span className="menu-text">Device List</span>
+                    </NavLink>
+                  </li>
+                  {/*end::2 Level*/}
+                  {/*begin::2 Level*/}
+                  {permissions.hasAllPermissions &&
+                    <li
+                      className={`menu-item ${getMenuItemActive("/devices/configmessages")}`}
+                      aria-haspopup="true"
+                    >
+                      <NavLink className="menu-link" to="/devices/configmessages">
+                        <i className="menu-bullet menu-bullet-dot">
+                          <span />
+                        </i>
+                        <span className="menu-text">Device Config Messages</span>
+                      </NavLink>
+                    </li>
+                  }
+                  {/*begin::2 Level*/}
+                  {permissions.canCreateDevices &&
+                    <li
+                      className={`menu-item ${getMenuItemActive("/devices/provision")}`}
+                      aria-haspopup="true"
+                    >
+                      <NavLink className="menu-link" to="/devices/provision">
+                        <i className="menu-bullet menu-bullet-dot">
+                          <span />
+                        </i>
+                        <span className="menu-text">Device Provision</span>
+                      </NavLink>
+                    </li>
+                  }
+                  {/*end::2 Level*/}
+                  {/*begin::2 Level*/}
+                  {permissions.canCreateDevices &&
+                    <li
+                      className={`menu-item ${getMenuItemActive("/device/upload")}`}
+                      aria-haspopup="true"
+                    >
+                      <NavLink className="menu-link" to="/devices/upload">
+                        <i className="menu-bullet menu-bullet-dot">
+                          <span />
+                        </i>
+                        <span className="menu-text">Device Upload</span>
+                      </NavLink>
+                    </li>
+                  }
+                  {/*end::2 Level*/}
+                </ul>
+              </div>
+            </li>
+          }
+          {/*end::1 Level*/}
+
+          <DividerWithText>Settings</DividerWithText>
+
+          {/*begin::1 Level*/}
+          {permissions.canViewThresholds &&
+            <li
+              className={`menu-item ${getMenuItemActive("/thresholds", false)}`}
+              aria-haspopup="true"
+            >
+              <NavLink className="menu-link" to="/thresholds/list">
+                <span className="svg-icon menu-icon">
+                  <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Diagnostics.svg")} />
+                </span>
+                <span className="menu-text">Thresholds</span>
+              </NavLink>
+            </li>
+          }
+          {/*end::1 Level*/}
+
+          {/*begin::1 Level*/}
+          {permissions.canViewNotificationTemplates &&
+            <li
+              className={`menu-item ${getMenuItemActive("/notification-templates", false)}`}
+              aria-haspopup="true"
+            >
+              <NavLink className="menu-link" to="/notification-templates/list">
+                <span className="svg-icon menu-icon">
+                  <SVG src={toAbsoluteUrl("/media/svg/icons/Files/File.svg")} />
+                </span>
+                <span className="menu-text">Notification Templates</span>
+              </NavLink>
+            </li>
+          }
+          {/*end::1 Level*/}
+
+          {/*begin::1 Level*/}
+          {permissions.canViewGeofences &&
+            <li
+              className={`menu-item ${getMenuItemActive("/geofences", true)}`}
+              aria-haspopup="true"
+            >
+              <NavLink className="menu-link menu-toggle" to="/geofences/list">
+                <span className="svg-icon menu-icon">
+                  <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Select.svg")} />
+                </span>
+                <span className="menu-text">Geofences</span>
+              </NavLink>
+            </li>
+          }
+
+          {/*begin::1 Level*/}
+          {(permissions.canViewLocations || permissions.canViewSubLocations) &&
+            <li
+              className={`menu-item ${getMenuItemActive("/locations", true) || getMenuItemActive("/sublocations", true)}`}
+              aria-haspopup="true"
+            >
+              <NavLink className="menu-link menu-toggle" to="/locations">
+                <span className="svg-icon menu-icon">
+                  <SVG src={toAbsoluteUrl("/media/svg/icons/Map/Compass.svg")} />
+                </span>
+                <span className="menu-text">Locations</span>
+              </NavLink>
+              <div className="menu-submenu">
+                <i className="menu-arrow" />
+                <ul className="menu-subnav">
+                  <li className="menu-item menu-item-parent" aria-haspopup="true">
+                    <span className="menu-link">
+                      <span className="menu-text">Locations</span>
+                    </span>
+                  </li>
+                  {/*begin::2 Level*/}
+                  {permissions.canViewLocations &&
+                    <li
+                      className={`menu-item ${getMenuItemActive("/locations/list")}`}
+                      aria-haspopup="true"
+                    >
+                      <NavLink className="menu-link" to="/locations/list">
+                        <i className="menu-bullet menu-bullet-dot">
+                          <span />
+                        </i>
+                        <span className="menu-text">Locations</span>
+                      </NavLink>
+                    </li>
+                  }
+                  {/*end::2 Level*/}
+                  {/*begin::2 Level*/}
+                  {permissions.canViewSubLocations &&
+                    <li
+                      className={`menu-item ${getMenuItemActive("/sublocations/list")}`}
+                      aria-haspopup="true"
+                    >
+                      <NavLink className="menu-link" to="/sublocations/list">
+                        <i className="menu-bullet menu-bullet-dot">
+                          <span />
+                        </i>
+                        <span className="menu-text">Sublocations</span>
+                      </NavLink>
+                    </li>
+                  }
+                  {/*end::2 Level*/}
+                </ul>
+              </div>
+            </li>
+          }
+          {/*end::1 Level*/}
+
+          {/*begin::1 Level*/}
+          {permissions.canViewRoutes &&
+            <li
+              className={`menu-item ${getMenuItemActive("/routes", true)}`}
+              aria-haspopup="true"
+            >
+              <NavLink className="menu-link menu-toggle" to="/routes">
+                <span className="svg-icon menu-icon">
+                  <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Select.svg")} />
+                </span>
+                <span className="menu-text">Routes</span>
+              </NavLink>
+              <div className="menu-submenu">
+                <i className="menu-arrow" />
+                <ul className="menu-subnav">
+                  <li className="menu-item menu-item-parent" aria-haspopup="true">
+                    <span className="menu-link">
+                      <span className="menu-text">Routes</span>
+                    </span>
+                  </li>
+                  {/*begin::2 Level*/}
+                  <li
+                    className={`menu-item ${getMenuItemActive(
+                      "/routes/list"
+                    )}`}
+                    aria-haspopup="true"
+                  >
+                    <NavLink className="menu-link" to="/routes/list">
+                      <i className="menu-bullet menu-bullet-dot">
+                        <span />
+                      </i>
+                      <span className="menu-text">Route List</span>
+                    </NavLink>
+                  </li>
+                  <li
+                    className={`menu-item ${getMenuItemActive(
+                      "/routes/completion"
+                    )}`}
+                    aria-haspopup="true"
+                  >
+                    <NavLink className="menu-link" to="/routes/completion">
+                      <i className="menu-bullet menu-bullet-dot">
+                        <span />
+                      </i>
+                      <span className="menu-text">Route Completion</span>
+                    </NavLink>
+                  </li>
+                  {/*end::2 Level*/}
+                </ul>
+              </div>
+            </li>
+          }
+
+          {(permissions.canCreateAssets && permissions.canCreateGeofences && permissions.canCreateThresholds && permissions.canCreateThresholdGeofences && permissions.canCreateNotificationTemplates) && <li
+            className={`menu-item ${getMenuItemActive("/operation/tracking", false)}`}
+            aria-haspopup="true"
+          >
+            <NavLink className="menu-link" to="/operation/tracking">
+              <span className="svg-icon menu-icon">
+                <SVG src={toAbsoluteUrl("/media/svg/icons/General/Attachment2.svg")} />
+              </span>
+              <span className="menu-text">Setup Operation</span>
             </NavLink>
           </li>}
-        {/*end::1 Level*/}
 
-        {/*begin::1 Level*/}
-        {permissions.canViewProfiles &&
-          <li
-            className={`menu-item ${getMenuItemActive("/profiles", true)}`}
-            aria-haspopup="true"
-          >
-            <NavLink className="menu-link menu-toggle" to="/profiles/list">
-              <span className="svg-icon menu-icon">
-                <SVG src={toAbsoluteUrl("/media/svg/icons/Communication/Group.svg")} />
-              </span>
-              <span className="menu-text">Profiles</span>
-            </NavLink>
-          </li>
-        }
-        {/*end::1 Level*/}
+          {(permissions.canViewBoardFamilies || permissions.canViewAlarms || permissions.canViewFloorMaps) && <DividerWithText>Others</DividerWithText>}
 
-        {/*begin::1 Level*/}
-        {permissions.canViewAssets &&
-          <li
-            className={`menu-item ${getMenuItemActive("/assets", true)}`}
-            aria-haspopup="true"
-          >
-            <NavLink className="menu-link menu-toggle" to="/assets/list">
-              <span className="svg-icon menu-icon">
-                <SVG src={toAbsoluteUrl("/media/svg/icons/Communication/Group.svg")} />
-              </span>
-              <span className="menu-text">Assets</span>
-            </NavLink>
-          </li>
-        }
-        {/*begin::1 Level*/}
-        {permissions.canViewDevices &&
-          <li
-            className={`menu-item ${getMenuItemActive("/devices", true)}`}
-            aria-haspopup="true"
-          >
-            <NavLink className="menu-link menu-toggle" to="/devices">
-              <span className="svg-icon menu-icon">
-                <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/CPU1.svg")} />
-              </span>
-              <span className="menu-text">Devices</span>
-            </NavLink>
-            <div className="menu-submenu">
-              <i className="menu-arrow" />
-              <ul className="menu-subnav">
-                <li className="menu-item menu-item-parent" aria-haspopup="true">
-                  <span className="menu-link">
-                    <span className="menu-text">Devices</span>
-                  </span>
-                </li>
-                {/*begin::2 Level*/}
-                <li
-                  className={`menu-item ${getMenuItemActive("/devices/list")}`}
-                  aria-haspopup="true"
-                >
-                  <NavLink className="menu-link" to="/devices/list">
-                    <i className="menu-bullet menu-bullet-dot">
-                      <span />
-                    </i>
-                    <span className="menu-text">Device List</span>
-                  </NavLink>
-                </li>
-                {/*end::2 Level*/}
-                {/*begin::2 Level*/}
-                {permissions.hasAllPermissions &&
-                  <li
-                    className={`menu-item ${getMenuItemActive("/devices/configmessages")}`}
-                    aria-haspopup="true"
-                  >
-                    <NavLink className="menu-link" to="/devices/configmessages">
-                      <i className="menu-bullet menu-bullet-dot">
-                        <span />
-                      </i>
-                      <span className="menu-text">Device Config Messages</span>
-                    </NavLink>
-                  </li>
-                }
-                {/*begin::2 Level*/}
-                {permissions.canCreateDevices &&
-                  <li
-                    className={`menu-item ${getMenuItemActive("/devices/provision")}`}
-                    aria-haspopup="true"
-                  >
-                    <NavLink className="menu-link" to="/devices/provision">
-                      <i className="menu-bullet menu-bullet-dot">
-                        <span />
-                      </i>
-                      <span className="menu-text">Device Provision</span>
-                    </NavLink>
-                  </li>
-                }
-                {/*end::2 Level*/}
-                {/*begin::2 Level*/}
-                {permissions.canCreateDevices &&
-                  <li
-                    className={`menu-item ${getMenuItemActive("/device/upload")}`}
-                    aria-haspopup="true"
-                  >
-                    <NavLink className="menu-link" to="/devices/upload">
-                      <i className="menu-bullet menu-bullet-dot">
-                        <span />
-                      </i>
-                      <span className="menu-text">Device Upload</span>
-                    </NavLink>
-                  </li>
-                }
-                {/*end::2 Level*/}
-              </ul>
-            </div>
-          </li>
-        }
-        {/*end::1 Level*/}
+          {/*begin::1 Level*/}
+          {permissions.canViewBoardFamilies &&
+            <li
+              className={`menu-item ${getMenuItemActive("/board-families", true)}`}
+              aria-haspopup="true"
+            >
+              <NavLink className="menu-link menu-toggle" to="/board-families/list">
+                <span className="svg-icon menu-icon">
+                  <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Router2.svg")} />
+                </span>
+                <span className="menu-text">Board family</span>
+              </NavLink>
+            </li>
+          }
+          {/*end::1 Level*/}
 
-        {/*begin::1 Level*/}
-        {permissions.canViewBoardFamilies &&
-          <li
-            className={`menu-item ${getMenuItemActive("/board-families", true)}`}
-            aria-haspopup="true"
-          >
-            <NavLink className="menu-link menu-toggle" to="/board-families/list">
-              <span className="svg-icon menu-icon">
-                <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Router2.svg")} />
-              </span>
-              <span className="menu-text">Board family</span>
-            </NavLink>
-          </li>
-        }
-        {/*end::1 Level*/}
 
-        {/*begin::1 Level*/}
-        {permissions.canViewGroups &&
-          <li
-            className={`menu-item ${getMenuItemActive("/groups", false)}`}
-            aria-haspopup="true"
-          >
-            <NavLink className="menu-link" to="/groups/list">
-              <span className="svg-icon menu-icon">
-                <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Layers.svg")} />
-              </span>
-              <span className="menu-text">Groups</span>
-            </NavLink>
-          </li>
-        }
-        {/*end::1 Level*/}
-        {/*begin::1 Level*/}
-        {(permissions.canViewLocations || permissions.canViewSubLocations) &&
-          <li
-            className={`menu-item ${getMenuItemActive("/locations", true) || getMenuItemActive("/sublocations", true)}`}
-            aria-haspopup="true"
-          >
-            <NavLink className="menu-link menu-toggle" to="/locations">
-              <span className="svg-icon menu-icon">
-                <SVG src={toAbsoluteUrl("/media/svg/icons/Map/Compass.svg")} />
-              </span>
-              <span className="menu-text">Locations</span>
-            </NavLink>
-            <div className="menu-submenu">
-              <i className="menu-arrow" />
-              <ul className="menu-subnav">
-                <li className="menu-item menu-item-parent" aria-haspopup="true">
-                  <span className="menu-link">
-                    <span className="menu-text">Locations</span>
-                  </span>
-                </li>
-                {/*begin::2 Level*/}
-                {permissions.canViewLocations &&
-                  <li
-                    className={`menu-item ${getMenuItemActive("/locations/list")}`}
-                    aria-haspopup="true"
-                  >
-                    <NavLink className="menu-link" to="/locations/list">
-                      <i className="menu-bullet menu-bullet-dot">
-                        <span />
-                      </i>
-                      <span className="menu-text">Locations</span>
-                    </NavLink>
-                  </li>
-                }
-                {/*end::2 Level*/}
-                {/*begin::2 Level*/}
-                {permissions.canViewSubLocations &&
-                  <li
-                    className={`menu-item ${getMenuItemActive("/sublocations/list")}`}
-                    aria-haspopup="true"
-                  >
-                    <NavLink className="menu-link" to="/sublocations/list">
-                      <i className="menu-bullet menu-bullet-dot">
-                        <span />
-                      </i>
-                      <span className="menu-text">Sublocations</span>
-                    </NavLink>
-                  </li>
-                }
-                {/*end::2 Level*/}
-              </ul>
-            </div>
-          </li>
-        }
-        {/*end::1 Level*/}
+          {/*begin::1 Level*/}
+          {permissions.canViewAlarms &&
+            <li
+              className={`menu-item ${getMenuItemActive("/alarms", false)}`}
+              aria-haspopup="true"
+            >
+              <NavLink className="menu-link" to="/alarms/list">
+                <span className="svg-icon menu-icon">
+                  <SVG src={toAbsoluteUrl("/media/svg/icons/Code/Warning-1-circle.svg")} />
+                </span>
+                <span className="menu-text">Alarms</span>
+              </NavLink>
+            </li>
+          }
+          {/*end::1 Level*/}
 
-        {/*begin::1 Level*/}
-        {permissions.canViewRoutes &&
-          <li
-            className={`menu-item ${getMenuItemActive("/routes", true)}`}
-            aria-haspopup="true"
-          >
-            <NavLink className="menu-link menu-toggle" to="/routes">
-              <span className="svg-icon menu-icon">
-                <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Select.svg")} />
-              </span>
-              <span className="menu-text">Routes</span>
-            </NavLink>
-            <div className="menu-submenu">
-              <i className="menu-arrow" />
-              <ul className="menu-subnav">
-                <li className="menu-item menu-item-parent" aria-haspopup="true">
-                  <span className="menu-link">
-                    <span className="menu-text">Routes</span>
-                  </span>
-                </li>
-                {/*begin::2 Level*/}
-                <li
-                  className={`menu-item ${getMenuItemActive(
-                    "/routes/list"
-                  )}`}
-                  aria-haspopup="true"
-                >
-                  <NavLink className="menu-link" to="/routes/list">
-                    <i className="menu-bullet menu-bullet-dot">
-                      <span />
-                    </i>
-                    <span className="menu-text">Route List</span>
-                  </NavLink>
-                </li>
-                <li
-                  className={`menu-item ${getMenuItemActive(
-                    "/routes/completion"
-                  )}`}
-                  aria-haspopup="true"
-                >
-                  <NavLink className="menu-link" to="/routes/completion">
-                    <i className="menu-bullet menu-bullet-dot">
-                      <span />
-                    </i>
-                    <span className="menu-text">Route Completion</span>
-                  </NavLink>
-                </li>
-                {/*end::2 Level*/}
-              </ul>
-            </div>
-          </li>
-        }
-        {/*begin::1 Level*/}
-        {permissions.canViewGeofences &&
-          <li
-            className={`menu-item ${getMenuItemActive("/geofences", true)}`}
-            aria-haspopup="true"
-          >
-            <NavLink className="menu-link menu-toggle" to="/geofences/list">
-              <span className="svg-icon menu-icon">
-                <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Select.svg")} />
-              </span>
-              <span className="menu-text">Geofences</span>
-            </NavLink>
-          </li>
-        }
-        {/*begin::1 Level*/}
-        {permissions.canViewThresholds &&
-          <li
-            className={`menu-item ${getMenuItemActive("/thresholds", false)}`}
-            aria-haspopup="true"
-          >
-            <NavLink className="menu-link" to="/thresholds/list">
-              <span className="svg-icon menu-icon">
-                <SVG src={toAbsoluteUrl("/media/svg/icons/Devices/Diagnostics.svg")} />
-              </span>
-              <span className="menu-text">Thresholds</span>
-            </NavLink>
-          </li>
-        }
-        {/*end::1 Level*/}
 
-        {/*begin::1 Level*/}
-        {permissions.canViewAlarms &&
-          <li
-            className={`menu-item ${getMenuItemActive("/alarms", false)}`}
-            aria-haspopup="true"
-          >
-            <NavLink className="menu-link" to="/alarms/list">
-              <span className="svg-icon menu-icon">
-                <SVG src={toAbsoluteUrl("/media/svg/icons/Code/Warning-1-circle.svg")} />
-              </span>
-              <span className="menu-text">Alarms</span>
-            </NavLink>
-          </li>
-        }
-        {/*end::1 Level*/}
+          {permissions.canViewFloorMaps &&
+            <li
+              className={`menu-item ${getMenuItemActive("/floor-maps", false)}`}
+              aria-haspopup="true"
+            >
+              <NavLink className="menu-link" to="/floor-maps/list">
+                <span className="svg-icon menu-icon">
+                  <SVG src={toAbsoluteUrl("/media/svg/icons/Home/Home.svg")} />
+                </span>
+                <span className="menu-text">Floor Maps</span>
+              </NavLink>
+            </li>
+          }
 
-        {/*begin::1 Level*/}
-        {permissions.canViewNotificationTemplates &&
-          <li
-            className={`menu-item ${getMenuItemActive("/notification-templates", false)}`}
-            aria-haspopup="true"
-          >
-            <NavLink className="menu-link" to="/notification-templates/list">
-              <span className="svg-icon menu-icon">
-                <SVG src={toAbsoluteUrl("/media/svg/icons/Files/File.svg")} />
-              </span>
-              <span className="menu-text">Notification Templates</span>
-            </NavLink>
-          </li>
-        }
-        {/*end::1 Level*/}
-        {permissions.canViewFloorMaps &&
-          <li
-            className={`menu-item ${getMenuItemActive("/floor-maps", false)}`}
-            aria-haspopup="true"
-          >
-            <NavLink className="menu-link" to="/floor-maps/list">
-              <span className="svg-icon menu-icon">
-                <SVG src={toAbsoluteUrl("/media/svg/icons/Home/Home.svg")} />
-              </span>
-              <span className="menu-text">Floor Maps</span>
-            </NavLink>
-          </li>
-        }
+          <DividerWithText>User Management</DividerWithText>
 
-        {(permissions.canCreateAssets && permissions.canCreateGeofences && permissions.canCreateThresholds && permissions.canCreateThresholdGeofences && permissions.canCreateNotificationTemplates) && <li
-          className={`menu-item ${getMenuItemActive("/operation/tracking", false)}`}
-          aria-haspopup="true"
-        >
-          <NavLink className="menu-link" to="/operation/tracking">
-            <span className="svg-icon menu-icon">
-              <SVG src={toAbsoluteUrl("/media/svg/icons/General/Attachment2.svg")} />
-            </span>
-            <span className="menu-text">Setup Operation</span>
-          </NavLink>
-        </li>}
+          {/*begin::1 Level*/}
+          {permissions.canViewTenants &&
+            <li
+              className={`menu-item ${getMenuItemActive("/tenants", false)}`}
+              aria-haspopup="true"
+            >
+              <NavLink className="menu-link" to="/tenants/list">
+                <span className="svg-icon menu-icon">
+                  <SVG src={toAbsoluteUrl("/media/svg/icons/Files/User-folder.svg")} />
+                </span>
+                <span className="menu-text">Tenants</span>
+              </NavLink>
+            </li>
+          }
+          {/*end::1 Level*/}
 
-        
+          {/*begin::1 Level*/}
+          {permissions.canViewGroups &&
+            <li
+              className={`menu-item ${getMenuItemActive("/groups", false)}`}
+              aria-haspopup="true"
+            >
+              <NavLink className="menu-link" to="/groups/list">
+                <span className="svg-icon menu-icon">
+                  <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Layers.svg")} />
+                </span>
+                <span className="menu-text">Groups</span>
+              </NavLink>
+            </li>
+          }
+          {/*end::1 Level*/}
+
+          {/*begin::1 Level*/}
+          {permissions.canViewUsers &&
+            <li
+              className={`menu-item ${getMenuItemActive("/users", true)}`}
+              aria-haspopup="true">
+              <NavLink className="menu-link menu-toggle" to="/users/list">
+                <span className="svg-icon menu-icon">
+                  <SVG src={toAbsoluteUrl("/media/svg/icons/Files/User-folder.svg")} />
+                </span>
+                <span className="menu-text">Users</span>
+              </NavLink>
+            </li>}
+          {/*end::1 Level*/}
+
+
+          {/*begin::1 Level*/}
+          {permissions.canViewProfiles &&
+            <li
+              className={`menu-item ${getMenuItemActive("/profiles", true)}`}
+              aria-haspopup="true"
+            >
+              <NavLink className="menu-link menu-toggle" to="/profiles/list">
+                <span className="svg-icon menu-icon">
+                  <SVG src={toAbsoluteUrl("/media/svg/icons/Communication/Group.svg")} />
+                </span>
+                <span className="menu-text">Profiles</span>
+              </NavLink>
+            </li>
+          }
+          {/*end::1 Level*/}
+
+
 
       </ul>
       {/* end::Menu Nav */}

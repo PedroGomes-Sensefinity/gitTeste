@@ -54,13 +54,26 @@ export function Dashboard() {
         });
         apiServiceV2.get("v2/tenants/children").then(r => {
             if ("tenants_new" in r) {
+                const promises = []
                 r.tenants_new.forEach(e => {
-                    apiServiceV2.get("v2/assets?device=true&tenant_id=" + e.id).then(r => {
-                        if ("total" in r) {
-                            setAssetsTrackedStr(assetsTrackedStr + " " + e.name + " " + r.total)
-                        }
-                    })
+                    promises.push(apiServiceV2.get("v2/assets?device=true&tenant_id=" + e.id))
                 })
+                Promise.all(promises).then(responses => {
+                    let str = "";
+            
+                    responses.forEach(r => {
+                        if ("total" in r) {
+                            if(r.total > 0){
+                                str += r[0]["tenant"]["name"] + " - " + r.total + " "
+                            }
+                        }
+                    });
+
+                    if(str === ""){
+                        str = "0"
+                    }
+                    setAssetsTrackedStr(str);
+                });
             } 
         });
 
