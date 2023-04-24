@@ -64,7 +64,7 @@ export function Dashboard() {
                     responses.forEach(r => {
                         if ("total" in r) {
                             if(r.total > 0){
-                                str += r[0]["tenant"]["name"] + " - " + r.total + " "
+                                str += r["assets"][0]["tenant"]["name"] + " - " + r.total + " "
                             }
                         }
                     });
