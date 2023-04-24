@@ -53,7 +53,6 @@ export function Dashboard() {
             if ("total" in r) setAssets(r.total);
         });
         apiServiceV2.get("v2/tenants/children").then(r => {
-            let assetsTrackedStr = ""
             if ("tenants_new" in r) {
                 r.tenants_new.forEach(e => {
                     apiServiceV2.get("v2/assets?device=true&tenant_id=" + e.id).then(r => {
