@@ -28,6 +28,7 @@ export function AssetsList() {
         const acts = [{
             icon: MdSpaceDashboard,
             tooltip: 'Inspect asset',
+            title: "Dashboard",
             onClick: (_, rowData) => {
                 history.push(`/assets/${rowData.id}`);
             },
@@ -35,6 +36,7 @@ export function AssetsList() {
         if (permissions.canEditAssets) {
             acts.push({
                 icon: EditIcon,
+                title: "Edit",
                 tooltip: 'Edit asset',
                 onClick: (_, rowData) => {
                     history.push(`/assets/${rowData.id}#edit`);
@@ -51,10 +53,6 @@ export function AssetsList() {
             title: 'Label',
         },
         {
-            field: 'description',
-            title: 'Description',
-        },
-        {
             field: 'tenant.name',
             title: 'Tenant',
         },
@@ -63,12 +61,16 @@ export function AssetsList() {
             title: 'Device',
         },
         {
+            field: 'asset_type.type',
+            title: 'Asset Family',
+        },
+        {
             field: 'asset_type.label',
             title: 'Asset Type',
         },
         {
-            field: 'tenant.name',
-            title: 'Tenant',
+            field: 'description',
+            title: 'Description',
         },
     ];
 

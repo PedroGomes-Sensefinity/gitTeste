@@ -202,8 +202,8 @@ export function SelectableTableGrid(props) {
                                         <TableCell key={`${row.id}`}>
                                             {actions.map((action, idx) => (
                                                 <Tooltip key={idx} title={action.tooltip}>
-                                                    <IconButton onClick={e => action.onClick(e, row)}>
-                                                        {React.createElement(action.icon)}
+                                                    <IconButton style={{fontSize:"12px"}} onClick={e => action.onClick(e, row)}>
+                                                        {React.createElement(action.icon)} &nbsp; {action.title}
                                                     </IconButton>
                                                 </Tooltip>
                                             ))}
@@ -216,7 +216,7 @@ export function SelectableTableGrid(props) {
                                             }, row);
 
                                             return (
-                                                <TableCell key={id} component="th" scope="row">
+                                                <TableCell style={{fontSize:"15px"}} key={id} component="th" scope="row">
                                                     {fieldValue}
                                                 </TableCell>
                                             );

@@ -41,11 +41,11 @@ export function LocationsList(props) {
         },
         {
             field: 'reverse_geocoding',
-            title: 'Reverse Geocoding',
+            title: 'Location',
         },
         {
             field: 'longstanding',
-            title: 'Longstanding',
+            title: 'Longstanding (days)',
         },
         {
             field: 'geofence_timestamp',
