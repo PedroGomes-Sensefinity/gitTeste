@@ -11,7 +11,7 @@ const Progress = (props) => {
       timer.current = setInterval(() => {
         setProgress((prev) => {
           if (prev < 100) {
-            return prev + 2;
+            return prev + 4;
           }
           if (prev === 100) {
             clearInterval(timer.current);

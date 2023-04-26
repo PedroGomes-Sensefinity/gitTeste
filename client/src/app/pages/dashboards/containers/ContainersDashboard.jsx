@@ -152,17 +152,17 @@ export function ContainersDashboard() {
     //Report Functions
     const downloadFile = (data, fileName, fileType) => {
         const blob = new Blob([data], { type: fileType });
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.setAttribute('href', url)
+        a.setAttribute('download', fileName);
 
-        const a = document.createElement("a");
-        a.download = fileName;
-        a.href = window.URL.createObjectURL(blob);
-        const clickEvt = new MouseEvent("click", {
-            view: window,
-            bubbles: true,
-            cancelable: true
-        });
-        a.remove();
+        a.click()
+
+        a.remove()
     };
+
+
 
     const getReportFromElastic = (path, Fname) => {
         path = path.replace("/api/reporting/jobs/download/", "");
@@ -202,7 +202,7 @@ export function ContainersDashboard() {
                     setTimeout(() => {
                         setButtonLabel("Downloading...");
                         getReportFromElastic(response.report.path, selectedLocation);
-                    }, 50000);
+                    }, 25000);
                 })
                 .catch(r => {
                     toaster.notify("error", "Reports not available! Please try again later. Reports are not available for demo accounts.");
@@ -223,7 +223,7 @@ export function ContainersDashboard() {
                     setTimeout(() => {
                         setButtonLabel("Downloading...");
                         getReportFromElastic(response.report.path, selectedLocation);
-                    }, 50000);
+                    }, 25000);
                 })
                 .catch(r => {
                     toaster.notify("error", "Reports not available! Please try again later. Reports are not available for demo accounts.");
@@ -282,7 +282,7 @@ export function ContainersDashboard() {
                 setTimeout(() => {
                     setButtonLabel24("Downloading...");
                     getReportFromElastic(response.report.path, "geofences");
-                }, 50000);
+                }, 25000);
             })
             .catch(r => {
                 toaster.notify("error", "Reports not available! Please try again later. Reports are not available for demo accounts.");
@@ -325,7 +325,7 @@ export function ContainersDashboard() {
                 setTimeout(() => {
                     setButtonLabel("Downloading...");
                     getReportFromElastic(response.report.path, selectedPortCode);
-                }, 50000);
+                }, 25000);
             })
             .catch(r => {
                 toaster.notify("error", "Reports not available! Please try again later. Reports are not available for demo accounts.");
@@ -644,7 +644,7 @@ export function ContainersDashboard() {
                 >
                     {buttonLabel}
                 </Button>
-                {showProgress && <Progress time={0.75} />}
+                {showProgress && <Progress time={0.40} />}
             </Box>
         </Modal>
     );
